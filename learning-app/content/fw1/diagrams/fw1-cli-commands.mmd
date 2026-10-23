@@ -1,0 +1,4 @@
+graph LR
+  I["init<br/>downloads providers"] --> P["plan<br/>previews changes"]
+  P --> A["apply<br/>creates resources<br/>saves state"]
+  A --> D["destroy<br/>reads state<br/>deletes resources"]

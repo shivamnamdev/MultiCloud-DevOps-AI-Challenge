@@ -1,0 +1,6 @@
+graph LR
+  TF["Terraform<br/>main.tf"] --> PL["Provider plugin<br/>downloaded by init"]
+  PL -->|API calls| AWS["AWS"]
+  PL -->|API calls| AZ["Azure"]
+  PL -->|API calls| GCP["GCP"]
+  PL -->|API calls| K8S["Kubernetes"]

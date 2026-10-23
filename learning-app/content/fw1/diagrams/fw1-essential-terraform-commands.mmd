@@ -1,0 +1,10 @@
+graph TD
+  A["Write code"] --> B["terraform init<br/>download providers"]
+  B --> C["terraform fmt<br/>format code"]
+  C --> D["terraform validate<br/>check syntax"]
+  D --> E["terraform plan<br/>preview changes"]
+  E --> F{"Review and approval"}
+  F -->|approved| G["terraform apply<br/>create resources"]
+  F -->|changes needed| A
+  G --> H["Infrastructure created"]
+  H -.->|when finished| I["terraform destroy"]

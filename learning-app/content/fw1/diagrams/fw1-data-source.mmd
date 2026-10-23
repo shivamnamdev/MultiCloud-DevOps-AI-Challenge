@@ -1,0 +1,3 @@
+graph LR
+  EXIST["Existing VPC<br/>created outside Terraform"] -->|data source reads| TF["Terraform"]
+  TF -->|uses VPC id| NEW["New EC2 instance<br/>created by Terraform"]

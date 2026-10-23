@@ -1,0 +1,14 @@
+sequenceDiagram
+  participant You
+  participant TF as Terraform
+  participant AWS
+  You->>TF: git clone and open the EC2 folder
+  You->>TF: terraform init
+  TF->>TF: download AWS provider plugin
+  You->>TF: terraform plan
+  TF-->>You: preview of changes
+  You->>TF: terraform apply and yes
+  TF->>AWS: create EC2 instance
+  AWS-->>TF: instance created
+  TF->>TF: write terraform.tfstate
+  You->>TF: terraform destroy to avoid charges

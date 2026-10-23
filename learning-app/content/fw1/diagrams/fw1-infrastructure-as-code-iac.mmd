@@ -1,0 +1,10 @@
+graph LR
+  subgraph Manual["Manual console clicks"]
+    M1["Engineer clicks in UI"] --> M2["Human errors"]
+    M2 --> M3["Knowledge lives in one head"]
+  end
+  subgraph IaC["Infrastructure as Code"]
+    C1["Code in Git"] --> C2["Review and version history"]
+    C2 --> C3["Same code for dev, QA, prod"]
+    C3 --> C4["Any engineer can recreate it"]
+  end

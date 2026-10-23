@@ -1,0 +1,6 @@
+graph LR
+  B["resource block in .tf"] --> TF["Terraform"]
+  TF --> E1["EC2 instance"]
+  TF --> E2["S3 bucket"]
+  TF --> E3["VPC and subnets"]
+  TF --> E4["RDS database"]

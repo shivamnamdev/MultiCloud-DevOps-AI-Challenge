@@ -1,0 +1,9 @@
+graph TD
+  CFG["Configuration<br/>what you want"] --> PLAN{"terraform plan"}
+  ST["terraform.tfstate<br/>what Terraform knows"] --> PLAN
+  REAL["Real infrastructure<br/>what exists in AWS"] -.->|refresh| PLAN
+  PLAN --> DIFF["Changes to create, update, destroy"]
+  DIFF -->|apply| ST
+  ST --> WHERE{"Where is it stored"}
+  WHERE -->|not Git| BAD["Local file or GitHub<br/>risky, not shared"]
+  WHERE -->|recommended| GOOD["Remote backend in S3<br/>versioning and locking"]

@@ -1,0 +1,6 @@
+graph TD
+  VPC["VPC"] --> SUB["Subnet"]
+  VPC --> SG["Security group"]
+  SUB --> EC2["EC2 instance"]
+  SG --> EC2
+  EC2 --> OUT["Output: public IP"]

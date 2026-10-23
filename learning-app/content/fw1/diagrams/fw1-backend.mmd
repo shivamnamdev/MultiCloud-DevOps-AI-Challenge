@@ -1,0 +1,6 @@
+graph LR
+  E1["Engineer 1"] --> LOCK{"State lock"}
+  E2["Engineer 2"] --> LOCK
+  CI["CI/CD pipeline"] --> LOCK
+  LOCK -->|one at a time| S3["S3 bucket<br/>remote state"]
+  S3 --> VER["Versioning<br/>recover older state"]

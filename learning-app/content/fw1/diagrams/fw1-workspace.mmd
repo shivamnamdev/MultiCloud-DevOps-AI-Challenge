@@ -1,0 +1,7 @@
+graph TD
+  CODE["One Terraform codebase"] --> W1["workspace: dev"]
+  CODE --> W2["workspace: qa"]
+  CODE --> W3["workspace: prod"]
+  W1 --> S1["own state file"]
+  W2 --> S2["own state file"]
+  W3 --> S3["own state file"]

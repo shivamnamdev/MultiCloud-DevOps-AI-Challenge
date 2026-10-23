@@ -1,0 +1,4 @@
+graph LR
+  TF["Terraform<br/>provisioning"] -->|creates| INF["EC2, VPC, S3, RDS<br/>security groups"]
+  INF -->|servers ready| AN["Ansible<br/>configuration management"]
+  AN -->|does| OPS["Install Java, create users<br/>patching, deploy app"]

@@ -31,24 +31,25 @@ A personal, self-study app built from this repo's course notes. Each concept is 
 ### Concept (output of ingest + diagram step)
 ```json
 {
-  "id": "S30-C03",
-  "session": 30,
-  "source_file": "Session-30-Docker-Introduction/🚀 Day-1 of Docker Batch-44 | 3rd Aug 2026.md",
-  "title": "Docker Architecture",
-  "text_md": "original text excerpt, verbatim",
-  "diagram": { "type": "mermaid", "path": "content/S30/S30-C03.mmd", "reviewed": false },
-  "labs": ["docker run hello-world"]
+  "id": "fw1-provider",
+  "unit": "fw1",
+  "kind": "concept | practical | overview | method",
+  "title": "Provider",
+  "text_md": "original text excerpt, verbatim (artefacts cleaned)",
+  "diagram": { "type": "mermaid", "path": "content/fw1/diagrams/fw1-provider.mmd", "reviewed": false }
 }
 ```
 
 ### Question (from Interview-QnA.md or generated quiz)
 ```json
 {
-  "id": "S30-Q01",
-  "session": 30,
-  "kind": "interview | mcq",
-  "prompt": "Explain VM vs Docker.",
-  "reference_answer_concept_ids": ["S30-C01"],
+  "id": "fw1-q08",
+  "unit": "fw1",
+  "kind": "interview | scenario | mcq",
+  "title": "What is Terraform State?",
+  "prompt": "question text",
+  "reference_answer": "answer text from the source",
+  "concept_ids": ["fw1-state-file-terraform-tfstate"],
   "choices": ["..."],
   "answer_index": 0
 }
@@ -57,9 +58,8 @@ A personal, self-study app built from this repo's course notes. Each concept is 
 ### Progress (local, one record per user action)
 ```json
 {
-  "concept_id": "S30-C03",
-  "status": "not_started | read | lab_done | mastered",
-  "quiz_scores": [0.8],
+  "item_id": "fw1-provider  (concept or question id)",
+  "status": "concepts: not_started | read | lab_done | mastered; questions: not_started | known | review",
   "updated_at": "ISO-8601"
 }
 ```
@@ -96,3 +96,4 @@ A personal, self-study app built from this repo's course notes. Each concept is 
 ## Maintenance log
 - 2026-10-23: Protocol 0 initialised.
 - 2026-10-23: Discovery answers recorded (models, interviewer toggles, scoring /10, build order, Mermaid, submodule skills).
+- 2026-10-23: Web app architecture added (architecture/webapp.md); schema ids switched to slug ids with a unit field.

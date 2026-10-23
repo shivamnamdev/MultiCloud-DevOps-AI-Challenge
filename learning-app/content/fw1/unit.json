@@ -1,0 +1,787 @@
+{
+  "id": "fw1",
+  "title": "Free Workshop: Terraform & IaC",
+  "subtitle": "Workshop of 22 Aug 2026",
+  "source_file": "FREE Workshop's/22Aug2026.md",
+  "concepts": [
+    {
+      "id": "fw1-quick-revision-map",
+      "unit": "fw1",
+      "kind": "overview",
+      "title": "Quick Revision Map",
+      "text_md": "```text\nTerraform\n   │\n   ├── Infrastructure as Code\n   │\n   ├── Provider\n   │      └── AWS / Azure / GCP / Kubernetes\n   │\n   ├── Resources\n   │      └── EC2 / S3 / VPC / RDS / etc.\n   │\n   ├── Variables & Outputs\n   │\n   ├── Modules\n   │\n   ├── Data Sources\n   │\n   ├── Dependency Graph\n   │\n   ├── State\n   │      ├── Local State\n   │      └── Remote Backend\n   │             ├── S3\n   │             └── State Locking\n   │\n   └── CI/CD\n          ├── fmt\n          ├── validate\n          ├── plan\n          └── apply\n```",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-quick-revision-map.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-essential-terraform-commands",
+      "unit": "fw1",
+      "kind": "overview",
+      "title": "Essential Terraform Commands",
+      "text_md": "```bash\nterraform init\nterraform fmt\nterraform validate\nterraform plan\nterraform apply\nterraform destroy\n```\n\n### Typical Workflow\n\n```text\nWrite Code\n    ↓\nterraform init\n    ↓\nterraform fmt\n    ↓\nterraform validate\n    ↓\nterraform plan\n    ↓\nCode Review / Approval\n    ↓\nterraform apply\n    ↓\nInfrastructure Created\n```",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-essential-terraform-commands.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-interview-preparation-strategy",
+      "unit": "fw1",
+      "kind": "method",
+      "title": "Interview Preparation Strategy",
+      "text_md": "Don't just memorize the answers.\n\nFor each question, try to explain:\n\n**What → Why → How → Real Example**\n\nExample:\n\n> **What is Terraform State?**\n> Terraform State is Terraform's memory of managed infrastructure.\n\n> **Why is it important?**\n> It helps Terraform map configuration to real infrastructure.\n\n> **How do teams manage it?**\n> Use a secure remote backend with appropriate access control and locking.\n\n> **Real Example:**\n> Store production state centrally instead of keeping it only on one engineer's laptop.",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-interview-preparation-strategy.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-infrastructure-as-code-iac",
+      "unit": "fw1",
+      "kind": "concept",
+      "title": "Infrastructure as Code (IaC)",
+      "text_md": "- **IaC definition:** Creating and managing infrastructure using code rather than manual UI-based actions\n- **Key problem solved:** Manual infrastructure creation leads to ~40% human error rate, repeated tedious activities, and inability to recreate environments if the responsible engineer leaves\n- **Benefits of IaC:**\n    - Same code reusable across dev, QA, and production environments via variables\n    - Version-controlled infrastructure — code serves as institutional memory\n    - Eliminates dependency on individual knowledge; any engineer can recreate infra from code\n- **Popular IaC tools mentioned:** Terraform, AWS CloudFormation, ARM Templates (Azure), Chef, Puppet, Vagrant, SaltStack, Crossplane\n- **Terraform identified as most popular** for DevOps roles — open source, free, multi-cloud, cloud-agnostic\n- Terraform supports **7,102 providers** (AWS, Azure, GCP, Kubernetes, Alibaba, Oracle Cloud, Active Directory, and more)",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-infrastructure-as-code-iac.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-terraform-vs-ansible",
+      "unit": "fw1",
+      "kind": "concept",
+      "title": "Terraform vs. Ansible",
+      "text_md": "- **Terraform:** Infrastructure provisioning tool (IaC) — used for one-time or first-time resource creation (EC2, VPC, S3, RDS, load balancers, databases, security groups)\n- **Ansible:** Configuration management tool — used for repeated operational activities: package installation, user management, patching, backups, Java/Python installation, application deployment\n- Both are **agentless** and **open source**\n- Key distinction: Terraform is **immutable** for infrastructure changes (modifying a resource requires destroy + recreate); Ansible can make **mutable** changes directly without rebuilding infra\n- Practical example: Adding a new user with Terraform would destroy and recreate the entire infra; Ansible adds the user directly without affecting existing infrastructure\n- Bash/PowerShell/Python *can* perform similar tasks but lack Ansible's agentless SSH management, centralized credential handling, and scalability across thousands of servers",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-terraform-vs-ansible.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-provider",
+      "unit": "fw1",
+      "kind": "concept",
+      "title": "Provider",
+      "text_md": "- **Provider:** Enables communication between Terraform and cloud platforms (AWS, GCP, Azure); defined in `provider` block",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-provider.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-resources",
+      "unit": "fw1",
+      "kind": "concept",
+      "title": "Resources",
+      "text_md": "- **Resources:** Cloud components to be created — EC2, S3, RDS, VPC, subnets, etc.",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-resources.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-variables",
+      "unit": "fw1",
+      "kind": "concept",
+      "title": "Variables",
+      "text_md": "- **Variables:** Defined in `variable.tf`; allow the same code to be reused across environments by changing input values",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-variables.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-output",
+      "unit": "fw1",
+      "kind": "concept",
+      "title": "Output",
+      "text_md": "- **Output:** Results of Terraform execution stored in `output.tf` file — success/failure status, resource details",
+      "diagram": null
+    },
+    {
+      "id": "fw1-state-file-terraform-tfstate",
+      "unit": "fw1",
+      "kind": "concept",
+      "title": "State File (terraform.tfstate)",
+      "text_md": "- **State File (`terraform.tfstate`):** Stores the current state of infrastructure; acts as Terraform's memory — tracks what has been created\n    - Must **not** be stored in GitHub — it is a binary/machine-readable file that GitHub would corrupt and cannot be edited via PRs\n    - Should be stored as an **object in S3** (remote backend)\n    - S3 **versioning** should be enabled so each state change creates a new version rather than overwriting\n    - When multiple developers work in parallel, remote backend with **state locking** prevents sync conflicts",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-state-file-terraform-tfstate.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-modules",
+      "unit": "fw1",
+      "kind": "concept",
+      "title": "Modules",
+      "text_md": "- **Modules:** Reusable, ready-made code templates — write once, reuse across projects",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-modules.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-data-source",
+      "unit": "fw1",
+      "kind": "concept",
+      "title": "Data Source",
+      "text_md": "- **Data Source:** Retrieves information about existing cloud resources created outside the current Terraform configuration",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-data-source.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-backend",
+      "unit": "fw1",
+      "kind": "concept",
+      "title": "Backend",
+      "text_md": "- **Backend:** Remote storage for the state file (e.g., S3); prevents local-only storage and enables team collaboration",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-backend.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-dependency-graph",
+      "unit": "fw1",
+      "kind": "concept",
+      "title": "Dependency Graph",
+      "text_md": "- **Dependency Graph:** Defines the order in which resources must be created (e.g., VPC → Subnet → EC2); Terraform uses this to sequence resource provisioning correctly",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-dependency-graph.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-workspace",
+      "unit": "fw1",
+      "kind": "concept",
+      "title": "Workspace",
+      "text_md": "- **Workspace:** Allows managing multiple environments (dev, QA, prod) using a single Terraform codebase — each workspace maintains its own independent state file",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-workspace.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-cli-commands",
+      "unit": "fw1",
+      "kind": "concept",
+      "title": "CLI Commands",
+      "text_md": "- **CLI Commands:**\n    - `terraform init` — Downloads provider plugins and dependencies; locks the configuration\n    - `terraform plan` — Previews what will be created/modified/destroyed; checks feasibility against AWS; saves plan to state file in memory\n    - `terraform apply` — Executes the plan; creates resources; permanently saves state to state file\n    - `terraform destroy` — Reads state file and deletes provisioned resources",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-cli-commands.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-terraform-language-history",
+      "unit": "fw1",
+      "kind": "concept",
+      "title": "Terraform Language & History",
+      "text_md": "- Terraform created by **HashiCorp in 2014**\n- Uses **HCL (HashiCorp Configuration Language)** — designed to be human-readable and simple; HashiCorp created it because no existing language met their needs\n- **Zero code writing required** for DevOps engineers — ready-made code is available via Terraform Registry documentation and GitHub; engineers copy-paste and understand the code",
+      "diagram": null
+    },
+    {
+      "id": "fw1-aws-account-setup",
+      "unit": "fw1",
+      "kind": "practical",
+      "title": "AWS Account Setup",
+      "text_md": "- Participants directed to create a free AWS account via AWS Free Tier link\n- Steps: provide email → verify OTP → set root password → add payment method (₹2 charge for verification) → select Basic/Free plan\n- Participants confirmed login to AWS Console and shared screenshots in WhatsApp group",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-aws-account-setup.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-terraform-cli-installation-windows",
+      "unit": "fw1",
+      "kind": "practical",
+      "title": "Terraform CLI Installation (Windows)",
+      "text_md": "- Download Terraform binary (~32 MB ZIP) from official HashiCorp site\n- Create a `bin` folder in C: drive; extract and place the Terraform binary there\n- Open CMD from the bin folder path; run `terraform -v` to confirm installation (version 1.15.x confirmed)\n- For **Linux:** three-command install via package manager\n- For **Mac:** Homebrew command",
+      "diagram": null
+    },
+    {
+      "id": "fw1-aws-cli-installation",
+      "unit": "fw1",
+      "kind": "practical",
+      "title": "AWS CLI Installation",
+      "text_md": "- Download AWS CLI MSI installer (~47 MB) for Windows\n- Run installer; verify by typing `aws` in CMD\n- Configure AWS CLI: run `aws configure` → enter Access Key → Secret Key → default region (press Enter) → output format (press Enter)",
+      "diagram": null
+    },
+    {
+      "id": "fw1-iam-user-access-key-setup",
+      "unit": "fw1",
+      "kind": "practical",
+      "title": "IAM User & Access Key Setup",
+      "text_md": "- Navigate to **IAM** (global service — no region selection needed)\n- Create a new IAM user → assign to an admin group with full access policies (top 4 policies selected)\n- Generate **Access Key:** Security Credentials → Create Access Key → select CLI use case → download CSV\n- **Interview question highlighted:** Secret key can only be viewed/downloaded **once** — if lost, must regenerate\n- Access key + secret key used in `aws configure` to integrate local Terraform with AWS",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-iam-user-access-key-setup.mmd",
+        "reviewed": false
+      }
+    },
+    {
+      "id": "fw1-ec2-instance-provisioning-via-terraform",
+      "unit": "fw1",
+      "kind": "practical",
+      "title": "EC2 Instance Provisioning via Terraform",
+      "text_md": "- Code cloned from instructor's GitHub repo using `git clone`\n- Navigated to EC2 folder; `main.tf` file contains provider block (Terraform version, AWS provider version) and resource block (instance type, AMI, name)\n- Ran `terraform init` → downloaded and verified HashiCorp AWS plugin\n- Ran `terraform plan` → checked resource feasibility; state saved in memory\n- Ran `terraform apply` → confirmed with `yes` → EC2 instance created in **22 seconds** in US-East-2 region\n- State file (`terraform.tfstate`) created locally after apply; contains current infra state\n- **Important reminder:** Delete resources after practice to avoid AWS billing charges\n- Terraform code for different services (EC2, S3, etc.) sourced directly from **AWS Terraform provider documentation** — copy-paste workflow, not manual writing",
+      "diagram": {
+        "type": "mermaid",
+        "path": "content/fw1/diagrams/fw1-ec2-instance-provisioning-via-terraform.mmd",
+        "reviewed": false
+      }
+    }
+  ],
+  "questions": [
+    {
+      "id": "fw1-q01",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is Terraform?",
+      "prompt": "What is Terraform?",
+      "reference_answer": "Terraform is an Infrastructure as Code (IaC) tool used to provision and manage infrastructure using configuration files. It can work with multiple cloud platforms such as AWS, Azure, GCP, Kubernetes, and many others.",
+      "concept_ids": []
+    },
+    {
+      "id": "fw1-q02",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is Infrastructure as Code?",
+      "prompt": "What is Infrastructure as Code?",
+      "reference_answer": "IaC means creating and managing infrastructure through code instead of manually creating resources from a cloud console. The main benefits are consistency, reusability, version control, and easier automation.",
+      "concept_ids": [
+        "fw1-infrastructure-as-code-iac"
+      ]
+    },
+    {
+      "id": "fw1-q03",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is a Terraform Provider?",
+      "prompt": "What is a Terraform Provider?",
+      "reference_answer": "A provider is a plugin that allows Terraform to communicate with an external platform or API. For example, the AWS provider allows Terraform to create and manage AWS resources.",
+      "concept_ids": [
+        "fw1-provider"
+      ]
+    },
+    {
+      "id": "fw1-q04",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is a Terraform Resource?",
+      "prompt": "What is a Terraform Resource?",
+      "reference_answer": "A resource represents an infrastructure component that Terraform manages, such as an EC2 instance, S3 bucket, VPC, subnet, or security group.",
+      "concept_ids": [
+        "fw1-resources"
+      ]
+    },
+    {
+      "id": "fw1-q05",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is terraform init?",
+      "prompt": "What is terraform init?",
+      "reference_answer": "`terraform init` initializes a Terraform working directory. It downloads required providers and prepares the working directory for other Terraform commands.",
+      "concept_ids": [
+        "fw1-cli-commands"
+      ]
+    },
+    {
+      "id": "fw1-q06",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is terraform plan?",
+      "prompt": "What is terraform plan?",
+      "reference_answer": "`terraform plan` shows what Terraform intends to create, change, or destroy. It is mainly used to review the expected changes before applying them.",
+      "concept_ids": [
+        "fw1-cli-commands"
+      ]
+    },
+    {
+      "id": "fw1-q07",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is terraform apply?",
+      "prompt": "What is terraform apply?",
+      "reference_answer": "`terraform apply` executes the Terraform configuration and creates, modifies, or destroys resources according to the planned changes.",
+      "concept_ids": [
+        "fw1-cli-commands"
+      ]
+    },
+    {
+      "id": "fw1-q08",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is Terraform State?",
+      "prompt": "What is Terraform State?",
+      "reference_answer": "Terraform state is Terraform's memory of the infrastructure it manages. It maps Terraform configuration with real resources and helps Terraform understand what already exists.",
+      "concept_ids": [
+        "fw1-state-file-terraform-tfstate"
+      ]
+    },
+    {
+      "id": "fw1-q09",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "Why should terraform.tfstate not be committed to GitHub?",
+      "prompt": "Why should terraform.tfstate not be committed to GitHub?",
+      "reference_answer": "The state file can contain sensitive information and infrastructure details. It should be protected and normally managed through a remote backend in team environments rather than committed to source control.",
+      "concept_ids": []
+    },
+    {
+      "id": "fw1-q10",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "Why use an S3 backend for Terraform?",
+      "prompt": "Why use an S3 backend for Terraform?",
+      "reference_answer": "An S3 backend provides centralized remote storage for Terraform state. It allows multiple engineers or CI/CD systems to work with the same state instead of keeping state only on one developer's laptop.",
+      "concept_ids": [
+        "fw1-backend"
+      ]
+    },
+    {
+      "id": "fw1-q11",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "Why is S3 versioning useful for Terraform state?",
+      "prompt": "Why is S3 versioning useful for Terraform state?",
+      "reference_answer": "Versioning keeps previous versions of the state object. If the state is accidentally changed or corrupted, an earlier version can help with recovery.",
+      "concept_ids": [
+        "fw1-state-file-terraform-tfstate"
+      ]
+    },
+    {
+      "id": "fw1-q12",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is State Locking?",
+      "prompt": "What is State Locking?",
+      "reference_answer": "State locking prevents multiple Terraform operations from modifying the same state simultaneously. It helps avoid conflicting updates when multiple engineers or pipelines work on the same infrastructure.",
+      "concept_ids": [
+        "fw1-state-file-terraform-tfstate"
+      ]
+    },
+    {
+      "id": "fw1-q13",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is a Terraform Variable?",
+      "prompt": "What is a Terraform Variable?",
+      "reference_answer": "A variable is an input value that makes Terraform code reusable. For example, the same EC2 configuration can use different instance types for development and production through variables.",
+      "concept_ids": [
+        "fw1-variables"
+      ]
+    },
+    {
+      "id": "fw1-q14",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is an Output in Terraform?",
+      "prompt": "What is an Output in Terraform?",
+      "reference_answer": "An output exposes useful information after Terraform creates resources. Examples include an EC2 public IP, load balancer DNS name, or resource ID.",
+      "concept_ids": [
+        "fw1-output"
+      ]
+    },
+    {
+      "id": "fw1-q15",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is a Terraform Module?",
+      "prompt": "What is a Terraform Module?",
+      "reference_answer": "A module is a reusable collection of Terraform configuration. Instead of writing the same VPC, EC2, or security group configuration repeatedly, we can create a module and reuse it.",
+      "concept_ids": [
+        "fw1-modules"
+      ]
+    },
+    {
+      "id": "fw1-q16",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is a Data Source?",
+      "prompt": "What is a Data Source?",
+      "reference_answer": "A data source allows Terraform to read information about existing infrastructure without creating that infrastructure. For example, Terraform can retrieve an existing VPC or AMI.",
+      "concept_ids": [
+        "fw1-data-source"
+      ]
+    },
+    {
+      "id": "fw1-q17",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is a Terraform Backend?",
+      "prompt": "What is a Terraform Backend?",
+      "reference_answer": "A backend defines where Terraform stores its state. A local backend stores state on the local machine, while a remote backend such as S3 stores it centrally for team collaboration.",
+      "concept_ids": [
+        "fw1-backend"
+      ]
+    },
+    {
+      "id": "fw1-q18",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is Terraform Dependency Graph?",
+      "prompt": "What is Terraform Dependency Graph?",
+      "reference_answer": "Terraform builds a dependency graph to determine the correct order for resource operations. For example, a subnet depends on a VPC, and an EC2 instance may depend on a subnet and security group.",
+      "concept_ids": [
+        "fw1-dependency-graph"
+      ]
+    },
+    {
+      "id": "fw1-q19",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "How does Terraform know what resources already exist?",
+      "prompt": "How does Terraform know what resources already exist?",
+      "reference_answer": "Terraform compares the configuration with the Terraform state and the real infrastructure. The state helps Terraform understand which resources are already managed and what changes are required.",
+      "concept_ids": [
+        "fw1-resources"
+      ]
+    },
+    {
+      "id": "fw1-q20",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is the difference between Terraform and Ansible?",
+      "prompt": "What is the difference between Terraform and Ansible?",
+      "reference_answer": "Terraform is primarily used for infrastructure provisioning and lifecycle management, while Ansible is commonly used for configuration management and operational automation. For example, Terraform can create an EC2 instance and Ansible can install Java and deploy an application on it.",
+      "concept_ids": [
+        "fw1-terraform-vs-ansible"
+      ]
+    },
+    {
+      "id": "fw1-q21",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is terraform destroy?",
+      "prompt": "What is terraform destroy?",
+      "reference_answer": "`terraform destroy` removes resources managed by the current Terraform configuration and state. It should be used carefully, especially against production infrastructure.",
+      "concept_ids": [
+        "fw1-cli-commands"
+      ]
+    },
+    {
+      "id": "fw1-q22",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is a Terraform Workspace?",
+      "prompt": "What is a Terraform Workspace?",
+      "reference_answer": "A workspace allows the same Terraform configuration to work with separate state files. It can be useful when managing multiple environments, although many teams prefer separate environment directories or configurations for larger production setups.",
+      "concept_ids": [
+        "fw1-workspace"
+      ]
+    },
+    {
+      "id": "fw1-q23",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "What is HCL?",
+      "prompt": "What is HCL?",
+      "reference_answer": "HCL stands for HashiCorp Configuration Language. Terraform uses HCL because it is designed to be human-readable and suitable for infrastructure configuration.",
+      "concept_ids": []
+    },
+    {
+      "id": "fw1-q24",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "Can Terraform work with multiple cloud providers?",
+      "prompt": "Can Terraform work with multiple cloud providers?",
+      "reference_answer": "Yes. Terraform is multi-cloud and can use different providers in the same overall infrastructure architecture. This is one of the major reasons Terraform is popular for multi-cloud environments.",
+      "concept_ids": [
+        "fw1-provider"
+      ]
+    },
+    {
+      "id": "fw1-q25",
+      "unit": "fw1",
+      "kind": "interview",
+      "title": "How do you safely introduce Terraform into an existing project?",
+      "prompt": "How do you safely introduce Terraform into an existing project?",
+      "reference_answer": "First understand the existing infrastructure, identify resources that should be managed, configure the provider and backend, and then import existing resources into Terraform management. The goal is to avoid accidentally recreating production resources.\n\n---\n\n# 20 Scenario-Based Terraform Interview Questions & Answers",
+      "concept_ids": []
+    },
+    {
+      "id": "fw1-s01",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Two engineers run Terraform at the same time",
+      "prompt": "Two engineers run `terraform apply` against the same environment at the same time. What problem can occur and how would you prevent it?",
+      "reference_answer": "Both operations may try to modify the same state. Use a remote backend with state locking so only one operation can modify the state at a time. Team members should also follow a controlled CI/CD workflow.",
+      "concept_ids": [
+        "fw1-cli-commands"
+      ]
+    },
+    {
+      "id": "fw1-s02",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Terraform wants to recreate an EC2 instance",
+      "prompt": "Terraform shows that an EC2 instance will be destroyed and recreated, but you expected only a small configuration change. What would you check?",
+      "reference_answer": "First inspect `terraform plan` carefully. Check which attribute is causing the replacement, whether the AMI or another immutable attribute changed, and whether the configuration differs from the current state. Do not blindly run `apply`.",
+      "concept_ids": [
+        "fw1-cli-commands",
+        "fw1-ec2-instance-provisioning-via-terraform"
+      ]
+    },
+    {
+      "id": "fw1-s03",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "State file was accidentally deleted",
+      "prompt": "A developer accidentally deletes the local `terraform.tfstate`. What would you do?",
+      "reference_answer": "If the project uses a remote backend, recover the state from the backend. If the state was only local, the team needs to recover it from backup if available or carefully import existing resources into Terraform again. This is why remote state and backups are important.",
+      "concept_ids": []
+    },
+    {
+      "id": "fw1-s04",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Production state is stored locally",
+      "prompt": "Your team has five engineers and production Terraform state is stored on one engineer's laptop. What would you recommend?",
+      "reference_answer": "Move the state to a secure remote backend such as S3 and configure appropriate state locking and access control. This provides centralized state management and better collaboration.",
+      "concept_ids": [
+        "fw1-state-file-terraform-tfstate"
+      ]
+    },
+    {
+      "id": "fw1-s05",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Developer changes an EC2 instance manually",
+      "prompt": "An engineer changes the EC2 instance configuration directly from the AWS Console. Later, Terraform plan shows a difference. Why?",
+      "reference_answer": "This is configuration drift. Terraform configuration and real infrastructure are no longer aligned. Review the plan and decide whether the manual change should be reflected in Terraform or reverted through Terraform.",
+      "concept_ids": [
+        "fw1-cli-commands",
+        "fw1-ec2-instance-provisioning-via-terraform"
+      ]
+    },
+    {
+      "id": "fw1-s06",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Same Terraform code for Dev and Prod",
+      "prompt": "You need the same infrastructure pattern in Dev and Production, but instance sizes and networking values are different. How would you design it?",
+      "reference_answer": "Make environment-specific values configurable through variables and use reusable modules. Keep the infrastructure logic common while passing different values for each environment.",
+      "concept_ids": [
+        "fw1-infrastructure-as-code-iac"
+      ]
+    },
+    {
+      "id": "fw1-s07",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Terraform needs an existing VPC",
+      "prompt": "Your company already has a VPC created outside Terraform. You need to deploy an EC2 instance into it. What can you use?",
+      "reference_answer": "A data source can retrieve information about the existing VPC and subnet. Terraform can then use those values when creating the EC2 instance.",
+      "concept_ids": [
+        "fw1-ec2-instance-provisioning-via-terraform"
+      ]
+    },
+    {
+      "id": "fw1-s08",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Secret appears in Terraform configuration",
+      "prompt": "A developer puts an AWS secret key directly inside `main.tf`. What is wrong with this approach?",
+      "reference_answer": "Secrets should not be hardcoded in Terraform configuration or committed to Git. Use secure credential mechanisms and secret management. Also rotate any credential that may already have been exposed.",
+      "concept_ids": []
+    },
+    {
+      "id": "fw1-s09",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Terraform works locally but fails in CI/CD",
+      "prompt": "Terraform works perfectly on your laptop but fails in Jenkins. What would you check?",
+      "reference_answer": "Check the CI/CD environment's Terraform version, provider versions, AWS credentials, IAM permissions, backend configuration, environment variables, working directory, and access to required APIs.",
+      "concept_ids": []
+    },
+    {
+      "id": "fw1-s10",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Wrong AWS region",
+      "prompt": "Terraform creates resources in the wrong AWS region. What would you investigate?",
+      "reference_answer": "Check the AWS provider configuration, variables, environment variables, AWS CLI configuration, and any region-specific provider aliases. Make the region explicit and validate it before applying changes.",
+      "concept_ids": [
+        "fw1-resources"
+      ]
+    },
+    {
+      "id": "fw1-s11",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Resource creation order",
+      "prompt": "You need to create a VPC, subnet, security group, and EC2 instance. How does Terraform decide the order?",
+      "reference_answer": "Terraform builds a dependency graph from resource references. If the EC2 references the subnet and security group, Terraform understands those dependencies and creates the required resources first.",
+      "concept_ids": [
+        "fw1-ec2-instance-provisioning-via-terraform"
+      ]
+    },
+    {
+      "id": "fw1-s12",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Terraform plan shows unexpected deletion",
+      "prompt": "`terraform plan` shows that a production resource will be destroyed. What should you do?",
+      "reference_answer": "Stop and investigate. Check the exact plan, recent configuration changes, state, resource identifiers, and whether someone made manual changes. Do not approve the plan until the reason for the deletion is understood.",
+      "concept_ids": [
+        "fw1-cli-commands",
+        "fw1-resources"
+      ]
+    },
+    {
+      "id": "fw1-s13",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Need to reuse VPC code",
+      "prompt": "Your company creates similar VPCs for ten projects. How would you avoid copying the same Terraform code ten times?",
+      "reference_answer": "Create a reusable Terraform module for the VPC and call the module from each project with different input variables.",
+      "concept_ids": []
+    },
+    {
+      "id": "fw1-s14",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Existing resource must come under Terraform",
+      "prompt": "An S3 bucket already exists in AWS, but your team now wants Terraform to manage it. Do you need to delete and recreate it?",
+      "reference_answer": "No. Existing resources can be brought under Terraform management using Terraform's import capabilities. The configuration and state must then be aligned carefully.",
+      "concept_ids": []
+    },
+    {
+      "id": "fw1-s15",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Developer changes a variable",
+      "prompt": "A developer changes the EC2 instance type from `t3.micro` to a larger instance type. What happens when `terraform plan` runs?",
+      "reference_answer": "Terraform compares the desired configuration with the current state and determines the required change. The plan will show the proposed modification before anything is changed.",
+      "concept_ids": [
+        "fw1-cli-commands",
+        "fw1-ec2-instance-provisioning-via-terraform"
+      ]
+    },
+    {
+      "id": "fw1-s16",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Terraform state contains sensitive data",
+      "prompt": "Your security team discovers sensitive information in the Terraform state. What should you do?",
+      "reference_answer": "Protect the backend using strong IAM permissions, encryption, restricted access, and secure storage. Review what data is being stored and rotate any credentials that may have been exposed.",
+      "concept_ids": [
+        "fw1-state-file-terraform-tfstate"
+      ]
+    },
+    {
+      "id": "fw1-s17",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Multiple environments need separate state",
+      "prompt": "Your organization has Dev, QA, and Production. Why should their Terraform states not be mixed carelessly?",
+      "reference_answer": "Each environment has different infrastructure and lifecycle requirements. Separating state reduces the risk of accidentally modifying one environment while working on another.",
+      "concept_ids": [
+        "fw1-state-file-terraform-tfstate"
+      ]
+    },
+    {
+      "id": "fw1-s18",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Terraform apply fails halfway",
+      "prompt": "Terraform starts creating ten resources but fails while creating the seventh. What should you do?",
+      "reference_answer": "First inspect the error and the resulting state. Terraform records successfully managed resources in state, so after fixing the root cause, run `terraform plan` again to understand what remains to be created or changed.",
+      "concept_ids": [
+        "fw1-resources"
+      ]
+    },
+    {
+      "id": "fw1-s19",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Someone manually deletes an EC2 instance",
+      "prompt": "Terraform state says an EC2 instance exists, but someone manually deleted it from AWS. What will Terraform detect?",
+      "reference_answer": "During refresh/planning, Terraform can detect that the real resource no longer exists. The next plan can show that the resource needs to be created again to match the configuration.",
+      "concept_ids": [
+        "fw1-ec2-instance-provisioning-via-terraform",
+        "fw1-state-file-terraform-tfstate"
+      ]
+    },
+    {
+      "id": "fw1-s20",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Team wants approval before production changes",
+      "prompt": "Your company wants every production Terraform change reviewed before execution. How would you implement this?",
+      "reference_answer": "Use a Git-based workflow with pull requests. CI can run `terraform fmt`, validation, security checks, and `terraform plan`. After approval, a controlled pipeline can execute `terraform apply`.",
+      "concept_ids": []
+    },
+    {
+      "id": "fw1-s21",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Terraform code has formatting issues",
+      "prompt": "A team has inconsistent Terraform formatting across multiple repositories. What can you use?",
+      "reference_answer": "Use `terraform fmt` to automatically format Terraform configuration consistently. Add it to CI/CD so formatting problems are caught automatically.",
+      "concept_ids": []
+    },
+    {
+      "id": "fw1-s22",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "A provider plugin is missing",
+      "prompt": "Terraform reports that a required provider is missing. What command would you normally run first?",
+      "reference_answer": "Run `terraform init`. It initializes the working directory and downloads the required provider plugins.",
+      "concept_ids": [
+        "fw1-provider"
+      ]
+    },
+    {
+      "id": "fw1-s23",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Need to review changes before production",
+      "prompt": "Your manager asks, \"Show me exactly what Terraform is going to change before you touch production.\" What command would you use?",
+      "reference_answer": "Run `terraform plan` and review the proposed additions, modifications, and deletions. In CI/CD, the plan can also be reviewed during the pull-request approval process.",
+      "concept_ids": []
+    },
+    {
+      "id": "fw1-s24",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Ansible or Terraform?",
+      "prompt": "Your requirement is to create 100 EC2 instances and then install Java and deploy an application on them. Which tool would you choose?",
+      "reference_answer": "Terraform is a good fit for provisioning the infrastructure, while Ansible can handle configuration and application deployment. In a real DevOps workflow, both can be used together.",
+      "concept_ids": [
+        "fw1-ec2-instance-provisioning-via-terraform"
+      ]
+    },
+    {
+      "id": "fw1-s25",
+      "unit": "fw1",
+      "kind": "scenario",
+      "title": "Terraform code is copied from the internet",
+      "prompt": "A fresher copies Terraform code from GitHub and it works. Is that enough for an interview or production?",
+      "reference_answer": "No. You should understand the provider, resources, variables, dependencies, state, security implications, and lifecycle behavior. Copying code is useful for learning, but production code must be reviewed and understood.",
+      "concept_ids": []
+    }
+  ]
+}

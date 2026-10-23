@@ -1,0 +1,6 @@
+graph LR
+  U["Create IAM user"] --> G["Add to admin group"]
+  G --> K["Create access key<br/>CLI use case"]
+  K --> CSV["Download CSV<br/>secret shown only once"]
+  CSV --> CFG["aws configure"]
+  CFG --> TF["Terraform can call AWS"]

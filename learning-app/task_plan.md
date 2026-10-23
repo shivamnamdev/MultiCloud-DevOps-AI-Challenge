@@ -39,3 +39,11 @@
 - Mermaid rendered client-side with `securityLevel: 'strict'`, major version pinned (11).
 - Spaced repetition for quiz review uses SM-2 (deterministic, in code).
 - Next action: Architect step 1 for the Free Workshop — SOP `architecture/ingest.md`, then `tools/ingest.py`.
+
+## Status 2026-10-23
+- [x] L Link (Ollama client + handshake; real handshake still to run on user's machine)
+- [x] A Architect step 1: ingest + web app for unit fw1 (Learn + Practice, progress tracking)
+- [ ] A Architect step 2: MCQ quizzes + SM-2 review
+- [ ] A Architect step 3: Ollama mock interview (settings toggles, hybrid /10 scoring, 3 follow-ups, study suggestions) — add `format` to OllamaClient.generate
+- [ ] Review/fix diagrams after user checks them in the browser
+- [ ] Next unit: Session-00-Program-Kickoff
