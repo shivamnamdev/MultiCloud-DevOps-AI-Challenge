@@ -1,0 +1,48 @@
+{
+  "id": "s40",
+  "title": "Session 40 — Ansible Introduction",
+  "subtitle": "Session 40",
+  "session": 40,
+  "module": "M6 IaC + Automation",
+  "order": 4000,
+  "status": "light",
+  "source_file": "Session-40-Ansible-Introduction/README.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s40-topics-covered",
+      "unit": "s40",
+      "kind": "overview",
+      "title": "Topics covered",
+      "text_md": "- Terraform vs Ansible: When to use which tool\n- Configuration Management Tools Overview and comparison\n- Ansible Architecture: Agentless SSH-based design\n- Playbooks Roles Modules Inventories — core concepts\n- YAML Syntax for Ansible — indentation rules\n- Ansible vs Chef vs Puppet — feature comparison",
+      "diagram": null
+    },
+    {
+      "id": "s40-key-learnings",
+      "unit": "s40",
+      "kind": "concept",
+      "title": "Key learnings",
+      "text_md": "- Ansible is agentless — uses only SSH with no software required on target servers\n- Terraform provisions infrastructure Ansible configures what was just provisioned\n- YAML indentation is critical — use exactly 2 spaces and never use tabs in YAML\n- Ansible is idempotent — running the same playbook twice produces the same result\n- 90 percent of Fortune 500 companies use Ansible for configuration management daily",
+      "diagram": null
+    },
+    {
+      "id": "s40-task-079",
+      "unit": "s40",
+      "kind": "practical",
+      "title": "Task 079",
+      "text_md": "**Lab task 079:** Research and document Terraform vs Ansible — write 5 real use cases for each tool\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    },
+    {
+      "id": "s40-task-080",
+      "unit": "s40",
+      "kind": "practical",
+      "title": "Task 080",
+      "text_md": "**Lab task 080:** Read Ansible docs and write your first YAML inventory file with 3 groups of hosts\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

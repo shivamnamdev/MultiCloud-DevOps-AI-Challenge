@@ -1,0 +1,48 @@
+{
+  "id": "s45",
+  "title": "Session 45 — ATS Resume Preparation",
+  "subtitle": "Session 45",
+  "session": 45,
+  "module": "M7 Career",
+  "order": 4500,
+  "status": "light",
+  "source_file": "Session-45-ATS-Resume-Preparation/README.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s45-topics-covered",
+      "unit": "s45",
+      "kind": "overview",
+      "title": "Topics covered",
+      "text_md": "- ATS: How Applicant Tracking Systems filter resumes\n- Keyword Optimization for DevOps Engineer roles\n- Resume Format & Structure for IT positions\n- LinkedIn Profile Optimization — headline summary skills\n- Naukri Profile Update — keywords and visibility\n- Portfolio Projects Presentation in resume\n- Interview Preparation Strategy overview",
+      "diagram": null
+    },
+    {
+      "id": "s45-key-learnings",
+      "unit": "s45",
+      "kind": "concept",
+      "title": "Key learnings",
+      "text_md": "- ATS rejects 75 percent of resumes before any human sees them — keyword optimization is critical\n- LinkedIn headline formula: Senior DevOps Engineer and AWS and GCP and Kubernetes\n- Quantify everything: Reduced deployment time by 60 percent beats Improved deployment\n- GitHub repo link on resume equals proof of skills — more powerful than any certification\n- Your resume should tell the story of business impact not just a list of job descriptions",
+      "diagram": null
+    },
+    {
+      "id": "s45-task-089",
+      "unit": "s45",
+      "kind": "practical",
+      "title": "Task 089",
+      "text_md": "**Lab task 089:** Update resume with all learned skills in ATS-optimized format — get peer review in community\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    },
+    {
+      "id": "s45-task-090",
+      "unit": "s45",
+      "kind": "practical",
+      "title": "Task 090",
+      "text_md": "**Lab task 090:** Update LinkedIn headline skills section and add all CloudDevOpsHub projects to experience\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

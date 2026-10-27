@@ -1,0 +1,349 @@
+{
+  "id": "s54c",
+  "title": "Project 5 Azure DevOps CICD Implementation (s54c)",
+  "subtitle": "Session 54 · Batch-44 · Project 5 (Part 2): Azure DevOps CI/CD Pipeline Automation, Web App (PaaS) Deplo",
+  "session": 54,
+  "module": "M9 Live projects",
+  "order": 5402,
+  "status": "ready",
+  "source_file": "Session-54-Project-5-Azure-DevOps-CICD-Implementation/🚀 Project-5 part-2 on Azure DevOps Batch-44 | 3rd Sep 2026 .md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s54c-session-overview-agenda",
+      "unit": "s54c",
+      "kind": "overview",
+      "title": "Session Overview & Agenda",
+      "text_md": "This session represents **Part 2 of Project 5 (Azure DevOps CI/CD Automation)** for Batch-44. Building upon the self-hosted agent configuration established in Part 1, this session executes the end-to-end automation pipeline to build and deploy a modern **React YouTube Clone** web application to **Azure App Service (Web App - PaaS)**, followed by an in-depth exploration of **Enterprise Cloud Migration Strategies (The 6 R's Framework)**.\n\n```text\n+-----------------------------------------------------------------------------+\n|                            SESSION 2 ROADMAP                                |\n+-----------------------------------------------------------------------------+\n|  PART 1: Azure App Service (PaaS) Provisioning                              |\n|          • Creating Linux-based Web App on Azure Portal (Node.js 22 runtime)|\n|          • Resource Group segregation and Azure subscription linking        |\n|          • Verification of initial default placeholder URL                  |\n+-----------------------------------------------------------------------------+\n|  PART 2: Secure Platform Integration via Service Connections                |\n|          • Linking Azure DevOps with Azure Resource Manager (ARM)           |\n|          • Automated Azure AD Service Principal provisioning & RBAC scopes  |\n|          • Granting unrestricted pipeline access permissions                |\n+-----------------------------------------------------------------------------+\n|  PART 3: CI/CD Pipeline YAML Development & Deployment Execution             |\n|          • React source code checkout from Azure Repos                      |\n|          • Local runner execution: 'npm install' & 'npm run build'          |\n|          • Artifact packaging and automated deployment to Azure Web App     |\n|          • Live verification & HTTP 503/403 failure testing                 |\n+-----------------------------------------------------------------------------+\n|  PART 4: Enterprise Cloud Migration Strategies (The 6 R's)                  |\n|          • Re-host, Re-platform, Re-purchase, Re-factor, Retire, Retain     |\n|          • 8-stage migration lifecycle (Discovery -> Assessment -> Cutover) |\n|          • AWS DMS / Azure Migrate / MAP acceleration programs              |\n|          • Real enterprise case study: IBM MQ to Azure Service Bus          |\n+-----------------------------------------------------------------------------+\n```",
+      "diagram": null
+    },
+    {
+      "id": "s54c-end-to-end-architecture-azure-devops-ci-cd-to-azure-web-app",
+      "unit": "s54c",
+      "kind": "concept",
+      "title": "End-to-End Architecture: Azure DevOps CI/CD to Azure Web App",
+      "text_md": "The following diagram illustrates the end-to-end system topology implemented during the hands-on session:\n\n```mermaid\ngraph TB\n    subgraph Dev[\"Source Control & Trigger\"]\n        Developer[\"Developer / Engineer\"] -->|git push| AzureRepo[\"Azure Repos (Git)\"]\n        AzureRepo -->|Triggers on main branch| AzurePipeline[\"Azure Pipeline (azure-pipelines.yml)\"]\n    end\n\n    subgraph Runner[\"Compute Execution Engine (Self-Hosted Runner)\"]\n        AzurePipeline -->|Dispatches Job via PAT| LocalAgent[\"Self-Hosted Agent (C:\\\\agents)\"]\n        LocalAgent --> Step1[\"1. Checkout Source Code\"]\n        Step1 --> Step2[\"2. npm install (Dependencies)\"]\n        Step2 --> Step3[\"3. npm run build (Production Artifacts)\"]\n        Step3 --> Step4[\"4. Package & Archive Build Artifacts\"]\n    end\n\n    subgraph Integration[\"Security & Authentication Layer\"]\n        ServiceConnection[\"Service Connection (Pranav-SC)\"] -.->|Azure AD Service Principal / Contributor Role| ARM[\"Azure Resource Manager\"]\n    end\n\n    subgraph AzurePortal[\"Target Cloud Infrastructure (portal.azure.com)\"]\n        ARM --> ResourceGroup[\"Resource Group (sushant-rg)\"]\n        ResourceGroup --> WebApp[\"Azure Web App (Node.js 22 PaaS)\"]\n        Step4 -->|Deploy via Service Connection| WebApp\n        WebApp --> PublicURL[\"Live Application URL (https://*.azurewebsites.net)\"]\n    end\n```",
+      "diagram": null
+    },
+    {
+      "id": "s54c-developer-vs-devops-engineer-responsibilities",
+      "unit": "s54c",
+      "kind": "concept",
+      "title": "Developer vs DevOps Engineer Responsibilities",
+      "text_md": "During the session, clear boundaries were defined between developer tasks and DevOps automation tasks:\n\n```text\n+-------------------------------------------------------------------------+\n|                  RESPONSIBILITY BOUNDARY IN REAL TEAMS                  |\n+-------------------------------------------------------------------------+\n|  DEVELOPER RESPONSIBILITIES:                                            |\n|  • Writes React / Node.js frontend and backend application code.        |\n|  • Defines package dependencies in 'package.json'.                      |\n|  • Executes local Git workflow: 'git init', 'git add', 'git commit'.    |\n|  • Pushes feature branches / PRs to Azure Repos.                        |\n+-------------------------------------------------------------------------+\n|  DEVOPS ENGINEER RESPONSIBILITIES:                                      |\n|  • Provisions cloud runtime infrastructure (Azure Web App, RG, VNet).   |\n|  • Establishes Azure Service Connections and RBAC permissions.          |\n|  • Configures and maintains CI/CD runners (Self-Hosted / VM pools).     |\n|  • Authors declarative 'azure-pipelines.yml' build & deploy pipelines.  |\n|  • Monitors pipeline health, resolves build breaks, and manages cleanup.|\n+-------------------------------------------------------------------------+\n```",
+      "diagram": null
+    },
+    {
+      "id": "s54c-azure-portal-vs-azure-devops-vs-self-hosted-runner",
+      "unit": "s54c",
+      "kind": "concept",
+      "title": "Azure Portal vs Azure DevOps vs Self-Hosted Runner",
+      "text_md": "| Platform Component | Primary Purpose | Key Responsibilities | Access URL / Path |\n| :--- | :--- | :--- | :--- |\n| **Azure Portal** | Cloud Infrastructure & Hosting | Hosts App Services, Resource Groups, Virtual Networks, Databases, Storage Accounts. | `portal.azure.com` |\n| **Azure DevOps** | Application Lifecycle Management | Manages Git repositories (Repos), CI/CD pipelines (Pipelines), and Sprint boards (Boards). | `dev.azure.com` / `aex.dev.azure.com` |\n| **Self-Hosted Runner** | Pipeline Execution Engine | Provides compute capacity (CPU, RAM, GPU, Disk) to execute `npm install`, build compilation, and deployment tasks. | Local machine / VM (`C:\\agents`) |\n| **Service Connection** | Integration & Security Gateway | Authenticates Azure DevOps Pipelines to Azure Portal via Azure Active Directory Service Principal. | Project Settings -> Service Connections |",
+      "diagram": null
+    },
+    {
+      "id": "s54c-step-by-step-hands-on-implementation-guide",
+      "unit": "s54c",
+      "kind": "practical",
+      "title": "Step-by-Step Hands-On Implementation Guide",
+      "text_md": "```mermaid\nsequenceDiagram\n    autonumber\n    actor Engineer as DevOps Engineer\n    participant Portal as Azure Portal (portal.azure.com)\n    participant ADO as Azure DevOps (dev.azure.com)\n    participant Runner as Local Self-Hosted Runner (C:\\agents)\n\n    Engineer->>Portal: 1. Create Resource Group & Linux Web App (Node.js 22)\n    Portal-->>Engineer: 2. Web App created (Placeholder status: Waiting for content)\n    Engineer->>ADO: 3. Create Service Connection (ARM -> Automatic SP -> Pranav-SC)\n    ADO->>Portal: 4. Authenticate & Bind to Target Subscription & Resource Group\n    Engineer->>Runner: 5. Start Agent Listener (run.cmd -> Listening for Jobs)\n    Engineer->>ADO: 6. Push React code & Configure azure-pipelines.yml\n    ADO->>Runner: 7. Dispatch Job (Checkout -> npm install -> npm run build -> Publish)\n    Runner->>Portal: 8. Deploy compiled static bundle via Service Connection\n    Portal-->>Engineer: 9. React YouTube Clone Live at *.azurewebsites.net!\n    Engineer->>Portal: 10. Delete Web App post-validation to avoid billing\n```",
+      "diagram": null
+    },
+    {
+      "id": "s54c-step-1-azure-web-app-app-service-paas-creation-on-azure-portal",
+      "unit": "s54c",
+      "kind": "practical",
+      "title": "Step 1: Azure Web App (App Service - PaaS) Creation on Azure Portal",
+      "text_md": "1. Log into the **Azure Portal** at `https://portal.azure.com`.\n2. In the top search bar, search for **Web App** (select *Web App* from the Marketplace; do not select Static Web App).\n3. Click **+ Create** -> **Web App**.\n4. Configure the **Basics** tab:\n   - **Subscription:** Select your active billing subscription.\n   - **Resource Group:** Click *Create new* -> enter `sushant-rg` (or unique name).\n   - **Name:** Enter a globally unique web app name (e.g., `youtube-application-prod` or `javed-youtube-app`). The default URL will be `https://<app-name>.azurewebsites.net`.\n   - **Publish:** Select `Code`.\n   - **Runtime Stack:** Select `Node 22 LTS` (React runs on the Node.js runtime).\n   - **Operating System:** Select `Linux` (recommended for faster boot times, lower resource overhead, and cost efficiency).\n   - **Region:** Select your nearest region (e.g., `West US 2` or `East US`).\n   - **Pricing Plan (App Service Plan):** Select the default Linux plan.\n5. Click **Review + Create**, then click **Create**.\n6. Wait ~30 seconds for resource deployment to complete.\n7. Click **Go to resource** and copy the **Default domain** URL.\n8. Open the URL in a browser tab. It will display the default Microsoft Azure placeholder:\n   ```text\n   +----------------------------------------------------------------------+\n   |  Microsoft Azure App Service                                         |\n   |  Your web app is running and waiting for your content                |\n   +----------------------------------------------------------------------+\n   ```",
+      "diagram": null
+    },
+    {
+      "id": "s54c-step-2-creating-azure-service-connection-in-azure-devops",
+      "unit": "s54c",
+      "kind": "practical",
+      "title": "Step 2: Creating Azure Service Connection in Azure DevOps",
+      "text_md": "To enable Azure Pipelines to deploy artifacts into the newly created Web App, a secure **Service Connection** is required:\n\n1. Log into **Azure DevOps** at `https://aex.dev.azure.com` or `https://dev.azure.com/<your-org>`.\n2. Open your project (e.g., `DevOps-Batch-44` or `Roshan-Project-127`).\n3. Click on **Project Settings** (bottom-left gear icon).\n4. Under the **Pipelines** category, click **Service connections**.\n5. Click **New service connection** (top-right).\n6. Select **Azure Resource Manager** and click **Next**.\n7. Select **Service principal (automatic)** and click **Next**.\n8. Authenticate with your Azure Portal credentials:\n   - **Scope level:** `Subscription`\n   - **Subscription:** Select the active Azure subscription containing your Web App.\n   - **Resource group:** Select `sushant-rg` (must match the resource group created in Step 1).\n   - **Service connection name:** Enter `Pranav-SC` (or custom name, e.g., `AzureAppService-SC`).\n   - **Security:** Check the box **\"Grant access permission to all pipelines\"** (CRITICAL: prevents pipeline builds from pausing for manual authorization).\n9. Click **Save**. Azure DevOps automatically provisions an **Azure AD (Entra ID) Service Principal** with *Contributor* role permissions on the selected Resource Group.",
+      "diagram": null
+    },
+    {
+      "id": "s54c-step-3-pushing-source-code-to-azure-repos",
+      "unit": "s54c",
+      "kind": "practical",
+      "title": "Step 3: Pushing Source Code to Azure Repos",
+      "text_md": "If the React application source code is not yet in Azure Repos:\n\n```bash\n# 1. Initialize local Git repository inside React project folder\ncd /path/to/react-youtube-clone\ngit init\n\n# 2. Stage all project files\ngit add .\n\n# 3. Commit staged files\ngit commit -m \"Initial commit: React YouTube Clone application source code\"\n\n# 4. Link to Azure Repos remote URL\ngit remote add origin https://<org-name>@dev.azure.com/<org-name>/<project-name>/_git/<repo-name>\n\n# 5. Push code to the main branch\ngit push -u origin main\n```",
+      "diagram": null
+    },
+    {
+      "id": "s54c-step-4-starting-the-self-hosted-windows-agent-runner",
+      "unit": "s54c",
+      "kind": "practical",
+      "title": "Step 4: Starting the Self-Hosted Windows Agent Runner",
+      "text_md": "1. Open **PowerShell** or **Command Prompt** as **Administrator**.\n2. Navigate to your local agent installation folder:\n   ```cmd\n   cd C:\\agents\n   ```\n3. Launch the agent listener:\n   ```cmd\n   .\\run.cmd\n   ```\n4. Confirm the terminal output displays:\n   ```text\n   Scanning for tool capabilities...\n   Connecting to the server...\n   2026-09-03 06:15:32Z: Listening for Jobs\n   ```\n5. In Azure DevOps, go to **Project Settings** -> **Agent Pools** -> **Self-Hosted-Agent** -> **Agents** tab and verify the agent status displays **Online** (Green).\n\n> [!NOTE]\n> If you encounter an error stating *\"The session of the agent already exists\"*, wait 30–60 seconds. The agent will automatically retry, terminate the orphaned session, and reconnect.",
+      "diagram": null
+    },
+    {
+      "id": "s54c-step-5-authoring-the-azure-devops-pipeline-yaml-azure-pipelines-yml",
+      "unit": "s54c",
+      "kind": "practical",
+      "title": "Step 5: Authoring the Azure DevOps Pipeline YAML (azure-pipelines.yml)",
+      "text_md": "1. In Azure DevOps, navigate to **Pipelines** -> **Pipelines** -> click **New Pipeline**.\n2. Select **Azure Repos Git** -> choose your repository.\n3. Select **Starter pipeline** or **Node.js**, replace the contents with the following production pipeline definition, and customize the parameter values:\n\n```yaml\n# ==============================================================================\n# Azure DevOps CI/CD Pipeline: React YouTube Clone to Azure App Service (PaaS)\n# ==============================================================================\n\ntrigger:\n  branches:\n    include:\n      - main\n\npool:\n  name: 'Self-Hosted-Agent'   # Name of your Self-Hosted Agent Pool configured in ADO\n\nvariables:\n  azureSubscriptionServiceConnection: 'Pranav-SC'        # Exact Service Connection name\n  webAppName: 'javed-youtube-app'                         # Exact Azure Web App name\n  environmentName: 'Production'\n\nstages:\n- stage: BuildAndDeploy\n  displayName: 'Build and Deploy React Application'\n  jobs:\n  - job: BuildJob\n    displayName: 'Compile, Package and Deploy'\n    steps:\n\n    # Step 1: Checkout Git Source Code\n    - checkout: self\n      displayName: 'Checkout Application Source Code'\n\n    # Step 2: Install Node.js Dependencies\n    - script: |\n        echo \"Installing Node.js npm dependencies...\"\n        npm install\n      displayName: 'npm install (Dependencies)'\n\n    # Step 3: Build Production Bundle\n    - script: |\n        echo \"Compiling production React bundle...\"\n        npm run build\n      displayName: 'npm run build (Compile React Bundle)'\n\n    # Step 4: Archive Compiled Build Artifacts\n    - task: ArchiveFiles@2\n      displayName: 'Archive Build Directory'\n      inputs:\n        rootFolderOrFile: '$(System.DefaultWorkingDirectory)/build'\n        includeRootFolder: false\n        archiveType: 'zip'\n        archiveFile: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'\n        replaceExistingArchive: true\n\n    # Step 5: Publish Build Artifacts to Pipeline Container\n    - task: PublishBuildArtifacts@1\n      displayName: 'Publish Pipeline Artifacts'\n      inputs:\n        PathtoPublish: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'\n        ArtifactName: 'drop'\n        publishLocation: 'Container'\n\n    # Step 6: Deploy Artifact Zip to Azure Web App (PaaS)\n    - task: AzureWebApp@1\n      displayName: 'Deploy to Azure App Service'\n      inputs:\n        azureSubscription: '$(azureSubscriptionServiceConnection)'\n        appType: 'webAppLinux'\n        appName: '$(webAppName)'\n        package: '$(Build.ArtifactStagingDirectory)/$(Build.BuildId).zip'\n```",
+      "diagram": null
+    },
+    {
+      "id": "s54c-step-6-pipeline-execution-step-logs-runner-telemetry",
+      "unit": "s54c",
+      "kind": "practical",
+      "title": "Step 6: Pipeline Execution, Step Logs & Runner Telemetry",
+      "text_md": "1. Click **Save and run**.\n2. Commit directly to the `main` branch with the commit message `Setup CI/CD for React YouTube App on Azure Web App`.\n3. Open the running build job (e.g., *Job #27*) and observe the live streaming console logs:\n\n```text\n==============================================================================\nStarting: Checkout Application Source Code\n==============================================================================\nSyncing repository: DevOps-Batch-44 (Git)\nPrepending PATH environment variable with directory containing 'git.exe'...\ngit version 2.43.0.windows.1\ngit clone --depth 1 https://dev.azure.com/CloudDevOpsHub/DevOps-Batch-44/_git/youtube-clone\nCloning into 'C:\\agents\\_work\\1\\s'...\nFinishing: Checkout Application Source Code\n\n==============================================================================\nStarting: npm install (Dependencies)\n==============================================================================\n> react-youtube-clone@1.0.0\n> added 1420 packages in 24s\nFinishing: npm install (Dependencies)\n\n==============================================================================\nStarting: npm run build (Compile React Bundle)\n==============================================================================\n> react-youtube-clone@1.0.0 build\n> react-scripts build\nCreating an optimized production build...\nCompiled successfully.\nFile sizes after gzip:\n  142.85 kB  build/static/js/main.d4e680a1.js\n  28.12 kB   build/static/css/main.8e932b10.css\nThe build folder is ready to be deployed.\nFinishing: npm run build (Compile React Bundle)\n\n==============================================================================\nStarting: Deploy to Azure App Service\n==============================================================================\nGot service connection details for Azure App Service: 'Pranav-SC'\nPackage deployment using Kudu ZipDeploy started.\nDeploying $(Build.ArtifactStagingDirectory)/27.zip to App Service: javed-youtube-app\nSuccessfully deployed web application to Azure App Service.\nApp Service Application URL: https://javed-youtube-app.azurewebsites.net\nFinishing: Deploy to Azure App Service\n```\n\n#### Local Runner System Telemetry Observed During Build:\nDuring `npm install` and `npm run build`, open **Windows Task Manager**:\n- **CPU & RAM:** Significant spike as the Node.js V8 engine parses dependencies and compiles React JSX into minified JavaScript bundles.\n- **Network / Wi-Fi:** Spike during initial package downloading; drops to near zero once packages are cached.\n- **Disk I/O:** High throughput writes in `C:\\agents\\_work\\1\\s\\node_modules` and `C:\\agents\\_work\\1\\s\\build`.",
+      "diagram": null
+    },
+    {
+      "id": "s54c-step-7-live-verification-fault-tolerance-testing",
+      "unit": "s54c",
+      "kind": "practical",
+      "title": "Step 7: Live Verification & Fault-Tolerance Testing",
+      "text_md": "1. Open your browser and refresh the Web App URL (`https://<app-name>.azurewebsites.net`).\n2. **Success:** The React YouTube Clone application is live, displaying the video streaming grid, navigation bar, and active search interface.\n3. **Failure Simulation Test (Stopping Web App):**\n   - Go to **Azure Portal** -> **App Services** -> Open your Web App -> Click **Stop**.\n   - Open a new incognito window and visit the URL.\n   - The browser returns **HTTP 403 Forbidden** or **HTTP 503 Service Unavailable** (*Client/Server Error: The web app is stopped*).\n4. **Recovery Test:**\n   - In Azure Portal, click **Start**.\n   - Refresh the browser tab -> The application recovers instantly.",
+      "diagram": null
+    },
+    {
+      "id": "s54c-deep-dive-azure-devops-pipeline-yaml-task-analysis",
+      "unit": "s54c",
+      "kind": "concept",
+      "title": "Deep Dive: Azure DevOps Pipeline YAML Task Analysis",
+      "text_md": "```text\n+------------------------------------+--------------------------------------------------------------------+\n| YAML Task / Keyword                | Technical Function & Execution Context                             |\n+------------------------------------+--------------------------------------------------------------------+\n| trigger: [ main ]                  | Automates Continuous Integration (CI). Every Git push to 'main'     |\n|                                    | automatically invokes a new pipeline run.                          |\n+------------------------------------+--------------------------------------------------------------------+\n| pool: name: 'Self-Hosted-Agent'   | Dispatches the job to your local machine runner instead of the     |\n|                                    | paid Microsoft-Hosted pool.                                        |\n+------------------------------------+--------------------------------------------------------------------+\n| checkout: self                     | Clones the repository into the runner's workspace directory        |\n|                                    | ('C:\\agents\\_work\\1\\s').                                           |\n+------------------------------------+--------------------------------------------------------------------+\n| script: npm install                | Downloads all third-party libraries defined in 'package.json' into |\n|                                    | the local 'node_modules' folder.                                   |\n+------------------------------------+--------------------------------------------------------------------+\n| script: npm run build              | Compiles React JSX components, static CSS, and assets into an      |\n|                                    | optimized production build directory ('build/').                   |\n+------------------------------------+--------------------------------------------------------------------+\n| ArchiveFiles@2                     | Compresses the static 'build/' folder into a deployable '.zip'     |\n|                                    | archive inside the runner's staging directory.                     |\n+------------------------------------+--------------------------------------------------------------------+\n| PublishBuildArtifacts@1            | Publishes the build zip as an immutable pipeline artifact container|\n|                                    | ('drop') for auditing, versioning, and release traceability.       |\n+------------------------------------+--------------------------------------------------------------------+\n| AzureWebApp@1                      | Uses the Service Connection ('Pranav-SC') to push the zip package  |\n|                                    | to Azure App Service via Kudu ZipDeploy over HTTPS.                |\n+------------------------------------+--------------------------------------------------------------------+\n```",
+      "diagram": null
+    },
+    {
+      "id": "s54c-runner-deployment-architecture-local-laptop-vs-cloud-vm-vs-microsoft-hosted",
+      "unit": "s54c",
+      "kind": "practical",
+      "title": "Runner Deployment Architecture: Local Laptop vs Cloud VM vs Microsoft-Hosted",
+      "text_md": "```text\n+---------------------+-------------------------------+-------------------------------+-------------------------------+\n| Feature / Metric    | Self-Hosted (Local Laptop)    | Self-Hosted (Cloud VM - IaaS) | Microsoft-Hosted Runner       |\n+---------------------+-------------------------------+-------------------------------+-------------------------------+\n| Hosting Location    | Student / Engineer Laptop     | AWS EC2 / Azure VM / GCP GCE  | Microsoft Azure Cloud Pool    |\n| Compute Cost        | $0 (100% Free)                | Hourly VM compute charge      | Requires paid parallel license|\n| Network Access      | Local network only            | Private Cloud VNet / VPC      | Public Internet only          |\n| Build Speed         | High (Cached node_modules)    | High (Persistent disk cache)  | Slower (Clean VM each run)    |\n| Tool Customization  | Full local administrator      | Full root/admin on VM         | Pre-defined toolset only      |\n| Ideal Use Case      | Learning, labs, mini-projects | Enterprise team CI/CD pipelines| Simple open-source builds     |\n+---------------------+-------------------------------+-------------------------------+-------------------------------+\n```",
+      "diagram": null
+    },
+    {
+      "id": "s54c-enterprise-cloud-migration-strategies-the-6-r-s-framework",
+      "unit": "s54c",
+      "kind": "concept",
+      "title": "Enterprise Cloud Migration Strategies (The 6 R's Framework)",
+      "text_md": "During the second half of the session, students transitioned from application deployment to enterprise **Cloud Migration Architecture**.\n\n```mermaid\ngraph TD\n    Legacy[\"Legacy Workloads / On-Premises Data Center\"] --> Assessment{\"6 R's Strategy Assessment\"}\n\n    Assessment -->|1. Lift and Shift| Rehost[\"1. Re-host (As-Is VM Migration)\"]\n    Assessment -->|2. Lift, Tinker & Shift| Replatform[\"2. Re-platform (PaaS / Managed DB)\"]\n    Assessment -->|3. Drop and Shop| Repurchase[\"3. Re-purchase (Move to SaaS)\"]\n    Assessment -->|4. Re-architect| Refactor[\"4. Re-factor (Cloud-Native Microservices)\"]\n    Assessment -->|5. Decommission| Retire[\"5. Retire (Turn Off Unneeded Infra)\"]\n    Assessment -->|6. Do Not Move| Retain[\"6. Retain (Keep On-Premises / Revisit)\"]\n\n    Rehost --> TargetCloud[\"Target Cloud: AWS / Azure / GCP\"]\n    Replatform --> TargetCloud\n    Repurchase --> TargetCloud\n    Refactor --> TargetCloud\n```",
+      "diagram": null
+    },
+    {
+      "id": "s54c-real-world-migration-examples-from-batch-44-projects",
+      "unit": "s54c",
+      "kind": "concept",
+      "title": "Real-World Migration Examples from Batch 44 Projects",
+      "text_md": "Throughout the Batch-44 curriculum, students have already executed multiple real-world migrations:\n\n1. **Operating System Migration (Project 3 - AWS Terraform):**\n   - Migrated EC2 AMI baselines from outdated **Ubuntu 18.04** to modern **Ubuntu 22.04 LTS** in Terraform configuration without rebuilding the underlying network topology.\n2. **Database Instance Class Migration (Project 3 - AWS RDS):**\n   - Migrated Amazon RDS MySQL instance classes from **`db.t2.micro`** to **`db.t3.micro`** for enhanced burstable CPU credits and network performance.\n3. **Application Architecture Migration (Project 2 - Kubernetes GKE):**\n   - Migrated monolithic e-commerce applications into containerized polyglot microservices deployed on Google Kubernetes Engine (GKE).\n4. **Content & Collaboration Migration:**\n   - Migrating static documentation from Google Docs to Canva, or switching live classrooms from basic Zoom to an integrated Cloud LMS (Learning Management System).",
+      "diagram": null
+    },
+    {
+      "id": "s54c-the-6-r-s-migration-strategies-breakdown",
+      "unit": "s54c",
+      "kind": "concept",
+      "title": "The 6 R's Migration Strategies Breakdown",
+      "text_md": "```text\n+------------------+-----------------------+----------------------------------------------------+----------------------+\n| Strategy (6 R's) | Industry Term         | Definition & Architectural Impact                  | Complexity & Effort  |\n+------------------+-----------------------+----------------------------------------------------+----------------------+\n| 1. Re-host       | Lift and Shift        | Moving applications/VMs to the cloud without code  | Low (Fastest ROI)    |\n|                  |                       | or configuration changes.                          |                      |\n+------------------+-----------------------+----------------------------------------------------+----------------------+\n| 2. Re-platform   | Lift, Tinker & Shift  | Making minor optimizations (e.g., moving on-prem   | Medium               |\n|                  |                       | DB to AWS RDS or web apps to Azure App Service)    |                      |\n|                  |                       | without rewriting core application code.           |                      |\n+------------------+-----------------------+----------------------------------------------------+----------------------+\n| 3. Re-purchase   | Drop and Shop         | Replacing custom legacy software with modern       | Medium               |\n|                  |                       | Commercial-Off-The-Shelf (COTS) SaaS products      |                      |\n|                  |                       | (e.g., custom CRM -> Salesforce, custom HR -> Workday).|                  |\n+------------------+-----------------------+----------------------------------------------------+----------------------+\n| 4. Re-factor     | Re-architect          | Re-architecting and rebuilding the application from| Highest              |\n|                  |                       | scratch using cloud-native services (Serverless,   | (6 months - 2 years) |\n|                  |                       | Microservices, Service Bus, Containers).           |                      |\n+------------------+-----------------------+----------------------------------------------------+----------------------+\n| 5. Retire        | Decommission          | Identifying and decommissioning legacy applications| Lowest               |\n|                  |                       | or idle servers that are no longer in active use.  | (Immediate savings)  |\n+------------------+-----------------------+----------------------------------------------------+----------------------+\n| 6. Retain        | Revisit / Do Nothing  | Retaining workloads in on-premise environments due | None                 |\n|                  |                       | to compliance, data residency, or deprecation plans|                      |\n+------------------+-----------------------+----------------------------------------------------+----------------------+\n```",
+      "diagram": null
+    },
+    {
+      "id": "s54c-enterprise-migration-lifecycle-execution-steps",
+      "unit": "s54c",
+      "kind": "concept",
+      "title": "Enterprise Migration Lifecycle & Execution Steps",
+      "text_md": "An enterprise cloud migration is never an overnight script execution. It spans **6 months to 2 years** across 8 rigorous phases:\n\n```mermaid\ngraph LR\n    P1[\"1. Discovery & Assessment\"] --> P2[\"2. Strategy Definition (6 R's)\"]\n    P2 --> P3[\"3. Proof of Concept (POC)\"]\n    P3 --> P4[\"4. Landing Zone & Infra Setup\"]\n    P4 --> P5[\"5. Workload & Data Migration\"]\n    P5 --> P6[\"6. Testing & Validation\"]\n    P6 --> P7[\"7. Traffic Cutover (Go-Live)\"]\n    P7 --> P8[\"8. Optimization & Decommissioning\"]\n```\n\n1. **Discovery & Assessment:**\n   - Inventorying all on-premises servers, application dependencies, network ports, databases, and resource utilization.\n   - Appointing Subject Matter Experts (SMEs) to map application architecture.\n2. **Strategy Definition:**\n   - Mapping each application to one of the 6 R's based on business priority, cost, and complexity.\n3. **Proof of Concept (POC):**\n   - Testing a small, non-critical workload (e.g., internal staging app) on the target cloud to validate performance, security, and cost models.\n4. **Landing Zone & Environment Setup:**\n   - Establishing multi-subscription landing zones, VNets/VPCs, IAM RBAC, Azure Policies, and billing budgets.\n5. **Workload & Data Migration:**\n   - Executing continuous database replication and server image synchronization.\n6. **Testing & Security Validation:**\n   - Executing load testing, security audits, disaster recovery (DR) drills, and user acceptance testing (UAT).\n7. **Traffic Cutover (Go-Live):**\n   - Switching DNS records (e.g., Amazon Route 53 / Azure DNS) from on-prem to the new cloud endpoint during a scheduled maintenance window.\n8. **Optimization & Decommissioning:**\n   - Running parallel environments for 30–90 days for fallback safety, followed by complete physical server decommissioning and license cancellations.",
+      "diagram": null
+    },
+    {
+      "id": "s54c-cloud-migration-tools-acceleration-programs",
+      "unit": "s54c",
+      "kind": "concept",
+      "title": "Cloud Migration Tools & Acceleration Programs",
+      "text_md": "```text\n+-----------------------+-----------------------------------------------+-----------------------------------------------+\n| Capability            | Amazon Web Services (AWS)                     | Microsoft Azure                               |\n+-----------------------+-----------------------------------------------+-----------------------------------------------+\n| Discovery & Inventory | AWS Application Discovery Service             | Azure Migrate: Discovery and Assessment       |\n| Server Migration      | AWS Application Migration Service (AWS MGN)   | Azure Migrate: Server Migration               |\n| Database Migration    | AWS Database Migration Service (AWS DMS)      | Azure Database Migration Service (Azure DMS)  |\n| Data Transfer App     | AWS DataSync / Snowball                       | Azure Data Box / Storage Mover                |\n| Enterprise Funding    | AWS Migration Acceleration Program (MAP)      | Azure Migration and Modernization Program(AMMP)|\n+-----------------------+-----------------------------------------------+-----------------------------------------------+\n```",
+      "diagram": null
+    },
+    {
+      "id": "s54c-real-world-case-study-ibm-mq-to-azure-service-bus-modernization",
+      "unit": "s54c",
+      "kind": "concept",
+      "title": "Real-World Case Study: IBM MQ to Azure Service Bus Modernization",
+      "text_md": "During the interactive session, a real-world enterprise scenario was analyzed:\n\n- **Legacy Background:** A financial enterprise processed millions of retail transactions through on-premises **IBM MQ** message brokers.\n- **Challenges:** Extremely high proprietary licensing fees, physical hardware maintenance, single points of failure, and inability to dynamically scale during festive sales.\n- **Migration Strategy:** **Refactoring (Re-architecting)** to cloud-native **Azure Service Bus**.\n- **Execution Timeline:** Took approximately **2 years** to redesign message producers/consumers, validate strict FIFO ordering, configure Dead Letter Queues (DLQs), achieve banking compliance approvals, and execute smooth traffic cutover.",
+      "diagram": null
+    },
+    {
+      "id": "s54c-resource-cleanup-cloud-cost-management",
+      "unit": "s54c",
+      "kind": "concept",
+      "title": "Resource Cleanup & Cloud Cost Management",
+      "text_md": "> [!CAUTION]\n> Azure App Service (Web App) operates on a dedicated hourly compute billing model. To avoid unnecessary cloud charges against your student or trial subscription credits, delete the Web App immediately after completing your validation.\n\n```powershell\n# Option 1: Delete via Azure Portal GUI\n# Navigate to Azure Portal -> App Services -> Select your Web App -> Click 'Delete' -> Confirm app name.\n\n# Option 2: Delete via Azure CLI (Cloud Shell / PowerShell)\naz webapp delete --name javed-youtube-app --resource-group sushant-rg\n\n# Option 3: Delete Entire Resource Group (Removes Web App, Plan & Associated Telemetry)\naz group delete --name sushant-rg --yes --no-wait\n```\n\n*Note: Azure DevOps organizations, Git repositories, pipeline YAML definitions, and local self-hosted agent files (`C:\\agents`) are 100% free and do not incur ongoing cloud charges.*",
+      "diagram": null
+    },
+    {
+      "id": "s54c-project-5-summary-in-one-page",
+      "unit": "s54c",
+      "kind": "overview",
+      "title": "Project 5 Summary in One Page",
+      "text_md": "```text\n========================================================================================================\nPROJECT 5 (PART 2): COMPLETE AZURE DEVOPS CI/CD & ENTERPRISE CLOUD MIGRATION CHEATSHEET\n========================================================================================================\n\n1. APPLICATION DETAILS:\n   • Application Stack  : React.js YouTube Clone (Single Page Application)\n   • Source Code Host   : Azure Repos (Git) on 'main' branch\n   • Build Automation   : Node.js 22, npm install, npm run build (produces static 'build/' folder)\n\n2. CI/CD AUTOMATION INFRASTRUCTURE:\n   • Platform Host      : Azure DevOps (dev.azure.com / aex.dev.azure.com)\n   • Runner Engine      : Self-Hosted Windows Agent running at 'C:\\agents' (authenticated via 30-day PAT)\n   • Runner Command     : '.\\run.cmd' executed with Administrator privileges\n   • Platform Bridge    : Azure Service Connection ('Pranav-SC') backed by Azure AD Service Principal\n\n3. TARGET HOSTING PLATFORM:\n   • Cloud Provider     : Microsoft Azure (portal.azure.com)\n   • Service Model      : Platform as a Service (PaaS) - Azure App Service / Web App (Linux)\n   • Deployment Method  : AzureWebApp@1 task using Kudu ZipDeploy\n\n4. ENTERPRISE MIGRATION FRAMEWORK (THE 6 R's):\n   • Re-host            : Lift & Shift (Move VM as-is without changes)\n   • Re-platform        : Lift, Tinker & Shift (Migrate DB to RDS/Cloud SQL; apps to PaaS)\n   • Re-purchase        : Drop & Shop (Replace legacy custom tool with SaaS product)\n   • Re-factor          : Re-architect (Redesign monolith to microservices / serverless; 6-24 months)\n   • Retire             : Turn off unused / redundant infrastructure\n   • Retain             : Keep legacy on-premises workloads unchanged\n========================================================================================================\n```",
+      "diagram": null
+    },
+    {
+      "id": "s54c-common-issues-error-codes-troubleshooting-matrix",
+      "unit": "s54c",
+      "kind": "concept",
+      "title": "Common Issues, Error Codes & Troubleshooting Matrix",
+      "text_md": "| Issue / Error Encountered | Root Cause | Exact Resolution Discussed in Session |\n| :--- | :--- | :--- |\n| **`The session of the agent already exists`** | A previous instance of `run.cmd` was closed uncleanly, leaving an active listener session in ADO. | Wait 30–60 seconds. The agent software will automatically revoke the stale session and reconnect. |\n| **`TF400813: Not Authorized` during Pipeline Run** | Service connection lacks required permissions on the target Resource Group. | In Azure DevOps **Service Connections**, edit `Pranav-SC` and ensure **\"Grant access permission to all pipelines\"** is checked. |\n| **`No agent found in pool Self-Hosted-Agent which satisfies demand`** | Pipeline YAML `pool.name` does not match the exact pool name created in Project Settings, or agent is offline. | Check `C:\\agents\\run.cmd` is actively running, and ensure the pool name in YAML matches `Project Settings -> Agent Pools`. |\n| **`HTTP 503 Service Unavailable` on Web App URL** | The Azure Web App was stopped from the Azure Portal, or the startup script crashed. | Navigate to Azure Portal -> App Services -> Select Web App -> Click **Start**. |\n| **`HTTP 403 Forbidden` on Web App URL** | Missing default index document (`index.html`), or app is in stopped state. | Verify that `npm run build` completed successfully and the zip archive contains `index.html` at the root. |\n| **High CPU/Memory during `npm install` on Runner** | Node.js dependency resolution is computationally intensive on local laptop hardware. | Normal behavior during compilation; compute utilization drops immediately once the build artifact is packaged. |\n| **`Resource group mismatch` during Service Connection setup** | Service Connection pointed to `rg-dev` while Web App was created in `sushant-rg`. | Re-create or edit the Service Connection to point to the exact Resource Group where the Web App resides. |",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "1 What is Cloud Migration?",
+      "prompt": "1 What is Cloud Migration?",
+      "reference_answer": "**Cloud Migration** is the process of transferring digital business operations, applications, databases, operating systems, storage, and IT infrastructure from legacy on-premises data centers to a public cloud provider (AWS, Azure, GCP), or between different cloud environments.",
+      "id": "s54c-q01",
+      "unit": "s54c",
+      "concept_ids": [
+        "s54c-cloud-migration-tools-acceleration-programs",
+        "s54c-enterprise-cloud-migration-strategies-the-6-r-s-framework",
+        "s54c-enterprise-migration-lifecycle-execution-steps"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is an Azure Service Connection, and how does it authenticate behind the scenes?",
+      "prompt": "What is an Azure Service Connection, and how does it authenticate behind the scenes?",
+      "reference_answer": "An Azure Service Connection is a secure configuration in Azure DevOps that allows pipelines to access external resources (such as Azure subscriptions, GitHub, or Kubernetes clusters). When connecting to Azure Resource Manager, it automatically provisions an **Azure Active Directory (Microsoft Entra ID) Service Principal**, assigns it role-based access control (RBAC) like *Contributor* on the target subscription or Resource Group, and manages token exchanges without embedding plaintext passwords in pipeline YAML files.",
+      "id": "s54c-q02",
+      "unit": "s54c",
+      "concept_ids": [
+        "s54c-step-2-creating-azure-service-connection-in-azure-devops",
+        "s54c-step-1-azure-web-app-app-service-paas-creation-on-azure-portal",
+        "s54c-azure-portal-vs-azure-devops-vs-self-hosted-runner"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the architectural difference between an Azure Web App (App Service) and an Azure Virtual Machine?",
+      "prompt": "What is the architectural difference between an Azure Web App (App Service) and an Azure Virtual Machine?",
+      "reference_answer": "An Azure Virtual Machine is **Infrastructure as a Service (IaaS)** where the engineer is responsible for provisioning the OS, configuring web servers (Nginx/Apache), installing runtimes (Node.js/Python), applying OS security patches, and configuring SSL certificates. An Azure Web App is a **Platform as a Service (PaaS)** where Microsoft manages the underlying OS, runtime patching, web server routing, high availability, and SSL termination. Engineers only need to deploy their application build bundle.",
+      "id": "s54c-q03",
+      "unit": "s54c",
+      "concept_ids": [
+        "s54c-step-1-azure-web-app-app-service-paas-creation-on-azure-portal",
+        "s54c-end-to-end-architecture-azure-devops-ci-cd-to-azure-web-app",
+        "s54c-step-2-creating-azure-service-connection-in-azure-devops"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why is Linux selected over Windows as the operating system for hosting Node.js/React applications on Azure App Service?",
+      "prompt": "Why is Linux selected over Windows as the operating system for hosting Node.js/React applications on Azure App Service?",
+      "reference_answer": "Linux App Service instances offer faster container cold-start times, significantly lower memory and CPU overhead, native compatibility with Node.js/npm tooling, and lower licensing costs compared to Windows App Service plans.",
+      "id": "s54c-q04",
+      "unit": "s54c",
+      "concept_ids": [
+        "s54c-step-1-azure-web-app-app-service-paas-creation-on-azure-portal",
+        "s54c-end-to-end-architecture-azure-devops-ci-cd-to-azure-web-app",
+        "s54c-step-2-creating-azure-service-connection-in-azure-devops"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Explain the step-by-step CI/CD flow of our React YouTube Clone deployment.",
+      "prompt": "Explain the step-by-step CI/CD flow of our React YouTube Clone deployment.",
+      "reference_answer": "1. A developer pushes code changes to the `main` branch in **Azure Repos**.\n2. Azure DevOps evaluates the pipeline trigger in `azure-pipelines.yml` and queues a build job.\n3. The job is dispatched to our **Self-Hosted Windows Agent Pool** (`Self-Hosted-Agent`).\n4. The local runner checks out source code into its workspace (`C:\\agents\\_work\\1\\s`).\n5. The runner executes `npm install` to download dependencies and `npm run build` to generate the production bundle (`build/`).\n6. `ArchiveFiles@2` compresses the `build/` directory into a `.zip` artifact, and `PublishBuildArtifacts@1` publishes it.\n7. The `AzureWebApp@1` task uses the **Service Connection** to upload and extract the zip file onto the Azure App Service via Kudu ZipDeploy.",
+      "id": "s54c-q05",
+      "unit": "s54c",
+      "concept_ids": [
+        "s54c-step-6-pipeline-execution-step-logs-runner-telemetry",
+        "s54c-step-by-step-hands-on-implementation-guide",
+        "s54c-enterprise-migration-lifecycle-execution-steps"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the purpose of the Grant access permission to all pipelines checkbox in Service Connections?",
+      "prompt": "What is the purpose of the Grant access permission to all pipelines checkbox in Service Connections?",
+      "reference_answer": "When unchecked, any new pipeline attempting to use the Service Connection will pause in a blocked state waiting for manual administrator authorization. Checking this option provides automated, unrestricted deployment access to all authorized pipelines within the Azure DevOps project.",
+      "id": "s54c-q06",
+      "unit": "s54c",
+      "concept_ids": [
+        "s54c-step-2-creating-azure-service-connection-in-azure-devops",
+        "s54c-step-5-authoring-the-azure-devops-pipeline-yaml-azure-pipelines-yml",
+        "s54c-deep-dive-azure-devops-pipeline-yaml-task-analysis"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What are the \"6 R's\" of Cloud Migration?",
+      "prompt": "What are the \"6 R's\" of Cloud Migration?",
+      "reference_answer": "The 6 R's represent the six standard cloud migration strategies defined by AWS and Gartner:\n1. **Re-host (Lift and Shift):** Moving servers/VMs as-is without modification.\n2. **Re-platform (Lift, Tinker & Shift):** Minor optimizations (e.g., migrating to managed PaaS/RDS) without altering core application code.\n3. **Re-purchase (Drop and Shop):** Replacing legacy custom software with SaaS products.\n4. **Re-factor / Re-architect:** Rebuilding applications natively using microservices, serverless, and cloud-native messaging.\n5. **Retire:** Decommissioning redundant and unneeded infrastructure.\n6. **Retain:** Keeping workloads on-premises due to compliance or deprecation roadmaps.",
+      "id": "s54c-q07",
+      "unit": "s54c",
+      "concept_ids": [
+        "s54c-cloud-migration-tools-acceleration-programs",
+        "s54c-enterprise-cloud-migration-strategies-the-6-r-s-framework",
+        "s54c-enterprise-migration-lifecycle-execution-steps"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Which of the 6 R's is the most complex and time-consuming, and why?",
+      "prompt": "Which of the 6 R's is the most complex and time-consuming, and why?",
+      "reference_answer": "Re-factoring (Re-architecting)** is the most complex (typically spanning 6 to 24 months). It requires completely redesigning application code, adopting new architectures (e.g., decomposing monoliths into microservices), changing databases (e.g., relational to NoSQL), updating CI/CD pipelines, and conducting extensive regression, performance, and disaster recovery testing.",
+      "id": "s54c-q08",
+      "unit": "s54c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is a Proof of Concept (POC) in cloud migration, and why is it critical?",
+      "prompt": "What is a Proof of Concept (POC) in cloud migration, and why is it critical?",
+      "reference_answer": "A POC is a small-scale pilot deployment of an application on the target cloud infrastructure before full migration. It validates architectural feasibility, network latency, security compliance, tooling compatibility, and operational costs, ensuring business and technical alignment before committing massive enterprise budgets.",
+      "id": "s54c-q09",
+      "unit": "s54c",
+      "concept_ids": [
+        "s54c-cloud-migration-tools-acceleration-programs",
+        "s54c-enterprise-cloud-migration-strategies-the-6-r-s-framework",
+        "s54c-enterprise-migration-lifecycle-execution-steps"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Name two key migration tools provided by AWS and Microsoft Azure.",
+      "prompt": "Name two key migration tools provided by AWS and Microsoft Azure.",
+      "reference_answer": "AWS:** **AWS Database Migration Service (DMS)** for continuous, zero-downtime database replication, and **AWS Application Migration Service (MGN)** for block-level server replication.\n- **Azure:** **Azure Migrate** for discovery, assessment, and server migration, and **Azure Database Migration Service (DMS)** for database modernization.",
+      "id": "s54c-q10",
+      "unit": "s54c",
+      "concept_ids": [
+        "s54c-azure-portal-vs-azure-devops-vs-self-hosted-runner",
+        "s54c-cloud-migration-tools-acceleration-programs",
+        "s54c-end-to-end-architecture-azure-devops-ci-cd-to-azure-web-app"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why must developers delete Azure App Service instances after completing training labs?",
+      "prompt": "Why must developers delete Azure App Service instances after completing training labs?",
+      "reference_answer": "Unlike Azure Repos, Pipelines, and local runner processes (which are free), Azure App Service plans allocate dedicated cloud compute instances that incur continuous hourly charges as long as they exist, regardless of whether traffic is actively received.",
+      "id": "s54c-q11",
+      "unit": "s54c",
+      "concept_ids": [
+        "s54c-step-1-azure-web-app-app-service-paas-creation-on-azure-portal",
+        "s54c-end-to-end-architecture-azure-devops-ci-cd-to-azure-web-app",
+        "s54c-step-2-creating-azure-service-connection-in-azure-devops"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Top 10 Scenario-Based Interview Questions & Solutions",
+      "prompt": "Top 10 Scenario-Based Interview Questions & Solutions",
+      "reference_answer": "### Scenario 1: Pipeline Fails with `No agent could be found with the following demands: npm`\n- **Root Cause:** The pipeline requested a self-hosted agent, but Node.js/npm was not installed on the host machine or was not registered in the system `PATH` environment variable when the agent listener was started.\n- **Solution:** Install Node.js on the agent host machine, restart the terminal as Administrator, and relaunch `C:\\agents\\run.cmd` so the agent re-scans tool capabilities.\n\n---\n\n### Scenario 2: Web App Shows `HTTP 403 Forbidden` After Successful Pipeline Deployment\n- **Root Cause:** The `ArchiveFiles@2` task zipped the parent `build/` directory instead of its contents, placing files at `D:\\home\\site\\wwwroot\\build\\index.html` instead of the root `D:\\home\\site\\wwwroot\\index.html`.\n- **Solution:** Set `includeRootFolder: false` and `rootFolderOrFile: '$(System.DefaultWorkingDirectory)/build'` in the `ArchiveFiles@2` task to ensure `index.html` sits directly at the zip root.\n\n---\n\n### Scenario 3: Service Connection Authorization Fails with `TF400813: Access Denied`\n- **Root Cause:** The Azure AD user configuring the Service Connection did not hold *Owner* or *User Access Administrator* roles in Azure Portal, preventing automatic Service Principal creation.\n- **Solution:** Have a subscription Owner grant *Contributor* and *Application Developer* permissions, or configure a manual Service Connection using pre-created App Registration Client ID, Tenant ID, and Client Secret.\n\n---\n\n### Scenario 4: Migrating a Monolithic Java App to Azure with Zero Code Changes in 2 Weeks\n- **Question:** Which migration strategy should you recommend?\n- **Solution:** **Re-host (Lift and Shift)** to Azure Virtual Machines using Azure Migrate. This achieves immediate cloud migration within the tight 2-week window without code refactoring risks. Post-migration, the team can plan a secondary **Re-platform** or **Re-factor** phase.\n\n---\n\n### Scenario 5: Migrating an On-Premises MySQL Database (500 GB) with Less than 15 Minutes Downtime\n- **Solution:** Use **AWS DMS** (or **Azure DMS**). Set up initial schema migration, execute full baseline data loading, and maintain continuous Change Data Capture (CDC) replication. During the cutover window, stop application writes, verify replication lag is zero, redirect application connection strings to the cloud DB, and resume operations in under 5 minutes.\n\n---\n\n### Scenario 6: High Cloud Costs Due to Forgotten Staging and Test Web Apps\n- **Solution:**\n  1. Implement automated pipeline cleanup stages that teardown ephemeral deployment slots after PR merge.\n  2. Apply **Azure Policy** tagging rules (e.g., `Environment=Temp`, `AutoDeleteDate=2026-09-10`).\n  3. Deploy an Azure Function or cron job that automatically scans and terminates untagged or expired test App Services nightly.\n\n---\n\n### Scenario 7: Self-Hosted Runner Fails with `DiskSpaceException: There is not enough space on the disk`\n- **Root Cause:** Consecutive builds accumulate large `node_modules` and temporary build artifacts inside `C:\\agents\\_work`.\n- **Solution:** Enable workspace cleaning in the pipeline YAML (`checkout: self` with `clean: true`), or configure an automated maintenance script that purges the `C:\\agents\\_work\\_temp` directory periodically.\n\n---\n\n### Scenario 8: Replacing a 15-Year-Old Custom On-Premises HR Portal\n- **Question:** The legacy app has no documentation, original developers have left, and modern feature updates are required.\n- **Solution:** Choose **Re-purchase (Drop and Shop)**. Procure a proven enterprise SaaS solution (such as Workday or SAP SuccessFactors), migrate employee master data, and retire the unmaintainable custom legacy codebase completely.\n\n---\n\n### Scenario 9: Financial Institution Requires That CI/CD Build Runners Never Touch the Public Internet\n- **Solution:** Deploy self-hosted agents inside a **Private Azure VNet (or AWS Private VPC)** without Public IPs. Route all external package downloads through a private Azure Artifacts feed / JFrog Artifactory proxy connected via Private Endpoints.\n\n---\n\n### Scenario 10: The \"Two-Year Migration\" Fatigue & Staff Turnover\n- **Scenario:** An enterprise refactoring project (e.g., IBM MQ to Azure Service Bus) stalls because key Subject Matter Experts (SMEs) leave mid-project.\n- **Solution:**\n  1. Mandate comprehensive living documentation, OpenAPI/Swagger specifications, and Infrastructure as Code (Terraform/Bicep) from Day 1.\n  2. Implement an incremental **Strangler Fig Pattern** (migrating message queues topic by topic rather than a single monolithic \"big bang\" cutover).\n  3. Engage cloud provider architecture specialists through acceleration programs (AWS MAP / Azure AMMP) for continuity and guidance.",
+      "id": "s54c-s01",
+      "unit": "s54c",
+      "concept_ids": []
+    }
+  ]
+}

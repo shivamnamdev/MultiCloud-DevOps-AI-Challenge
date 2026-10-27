@@ -1,0 +1,54 @@
+{
+  "id": "s23",
+  "title": "Git for Developers · Day 2",
+  "subtitle": "Session 23 · Batch-44 · DevOps Batch-44 | Day 02: Git & GitHub Advanced & Real-Time Development",
+  "session": 23,
+  "module": "M4 CI/CD: Git, GitHub, Jenkins",
+  "order": 2300,
+  "status": "sparse",
+  "source_file": "Session-23-Git-for-Developers/🚀 Day-2 of DevOps i.e GIT & GITHUB Batch-44 | 21th July 2026 | 8:00 AM IST | Live Session.md",
+  "needs_authoring": [],
+  "unparsed_qa": [
+    {
+      "section": "10 Git & GitHub Interview Questions",
+      "chars": 692
+    },
+    {
+      "section": "10 Real-Time Scenario-Based Interview Questions",
+      "chars": 2314
+    }
+  ],
+  "unanswered_questions": [
+    "Q1: What is the difference between Git and GitHub?",
+    "Q2: Explain the Git workflow from code development to deployment.",
+    "Q3: What is a Pull Request (PR), and why is it required?",
+    "Q4: What is the difference between Git Fetch and Git Pull?",
+    "Q5: What is a Merge Conflict? How do you resolve it?",
+    "Q6: Explain Git Rebase. When should you use it?",
+    "Q7: What is the difference between Merge Commit, Squash Merge, and Fast Forward Merge?",
+    "Q8: Why do companies create Feature Branches instead of working directly on Main?",
+    "Q9: What is Git Tagging? Where is it used?",
+    "Q10: Explain the Agile development workflow using Git and GitHub.",
+    "Scenario 1",
+    "Scenario 2",
+    "Scenario 3",
+    "Scenario 4",
+    "Scenario 5",
+    "Scenario 6",
+    "Scenario 7",
+    "Scenario 8",
+    "Scenario 9",
+    "Scenario 10"
+  ],
+  "concepts": [
+    {
+      "id": "s23-key-concepts-covered",
+      "unit": "s23",
+      "kind": "concept",
+      "title": "Key Concepts Covered",
+      "text_md": "- Git vs GitHub\n- Local Repository vs Remote Repository\n- Agile & Scrum Workflow\n- Feature Branch Development\n- Git Clone\n- Git Add\n- Git Commit\n- Git Push\n- Git Pull\n- Git Fetch\n- Git Checkout\n- Git Merge\n- Git Rebase\n- Pull Requests (PR)\n- Code Review Process\n- Merge Conflicts\n- Fast Forward Merge\n- Squash Merge\n- Git Tags\n- Branch Naming Standards\n- Main vs Master Branch\n- GitHub Collaboration\n\n- Real-Time Development Workflow\n```text\nDeveloper\n      │\n      ▼\nClone Repository\n      │\n      ▼\nCreate Feature Branch\n      │\n      ▼\nWrite Code\n      │\n      ▼\ngit add\n      │\n      ▼\ngit commit\n      │\n      ▼\ngit push\n      │\n      ▼\nCreate Pull Request\n      │\n      ▼\nCode Review\n      │\n      ▼\nApproval\n      │\n      ▼\nMerge into Main\n      │\n      ▼\nCI/CD Pipeline Starts\n      │\n      ▼\nDeploy Application\n```",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

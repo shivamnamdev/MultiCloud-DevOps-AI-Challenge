@@ -1,0 +1,760 @@
+{
+  "id": "s04a",
+  "title": "Foundation of AI Prompt Engineering CoProgrammer Setup · Day 4",
+  "subtitle": "Session 04 · Batch-45 · Interview & Scenario Q&A",
+  "session": 4,
+  "module": "M1 Foundation: DevOps, Cloud, AI",
+  "order": 400,
+  "status": "partial",
+  "source_file": "Session-04-Foundation-of-AI-Prompt-Engineering-CoProgrammer-Setup/Batch-45_Day-4_AI Fundamental's on 23rd Sep 2026.md",
+  "needs_authoring": [
+    {
+      "section": "Might Show Up on the Exam",
+      "chars": 2507
+    }
+  ],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s04a-ai-cloud-devops-day-4",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "AI + Cloud + DevOps — Day 4",
+      "text_md": "> Short, crisp interview-ready answers based on the provided Day-4 transcript.\n> Focus: AI fundamentals, Generative AI, Agentic AI, AWS AI services, GitHub Copilot, Kubernetes, AIOps, Python for DevOps, and Terraform.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-session-agenda-and-context",
+      "unit": "s04a",
+      "kind": "overview",
+      "title": "Session Agenda and Context",
+      "text_md": "- **Day 4** of Batch 45, streamed live on YouTube and recorded for the LMS.\n- Agenda: Foundation of AI, prompt engineering overview, and co-programmer (Copilot) setup.\n- Instructor framed the session around preparing students for **2027-level job market demands**, not just current requirements.\n- Core message: *\"AI is the automation of automation\"* — DevOps already automates the SDLC; AI further automates and accelerates that automation layer.\n- Students were reminded that interaction, practical skills, and broader knowledge (networking, QA, operations, release teams) are essential for DevOps engineers, not just narrow technical depth.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-concept",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "Concept",
+      "text_md": "- **Artificial Intelligence (AI)** is the simulation of human intelligence by machines — enabling them to automate repetitive, manual, or complex tasks that previously required human effort.\n- **AI is the automation of automation**: DevOps already automates the Software Development Lifecycle (SDLC); AI takes that further by automating the automation itself, making existing pipelines faster, smarter, and more efficient.\n- AI is not a single technology but an umbrella term encompassing several sub-disciplines:\n    - **Machine Learning (ML):** Machines learn from data over time\n    - **Deep Learning:** A subset of ML where machines learn layered, complex patterns (e.g., image recognition, language understanding)\n    - **Natural Language Processing (NLP):** Enables machines to understand and generate human language\n    - **Computer Vision:** Enables machines to interpret and act on visual data (images, video)\n    - **Generative AI:** Produces new content (text, code, plans) based on trained knowledge\n    - **Agentic AI / AI Agents:** Takes autonomous actions — browsing, booking, applying — on behalf of users\n- **History of AI** spans decades, not just recent years:\n    - 1950s–1970s: Early neural network and natural language research\n    - Through 2010: Machine learning era\n    - 2010–present: Deep learning dominance\n    - 2022: OpenAI's ChatGPT brought generative AI to mainstream use\n    - 2025+: Rise of AI agents, local models (e.g., DeepSeek), and early movement toward **AGI (Artificial General Intelligence)** and **ASI (Artificial Superintelligence)**\n- **AGI** refers to machines that can generalize intelligence across domains (like a human); **ASI** refers to machines that can think and decide independently, potentially combining the reasoning power of thousands of human minds.\n- **Computer Vision** example — traffic challan system: A roadside camera captures a vehicle's number plate → **Amazon Rekognition** identifies the plate → **Amazon Textract** extracts the text → a backend application (e.g., Parivahan) matches the number to an owner → **AWS SNS** sends a fine notification via SMS or email.\n- **GitHub Copilot** is an AI co-programmer embedded in Visual Studio Code that reads your file context, understands code changes, and assists with writing, completing, and explaining code — in real time.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-why-ai-matters-for-cloud-and-devops-engineers",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "Why AI Matters for Cloud and DevOps Engineers",
+      "text_md": "- AI is not replacing DevOps engineers — it is **amplifying their productivity**; the goal is to work *with* AI, not be displaced by it.\n- Every modern project and tool is integrating AI; cloud engineers, DevOps engineers, and operations teams will all need to understand AI-augmented workflows.\n- The current learning roadmap deliberately combines **Multi-Cloud + DevOps + AI** because isolated skills are no longer competitive in the 2026–2027 job market.\n- Real-world example of AI in DevOps: In a large Kubernetes cluster with thousands of pods, instead of manually running commands to find a misbehaving pod, an **MCP-based AI agent** can be queried in natural language and will identify the problematic pod directly.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-types-of-ai-generative-research-and-agentic",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "Types of AI — Generative, Research, and Agentic",
+      "text_md": "- **Generative AI** (e.g., ChatGPT): Generates information, answers, code, or plans based on a prompt. Example: Ask it for a 5-day Andaman itinerary and it produces a structured plan.\n- **Research AI**: Compares options, evaluates alternatives, and synthesizes findings. Example: Comparing DevOps courses across multiple platforms, weighing pros and cons.\n- **Agentic AI**: Goes beyond generating or researching — it *acts*. Example: An agent can log into travel websites, create accounts, use payment credentials, and actually book tickets on your behalf.\n- Job-hunting use case for Agentic AI: Upload a resume, specify a timeline (\"I want a job in 30 days\"), and the agent applies to matching jobs automatically — a capability expected to be widely available by late 2026.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-how-ai-works-simplified-flow",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "How AI Works (Simplified Flow)",
+      "text_md": "- User provides a **prompt** (input) → the model draws on its **training data and deep learning** → generates a **response** (output).\n- Models self-improve: when a user corrects a hallucination or wrong answer, the model learns from that feedback and improves future responses — this is why users are indirectly training GPT models every day.\n- **RAG (Retrieval-Augmented Generation)** can be attached to custom models to ground responses in specific knowledge bases, improving accuracy for domain-specific use cases.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-computer-vision-in-depth",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "Computer Vision in Depth",
+      "text_md": "- Computer Vision is the AI capability that allows machines to \"see\" and interpret images or video.\n- AWS provides ready-made services for this:\n    - **Amazon Rekognition**: Identifies objects, text, faces, license plates, scenes in images/video\n    - **Amazon Textract**: Extracts printed and handwritten text from documents using ML\n- These services expose **APIs** that developers can integrate directly into applications — no need to build the underlying ML model from scratch.\n- Demo shown live: A car photo was uploaded; Rekognition identified it as a vehicle with a license plate, and Textract extracted the plate number `MH20DB2366`.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-aiops-and-ai-integrated-tooling",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "AIOps and AI-Integrated Tooling",
+      "text_md": "- **AIOps** refers to the integration of AI into IT operations tools to accelerate incident detection, root cause analysis, and resolution.\n- **PagerDuty** is a real-world AIOps-adjacent tool: it sends alerts when production systems go down, escalates to on-call engineers, and continues escalating up the chain (manager → client) until someone acknowledges.\n- Future direction: AI may generate **runbooks** and attempt automated issue resolution before a human even responds.\n- Other tools across the ecosystem — monitoring, CI/CD pipelines, orchestration — are progressively adding AI intelligence layers.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-github-copilot-setup-and-usage",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "GitHub Copilot Setup and Usage",
+      "text_md": "- **Visual Studio Code** (latest version) now ships with GitHub Copilot built in — no separate extension installation required for recent versions.\n- Setup steps demonstrated:\n    1. Download and install the latest VS Code (approx. 225 MB)\n    2. Open VS Code → check for the **Agent** option in the top bar (indicates latest version)\n    3. Sign in with your **GitHub account** (free account works)\n    4. Authorize VS Code when prompted\n    5. Use shortcut **Ctrl + Shift + I** to open the Copilot chat window\n    6. Type prompts directly into the chat to generate or modify code\n- Live demo — stopwatch app: Instructor typed \"write a stopwatch Python code\" into Copilot chat → Copilot wrote a complete working Python stopwatch → ran it in terminal → it counted up correctly.\n- Copilot also **auto-generates commit messages**: when a file was committed to GitHub, Copilot analyzed the change and suggested \"Add basic DevOps in the Bootcamp notes\" automatically.\n- Copilot understands file context: opening a `timer.py` file caused Copilot to recognize it was a timer-related file and offer relevant suggestions proactively.\n- UI feature addition demo: Instructor prompted \"add a UI feature of blue color\" → Copilot rewrote the code to include a colored menu interface without manual coding.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-kubernetes-yaml-and-copilot-assistance",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "Kubernetes YAML and Copilot Assistance",
+      "text_md": "- A **Kubernetes pod YAML** was written live to illustrate how Copilot assists with configuration files, not just application code.\n- Key YAML fields explained:\n    - `apiVersion: v1` — Kubernetes API version currently in use (latest production versions are around 1.36–1.37)\n    - `kind: Pod` — specifies the resource type being created\n    - `metadata` — information about the resource (name, namespace, labels)\n    - `namespace` — an isolated virtual environment within a Kubernetes cluster (e.g., `dev`, `qa`, `prod`)\n- **Pod vs. Container distinction**: Docker creates containers; Kubernetes wraps containers in an abstraction layer called a **Pod** to enable automation, self-healing, and orchestration. In practice, each pod typically runs one container, though multiple are supported.\n- The **Kubernetes extension** (template plugin) for VS Code can be installed separately to get YAML boilerplate via snippets — this is distinct from AI-generated code.\n- Interview tip: Know how to write and explain at least 5–10 lines of Kubernetes YAML; interviewers may ask you to write it on the spot.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-upcoming-ai-project-preview",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "Upcoming AI Project Preview",
+      "text_md": "- A full **end-to-end AI project** will be built in a future session combining:\n    - **Python + Streamlit** (front-end web interface)\n    - **Google Cloud Gemini API** (AI model)\n    - **Resume + Job Description matching**: User uploads their resume and a JD; Gemini compares them and outputs a match score/feedback\n- Additional planned projects include **AIOps projects**, **MLOps projects**, and **MCP (Model Context Protocol)** integration projects.\n- AWS Bedrock was requested by a student as a topic; instructor confirmed it will be covered in upcoming AI-focused sessions.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-agi-vs-asi-clarified",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "AGI vs. ASI — Clarified",
+      "text_md": "- **AGI (Artificial General Intelligence):** A machine that can perform any intellectual task a human can — generalizing across domains rather than being specialized. Current models like ChatGPT are *not* AGI; they are narrow generative models.\n- **ASI (Artificial Superintelligence):** A machine that surpasses human intelligence entirely — capable of independent decision-making, potentially combining the reasoning of thousands of human brains simultaneously. This is still theoretical but actively discussed (Trump's administration was noted as publicly debating AI naming and trajectory).\n- The progression: **Narrow AI → Machine Learning → Deep Learning → Generative AI → AGI → ASI**",
+      "diagram": null
+    },
+    {
+      "id": "s04a-why-copilot-s-commit-message-generation-works",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "Why Copilot's Commit Message Generation Works",
+      "text_md": "- When you commit a file change in GitHub (via VS Code), Copilot reads the **diff** (what changed) and uses that context to suggest a meaningful commit message — it is not guessing randomly, it is interpreting the actual code modification.\n- This is an example of **contextual intelligence**, not agentic AI — Copilot is assisting within a defined interface, not autonomously taking actions outside it.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-hallucination-in-ai-models",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "Hallucination in AI Models",
+      "text_md": "- A **hallucination** occurs when an AI model confidently produces incorrect or fabricated information.\n- Models reduce hallucinations over time through user feedback loops — when users correct wrong answers, that signal feeds back into training.\n- This is why you should always **cross-verify** critical outputs (especially for production code or factual claims) rather than blindly trusting AI responses.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-pagerduty-how-escalation-works-in-practice",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "PagerDuty — How Escalation Works in Practice",
+      "text_md": "- PagerDuty is a **licensed, enterprise tool** — not freely available; companies in banking, insurance, healthcare, and cloud domains purchase it.\n- Escalation chain: Alert fires → on-call engineer notified (phone/SMS/app) → if no acknowledgment within ~5 minutes → escalates to next engineer → then manager → then client-facing teams (TAMs, Solution Architects).\n- Acknowledging an alert stops escalation; failing to respond continues it up the chain until someone acts.\n- Future AI integration: AI may read the alert, consult a runbook, and attempt automated remediation before any human is paged.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-python-in-devops-scope-clarification",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "Python in DevOps — Scope Clarification",
+      "text_md": "- DevOps engineers are **not** expected to be full Python developers or know data structures deeply.\n- Python for DevOps means: **automation scripting** — writing scripts to automate repetitive tasks, interact with APIs, parse logs, trigger pipelines, etc.\n- Minimum expected knowledge: `import` statements, `print`, `try/except`, `while` loops, `for` loops, running a `.py` file via `python filename.py` in terminal.\n- If Python is listed on your resume, interviewers may ask you to write a short script — be prepared for at least basic automation examples.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-might-show-up-on-the-exam",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "Might Show Up on the Exam",
+      "text_md": "- **Definition of AI** (crisp, interview-ready): AI is a machine mechanism that simulates human intelligence to automate repetitive, manual, or complex tasks, increasing productivity.\n- **AI = Automation of Automation**: DevOps automates SDLC; AI automates DevOps workflows — be able to explain this layering.\n- **AI hierarchy** (subset relationships):\n    - AI ⊃ Machine Learning ⊃ Deep Learning ⊃ Generative AI\n    - AI also includes: Computer Vision, NLP, Agentic AI\n- **Three types of AI by function** (likely exam/interview distinction):\n    - Generative AI → *generates* content/information\n    - Research AI → *compares and evaluates* options\n    - Agentic AI → *acts autonomously* to complete tasks\n- **Computer Vision pipeline** (know the AWS service names):\n    - Image input → **Amazon Rekognition** (identify/classify) → **Amazon Textract** (extract text) → Application logic → **AWS SNS** (notify)\n- **GitHub Copilot shortcut**: `Ctrl + Shift + I` opens the Copilot chat in VS Code\n- **Kubernetes YAML fields to know**:\n    - `apiVersion` — API version of the resource\n    - `kind` — resource type (Pod, Deployment, Service, etc.)\n    - `metadata` — name, namespace, labels\n    - `namespace` — isolated environment within a cluster (dev, qa, prod)\n- **Pod vs. Container**: Container = created by Docker; Pod = Kubernetes abstraction wrapping one or more containers to enable orchestration and automation\n- **AGI vs. ASI**:\n    - AGI = machine with generalized human-level intelligence\n    - ASI = machine surpassing human intelligence, capable of independent decisions\n- **AIOps**: Integration of AI into IT operations tools for faster incident detection and resolution\n- **Amazon Textract**: ML service that automatically extracts handwritten and printed text from documents — no custom ML model needed, just API integration\n- **Amazon Rekognition**: Deep learning–based image and video analysis service for object, face, text, and scene recognition\n- **RAG (Retrieval-Augmented Generation)**: A technique to attach a custom knowledge base to an AI model, improving accuracy for domain-specific queries\n- **Hallucination**: When an AI model produces confident but incorrect output — always verify critical AI-generated content\n- **Copilot commit message generation**: Copilot reads the code diff and suggests a contextually accurate commit message automatically\n- **Namespace in Kubernetes**: A virtual isolated environment within a cluster — used to separate dev, QA, and production workloads",
+      "diagram": null
+    },
+    {
+      "id": "s04a-what-is-ai-definitions-and-student-responses",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "What is AI — Definitions and Student Responses",
+      "text_md": "- Student definitions elicited via live Q&A:\n    - \"A machine mechanism that helps humans automate repeated/manual work.\"\n    - \"Artificial intelligence — we can automate tasks and use prompt engineering.\"\n    - \"AI helps industries beyond IT to reduce manual work and save time.\"\n- Instructor refined the definition: **AI = automation of automation**; it accelerates what DevOps engineers already build, making pipelines faster and more efficient.\n- Key point stressed: In an interview, answers must be **crisp and direct** — lengthy, rambling definitions are penalized.\n- Practical framing: Writing a Python program with a clock feature that might take 10 days manually can be done in **5 minutes with AI prompting**.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-history-and-evolution-of-ai",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "History and Evolution of AI",
+      "text_md": "- AI research began in the **1950s–1970s** with natural language and neural network foundations.\n- **Machine learning** era extended from approximately 1970 through 2010.\n- **Deep learning** is the current dominant paradigm; users interacting with ChatGPT are actively contributing to model training.\n- Timeline highlights shared with students:\n    - 1990s: Early AI-related research activity began.\n    - ~2010s: Google Maps introduced — fixed/static data, not truly intelligent.\n    - **2022: OpenAI and ChatGPT** emerged, making generative AI mainstream by helping with day-to-day tasks.\n    - 2020 onwards: Tesla self-driving cars; image/face recognition systems proliferated.\n    - 2025 onwards: Local models (e.g., DeepSeek, Chinese models) entered the market; AI agents becoming mainstream.\n    - Future trajectory: Movement toward **AGI (Artificial General Intelligence)** and **ASI (Artificial Superintelligence)**.\n- **AGI** = machine that can generalize intelligence across domains; **ASI** = machine that can think and decide independently, equivalent to thousands of human brains combined.\n- Instructor referenced Trump's recent public statements about AI naming/branding as a current-events hook.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-generative-ai",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "Generative AI",
+      "text_md": "- Generates content, answers, plans, and information based on a prompt and its training data.\n- Example: Asking ChatGPT to plan a 5-day Andaman & Nicobar trip — it produces a full itinerary.\n- Limitation: It gives you information and ideas but does not act on your behalf.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-ai-agents-agentic-ai",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "AI Agents / Agentic AI",
+      "text_md": "- Goes beyond generating information — **takes actions** autonomously.\n- Example: An AI agent can browse travel websites (MMT, Yatra), compare prices, create accounts, use credit/debit card details, and **book tickets** on your behalf.\n- Job-hunting application: An agent could read your resume, scan job listings, and **auto-apply** to roles matching criteria (e.g., jobs available within 5, 10, or 15 days).\n- Instructor noted that by **September 2026**, agentic AI capabilities of this level will be widely available in the market.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-how-ai-works-process-flow",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "How AI Works (Process Flow)",
+      "text_md": "- User provides a **prompt (input)**.\n- The model draws on its **training data and deep learning** to process the input.\n- Output is generated; if the output is incorrect (hallucination), user correction feeds back into the model's self-learning loop.\n- Student Mayank accurately described the RAG (Retrieval-Augmented Generation) mechanism and hallucination correction loop.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-ai-sub-domains-high-level-awareness",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "AI Sub-domains (High-Level Awareness)",
+      "text_md": "- **Machine Learning** → subset of AI\n- **Deep Learning** → subset of Machine Learning\n- **NLP (Natural Language Processing)**, **Computer Vision** → specialized branches\n- Instructor clarified these are primarily **data science** domains; Cloud/DevOps engineers need awareness, not deep expertise, unless working directly with AI/ML teams.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-computer-vision-explained",
+      "unit": "s04a",
+      "kind": "practical",
+      "title": "Computer Vision Explained",
+      "text_md": "- Definition: Enabling machines (cameras/systems) to **read and interpret visual data**.\n- Real-world example used: **Traffic challan system**\n    - Camera captures a car's number plate (e.g., MH20DB2366).\n    - **Amazon Rekognition** identifies the image (car, license plate, object type).\n    - **Amazon Textract** extracts the text from the number plate.\n    - Extracted number is cross-referenced against the **Parivahan** (transport authority) database to identify the vehicle owner.\n    - **SNS (Simple Notification Service)** sends a challan notification via SMS or email to the registered owner.\n- This architecture — Camera → Rekognition → Textract → Application → SNS — was described as a **simple but production-grade AI pipeline**.\n- Instructor demonstrated **Amazon Textract** live in the AWS console, showing document upload, text extraction, keyword selection, and layout analysis — all without writing any code.\n- Key insight: These are **ready-made, managed AI services** accessible via API; developers integrate them via API calls rather than building models from scratch.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-aiops-mention",
+      "unit": "s04a",
+      "kind": "practical",
+      "title": "AIOps Mention",
+      "text_md": "- Tools like **PagerDuty** already integrate AI into operations workflows.\n- PagerDuty use case explained by student Mayank: High-severity production incident triggers a pager alert → escalates through on-call engineers → managers → client-facing teams if unacknowledged within 5 minutes.\n- Future direction: AI may auto-generate **runbooks** and attempt to resolve incidents autonomously before human intervention.\n- **Azure DevOps AIOps**, **Intelligent AIOps** tools mentioned as part of the broader ecosystem where every DevOps tool is gaining AI intelligence.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-installation-steps-live-walkthrough",
+      "unit": "s04a",
+      "kind": "practical",
+      "title": "Installation Steps (Live Walkthrough)",
+      "text_md": "1. **Download the latest version** of Visual Studio Code from `code.visualstudio.com`.\n2. If an older version is installed, **uninstall and reinstall** — the latest version includes Copilot natively without requiring a separate extension.\n3. Download size: approximately **225 MB**.\n4. Open VS Code → Check for **Agent** option in the top bar (available in the latest version).\n5. **Sign in with GitHub account** to activate Copilot.\n6. Shortcut to open Copilot chat: **Ctrl + Shift + I**.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-live-copilot-demonstrations",
+      "unit": "s04a",
+      "kind": "practical",
+      "title": "Live Copilot Demonstrations",
+      "text_md": "- **GitHub commit message auto-generation**: Instructor added content to a repository file and clicked commit — Copilot automatically generated the commit message: *\"Add basic DevOps in the Bootcamp notes\"* without any manual input.\n- **Python stopwatch/timer**: Created a new file `timer.py`, gave the prompt *\"Write a stopwatch Python code\"* — Copilot generated the full working code, offered suggestions for additional features (lap timer, UI), and indicated how to run it.\n- **UI feature addition**: Prompt given — *\"Add a UI feature of blue color\"* — Copilot rewrote the code to include the blue-colored UI component.\n- **Kubernetes YAML generation**: Created `pranav.yml`, typed `kube.pod` — VS Code (with Kubernetes extension) auto-populated a pod YAML template; instructor clarified this was from the **Kubernetes template extension**, not AI, to distinguish AI from boilerplate tooling.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-kubernetes-extension-setup",
+      "unit": "s04a",
+      "kind": "practical",
+      "title": "Kubernetes Extension Setup",
+      "text_md": "- Students instructed to install the **Kubernetes extension** in VS Code via the Extensions panel.\n- After installation, typing `kube.` in a `.yml` file triggers YAML snippet auto-completion for pods, deployments, services, etc.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-kubernetes-yaml-code-walkthrough",
+      "unit": "s04a",
+      "kind": "practical",
+      "title": "Kubernetes YAML Code Walkthrough",
+      "text_md": "- Instructor walked through a basic pod YAML to ensure students could explain it in interviews:\n    - `apiVersion: v1` — Kubernetes API version currently at v1 (actual cluster version is **1.36–1.37** in production).\n    - `kind: Pod` — specifies the resource type; pod is the **smallest deployable unit** in Kubernetes.\n    - **Container vs. Pod**: Docker creates containers; Kubernetes wraps containers in pods to enable automation and orchestration. Practically, each pod typically contains **one container**, though multiple containers per pod is supported.\n    - `metadata` — information about the resource (name, labels).\n    - `namespace` — an **isolated environment** within Kubernetes (e.g., dev, QA, production); companies use project-specific namespaces.\n- Instructor's intent: Students should be able to write and explain **5–10 lines of YAML** in an interview; AI can generate the rest.\n- Key principle: *\"AI can write all the code — but you must understand what it wrote, because the interviewer will ask you to explain it.\"*",
+      "diagram": null
+    },
+    {
+      "id": "s04a-upcoming-projects-and-roadmap",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "Upcoming Projects and Roadmap",
+      "text_md": "- Instructor outlined **4 AI-focused projects** planned for the course:\n    - **AI Integration Project** (Project 6 & 7)\n    - **MLOps Project**\n    - **AIOps Project**\n    - **MCP (Model Context Protocol) Project**\n- Teased a **Resume-JD Matcher project** to be built using:\n    - **Python + Streamlit** (front-end)\n    - **Google Gemini API** (AI engine)\n    - **AWS** (infrastructure)\n    - Flow: User uploads resume + job description → Gemini compares and scores the match → result displayed on Streamlit UI.\n- Future sessions will cover **AWS Bedrock**, **Amazon Textract**, **Amazon Rekognition** in greater depth based on student requests.\n- **AWS CLI configuration** for resource management (EC2 instances, etc.) via prompt-based commands will be covered in an upcoming session.\n- Prompt engineering will be covered across approximately **48 days** of the course.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-mock-interview-preparation-8-pm-session",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "Mock Interview Preparation — 8 PM Session",
+      "text_md": "- **Every Wednesday at 8 PM**: Mock interview session via Zoom.\n- Format: First 30 minutes — instructor gives instructions and prepares students; then small **breakout rooms** with real-time panelists from companies like Apple, Wipro, Genpact.\n- **Today's mock interview scope**: Day 2, Day 3, and Day 4 content only — questions are already published in the challenge repository.\n- Questions already released include: What is prompt engineering? What is white coding? And other foundational topics.\n- Student preparation checklist:\n    - Prepare a **crisp self-introduction** (practice in front of a mirror).\n    - Set up **camera, mic, and lighting** — sitting on a bed or in a noisy room is explicitly flagged as a rejection risk.\n    - Resume not required for today's session — current resume is sufficient.\n- All mock interview details will be shared in the **WhatsApp group**.",
+      "diagram": null
+    },
+    {
+      "id": "s04a-quick-interview-revision",
+      "unit": "s04a",
+      "kind": "concept",
+      "title": "Quick Interview Revision",
+      "text_md": "Remember these key mappings:\n\n| Requirement | Concept / Tool |\n|---|---|\n| Generate content or plans | Generative AI |\n| AI that can take actions | Agentic AI |\n| Retrieve information before generation | RAG |\n| Analyze images | Amazon Rekognition |\n| Extract text from documents/images | Amazon Textract |\n| Send notifications | Amazon SNS |\n| AI for operations | AIOps |\n| AI coding assistant | GitHub Copilot |\n| Smallest deployable Kubernetes unit | Pod |\n| Kubernetes logical isolation | Namespace |\n| Existing resource into Terraform state | `terraform import` |\n| DevOps Python use case | Automation scripting |",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is Artificial Intelligence (AI)?",
+      "prompt": "What is Artificial Intelligence (AI)?",
+      "reference_answer": "AI enables machines to perform tasks that normally require human intelligence. In the session, it was framed as **“automation of automation”** to accelerate existing DevOps automation.",
+      "id": "s04a-q01",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Generative AI?",
+      "prompt": "What is Generative AI?",
+      "reference_answer": "Generative AI creates content, answers, plans, or information based on a prompt and its training data.",
+      "id": "s04a-q02",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-generative-ai",
+        "s04a-types-of-ai-generative-research-and-agentic",
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Agentic AI?",
+      "prompt": "What is Agentic AI?",
+      "reference_answer": "Agentic AI goes beyond generating information and can take actions autonomously to complete a task.",
+      "id": "s04a-q03",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-ai-agents-agentic-ai",
+        "s04a-types-of-ai-generative-research-and-agentic",
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between Generative AI and Agentic AI?",
+      "prompt": "What is the difference between Generative AI and Agentic AI?",
+      "reference_answer": "Generative AI mainly **generates information**; Agentic AI can **take actions** based on the goal.",
+      "id": "s04a-q04",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-ai-agents-agentic-ai",
+        "s04a-types-of-ai-generative-research-and-agentic",
+        "s04a-generative-ai"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a prompt?",
+      "prompt": "What is a prompt?",
+      "reference_answer": "A prompt is the input or instruction given to an AI model to produce an output.",
+      "id": "s04a-q05",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is prompt engineering?",
+      "prompt": "What is prompt engineering?",
+      "reference_answer": "Prompt engineering is the practice of creating clear and effective instructions so an AI model produces useful results.",
+      "id": "s04a-q06",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-what-is-ai-definitions-and-student-responses",
+        "s04a-why-ai-matters-for-cloud-and-devops-engineers"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is AI hallucination?",
+      "prompt": "What is AI hallucination?",
+      "reference_answer": "Hallucination is when an AI model produces incorrect or unreliable information as if it were correct.",
+      "id": "s04a-q07",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-hallucination-in-ai-models",
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is RAG?",
+      "prompt": "What is RAG?",
+      "reference_answer": "RAG stands for **Retrieval-Augmented Generation**. It combines retrieved information with AI generation to improve the relevance of responses.",
+      "id": "s04a-q08",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Machine Learning?",
+      "prompt": "What is Machine Learning?",
+      "reference_answer": "Machine Learning is a subset of AI where systems learn patterns from data to perform tasks or make predictions.",
+      "id": "s04a-q09",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Deep Learning?",
+      "prompt": "What is Deep Learning?",
+      "reference_answer": "Deep Learning is a subset of Machine Learning that uses deep neural-network-based approaches to learn complex patterns.",
+      "id": "s04a-q10",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Computer Vision?",
+      "prompt": "What is Computer Vision?",
+      "reference_answer": "Computer Vision enables machines or systems to read and interpret visual data such as images.",
+      "id": "s04a-q11",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-computer-vision-explained",
+        "s04a-computer-vision-in-depth",
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Amazon Rekognition?",
+      "prompt": "What is Amazon Rekognition?",
+      "reference_answer": "Amazon Rekognition is a managed AWS AI service used to analyze images and identify objects or visual information.",
+      "id": "s04a-q12",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Amazon Textract?",
+      "prompt": "What is Amazon Textract?",
+      "reference_answer": "Amazon Textract is a managed AWS AI service that extracts text and layout information from documents or images.",
+      "id": "s04a-q13",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How can Rekognition and Textract work together?",
+      "prompt": "How can Rekognition and Textract work together?",
+      "reference_answer": "Rekognition can analyze the image, while Textract can extract text from it. Both can be integrated into an application workflow through APIs.",
+      "id": "s04a-q14",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-how-ai-works-process-flow",
+        "s04a-how-ai-works-simplified-flow",
+        "s04a-pagerduty-how-escalation-works-in-practice"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is AIOps?",
+      "prompt": "What is AIOps?",
+      "reference_answer": "AIOps applies AI to IT operations to improve incident detection, response, automation, and operational workflows.",
+      "id": "s04a-q15",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-aiops-and-ai-integrated-tooling",
+        "s04a-aiops-mention",
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is GitHub Copilot?",
+      "prompt": "What is GitHub Copilot?",
+      "reference_answer": "GitHub Copilot is an AI coding assistant that can generate code, suggestions, commit messages, and other development assistance from prompts.",
+      "id": "s04a-q16",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-github-copilot-setup-and-usage",
+        "s04a-kubernetes-yaml-and-copilot-assistance",
+        "s04a-live-copilot-demonstrations"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you activate Copilot in VS Code?",
+      "prompt": "How do you activate Copilot in VS Code?",
+      "reference_answer": "Use the latest VS Code, sign in with a GitHub account, and open Copilot Chat using **Ctrl + Shift + I**.",
+      "id": "s04a-q17",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-github-copilot-setup-and-usage",
+        "s04a-how-ai-works-process-flow",
+        "s04a-how-ai-works-simplified-flow"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a Pod in Kubernetes?",
+      "prompt": "What is a Pod in Kubernetes?",
+      "reference_answer": "A Pod is the smallest deployable unit in Kubernetes and normally contains one container, although multiple containers are supported.",
+      "id": "s04a-q18",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-kubernetes-extension-setup",
+        "s04a-kubernetes-yaml-and-copilot-assistance",
+        "s04a-kubernetes-yaml-code-walkthrough"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a Kubernetes Namespace?",
+      "prompt": "What is a Kubernetes Namespace?",
+      "reference_answer": "A Namespace provides an isolated logical environment inside a Kubernetes cluster, commonly used to separate environments or projects.",
+      "id": "s04a-q19",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-kubernetes-extension-setup",
+        "s04a-kubernetes-yaml-and-copilot-assistance",
+        "s04a-kubernetes-yaml-code-walkthrough"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is terraform import?",
+      "prompt": "What is terraform import?",
+      "reference_answer": "`terraform import` brings an existing infrastructure resource under Terraform state management.",
+      "id": "s04a-q20",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need AI to create a 5-day travel plan, but not book anything. What should you use?",
+      "prompt": "You need AI to create a 5-day travel plan, but not book anything. What should you use?",
+      "reference_answer": "Use **Generative AI** because the requirement is to generate information and a plan, not take actions.",
+      "id": "s04a-s01",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-ai-cloud-devops-day-4",
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You want an AI system to search job portals, match jobs with a resume, and automatically apply. What concept fits?",
+      "prompt": "You want an AI system to search job portals, match jobs with a resume, and automatically apply. What concept fits?",
+      "reference_answer": "Agentic AI**, because it can perform actions autonomously as part of completing the goal.",
+      "id": "s04a-s02",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-concept",
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "AI generated an incorrect answer. What is this called?",
+      "prompt": "AI generated an incorrect answer. What is this called?",
+      "reference_answer": "AI hallucination**. Validate the output and provide correction or better context.",
+      "id": "s04a-s03",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your company wants AI to answer questions using internal documents. What approach can help?",
+      "prompt": "Your company wants AI to answer questions using internal documents. What approach can help?",
+      "reference_answer": "Use **RAG**, where relevant information is retrieved and then supplied to the AI for generation.",
+      "id": "s04a-s04",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A traffic camera captures a vehicle image and you need to analyze the vehicle. Which AWS service can help?",
+      "prompt": "A traffic camera captures a vehicle image and you need to analyze the vehicle. Which AWS service can help?",
+      "reference_answer": "Amazon Rekognition** can analyze the image and identify visual information.",
+      "id": "s04a-s05",
+      "unit": "s04a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "You have a vehicle number-plate image and need to extract the text from it. Which AWS service can help?",
+      "prompt": "You have a vehicle number-plate image and need to extract the text from it. Which AWS service can help?",
+      "reference_answer": "Amazon Textract** can extract text from the image.",
+      "id": "s04a-s06",
+      "unit": "s04a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "After extracting a number plate, you need to notify the vehicle owner. Which AWS service from the session can send the notification?",
+      "prompt": "After extracting a number plate, you need to notify the vehicle owner. Which AWS service from the session can send the notification?",
+      "reference_answer": "Amazon SNS** can send notifications through supported channels such as SMS or email.",
+      "id": "s04a-s07",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-mock-interview-preparation-8-pm-session"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You want a complete flow for an automated traffic-challan system. What architecture can you use?",
+      "prompt": "You want a complete flow for an automated traffic-challan system. What architecture can you use?",
+      "reference_answer": "Camera → Rekognition → Textract → Application/Database → SNS**.",
+      "id": "s04a-s08",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-how-ai-works-process-flow",
+        "s04a-how-ai-works-simplified-flow",
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your DevOps team wants AI to help reduce repetitive engineering work. What is the benefit?",
+      "prompt": "Your DevOps team wants AI to help reduce repetitive engineering work. What is the benefit?",
+      "reference_answer": "AI acts as a **productivity multiplier**, helping engineers generate code, automate tasks, and accelerate workflows.",
+      "id": "s04a-s09",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-why-ai-matters-for-cloud-and-devops-engineers",
+        "s04a-ai-cloud-devops-day-4",
+        "s04a-how-ai-works-process-flow"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to generate a Python stopwatch quickly in VS Code. Which tool from the session can help?",
+      "prompt": "You need to generate a Python stopwatch quickly in VS Code. Which tool from the session can help?",
+      "reference_answer": "GitHub Copilot**. Give it a clear prompt such as “Write a stopwatch Python code.”",
+      "id": "s04a-s10",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-mock-interview-preparation-8-pm-session",
+        "s04a-python-in-devops-scope-clarification",
+        "s04a-quick-interview-revision"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Copilot generated Kubernetes YAML. Should you blindly use it in an interview?",
+      "prompt": "Copilot generated Kubernetes YAML. Should you blindly use it in an interview?",
+      "reference_answer": "No. You should understand and explain the YAML because interviewers can ask what each field does.",
+      "id": "s04a-s11",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-kubernetes-yaml-and-copilot-assistance",
+        "s04a-kubernetes-yaml-code-walkthrough",
+        "s04a-github-copilot-setup-and-usage"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "In VS Code, typing kube.pod generates a Kubernetes YAML template. Is this necessarily AI?",
+      "prompt": "In VS Code, typing kube.pod generates a Kubernetes YAML template. Is this necessarily AI?",
+      "reference_answer": "No. The transcript specifically notes that this comes from the **Kubernetes extension/template snippets**, not AI.",
+      "id": "s04a-s12",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-kubernetes-yaml-and-copilot-assistance",
+        "s04a-kubernetes-yaml-code-walkthrough",
+        "s04a-kubernetes-extension-setup"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your team wants separate dev, QA, and production environments inside one Kubernetes cluster. What can you use?",
+      "prompt": "Your team wants separate dev, QA, and production environments inside one Kubernetes cluster. What can you use?",
+      "reference_answer": "Use **Kubernetes Namespaces** to provide logical isolation between environments.",
+      "id": "s04a-s13",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-kubernetes-extension-setup",
+        "s04a-kubernetes-yaml-and-copilot-assistance",
+        "s04a-kubernetes-yaml-code-walkthrough"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A Kubernetes Pod is running a single application container. What does Kubernetes use to wrap and orchestrate that container?",
+      "prompt": "A Kubernetes Pod is running a single application container. What does Kubernetes use to wrap and orchestrate that container?",
+      "reference_answer": "A **Pod**. Kubernetes manages containers through Pods.",
+      "id": "s04a-s14",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-kubernetes-extension-setup",
+        "s04a-kubernetes-yaml-and-copilot-assistance",
+        "s04a-kubernetes-yaml-code-walkthrough"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Prometheus monitoring data stops because the monitoring Pod goes down. What should you do?",
+      "prompt": "Prometheus monitoring data stops because the monitoring Pod goes down. What should you do?",
+      "reference_answer": "Check the Pod logs and root cause, then use a resilient setup such as the **Prometheus Operator** or appropriate Helm/self-healing configuration.",
+      "id": "s04a-s15",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You are a DevOps engineer and have Python on your resume. What practical knowledge should you be ready to demonstrate?",
+      "prompt": "You are a DevOps engineer and have Python on your resume. What practical knowledge should you be ready to demonstrate?",
+      "reference_answer": "Basic automation scripting: imports, `print`, `try/except`, `while`, `for` loops, and running Python files.",
+      "id": "s04a-s16",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-python-in-devops-scope-clarification",
+        "s04a-why-ai-matters-for-cloud-and-devops-engineers",
+        "s04a-ai-cloud-devops-day-4"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You have a Python file called script.py. How do you run it?",
+      "prompt": "You have a Python file called script.py. How do you run it?",
+      "reference_answer": "Use:\n```bash\npython script.py\n```\nPython must be installed and the environment must be configured correctly.",
+      "id": "s04a-s17",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-how-ai-works-process-flow",
+        "s04a-how-ai-works-simplified-flow",
+        "s04a-pagerduty-how-escalation-works-in-practice"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "An AWS resource already exists manually, but you now want Terraform to manage it. What should you use?",
+      "prompt": "An AWS resource already exists manually, but you now want Terraform to manage it. What should you use?",
+      "reference_answer": "Use **`terraform import`** to bring the existing resource into Terraform state management.",
+      "id": "s04a-s18",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-what-is-ai-definitions-and-student-responses"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A high-severity production incident occurs and needs escalation to on-call engineers. What AIOps-style workflow was discussed?",
+      "prompt": "A high-severity production incident occurs and needs escalation to on-call engineers. What AIOps-style workflow was discussed?",
+      "reference_answer": "A tool such as **PagerDuty** can trigger alerts and escalate them through the defined on-call chain if the incident is not acknowledged.",
+      "id": "s04a-s19",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-pagerduty-how-escalation-works-in-practice",
+        "s04a-ai-sub-domains-high-level-awareness",
+        "s04a-aiops-and-ai-integrated-tooling"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "AI generated your complete Kubernetes YAML, but an interviewer asks you to explain it. What should you do?",
+      "prompt": "AI generated your complete Kubernetes YAML, but an interviewer asks you to explain it. What should you do?",
+      "reference_answer": "Explain the important fields yourself, such as `apiVersion`, `kind`, `metadata`, `namespace`, and container configuration. AI can write code, but you must understand what it generated.",
+      "id": "s04a-s20",
+      "unit": "s04a",
+      "concept_ids": [
+        "s04a-kubernetes-yaml-and-copilot-assistance",
+        "s04a-kubernetes-yaml-code-walkthrough",
+        "s04a-kubernetes-extension-setup"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,232 @@
+{
+  "id": "s32",
+  "title": "Docker Lifecycle Dockerfile · Day 4",
+  "subtitle": "Session 32 · Batch-44 · Day-4 of Docker Batch-44 | 6th Aug 2026 | 8:00 AM IST | Live Session",
+  "session": 32,
+  "module": "M5 Docker, Kubernetes, Monitoring",
+  "order": 3200,
+  "status": "ready",
+  "source_file": "Session-32-Docker-Lifecycle-Dockerfile/🚀 Day-4 of Docker Batch-44 | 6th Aug 2026 .md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s32-core-concepts-taught",
+      "unit": "s32",
+      "kind": "concept",
+      "title": "Core Concepts Taught",
+      "text_md": "- Docker Container Lifecycle\n- Container states: Pending → Running → Exited/Killed/Stopped; a container moves from pending to running in ~3–5 seconds.\n- Most common real-time failure cause: OOM (Out of Memory) — when too many users hit an application simultaneously, the container exhausts memory and dies or restarts.\n- Real-world example shared by Chander: a finance application (\"Garvin\") became inaccessible to 15+ users (P1 incident); root cause identified via docker inspect and exit code 137 (OOM kill), resolved by checking logs and raising an RCA.\n- Key Commands Demonstrated\n- Command\n- Purpose\n\n\n```bash\ndocker ps\n```\n\n- List running containers\n\n\n```bash\ndocker inspect <id>\n```\n\n- Inspect container state, errors, network config\n\n\n```bash\ndocker logs <id>\n```\n\n- View container logs for troubleshooting\n\n\n- docker stats\n- Live CPU/memory usage for all running containers\n\n\n- docker top <id>\n- Process-level view for a single container (similar to Linux top)\n\n\n- docker commit <id> <name>\n- Convert a running container back into an image\n\n\n- docker save <image> > file.tar\n- Save image as TAR backup file\n\n\n- docker load\n- Restore image from TAR file\n\n\n- docker system df\n- Show disk usage: images, containers, cache\n\n\n- docker system prune\nRemove stopped containers, unused networks, dangling images, unused build cache\n\n\n- docker image prune -a\n- Remove all unused images (freed 414 MB in demo)\n\n\n\n- docker stats vs docker top: stats monitors all running containers simultaneously; top inspects processes within one specific container.\n- Running commands without entering a container: Use docker exec <container> <command> without -it flag — a noted interview question.\n\n- Docker AI — Gordon\n- Gordon is Docker's built-in AI development assistant, accessible via terminal by typing docker ai.\n- Capabilities demonstrated:\n- Query running containers in plain English (e.g., \"How many containers are running?\") — Gordon translates to docker ps internally.\n- Create and run containers from natural language prompts (e.g., \"Create a hello world container\").\n- Generate complete Dockerfiles from prompts (e.g., \"Create a Dockerfile for an NGINX server with container name Saurav exposed on port 80\").\n- Execute multi-step Docker workflows including build and run commands.\n- Anjan's experiment: Used Gordon to customize the NGINX index.html to create a DevOps engineer portfolio page — confirmed working after a browser refresh.\n- Gordon works fully offline (no internet required after Docker Desktop installation) and requires no subscription.\n- Available via Docker Desktop UI (enable in settings) or CLI (docker ai).\n- Requires the latest version of Docker Desktop; older versions need to be updated to see the Gordon option.\n\n- Image Optimization — Multi-Stage Builds\n- Problem: A bloated image using Ubuntu + manual Python installation reached 1.22 GB.\n- Solution — Multi-Stage Build:\n- Stage 1 (builder): Uses python:slim base image instead of full Ubuntu; installs only what's needed.\n- Stage 2: Calls COPY --from=builder (line 16 in the demo Dockerfile) to pull only the compiled artifacts from Stage 1.\n- Optimized image size: 394 MB — approximately 60–70% reduction.\n- Why it works: The slim base image eliminates unnecessary OS packages; the second stage discards build-time dependencies, keeping only the runtime artifact.\n- Code retrieved via git clone from the instructor's GitHub Docker repository for live demonstration.\n\n- Advanced Container Operations\n- Container → Image (Commit)\n- A running container can be converted back to an image using docker commit <container_id> <new_image_name>.\n- Demonstrated live: container ID copied → committed as image named \"Shubhendu\" → visible in docker images.\n- Image Backup and Restore\n- docker save <image> > avinash.tar — saves image as a TAR file (created in ~37 seconds in demo).\n- TAR file can be stored in AWS S3 (object storage) for backup purposes; TAR is an object, S3 is object storage.\n- docker load restores the TAR back into a Docker image.\n- Running Multiple Containers with a Loop\n- For loop command demonstrated to spin up 10 Alpine containers simultaneously from a single image and single command.\n- Each container runs for 1000 seconds then exits; --rm flag ensures automatic cleanup post-exit.\n- Alpine chosen as the smallest available image to avoid overwhelming local machine CPU/memory.\n- Confirmed: hundreds or thousands of containers can run on a single VM.\n- System Cleanup (Housekeeping)\n- docker system df revealed: 9 total images (6 active, 3 unused); 19 total containers (15 active, 4 unused).\n- docker system prune confirmed removal of: all stopped containers, unused networks, dangling images, unused build cache — requires manager/client/downtime approval before running in production.\n- This activity is called \"housekeeping\" in enterprise environments.\n\n- Real-Time Troubleshooting Workflow\n1.      Inspect: docker inspect <container> — first command to run; reveals errors, exit codes, network state.\n2.      Logs: docker logs <container> — check application logs to identify root cause.\n3.      Stats: docker stats — monitor live CPU/memory consumption across all containers.\n4.      Exit Code 137: Indicates OOM kill — container was terminated by the kernel due to memory exhaustion.\n5.      Scaling Solution: For persistent OOM issues at scale, use HPA (Horizontal Pod Autoscaling) in Kubernetes to automatically increase pod count.\n\n- Docker Desktop Installation (Local Setup)\n- Download from the official Docker Desktop for Windows link shared in session.\n- During install: select \"Use WSL instead of Hyper-V\" option → click OK.\n- WSL required: If not installed, run wsl --install and wsl --update in PowerShell (admin).\n- Virtualization not detected error: Caused at OS level (not BIOS); WSL handles this layer.\n- Machine restart required after WSL installation for Docker Desktop to function correctly.\n- After install: enable Kubernetes in Docker Desktop Settings → Kubernetes → Enable → Restart.\n- Gordon (AI) must be enabled separately in Docker Desktop settings.\n- Minimum recommended: 50% free CPU/memory; systems with insufficient resources will struggle.\n\n- Interview Questions Covered\n- What is OOM / Exit Code 137? → Out of Memory kill; container terminated due to memory exhaustion.\n- How long does it take to start a container? → Milliseconds to seconds (use time docker run hello-world in Linux/Git Bash to measure; Windows CMD does not support the time command).\n- How to run commands in a container without entering it? → docker exec <container> <command> without -it.\n- Can you convert a container back to an image? → Yes, using docker commit.\n- How to reduce Docker image size? → Use slim/Alpine base images; implement multi-stage builds.\n- What is the cleanup command? → docker system prune (called \"housekeeping activity\" in enterprise).\n- Docker exec vs Docker run? → exec runs commands in an existing running container; run creates a new container from an image.\n- How to troubleshoot a slow containerized application? → Check docker stats for CPU/memory; optimize the application; escalate to Kubernetes HPA if needed.\n\n- Real-Time Production Scenario (Chander's Company)\n- Application: Finance application (\"Garvin\") running in a container.\n- Incident: 15+ users unable to access → P1 (Priority 1) raised.\n- Investigation steps:\n- a.      docker inspect → checked container state.\n- b.      docker stats → CPU/memory at 100%.\n- c.       Exit code 137 identified → OOM confirmed.\n- d.      docker logs → reviewed application logs for RCA.\n- Resolution: Root cause found; permanent fix implemented; HPA in Kubernetes recommended to prevent recurrence.",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is Exit Code 137 in Docker?",
+      "prompt": "What is Exit Code 137 in Docker?",
+      "reference_answer": "Exit Code 137 means the container was killed because of an Out Of Memory (OOM) condition. The Linux kernel terminates the container when it consumes more memory than available.",
+      "id": "s32-q01",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Which command is used to inspect a container?",
+      "prompt": "Which command is used to inspect a container?",
+      "reference_answer": "```bash\ndocker inspect <container_id>\n```\n\n\nIt provides details like state, network configuration, exit code, mounts, and metadata.",
+      "id": "s32-q02",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "How do you check logs of a Docker container?",
+      "prompt": "How do you check logs of a Docker container?",
+      "reference_answer": "```bash\ndocker logs <container_id>\n```\n\n\nIt helps identify application-level issues.\n\n4. What is the difference between docker stats and docker top?\n**💡 Answer:**\n\ndocker stats → Shows CPU and Memory usage of all running containers.\ndocker top → Displays running processes inside a specific container.\n\n5. How do you execute a command inside a running container without entering it?\n**💡 Answer:**\n\n```bash\ndocker exec <container> <command>\n```\n\n\nExample:\n```bash\ndocker exec nginx ls\n```\n\n\n\n6. What is Docker Gordon?\n**💡 Answer:**\n\nGordon is Docker's built-in AI assistant that understands natural language and converts it into Docker commands.\n\n7. Can Gordon work without internet?\n**💡 Answer:**\n\nYes.\nOnce Docker Desktop is installed, Gordon works completely offline.\n\n8. How do you convert a running container into an image?\n**💡 Answer:**\n\ndocker commit <container_id> myimage\n\n\n9. How do you backup a Docker image?\n**💡 Answer:**\n\ndocker save myimage > backup.tar\n\n\n10. How do you restore a Docker image?\n**💡 Answer:**\n\ndocker load < backup.tar\n\n\n11. What is a Multi-Stage Build?\n**💡 Answer:**\n\nA Docker optimization technique where one stage builds the application while another stage copies only the required artifacts, reducing image size.\n\n12. Why are Alpine images preferred?\n**💡 Answer:**\n\nBecause Alpine is very lightweight, making Docker images smaller, faster, and more secure.\n\n13. Why shouldn't databases be treated like normal containers?\n**💡 Answer:**\n\nContainers are ephemeral.\nDatabases require persistent storage, so they need volumes or managed database services.\n\n14. Which command removes unused Docker resources?\n**💡 Answer:**\n\ndocker system prune\n\n\n15. What does docker image prune -a do?\n**💡 Answer:**\n\nDeletes all unused Docker images.\n\n16. Which command shows Docker disk usage?\n**💡 Answer:**\n\ndocker system df\n\n\n17. How do you monitor resource usage of containers?\n**💡 Answer:**\n\ndocker stats\n\n\n18. How can Docker AI generate Dockerfiles?\n**💡 Answer:**\n\nUsing natural language prompts such as:\nCreate a Dockerfile for an NGINX server.\nGordon automatically generates the Dockerfile.\n\n19. What is housekeeping in Docker?\n**💡 Answer:**\n\nCleaning unused images, containers, build cache, and networks using cleanup commands.\n\n20. What is the biggest advantage of Multi-Stage Builds?\n**💡 Answer:**\n\nSmaller image size\nFaster deployment\nReduced attack surface\nBetter production performance\n\nDocker Scenario-Based Interview Questions & Answers (20)",
+      "id": "s32-q03",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 1",
+      "prompt": "Your application suddenly stopped responding. Where will you start troubleshooting?",
+      "reference_answer": "```bash\ndocker inspect\ndocker logs\n```\n\ndocker stats\nCheck Exit Code\nIdentify root cause",
+      "id": "s32-s01",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 2",
+      "prompt": "Users complain the application becomes slow during peak traffic.",
+      "reference_answer": "Check:\ndocker stats\n\nIf CPU or Memory is high, optimize the application or scale using Kubernetes HPA.",
+      "id": "s32-s02",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 3",
+      "prompt": "Your container exits automatically after startup.",
+      "reference_answer": "Check:\n```bash\ndocker inspect\ndocker logs\n```\n\n\nLook for Exit Code and application errors.",
+      "id": "s32-s03",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 4",
+      "prompt": "A production image is 1.2 GB. How would you optimize it?",
+      "reference_answer": "Use Multi-Stage Build\nReplace Ubuntu with Alpine or Slim images\nRemove build dependencies",
+      "id": "s32-s04",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 5",
+      "prompt": "You modified files inside a running container and want to preserve them.",
+      "reference_answer": "docker commit\n\nConvert the container into a new image.",
+      "id": "s32-s05",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 6",
+      "prompt": "Your team wants to move Docker images to another server.",
+      "reference_answer": "Use:\ndocker save\ndocker load",
+      "id": "s32-s06",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 7",
+      "prompt": "A developer accidentally deleted the original image but still has the running container.",
+      "reference_answer": "Recover using:\ndocker commit",
+      "id": "s32-s07",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 8",
+      "prompt": "Your Docker server is running out of disk space.",
+      "reference_answer": "Check:\ndocker system df\n\nThen clean unused resources using:\ndocker system prune",
+      "id": "s32-s08",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 9",
+      "prompt": "You need to check running processes inside one container.",
+      "reference_answer": "docker top",
+      "id": "s32-s09",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 10",
+      "prompt": "You need CPU usage of all containers.",
+      "reference_answer": "docker stats",
+      "id": "s32-s10",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 11",
+      "prompt": "Your manager asks you to run Linux commands inside a container without opening an interactive shell.",
+      "reference_answer": "```bash\ndocker exec nginx ls\n```",
+      "id": "s32-s11",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 12",
+      "prompt": "A developer wants Docker commands generated automatically using AI.",
+      "reference_answer": "Use Docker Gordon.\nExample:\nCreate an nginx container exposing port 80.",
+      "id": "s32-s12",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 13",
+      "prompt": "A new developer has only 8 GB RAM. Which image should they use?",
+      "reference_answer": "Use Alpine because it consumes fewer resources.",
+      "id": "s32-s13",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 14",
+      "prompt": "You need to start 20 identical containers quickly.",
+      "reference_answer": "Use a shell loop to create multiple containers from the same image.",
+      "id": "s32-s14",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 15",
+      "prompt": "Your organization wants image backups stored in cloud storage.",
+      "reference_answer": "Use:\ndocker save\n\nStore the TAR file in Amazon S3 or another object storage service.",
+      "id": "s32-s15",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 16",
+      "prompt": "Your Docker Desktop doesn't show Gordon.",
+      "reference_answer": "Update Docker Desktop\nEnable Gordon in Docker Desktop settings\nRestart Docker Desktop",
+      "id": "s32-s16",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 17",
+      "prompt": "Docker Desktop installation fails because WSL is missing.",
+      "reference_answer": "Run:\nwsl --install\nwsl --update\n\nRestart the machine and install Docker Desktop again.",
+      "id": "s32-s17",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 18",
+      "prompt": "A container is consuming 100% memory repeatedly.",
+      "reference_answer": "Check docker stats\nAnalyze logs\nFix memory leak\nScale with Kubernetes HPA if required",
+      "id": "s32-s18",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 19",
+      "prompt": "Your manager asks why the application image uses Alpine instead of Ubuntu.",
+      "reference_answer": "Because Alpine is lightweight, resulting in faster downloads, smaller images, lower storage usage, and quicker deployments.",
+      "id": "s32-s19",
+      "unit": "s32",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 20",
+      "prompt": "A production server contains many stopped containers and unused images.",
+      "reference_answer": "Perform housekeeping using:\ndocker system prune\n\n(after obtaining the required production approvals).\nThese questions are aligned with the Day-4 Docker session topics, including Docker AI (Gordon), container lifecycle, troubleshooting, image optimization, housekeeping, and real-world production scenarios.\n\n\n\n\n---\n> [⬅️ Day 12](Day-12-Dockerfiles-Image-Creation.md) | [🏠 Master Learning Index](README.md) | [Day 14 ➡️](Day-14-Kubernetes-Fundamentals-Architecture.md)",
+      "id": "s32-s20",
+      "unit": "s32",
+      "concept_ids": []
+    }
+  ]
+}

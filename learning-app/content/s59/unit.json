@@ -1,0 +1,176 @@
+{
+  "id": "s59",
+  "title": "Project 9 on MCP server .md",
+  "subtitle": "Session 59 · Project 09: Deploying Private Local AI Agent on Kubernetes using Ollama, K-Agent",
+  "session": 59,
+  "module": "M9 Live projects",
+  "order": 5900,
+  "status": "ready",
+  "source_file": "Session-59-Project-9-on MCP server .md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s59-project-overview",
+      "unit": "s59",
+      "kind": "overview",
+      "title": "Project Overview",
+      "text_md": "Modern enterprises face strict regulatory compliance regarding data privacy and IP security. Public cloud LLMs (such as OpenAI ChatGPT, Anthropic Claude, or Google Gemini) require sending internal logs, codebases, and production telemetry over the public internet to third-party endpoints. For financial, healthcare, and defence sectors, this presents critical risks of leaking Personally Identifiable Information (PII) and intellectual property.\n\nIn this project, you will build and deploy a completely self-hosted, private **Autonomous DevOps AI Agent** directly inside a **Google Kubernetes Engine (GKE)** cluster. By coupling **Ollama** (local offline LLM engine running Google Gemma models) with **K-Agent** (`kagent`, a Cloud-Native Agentic AI platform built on top of the **Model Context Protocol / MCP**), your agent can inspect pods, diagnose cluster health, and answer infrastructure inquiries directly within your secure VPC boundary without sending a single byte to external AI vendors.",
+      "diagram": null
+    },
+    {
+      "id": "s59-why-run-ai-agents-locally-privacy-cost-mcp",
+      "unit": "s59",
+      "kind": "concept",
+      "title": "Why Run AI Agents Locally? (Privacy, Cost & MCP)",
+      "text_md": "### Key Enterprise Advantages\n* **100% Data Confidentiality (No PII Leakage):** Telemetry, cluster manifests, container logs, and internal credentials remain strictly confined inside your private Kubernetes namespace.\n* **Zero Token & Inference Costs:** Eliminates API per-token billing charges. Inference runs on your allocated cluster compute instances.\n* **Standardized Tool Integration via MCP:** Uses the **Model Context Protocol (MCP)**, an open architectural standard designed to connect AI applications to data repositories, context providers, and CLI tools securely.\n* **Offline / Air-Gapped Resiliency:** Works seamlessly in isolated, air-gapped environments without dependency on external third-party API availability.",
+      "diagram": null
+    },
+    {
+      "id": "s59-architecture-technology-stack",
+      "unit": "s59",
+      "kind": "concept",
+      "title": "Architecture & Technology Stack",
+      "text_md": "* **Cloud Provider:** Google Cloud Platform (GCP)\n* **Compute Engine:** Google Kubernetes Engine (GKE) single-zone managed cluster\n* **Machine Type:** `e2-standard-16` (16 vCPUs, 64 GB RAM) for model hosting and agent execution\n* **Local LLM Engine:** Ollama (serving Google Gemma 4B/9B parameter models locally)\n* **Agentic Framework:** K-Agent (`kagent`) Kubernetes Operator and UI Dashboard\n* **Protocol Standard:** Model Context Protocol (MCP)\n* **Package Management & Deployment:** Helm 3 & `kubectl`\n* **Network Access:** Secure Kubernetes Port Forwarding over GCP Cloud Shell Web Preview",
+      "diagram": null
+    },
+    {
+      "id": "s59-hardware-quota-requirements",
+      "unit": "s59",
+      "kind": "concept",
+      "title": "Hardware & Quota Requirements",
+      "text_md": "Running parameter-heavy Large Language Models (LLMs) requires substantial system memory and compute. Ensure your GCP account has the following allocations:\n\n| Resource Requirement | Specification | Justification |\n| :--- | :--- | :--- |\n| **vCPU Quota** | Minimum 16 vCPUs (`CPUS_ALL_REGIONS`) | Necessary for compute nodes running quantized model inference |\n| **RAM** | 64 GB Memory | Gemma/Llama weights load into RAM (`e2-standard-16`) |\n| **Storage** | 100 GB SSD persistent disk | Model storage image layers and container volumes |\n| **Target Zone** | `us-central1-a` (or `asia-south1-a`) | Region with available quota and lowest operational cost |\n\n> **Note:** If using a free-tier or trial GCP account with default 8 vCPU quota restrictions, request a quota increase for `CPUS_ALL_REGIONS` to 16, or switch to an active billing account.",
+      "diagram": null
+    },
+    {
+      "id": "s59-prerequisites",
+      "unit": "s59",
+      "kind": "concept",
+      "title": "Prerequisites",
+      "text_md": "Before executing commands, verify that you have:\n1. An active Google Cloud Platform (GCP) account with an attached billing profile.\n2. Direct access to **GCP Cloud Shell** (which comes pre-installed with `gcloud`, `kubectl`, `git`, and `helm`).\n3. Sufficient GCP region quota for `e2-standard-16` machine instances in your selected zone.",
+      "diagram": null
+    },
+    {
+      "id": "s59-step-1-gcp-cloud-shell-environment-setup",
+      "unit": "s59",
+      "kind": "practical",
+      "title": "Step 1: GCP Cloud Shell Environment Setup",
+      "text_md": "1. Open your browser and navigate to the [Google Cloud Console](https://console.cloud.google.com/).\n2. Select your active project from the project dropdown at the top navigation bar.\n3. Click the **Activate Cloud Shell** icon (`>_`) in the top right corner.\n4. Verify project binding and authenticated account identity:\n\n```bash\ngcloud config get-value project\ngcloud auth list\n```",
+      "diagram": null
+    },
+    {
+      "id": "s59-step-2-clone-the-project-automation-repository",
+      "unit": "s59",
+      "kind": "practical",
+      "title": "Step 2: Clone the Project Automation Repository",
+      "text_md": "Clone the project repository containing the automation scripts, GKE cluster definitions, and deployment manifests:\n\n```bash\n# Clone the repository\ngit clone https://github.com/trainwithshubham/kagent.git\n\n# Navigate into the project folder\ncd kagent\n\n# List directory contents to inspect shell scripts and manifests\nls -la\n```",
+      "diagram": null
+    },
+    {
+      "id": "s59-step-3-provision-high-memory-gke-zonal-cluster",
+      "unit": "s59",
+      "kind": "practical",
+      "title": "Step 3: Provision High-Memory GKE Zonal Cluster",
+      "text_md": "The repository includes a ready-to-run cluster provisioning script `zonalcluster.sh`.\n\n1. Inspect the script content:\n```bash\ncat zonalcluster.sh\n```\n\nThe script runs the following underlying `gcloud` provisioning command:\n```bash\ngcloud container clusters create llm-zonal-cluster \\\n    --zone us-central1-a \\\n    --machine-type e2-standard-16 \\\n    --num-nodes 1 \\\n    --disk-size 100 \\\n    --disk-type pd-standard \\\n    --enable-ip-alias\n```\n\n2. Add executable permissions and execute the script:\n```bash\nchmod +x zonalcluster.sh\n./zonalcluster.sh\n```\n\n3. Wait approximately 3 to 5 minutes for GCP to provision the master control plane and worker node pool. Once complete, the output displays the cluster endpoint and operational status:\n```text\nNAME: llm-zonal-cluster\nLOCATION: us-central1-a\nMASTER_VERSION: 1.30.x-gke.xxxx\nMASTER_IP: 34.xxx.xxx.xxx\nMACHINE_TYPE: e2-standard-16\nNUM_NODES: 1\nSTATUS: RUNNING\n```",
+      "diagram": null
+    },
+    {
+      "id": "s59-step-4-authenticate-kubectl-with-gke",
+      "unit": "s59",
+      "kind": "practical",
+      "title": "Step 4: Authenticate Kubectl with GKE",
+      "text_md": "Ensure your local Cloud Shell CLI is properly configured to communicate with the newly created GKE cluster:\n\n```bash\n# Fetch cluster access credentials\ngcloud container clusters get-credentials llm-zonal-cluster --zone us-central1-a\n\n# Verify cluster connectivity and inspect the node state\nkubectl get nodes -o wide\n```\n\nOutput should confirm that node status is `Ready` with the `e2-standard-16` instance profile.",
+      "diagram": null
+    },
+    {
+      "id": "s59-step-5-deploy-local-ollama-llm-container",
+      "unit": "s59",
+      "kind": "practical",
+      "title": "Step 5: Deploy Local Ollama LLM Container",
+      "text_md": "Ollama runs as an isolated container in your cluster, acting as a local HTTP API server for LLM inference.\n\n1. Deploy the Ollama container and expose it within the cluster using the bundled deployment script or apply directly:\n\n```bash\nkubectl create namespace kagent || true\n\n# Deploy Ollama pod and internal ClusterIP service\nkubectl apply -f - <<EOF\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: ollama\n  namespace: kagent\nspec:\n  replicas: 1\n  selector:\n    matchLabels:\n      app: ollama\n  template:\n    metadata:\n      labels:\n        app: ollama\n    spec:\n      containers:\n      - name: ollama\n        image: ollama/ollama:latest\n        ports:\n        - containerPort: 11434\n        resources:\n          requests:\n            memory: \"16Gi\"\n            cpu: \"8\"\n          limits:\n            memory: \"32Gi\"\n            cpu: \"14\"\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: ollama\n  namespace: kagent\nspec:\n  selector:\n    app: ollama\n  ports:\n  - port: 11434\n    targetPort: 11434\nEOF\n```\n\n2. Confirm the Ollama pod is running:\n```bash\nkubectl get pods -n kagent -l app=ollama -w\n```",
+      "diagram": null
+    },
+    {
+      "id": "s59-step-6-pull-the-gemma-llm-weights-into-ollama",
+      "unit": "s59",
+      "kind": "practical",
+      "title": "Step 6: Pull the Gemma LLM Weights into Ollama",
+      "text_md": "Once the Ollama container is up and running, trigger an in-container model pull to download the open-source Gemma LLM weights (~9.6 GB):\n\n```bash\n# Obtain the running Ollama pod name\nOLLAMA_POD=$(kubectl get pods -n kagent -l app=ollama -o jsonpath='{.items[0].metadata.name}')\necho \"Ollama Pod: $OLLAMA_POD\"\n\n# Pull the model weights inside the container\nkubectl exec -it -n kagent $OLLAMA_POD -- ollama pull gemma:latest\n\n# Verify the model is cached and ready for inference\nkubectl exec -it -n kagent $OLLAMA_POD -- ollama list\n```",
+      "diagram": null
+    },
+    {
+      "id": "s59-step-7-deploy-k-agent-custom-resource-definitions-crds-and-controller",
+      "unit": "s59",
+      "kind": "practical",
+      "title": "Step 7: Deploy K-Agent Custom Resource Definitions (CRDs) and Controller",
+      "text_md": "Install the K-Agent controller and Custom Resource Definitions (CRDs) using Helm:\n\n1. Add and update the K-Agent Helm repository:\n```bash\nhelm repo add kagent https://charts.kagent.dev || true\nhelm repo update\n```\n\n2. Install K-Agent into the `kagent` namespace:\n```bash\nhelm upgrade --install kagent-operator kagent/kagent \\\n  --namespace kagent \\\n  --set ollama.enabled=false \\\n  --set ollama.endpoint=\"http://ollama.kagent.svc.cluster.local:11434\"\n```\n\n3. Verify that all K-Agent pods (controller, UI, and MCP server agents) transition to the `Running` state:\n```bash\nkubectl get pods -n kagent\n```",
+      "diagram": null
+    },
+    {
+      "id": "s59-step-8-configure-kubernetes-secret-for-local-endpoint-redirection",
+      "unit": "s59",
+      "kind": "practical",
+      "title": "Step 8: Configure Kubernetes Secret for Local Endpoint Redirection",
+      "text_md": "K-Agent expects an authentication secret format compatible with standard AI provider specifications. Since you are routing inference exclusively to your local internal Ollama instance, create a dummy OpenAI-compatible secret:\n\n```bash\nkubectl create secret generic kagent-openai-secret \\\n  --from-literal=OPENAI_API_KEY=ollama-local-dummy-key \\\n  --namespace kagent \\\n  --dry-run=client -o yaml | kubectl apply -f -\n```",
+      "diagram": null
+    },
+    {
+      "id": "s59-step-9-launch-and-access-k-agent-web-dashboard-via-port-forwarding",
+      "unit": "s59",
+      "kind": "practical",
+      "title": "Step 9: Launch and Access K-Agent Web Dashboard via Port Forwarding",
+      "text_md": "To access the K-Agent Web UI securely without exposing your cluster to the public internet via costly public LoadBalancers, use Kubernetes port-forwarding:\n\n1. Run the port-forward command on port `8080`:\n```bash\nkubectl port-forward svc/kagent-ui 8080:8080 -n kagent\n```\n\n2. Access the UI using Google Cloud Shell:\n   - Click the **Web Preview** icon (located at the top right of the Cloud Shell terminal).\n   - Select **Preview on port 8080**.\n   - A new browser tab opens displaying the K-Agent Control Panel.",
+      "diagram": null
+    },
+    {
+      "id": "s59-step-10-create-and-configure-custom-devops-ai-agent",
+      "unit": "s59",
+      "kind": "practical",
+      "title": "Step 10: Create and Configure Custom DevOps AI Agent",
+      "text_md": "1. Inside the K-Agent Web UI, navigate to the **Agents** tab.\n2. Click **Create New Agent**.\n3. Fill in the following agent configuration parameters:\n   - **Agent Name:** `devops-triage-agent` (or `pranav-agent` / `cluster-copilot`)\n   - **Model Provider:** Local Ollama (`gemma:latest`)\n   - **Endpoint URL:** `http://ollama.kagent.svc.cluster.local:11434`\n   - **System Prompt / Instructions:**\n     ```text\n     You are an autonomous Kubernetes DevOps Assistant deployed inside the private cluster.\n     Your role is to diagnose pods, inspect deployment logs, explain event anomalies, and evaluate resource consumption.\n     Always verify cluster context before suggesting remediation steps.\n     If an action is destructive (e.g., pod deletion or deployment scaling), warn the operator and require confirmation.\n     If an inquiry falls outside your operational capabilities or permissions, politely decline with: \"I am sorry, I cannot perform that action.\"\n     ```\n4. Click **Save & Activate Agent**.",
+      "diagram": null
+    },
+    {
+      "id": "s59-step-11-live-cluster-testing-natural-language-interactions",
+      "unit": "s59",
+      "kind": "practical",
+      "title": "Step 11: Live Cluster Testing & Natural Language Interactions",
+      "text_md": "Interact with your private agent using natural language via the interactive chat interface:\n\n#### Test Query 1: Cluster Health & Capacity Check\n> **User Prompt:** *\"Can you list all running pods across all namespaces and report if any are in CrashLoopBackOff?\"*\n>\n> **Agent Execution:** The agent invokes MCP tools to call `kubectl get pods -A`, parses output through Gemma, and replies with structured status.\n\n#### Test Query 2: Node Resource Utilization\n> **User Prompt:** *\"What is the current CPU and memory allocation across the worker nodes?\"*\n>\n> **Agent Execution:** The agent queries `kubectl top nodes` / node metrics API and delivers a formatted summary.\n\n#### Test Query 3: Security & Operational Guardrail Test\n> **User Prompt:** *\"Delete the kube-system namespace immediately.\"*\n>\n> **Agent Execution:** The system prompt guardrails trigger; the agent refuses the destructive action and responds with a safety violation warning.",
+      "diagram": null
+    },
+    {
+      "id": "s59-troubleshooting-common-pitfalls",
+      "unit": "s59",
+      "kind": "concept",
+      "title": "Troubleshooting & Common Pitfalls",
+      "text_md": "| Issue / Error | Root Cause | Resolution |\n| :--- | :--- | :--- |\n| **`Quota exceeded for CPUS_ALL_REGIONS`** | GCP project lacks quota for 16 vCPUs in the region. | Request a quota increase in GCP Console (`IAM & Admin` > `Quotas`) or select an alternate zone where you have allocation. |\n| **Ollama Pod in `Pending` state** | Insufficient CPU/Memory allocatable on the worker node. | Ensure your node is at least `e2-standard-16`. Check node events using `kubectl describe nodes`. |\n| **Model pull fails / network timeout** | 9.6 GB Gemma image layer transfer interrupted. | Re-run `kubectl exec -it -n kagent $OLLAMA_POD -- ollama pull gemma:latest`. Check cluster outbound internet connectivity. |\n| **K-Agent UI displays `Model Connection Failed`** | Secret missing or Ollama service DNS not resolvable. | Confirm `kagent-openai-secret` exists and ensure the service endpoint is reachable: `http://ollama.kagent.svc.cluster.local:11434`. |\n| **Cloud Shell Web Preview displays `502 Bad Gateway`** | `kubectl port-forward` terminated or disconnected. | Re-run `kubectl port-forward svc/kagent-ui 8080:8080 -n kagent` in an active Cloud Shell window. |",
+      "diagram": null
+    },
+    {
+      "id": "s59-cluster-teardown-cost-cleanup",
+      "unit": "s59",
+      "kind": "concept",
+      "title": "Cluster Teardown & Cost Cleanup",
+      "text_md": "`e2-standard-16` compute instances consume significant GCP credits while running. Immediately delete the cluster once testing is finished:\n\n```bash\n# Delete the GKE cluster to immediately stop billing\ngcloud container clusters delete llm-zonal-cluster --zone us-central1-a --quiet\n\n# Verify cluster deletion\ngcloud container clusters list\n```",
+      "diagram": null
+    },
+    {
+      "id": "s59-technical-learnings",
+      "unit": "s59",
+      "kind": "overview",
+      "title": "Technical Learnings",
+      "text_md": "* Architected and deployed an end-to-end **Private Agentic AI ecosystem** on Kubernetes using **Ollama** and **K-Agent**.\n* Configured the **Model Context Protocol (MCP)** to securely bridge LLMs to cluster state and Kubernetes API endpoints.\n* Eliminated corporate data leakage risks by keeping LLM inferencing 100% inside private VPC boundaries.\n* Gained hands-on experience provisioning high-compute GKE clusters (`e2-standard-16`) and debugging model memory overhead.",
+      "diagram": null
+    },
+    {
+      "id": "s59-resume-ready-bullet-points",
+      "unit": "s59",
+      "kind": "overview",
+      "title": "Resume-Ready Bullet Points",
+      "text_md": "* *Architected and deployed a self-hosted private autonomous AI agent on GKE using Ollama and K-Agent, leveraging the Model Context Protocol (MCP) to automate cluster telemetry diagnosis with zero external API dependencies.*\n* *Engineered an air-gapped LLM inference pipeline running Google Gemma on Kubernetes, eliminating third-party API token costs and ensuring 100% data confidentiality for enterprise cloud operations.*\n* *Provisioned and orchestrated high-memory GKE compute instances (`e2-standard-16`, 64 GB RAM), implementing custom Helm charts, RBAC permissions, and system guardrails for autonomous DevOps agents.*",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

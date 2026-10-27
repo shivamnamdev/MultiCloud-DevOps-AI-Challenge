@@ -1,0 +1,478 @@
+{
+  "id": "s10",
+  "title": "AWS Introduction EC2 Basics · Day 1",
+  "subtitle": "Session 10 · Batch-45 · AWS Day 1 – Interview Questions and Basic Scenarios",
+  "session": 10,
+  "module": "M3 AWS",
+  "order": 1000,
+  "status": "ready",
+  "source_file": "Session-10-AWS-Introduction-EC2-Basics/🚀 Day-1 of AWS with Batch-45 | 05th Oct 2026 .md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s10-iam-identity-and-access-management",
+      "unit": "s10",
+      "kind": "concept",
+      "title": "IAM — Identity and Access Management",
+      "text_md": "**Root User vs. IAM User**\n\n- **Root user**: The first account created when an AWS account is set up; has full, unrestricted access to all AWS services, billing, and management console — equivalent to a \"super user\" or \"owner account.\"\n- **IAM user**: A secondary identity created by the root user; access is limited by assigned roles and policies. Used by human employees or automated tools to interact with AWS without exposing root credentials.\n- Best practice: No one in a company should log in as root; IAM users with restricted policies should be used instead.\n\n**IAM User Creation (Live Demo)**\n\n- Three users were created live: **Rahul Suman** (human user with console access), **Abhijit** (human user added to a group), and **Terraform** (non-human/tool user without console access).\n- Human users require **console access enabled** with a username and password; tool-based users (e.g., Terraform) do **not** need console access.\n- For tool users, authentication is done via **Access Key + Secret Key** — the equivalent of a username and password for CLI/API access.\n- Access keys are generated under the user's security credentials: `CLI` option selected → terms confirmed → access key and secret key generated.\n\n**Groups**\n\n- Groups allow multiple IAM users to share the same permissions; a group named **Batch 45** was created with **Administrator Access** policy.\n- Abhijit was added to the group; Rahul was not added to any group and therefore had zero access despite being able to log in.\n- Practical benefit: If 50 users are hired, they can all be added to one group and inherit the same policies automatically.\n\n**Roles and Policies**\n\n- **Policy**: A document defining a set of permissions (allowed or denied actions); applicable at the organization, group, or user level. AWS provides 1,600+ built-in policies.\n    - Example: A policy might allow EC2 instance creation and stopping, but deny deletion.\n- **Role**: A temporary identity that can be assumed by a user or service to gain specific permissions. AWS provides 100+ default roles.\n    - Analogy: Policy = office-wide rules applicable to all (e.g., attendance); Role = job-specific responsibilities (e.g., Kubernetes admin only manages Kubernetes).\n- **Key distinction**: Roles are **temporary**; policies **define** what actions are allowed or denied.\n\n**Credential Reports / Audit**\n\n- IAM provides downloadable **credential reports** showing all users in an account, their password status, access key usage, last login, and rotation schedules — used for security audits.\n\n**IAM Capabilities Summary**\n\n- Authenticate and authorize human users, applications, CLI tools, SDKs, third-party tools (e.g., Jenkins, Terraform, Ansible), and APIs.\n- Supports AD groups and SSO integration.\n- Account alias (e.g., `CloudDevOpsHub`) can be set so IAM users log in via a named URL rather than a numeric account ID.",
+      "diagram": null
+    },
+    {
+      "id": "s10-elasticity-scaling-and-high-availability",
+      "unit": "s10",
+      "kind": "concept",
+      "title": "Elasticity, Scaling, and High Availability",
+      "text_md": "**Elasticity**\n\n- The ability of compute resources (CPU, memory) to increase or decrease based on demand — the foundational concept behind AWS services prefixed with \"E\" (EC2, EBS, ECS, EKS, EFS, ECR, ELB, etc.).\n\n**Horizontal Scaling (Scale Out/In)**\n\n- Adding or removing **additional server instances** from a pool to handle load changes.\n- Example: Flipkart's Big Billion Sale — traffic increases 100x, so 100 VMs are spun up; when traffic drops, VMs are released.\n- **Best for**: Web servers and stateless applications — if one server fails, others continue handling requests.\n- Supports **auto-scaling** because new instances can be added/removed without downtime.\n\n**Vertical Scaling (Scale Up/Down)**\n\n- Increasing or decreasing the **size/power of a single existing instance** (e.g., upgrading from 2 GB RAM to 10 GB RAM on the same VM).\n- **Best for**: Databases — splitting a database across multiple servers creates data consistency issues (half the data on one server, half on another).\n- **Limitation**: Requires the instance to be **stopped** before resizing — incompatible with auto-scaling.\n- Cannot be done \"on the fly\" in a live environment.\n\n**Auto-Scaling**\n\n- Automatically increases instances when load exceeds a threshold and releases them when load drops.\n- **Cooling period**: After traffic decreases, a ~60-second observation window (\"cool down\") occurs before instances are released to avoid premature scale-in.\n- Scale terminology: **Scale out** (add instances), **Scale in** (remove instances), **Scale up** (increase instance size), **Scale down** (decrease instance size).\n- Auto-scaling applies only to **horizontal scaling**; vertical scaling requires manual intervention and a restart.\n\n**High Availability (HA)**\n\n- Deploying **identical sets of servers in two or more geographic regions** so that if one region goes down, the other handles all traffic seamlessly — users experience zero downtime.\n- Example: Servers in both India and the UK; if UK goes down entirely, India continues serving users.\n- Involves two full server sets in sync, meaning approximately **2x the cost** but ensuring continuous availability.\n- Related concept: **DC (Data Center) and DR (Disaster Recovery)** — maintaining a primary and a backup data center.",
+      "diagram": null
+    },
+    {
+      "id": "s10-aws-account-creation-walkthrough",
+      "unit": "s10",
+      "kind": "practical",
+      "title": "AWS Account Creation Walkthrough",
+      "text_md": "- Link shared: `aws.amazon.com/console` — students instructed to bookmark it.\n- **Free tier**: $100 credit for first 3 months; another $100 if used within that period (not $200 in one shot).\n- **Steps covered**:\n    1. Click \"Create Free Account\" → provide valid email (Gmail sign-in supported).\n    2. Set a strong, memorable password.\n    3. Provide personal/KYC information (PAN card or DigiLocker verification).\n    4. Payment info (credit/debit card with international transactions enabled, or UPI) — required but not charged for free tier usage.\n    5. Phone number OTP verification → account created.\n- **Live demo** (Junaid/Mohammad): Account created without credit card; EC2 instance launched in two clicks to verify the account works.\n- **Key notes**:\n    - Students with accounts created 5–6 months ago should use the **same account**.\n    - Students whose free tier expired (3–4 years ago) should use a **different mobile number** for a new account.\n    - Family members' accounts can be used as an alternative.\n    - IAM users, VPCs, and groups incur **no billing** — only compute resources (VMs, storage, etc.) generate charges.",
+      "diagram": null
+    },
+    {
+      "id": "s10-quick-revision-table",
+      "unit": "s10",
+      "kind": "concept",
+      "title": "Quick Revision Table",
+      "text_md": "| Topic | Remember |\n|---|---|\n| Root user | Unrestricted account-level identity; avoid routine use |\n| IAM user | Identity for a person or workload |\n| IAM group | Applies common permissions to multiple users |\n| IAM policy | Defines allowed and denied actions |\n| IAM role | Assumable identity, commonly used for temporary access |\n| Access keys | Programmatic credentials; keep secrets protected |\n| Credential report | Helps audit IAM credential status and usage |\n| Elasticity | Capacity can increase or decrease with demand |\n| Horizontal scaling | Add/remove instances; scale out/in |\n| Vertical scaling | Increase/decrease one instance's size; scale up/down |\n| Auto Scaling | Automatically adjusts capacity according to configuration |\n| High availability | Reduces service interruption through redundancy |\n| Disaster recovery | Restores service after a major disruption |\n| Cost hygiene | Clean up unused resources and check related billable items |",
+      "diagram": null
+    },
+    {
+      "id": "s10-practical-revision-tasks",
+      "unit": "s10",
+      "kind": "practical",
+      "title": "Practical Revision Tasks",
+      "text_md": "1. Create an IAM user for a lab exercise and assign only the permissions needed.\n2. Create a group and compare the effective access of a user inside and outside that group.\n3. Review an IAM credential report and identify credentials that need investigation.\n4. Explain horizontal versus vertical scaling using an online-shopping example.\n5. Draw a basic highly available web architecture with instances in two Availability Zones and a load balancer.\n6. After every lab, review the billing console and clean up resources that are no longer required.\n\n> **Note:** These questions are based on the uploaded Day-1 session notes. A few answers add practical AWS security and architecture context where needed, and clarify that exact behavior depends on service configuration.",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is AWS IAM?",
+      "prompt": "What is AWS IAM?",
+      "reference_answer": "AWS Identity and Access Management (IAM) helps control who can access AWS resources and what actions they can perform. It supports authentication and authorization for users, applications, CLI tools, SDKs, and APIs.",
+      "id": "s10-q01",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between the AWS root user and an IAM user?",
+      "prompt": "What is the difference between the AWS root user and an IAM user?",
+      "reference_answer": "The root user is the identity created when the AWS account is first set up and has unrestricted access to the account, including billing and account management. An IAM user is a separate identity whose permissions can be limited using policies. The root account should not be used for routine work.",
+      "id": "s10-q02",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why should teams avoid using the root user for daily tasks?",
+      "prompt": "Why should teams avoid using the root user for daily tasks?",
+      "reference_answer": "The root user has broad, unrestricted access and is not suitable for sharing among team members. IAM identities allow teams to give each person or tool only the permissions needed for their work.",
+      "id": "s10-q03",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-practical-revision-tasks"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is an IAM policy?",
+      "prompt": "What is an IAM policy?",
+      "reference_answer": "An IAM policy is a permissions document that specifies which actions are allowed or denied on AWS resources. For example, a policy could allow a user to start and stop EC2 instances but deny deleting them.",
+      "id": "s10-q04",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is an IAM group?",
+      "prompt": "What is an IAM group?",
+      "reference_answer": "An IAM group is a way to manage permissions for multiple IAM users together. Users in a group can receive the permissions assigned to that group, making access management easier as a team grows.",
+      "id": "s10-q05",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between an IAM user and an IAM group?",
+      "prompt": "What is the difference between an IAM user and an IAM group?",
+      "reference_answer": "An IAM user represents an identity, such as an employee or a tool account. An IAM group is a collection of IAM users used to apply common permissions. A group is not a login identity.",
+      "id": "s10-q06",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is an IAM role?",
+      "prompt": "What is an IAM role?",
+      "reference_answer": "An IAM role is an identity with a set of permissions that can be assumed when needed. It is commonly used to provide temporary access to a user or AWS service. The training notes distinguish roles as temporary identities and policies as documents defining permissions.",
+      "id": "s10-q07",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between a role and a policy?",
+      "prompt": "What is the difference between a role and a policy?",
+      "reference_answer": "A policy defines which actions are allowed or denied. A role is an identity that can be assumed and has permissions associated with it. A role can use policies to determine what the assumed identity can do.",
+      "id": "s10-q08",
+      "unit": "s10",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "How can a human user and an automation tool authenticate differently?",
+      "prompt": "How can a human user and an automation tool authenticate differently?",
+      "reference_answer": "A human user may use AWS Management Console access with a username and password. A tool such as Terraform commonly uses programmatic access through an AWS authentication method rather than signing in to the console.",
+      "id": "s10-q09",
+      "unit": "s10",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What are an access key ID and secret access key used for?",
+      "prompt": "What are an access key ID and secret access key used for?",
+      "reference_answer": "They are credentials used for programmatic AWS access through tools, SDKs, or APIs. The secret access key must be protected and should never be committed to source control or shared publicly.",
+      "id": "s10-q10",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Does Terraform need AWS Management Console access to manage AWS resources?",
+      "prompt": "Does Terraform need AWS Management Console access to manage AWS resources?",
+      "reference_answer": "No. Terraform typically calls AWS APIs using configured credentials and permissions. It does not need a human-style console login. The training notes demonstrate access-key-based authentication; in production, prefer short-lived credentials or an IAM role when available.",
+      "id": "s10-q11",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the purpose of an IAM credential report?",
+      "prompt": "What is the purpose of an IAM credential report?",
+      "reference_answer": "It provides an account-level view of IAM users and credential information, such as password status, access-key status and usage, and last activity information where available. It helps administrators review credentials during security audits.",
+      "id": "s10-q12",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is an IAM account alias?",
+      "prompt": "What is an IAM account alias?",
+      "reference_answer": "An account alias provides a human-readable name for the AWS account sign-in URL instead of relying only on the account ID. It makes the IAM sign-in URL easier to recognize and share with authorized users.",
+      "id": "s10-q13",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-aws-account-creation-walkthrough",
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is elasticity in cloud computing?",
+      "prompt": "What is elasticity in cloud computing?",
+      "reference_answer": "Elasticity is the ability to increase or decrease computing resources in response to demand. For example, an online store may need more capacity during a sale and less capacity when traffic returns to normal.",
+      "id": "s10-q14",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-elasticity-scaling-and-high-availability"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is horizontal scaling?",
+      "prompt": "What is horizontal scaling?",
+      "reference_answer": "Horizontal scaling means adding or removing instances or servers. Adding instances is called scale out; removing them is called scale in. It is useful for applications that can distribute work across multiple instances.",
+      "id": "s10-q15",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-elasticity-scaling-and-high-availability"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is vertical scaling?",
+      "prompt": "What is vertical scaling?",
+      "reference_answer": "Vertical scaling means increasing or decreasing the capacity of one machine, such as moving to an instance type with more CPU or memory. Depending on the instance and change, this may require stopping the instance and can cause downtime.",
+      "id": "s10-q16",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-elasticity-scaling-and-high-availability"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between horizontal and vertical scaling?",
+      "prompt": "What is the difference between horizontal and vertical scaling?",
+      "reference_answer": "Horizontal scaling changes the number of instances, while vertical scaling changes the size of an individual instance. Horizontal scaling is often useful for web applications with changing traffic; vertical scaling can be useful when a workload needs a larger individual server.",
+      "id": "s10-q17",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-elasticity-scaling-and-high-availability"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Auto Scaling, and how does it relate to elasticity?",
+      "prompt": "What is Auto Scaling, and how does it relate to elasticity?",
+      "reference_answer": "Auto Scaling automatically adjusts capacity based on configured policies or conditions. Elasticity is the ability to change capacity; Auto Scaling is one mechanism used to achieve it. AWS Auto Scaling behavior depends on the service and configuration.",
+      "id": "s10-q18",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-elasticity-scaling-and-high-availability"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is high availability (HA)?",
+      "prompt": "What is high availability (HA)?",
+      "reference_answer": "High availability means designing a system to remain accessible when a component or location fails. A common approach is to distribute redundant resources across multiple Availability Zones and configure health checks and traffic routing. Multi-Region designs may be used when regional failure protection is required.",
+      "id": "s10-q19",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-elasticity-scaling-and-high-availability"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between high availability and disaster recovery?",
+      "prompt": "What is the difference between high availability and disaster recovery?",
+      "reference_answer": "High availability aims to reduce interruptions during component or zone failures. Disaster recovery focuses on restoring service after a major disruption, using planned recovery processes and backup or standby resources. The required design depends on recovery-time and recovery-point targets.",
+      "id": "s10-q20",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-elasticity-scaling-and-high-availability"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A company owner asks all developers to use the AWS root account for daily work. What would you recommend?",
+      "prompt": "A company owner asks all developers to use the AWS root account for daily work. What would you recommend?",
+      "reference_answer": "Recommend using separate IAM identities with only the permissions each developer needs. Keep root access restricted to account-level tasks that require it.",
+      "id": "s10-s01",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-aws-account-creation-walkthrough"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Rahul can sign in to the AWS console but cannot launch an EC2 instance. What could be wrong?",
+      "prompt": "Rahul can sign in to the AWS console but cannot launch an EC2 instance. What could be wrong?",
+      "reference_answer": "Being able to sign in only proves authentication succeeded. Rahul may not have a policy allowing the required EC2 actions, or an explicit deny or other permission boundary may block the request. Review his user and group permissions.",
+      "id": "s10-s02",
+      "unit": "s10",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A company hires 50 engineers who need the same read-only AWS access. How can access management be simplified?",
+      "prompt": "A company hires 50 engineers who need the same read-only AWS access. How can access management be simplified?",
+      "reference_answer": "Create an appropriate IAM group, attach a least-privilege read-only policy, and add the engineers' IAM users to the group. Review access regularly as responsibilities change.",
+      "id": "s10-s03",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Abhijit is added to a group with the required permissions, but Rahul is not added to that group. Why might their access differ?",
+      "prompt": "Abhijit is added to a group with the required permissions, but Rahul is not added to that group. Why might their access differ?",
+      "reference_answer": "Abhijit receives the permissions assigned to the group, while Rahul does not inherit those group permissions. Check any other policies or permission controls that may also affect their access.",
+      "id": "s10-s04",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Terraform must create an EC2 instance, but the team created only a console username and password. What is missing?",
+      "prompt": "Terraform must create an EC2 instance, but the team created only a console username and password. What is missing?",
+      "reference_answer": "Terraform needs programmatic AWS authentication and sufficient API permissions. Configure a supported credential method, preferably short-lived role-based credentials where possible, rather than relying on console credentials.",
+      "id": "s10-s05",
+      "unit": "s10",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A developer accidentally commits an AWS secret access key to a public Git repository. What should the team do first?",
+      "prompt": "A developer accidentally commits an AWS secret access key to a public Git repository. What should the team do first?",
+      "reference_answer": "Treat the key as compromised. Disable or deactivate it immediately, investigate its use, rotate credentials, remove the exposed secret from the repository where possible, and move secrets into a secure credential store. Deleting the visible commit alone is not enough.",
+      "id": "s10-s06",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "The security team wants to identify IAM users with old or unused credentials. Which IAM feature can help?",
+      "prompt": "The security team wants to identify IAM users with old or unused credentials. Which IAM feature can help?",
+      "reference_answer": "Generate and review the IAM credential report, then investigate old passwords and access keys. Confirm actual usage before disabling credentials so that production automation is not unexpectedly broken.",
+      "id": "s10-s07",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A new employee needs to manage EC2 instances but must not delete them. What should you configure?",
+      "prompt": "A new employee needs to manage EC2 instances but must not delete them. What should you configure?",
+      "reference_answer": "Create or assign a policy that allows only the required EC2 actions and explicitly excludes or denies deletion as appropriate. Test the policy and keep permissions limited to the required resources.",
+      "id": "s10-s08",
+      "unit": "s10",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A team wants an easy-to-recognize sign-in URL for its IAM users. What can it configure?",
+      "prompt": "A team wants an easy-to-recognize sign-in URL for its IAM users. What can it configure?",
+      "reference_answer": "Set an AWS account alias. Share the resulting sign-in URL only with authorized users and continue enforcing appropriate authentication and access controls.",
+      "id": "s10-s09",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "An online store experiences a large traffic increase during a sale. What scaling approach is a good starting point?",
+      "prompt": "An online store experiences a large traffic increase during a sale. What scaling approach is a good starting point?",
+      "reference_answer": "For a stateless web tier, use horizontal scaling with multiple instances behind a load balancer and configure Auto Scaling based on suitable metrics. Test capacity and health checks before the sale.",
+      "id": "s10-s10",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-elasticity-scaling-and-high-availability"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Traffic drops after a sale. What should happen to the extra application instances?",
+      "prompt": "Traffic drops after a sale. What should happen to the extra application instances?",
+      "reference_answer": "A properly configured Auto Scaling group can scale in by removing excess instances after its conditions and cooldown or warm-up behavior permit it. Use termination protections and lifecycle handling where needed so requests are not interrupted.",
+      "id": "s10-s11",
+      "unit": "s10",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A single server is running out of memory, and the application cannot easily be distributed across multiple servers. What option could help?",
+      "prompt": "A single server is running out of memory, and the application cannot easily be distributed across multiple servers. What option could help?",
+      "reference_answer": "Consider vertical scaling by moving to an instance with more memory. Check compatibility and plan for any required stop/start operation and downtime before resizing.",
+      "id": "s10-s12",
+      "unit": "s10",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A team expects traffic to change automatically throughout the day. Should it rely only on manual vertical resizing?",
+      "prompt": "A team expects traffic to change automatically throughout the day. Should it rely only on manual vertical resizing?",
+      "reference_answer": "Usually not. For a horizontally scalable application, configure Auto Scaling to add or remove instances based on demand. Manual vertical resizing is not a substitute for horizontal Auto Scaling.",
+      "id": "s10-s13",
+      "unit": "s10",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "An application runs on only one server. If that server fails, the website becomes unavailable. What is a basic improvement?",
+      "prompt": "An application runs on only one server. If that server fails, the website becomes unavailable. What is a basic improvement?",
+      "reference_answer": "Deploy multiple application instances across separate Availability Zones, put them behind a load balancer, and configure health checks. Confirm that the application and its data layer can also tolerate failures.",
+      "id": "s10-s14",
+      "unit": "s10",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A company wants its service to survive a complete AWS Region outage. Is deploying only across two Availability Zones in one Region enough?",
+      "prompt": "A company wants its service to survive a complete AWS Region outage. Is deploying only across two Availability Zones in one Region enough?",
+      "reference_answer": "No. Availability Zones help with many data-center-level failures, but a complete Region outage may affect all of them. Consider a multi-Region disaster-recovery or high-availability design and test the failover process.",
+      "id": "s10-s15",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-elasticity-scaling-and-high-availability"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A database needs more memory because its workload has grown. Which scaling option might be suitable?",
+      "prompt": "A database needs more memory because its workload has grown. Which scaling option might be suitable?",
+      "reference_answer": "Vertical scaling may be suitable if the database benefits from a larger instance. Evaluate database-specific options, downtime, failover support, and whether read replicas or other architecture changes are also needed.",
+      "id": "s10-s16",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-elasticity-scaling-and-high-availability"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A student finishes an EC2 practical and leaves the instance running. How can unexpected costs be reduced?",
+      "prompt": "A student finishes an EC2 practical and leaves the instance running. How can unexpected costs be reduced?",
+      "reference_answer": "Stop or terminate resources that are no longer needed, depending on whether they must be kept. Also check attached storage, public IPv4 addresses, snapshots, and other billable resources because stopping an instance does not necessarily remove every charge.",
+      "id": "s10-s17",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-practical-revision-tasks"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A student assumes creating IAM users and groups will itself create a compute bill. Is that correct?",
+      "prompt": "A student assumes creating IAM users and groups will itself create a compute bill. Is that correct?",
+      "reference_answer": "IAM users and groups do not normally incur direct charges. However, resources created by those identities—such as EC2 instances, storage, or other billable services—can incur charges.",
+      "id": "s10-s18",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A former employee still has an old SSH private key for an EC2 instance. Does removing their IAM user automatically block SSH access?",
+      "prompt": "A former employee still has an old SSH private key for an EC2 instance. Does removing their IAM user automatically block SSH access?",
+      "reference_answer": "Not necessarily. EC2 SSH key-based operating-system access is separate from IAM console permissions in a typical setup. Remove or rotate the relevant authorized key, review other access paths, and follow the organization's offboarding process.",
+      "id": "s10-s19",
+      "unit": "s10",
+      "concept_ids": [
+        "s10-iam-identity-and-access-management"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A team wants to deploy identical application stacks in India and the UK so one can serve users if the other location fails. What should it plan?",
+      "prompt": "A team wants to deploy identical application stacks in India and the UK so one can serve users if the other location fails. What should it plan?",
+      "reference_answer": "This is a multi-Region design. Plan data replication, traffic routing or failover, health checks, consistency, recovery objectives, security, and the higher cost of running redundant capacity. Test the failover instead of assuming it will happen seamlessly.",
+      "id": "s10-s20",
+      "unit": "s10",
+      "concept_ids": []
+    }
+  ]
+}

@@ -1,0 +1,737 @@
+{
+  "id": "s43",
+  "title": "Bash Scripting · Day 2",
+  "subtitle": "Session 43 · 20 Shell Scripting Interview Questions & Answers",
+  "session": 43,
+  "module": "M6 IaC + Automation",
+  "order": 4300,
+  "status": "ready",
+  "source_file": "Session-43-Bash-Scripting/Shell_Scripting_Interview_QA_Day2 (1).md",
+  "needs_authoring": [],
+  "unparsed_qa": [
+    {
+      "section": "Interview Questions Highlighted",
+      "chars": 1349
+    }
+  ],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s43-session-context-setup",
+      "unit": "s43",
+      "kind": "practical",
+      "title": "Session Context & Setup",
+      "text_md": "·       **Topic:** Shell Scripting — from basics to real-time automation use cases\n\n·       **Platform:** Live Zoom session; participants encouraged to turn on cameras and write full names for certificate generation\n\n·       **Cloud environment used:** GCP (Google Cloud Platform); participants were advised to have a GCP or AWS account to follow along practically\n\n·       **Resource reference:** Instructor's website/blog contains step-by-step guides for GCP account creation, budget alarm setup (GCP, AWS, Azure), and VM creation — participants directed to search these articles\n\n·       **GitHub repository:** A Day 43 Shell Scripting file was shared containing all commands and scripts used during the session\n\n·       **Certificate note:** Participants reminded to update their Zoom profile with their full, correctly spelled names so certificates are generated accurately",
+      "diagram": null
+    },
+    {
+      "id": "s43-what-is-a-shell",
+      "unit": "s43",
+      "kind": "concept",
+      "title": "What is a Shell?",
+      "text_md": "·       The **shell** is the outer layer of the operating system — it sits between the user/terminal and the kernel\n\n·       The **kernel** is the heart of the OS, closely connected to hardware (CPU, memory, disk); it is the lowest-level component\n\n·       User commands flow: **Terminal → Shell → Kernel → Hardware**\n\n·       Some commands (e.g., wget, cat, vi) are user-level/external commands and run slightly slower than kernel-level operations",
+      "diagram": null
+    },
+    {
+      "id": "s43-types-of-shells",
+      "unit": "s43",
+      "kind": "concept",
+      "title": "Types of Shells",
+      "text_md": "Participants identified the following shell types during discussion:\n\n·       **Bash (Bourne Again Shell)** — most popular, available across all Linux flavors, used heavily for automation; dominant since the 1990s\n\n·       **KSH (Korn Shell)** — Unix-based\n\n·       **CSH / C Shell** — syntax similar to C programming language; suited for low-level scripting; harder to use, less popular\n\n·       **TCSH** — advanced version of Unix Shell Scripting\n\n·       **ZSH** — also mentioned by participants\n\n·       **SH (original shell script)** — origins traced to around 1977\n\n·       Interview tip: Know the names and key differences; TCSH full form is not commonly asked but awareness is expected",
+      "diagram": null
+    },
+    {
+      "id": "s43-what-is-shell-scripting",
+      "unit": "s43",
+      "kind": "concept",
+      "title": "What is Shell Scripting?",
+      "text_md": "·       **Definition:** A series of Linux commands written in one file and executed in order\n\n·       File extension: .sh (e.g., rita.sh, 1.sh, monitor.sh)\n\n·       The .sh extension signals that the file is a shell script\n\n·       **Shebang line** (#!/bin/bash) placed at the top of the file tells the OS which shell to use to execute the script\n\n·       The # (pound/hash sign) is a comment character; the shebang is a special comment that informs the machine which shell interpreter to invoke\n\n·       Best practice: always include the shebang; it is not mandatory but strongly recommended",
+      "diagram": null
+    },
+    {
+      "id": "s43-benefits-of-shell-scripting",
+      "unit": "s43",
+      "kind": "concept",
+      "title": "Benefits of Shell Scripting",
+      "text_md": "·       **Automation:** Eliminates need to manually execute repetitive commands; scripts can run at scheduled times (e.g., 2 AM, 3 AM) without human intervention\n\n·       **Reusability:** Write once, reuse across multiple executions and environments\n\n·       **Reduced manual errors:** Automation reduces human mistakes in repetitive tasks\n\n·       **Speed and efficiency:** Faster execution than manual steps; reduces team dependency\n\n·       **Always available:** Automation runs even when the engineer is offline or unavailable\n\n·       **Real-world examples cited:** Bank transaction reprocessing, IRCTC nightly maintenance, log file cleanup, backup automation\n\n·       **Scope:** Shell scripting is for **Linux automation**; Python/Boto3 is for cloud (AWS) automation — these are separate use cases\n\n·       **Windows equivalent:** PowerShell scripts (.bat files) serve the same purpose on Windows",
+      "diagram": null
+    },
+    {
+      "id": "s43-creating-a-script",
+      "unit": "s43",
+      "kind": "practical",
+      "title": "Creating a Script",
+      "text_md": "1.      Open a file with VI editor: vi filename.sh\n\n2.      Add shebang on the first line: #!/bin/bash\n\n3.      Add optional comment block for documentation/beautification (e.g., # Monitoring Shell Script)\n\n4.      Write Linux commands line by line\n\n5.      Save and exit: Escape → \\:wq",
+      "diagram": null
+    },
+    {
+      "id": "s43-running-a-script",
+      "unit": "s43",
+      "kind": "practical",
+      "title": "Running a Script",
+      "text_md": "·       Command: ./filename.sh (dot-slash notation)\n\n·       **Permission error** is expected on first run — by default, newly created files do **not** have executable permission, even for the owner\n\n·       **Interview question:** Why doesn't the owner have execute permission by default? — Because default Linux policy does not grant executable permission automatically",
+      "diagram": null
+    },
+    {
+      "id": "s43-granting-executable-permission",
+      "unit": "s43",
+      "kind": "practical",
+      "title": "Granting Executable Permission",
+      "text_md": "·       Command: chmod +x filename.sh\n\n·       Verify with: ls -l — color of filename changes when executable permission is added\n\n·       **Best practice warning:** Do NOT use chmod 777 in production — this grants full read/write/execute to all users (owner, group, others), which is a security risk\n\n·       Correct approach: grant only the minimum required permissions",
+      "diagram": null
+    },
+    {
+      "id": "s43-key-commands-demonstrated",
+      "unit": "s43",
+      "kind": "practical",
+      "title": "Key Commands Demonstrated",
+      "text_md": "|     |\n| --- |\n\nCommand\n\n|     |\n| --- |\n\nPurpose\n\n|     |\n| --- |\n|     |\n\ndf -h\n\n|     |\n| --- |\n\nCheck disk space   usage\n\n|     |\n| --- |\n|     |\n\nfree\n\n|     |\n| --- |\n\nCheck memory usage\n\n|     |\n| --- |\n|     |\n\nls\n\n|     |\n| --- |\n\nList   files/directories\n\n|     |\n| --- |\n|     |\n\nmkdir\n\n|     |\n| --- |\n\nCreate directory\n\n|     |\n| --- |\n|     |\n\ntouch\n\n|     |\n| --- |\n\nCreate a file\n\n|     |\n| --- |\n|     |\n\ncat\n\n|     |\n| --- |\n\nView file contents\n\n|     |\n| --- |\n|     |\n\necho\n\n|     |\n| --- |\n\nPrint output   (equivalent to print in Python/Java)\n\n|     |\n| --- |\n|     |\n\nchmod +x\n\n|     |\n| --- |\n\nGrant executable   permission\n\n|     |\n| --- |\n|     |\n\n./filename.sh\n\n|     |\n| --- |\n\nExecute shell script\n\n|     |\n| --- |\n|     |\n\nclear\n\n|     |\n| --- |\n\nClear terminal   screen\n\n|     |\n| --- |\n|     |\n\nhostname\n\n|     |\n| --- |\n\nDisplay machine   hostname\n\n|     |\n| --- |\n|     |\n\nps\n\n|     |\n| --- |\n\nShow running   processes\n\n|     |\n| --- |\n|     |\n\nwho / w\n\n|     |\n| --- |\n\nShow logged-in users\n\n|     |\n| --- |\n|     |\n\ndate\n\n|     |\n| --- |\n\nShow current date   and time\n\n|   |\n| - |",
+      "diagram": null
+    },
+    {
+      "id": "s43-variables-in-shell-scripting",
+      "unit": "s43",
+      "kind": "concept",
+      "title": "Variables in Shell Scripting",
+      "text_md": "·       **Declaring a variable:** varname=\"value\" — no spaces around =\n\n·       Running the declaration alone produces no output; the value is stored silently\n\n·       **Calling a variable:** Use $varname (dollar sign prefix)\n\n·       **Printing a variable:** echo $varname\n\n·       **Interview question:** How do you call/reference a variable in a shell script? → Use the $ sign\n\n·       **Single quote vs double quote difference** (interview topic): Double quotes allow variable expansion ($ is interpreted); single quotes treat everything as a literal string\n\n·       **whoami command** can be used as a variable value to dynamically capture the current user\n\n### Read Command (User Input)\n\n·       read varname — takes input from the user at runtime\n\n·       **Interview question from PayPal:** Which command is used to take user input from the command line? → read\n\n·       Demonstrated with an email input script: script prompts \"Enter your email ID\", user types value, script prints \"Welcome [input] to the Linux Learning Session\"",
+      "diagram": null
+    },
+    {
+      "id": "s43-script-1-basic-hello-world-learning-script",
+      "unit": "s43",
+      "kind": "practical",
+      "title": "Script 1 — Basic Hello World / Learning Script",
+      "text_md": "·       Shebang + echo \"This is a shell script\" + echo \"I am learning Linux Automation\"\n\n·       Purpose: Validate basic script creation, permission granting, and execution flow",
+      "diagram": null
+    },
+    {
+      "id": "s43-script-2-variable-usage",
+      "unit": "s43",
+      "kind": "practical",
+      "title": "Script 2 — Variable Usage",
+      "text_md": "·       Declares a variable (somewhere=\"value\") and prints it using echo $varname\n\n·       Demonstrates how whoami output can be embedded: echo \"My name is $(whoami)\" or echo \"My name is $USER\"",
+      "diagram": null
+    },
+    {
+      "id": "s43-script-3-system-monitoring-script",
+      "unit": "s43",
+      "kind": "practical",
+      "title": "Script 3 — System Monitoring Script",
+      "text_md": "·       Commands included: hostname, internal IP display, ps, free, df\n\n·       Output: hostname, IP address, running processes, memory info, disk usage\n\n·       Described as a **monitoring script** — foundational for real-world health checks",
+      "diagram": null
+    },
+    {
+      "id": "s43-ai-generated-script-chatgpt-demo",
+      "unit": "s43",
+      "kind": "practical",
+      "title": "AI-Generated Script (ChatGPT Demo)",
+      "text_md": "·       Instructor took the basic monitoring script and prompted ChatGPT: *\"Script written by junior engineer. I am 5-year experience person. Update and Beautify this script.\"*\n\n·       ChatGPT output included: color-coded output, labeled sections (hostname, IP address, OS, kernel version), structured formatting\n\n·       Key technique used: cat > filename.sh << EOF ... EOF — heredoc syntax to create a file from command line when VI editor is unavailable\n\n·       **Important line highlighted:** The cat with redirect and EOF allows creating a file and writing content in one command — useful when AI-generated scripts can't be pasted directly into VI\n\n·       Script execution produced color-coded terminal output with hostname, IP, memory, disk size",
+      "diagram": null
+    },
+    {
+      "id": "s43-script-4-system-info-report-student-exercise",
+      "unit": "s43",
+      "kind": "practical",
+      "title": "Script 4 — System Info Report (Student Exercise)",
+      "text_md": "·       Task: Write a script that shows date/time, lists logged-in users, shows running processes, and redirects all output to a file\n\n·       Solution approach demonstrated:\n\n·       date >> info.txt — append current date/time to file\n\n·       w >> info.txt — append logged-in users\n\n·       ps >> info.txt — append running processes\n\n·       Use >> (append redirect) not > (overwrite) to accumulate all output in one file\n\n·       **Interview note:** Use >> for appending multiple outputs to the same file; > would overwrite",
+      "diagram": null
+    },
+    {
+      "id": "s43-colorized-output-in-shell-scripts",
+      "unit": "s43",
+      "kind": "concept",
+      "title": "Colorized Output in Shell Scripts",
+      "text_md": "·       Shell scripts can display output in different colors using **ANSI escape codes**\n\n·       Color codes embedded in echo -e statements allow green (success), red (error/warning), orange (caution) output\n\n·       Demonstrated in a colorized script where borders and section labels were rendered in different colors\n\n·       **Interview relevance:** Interviewer may ask about single vs double quotes in echo with color codes — double quotes allow $ variable expansion; single quotes do not\n\n·       Practical use: Makes monitoring script output more readable and visually scannable in terminals",
+      "diagram": null
+    },
+    {
+      "id": "s43-tools-best-practices-devops-integration",
+      "unit": "s43",
+      "kind": "concept",
+      "title": "Tools, Best Practices & DevOps Integration",
+      "text_md": "·       **Shell scripting vs Python/Boto3:** Shell scripting is for Linux/OS-level automation; Python with Boto3 is for cloud (AWS) API automation — different use cases, not interchangeable\n\n·       **ChatGPT for scripting:** Useful for beautifying or upgrading scripts; however, over-reliance risks being caught in interviews — understand the code, not just copy-paste\n\n·       **Centralized script storage:** Best practice is to store all automation scripts in a centralized Git repository (GitHub, Azure Repos, etc.) so team members can access, modify, and version-control them\n\n·       **Cron jobs:** Used to schedule shell scripts at regular intervals (hourly, daily, weekly) for automated execution without manual intervention\n\n·       **Real-world monitoring tools:** Tools like Prometheus, Grafana, and CloudWatch handle real-time monitoring in production; shell scripting knowledge is still required for interviews and foundational understanding\n\n·       **GCP Cloud Shell:** Demonstrated creating a VM creation script stored in Cloud Shell for reuse — avoids reconfiguring VM settings manually each time\n\n·       **Vim installation note:** If vi is not found, install with apt install vim",
+      "diagram": null
+    },
+    {
+      "id": "s43-student-exercise-assignment",
+      "unit": "s43",
+      "kind": "concept",
+      "title": "Student Exercise & Assignment",
+      "text_md": "**Assignment given at end of session:**\n\n·       Write a shell script that:\n\na.      Shows current **date and time**\n\nb.      Lists all currently **logged-in users**\n\nc.       Shows all **running processes**\n\nd.      Redirects all output into a single file (e.g., info.txt)\n\n·       Commands to use: date, w or who, ps, with >> redirect operator\n\n·       Participants were asked to submit scripts via Zoom chat for review\n\n**Additional practice recommended:**\n\n·       Execute the colorized monitoring script and share output screenshot\n\n·       Rewrite the AI-generated script manually without copy-pasting to internalize concepts\n\n·       Complete the **100 Tasks Challenge** available in the course GitHub repository — covers Day 1 through advanced topics including Python, Terraform, Ansible",
+      "diagram": null
+    },
+    {
+      "id": "s43-announcements-administrative-notes",
+      "unit": "s43",
+      "kind": "concept",
+      "title": "Announcements & Administrative Notes",
+      "text_md": "·       **Batch 45** is expected to start around **9th–10th September**\n\n·       **TCS Walk-in opportunity** shared: positions include Database Engineer, Windows, Ansible, Container Admin (Kubernetes); participants advised to create an iPortal account and attend the walk-in on Saturday\n\n·       **Wipro openings** also shared via WhatsApp group\n\n·       **Job referrals:** Participants with TCS employee contacts encouraged to seek referrals\n\n·       **LinkedIn profiles:** Participants encouraged to optimize LinkedIn profiles using the README file templates in the course repository; posting GitHub repo links on LinkedIn increases visibility\n\n·       **GCP account creation:** Creating multiple free-tier accounts is flagged by Google and will not work; participants advised to use a single genuine account\n\n·       **Course website:** Contains articles on GCP account creation, VM setup, budget alarms, assignment submission guides — accessible via the instructor's blog/website",
+      "diagram": null
+    },
+    {
+      "id": "s43-quick-revision-commands",
+      "unit": "s43",
+      "kind": "concept",
+      "title": "Quick Revision Commands",
+      "text_md": "```bash\nhostname\nwhoami\ndate\ndf -h\nfree -h\nps -ef\nwho\nw\nls\nmkdir\ntouch\ncat\necho\nclear\nchmod +x script.sh\n./script.sh\n```\n\nUseful scripting commands:\n\n```bash\nread\nif\nfor\nwhile\nawk\ngrep\ntr\nfind\ntail\n```\n\nUseful operators:\n\n```text\n|    Pipe output\n>    Overwrite file\n>>   Append to file\n&&   Run next command when previous succeeds\n||   Run next command when previous fails\n```",
+      "diagram": null
+    },
+    {
+      "id": "s43-final-interview-preparation-checklist",
+      "unit": "s43",
+      "kind": "concept",
+      "title": "Final Interview Preparation Checklist",
+      "text_md": "- Understand what a shell and kernel are.\n- Know Bash and other common shell types.\n- Understand the shebang.\n- Know how to create and execute a script.\n- Understand Linux permissions.\n- Be comfortable with variables and `read`.\n- Know single vs double quotes.\n- Understand pipes and redirection.\n- Practice `df`, `free`, `ps`, `systemctl`, `find`, `awk`, and `grep`.\n- Understand cron jobs.\n- Practice disk monitoring.\n- Practice log cleanup.\n- Practice service health checks.\n- Always discuss production safety before destructive operations.\n- Be able to explain every line of the script you write.",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "scenario",
+      "title": "— Disk Space Monitoring Script",
+      "prompt": "— Disk Space Monitoring Script",
+      "reference_answer": "**Situation:** Server has 100 GB disk; if usage reaches 80%, alert must be triggered before space runs out.\n\n**Script logic explained:**\n\n·       Set threshold variable: LIMIT=80\n\n·       Check disk usage of root / with: df /\n\n·       Extract the percentage value using awk '{print $5}' (5th column of df output)\n\n·       Strip the % symbol using tr -d '%'\n\n·       **Condition:** if [ $CURRENT\\_USAGE -gt $LIMIT ] → print warning\n\n·       Tested by changing limit to 10% to trigger the warning message in a live demo\n\n·       **tail -1** used to get only the last line of df output (the root filesystem line)\n\n·       **pipe (|)** used to chain df output into awk and tr",
+      "id": "s43-s01",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-3-system-monitoring-script",
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-ai-generated-script-chatgpt-demo"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— Log File Cleanup Script",
+      "prompt": "— Log File Cleanup Script",
+      "reference_answer": "**Situation:** Application generates log files daily; after several months, old files consume disk space; requirement is to delete files older than 7 days.\n\n**Script logic explained:**\n\n·       Define variable: logDirectory=/var/logs\n\n·       Use find command: find $logDirectory -name \"\\*.log\" -mtime +7 -exec rm {} \\\\;\n\n·       -name \"\\*.log\" — targets only .log extension files\n\n·       -mtime +7 — files with modification time older than 7 days\n\n·       -exec rm — deletes matched files\n\n·       Output confirmation: \"Old files have been deleted successfully\"\n\n·       **Production caution:** Never run delete scripts directly in production without manager approval; confirm the retention period (commonly 30, 60, or 90 days in real environments)\n\n·       **Force delete option:** rm -f can be used to forcefully delete without prompts, but requires explicit approval\n\n·       **Dry run concept** (raised by participant): Before running destructive scripts in production, use a dry-run or test environment (UAT) to simulate behavior without actual deletion",
+      "id": "s43-s02",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script",
+        "s43-ai-generated-script-chatgpt-demo"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— Service Health Check Script",
+      "prompt": "— Service Health Check Script",
+      "reference_answer": "**Situation:** Check if a service (e.g., Nginx, Docker, Jenkins) is running; alert if it is not; can be scheduled via cron job every 1 hour.\n\n**Script logic explained:**\n\n·       Define variable: SERVICE=nginx\n\n·       Check status: systemctl is-active --quiet $SERVICE\n\n·       --quiet flag suppresses terminal output, running the check silently in the background\n\n·       **Condition:** If active → print \"Service is running\"; if not → print \"Service is not running\" and optionally restart\n\n·       **Cron job integration:** Script can be scheduled to run every hour, every 6 hours, etc., for continuous monitoring",
+      "id": "s43-s03",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script",
+        "s43-ai-generated-script-chatgpt-demo"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Shell Scripting?",
+      "prompt": "What is Shell Scripting?",
+      "reference_answer": "Shell scripting is the process of writing a series of Linux commands in a file and executing them together. It is mainly used to automate repetitive Linux and system administration tasks.\n\n**Example:**\n```bash\n#!/bin/bash\necho \"Hello DevOps\"\nhostname\ndate\n```",
+      "id": "s43-q01",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-what-is-shell-scripting",
+        "s43-benefits-of-shell-scripting",
+        "s43-colorized-output-in-shell-scripts"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a Shell?",
+      "prompt": "What is a Shell?",
+      "reference_answer": "A shell is an interface between the user and the operating system kernel. When we execute a command, the shell interprets the command and passes the required operation to the operating system.\n\nA simple flow is:\n\n```text\nUser → Terminal → Shell → Kernel → Hardware\n```",
+      "id": "s43-q02",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-what-is-a-shell",
+        "s43-what-is-shell-scripting",
+        "s43-benefits-of-shell-scripting"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between Shell and Shell Script?",
+      "prompt": "What is the difference between Shell and Shell Script?",
+      "reference_answer": "A **Shell** is the command interpreter, such as Bash.\n\nA **Shell Script** is a file containing multiple shell/Linux commands that can be executed together.\n\nFor example:\n\n```bash\nbash\n```\n\nis a shell, while:\n\n```bash\nmonitor.sh\n```\n\ncan be a shell script.",
+      "id": "s43-q03",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-colorized-output-in-shell-scripts",
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the purpose of #!/bin/bash?",
+      "prompt": "What is the purpose of #!/bin/bash?",
+      "reference_answer": "`#!/bin/bash` is called a **shebang**. It tells the operating system that the script should be executed using the Bash interpreter.\n\nExample:\n\n```bash\n#!/bin/bash\necho \"Running with Bash\"\n```\n\nIt is strongly recommended to include it at the beginning of a script.",
+      "id": "s43-q04",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-what-is-a-shell",
+        "s43-what-is-shell-scripting"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you give execute permission to a shell script?",
+      "prompt": "How do you give execute permission to a shell script?",
+      "reference_answer": "```bash\nchmod +x script.sh\n```\n\nThen execute it using:\n\n```bash\n./script.sh\n```\n\nWe can verify the permission using:\n\n```bash\nls -l script.sh\n```",
+      "id": "s43-q05",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-colorized-output-in-shell-scripts",
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why can't we directly execute a newly created script using ./script.sh?",
+      "prompt": "Why can't we directly execute a newly created script using ./script.sh?",
+      "reference_answer": "Because a newly created file normally does not have the executable permission.\n\nFor example:\n\n```bash\n-rw-r--r-- script.sh\n```\n\nWe need to add execute permission:\n\n```bash\nchmod +x script.sh\n```\n\nAfter that:\n\n```bash\n./script.sh\n```\n\nwill work.",
+      "id": "s43-q06",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script",
+        "s43-ai-generated-script-chatgpt-demo"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between > and >>?",
+      "prompt": "What is the difference between > and >>?",
+      "reference_answer": "`>` overwrites the existing file.\n\n```bash\ndate > info.txt\n```\n\n`>>` appends output to the existing file.\n\n```bash\ndate >> info.txt\n```\n\nFor example, when multiple commands need to write into the same report file, `>>` is useful.",
+      "id": "s43-q07",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-what-is-a-shell",
+        "s43-what-is-shell-scripting"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you take user input in Shell Scripting?",
+      "prompt": "How do you take user input in Shell Scripting?",
+      "reference_answer": "We use the `read` command.\n\nExample:\n\n```bash\n#!/bin/bash\n\necho \"Enter your name:\"\nread name\n\necho \"Welcome $name\"\n```\n\nThe `read` command waits for the user to enter a value.",
+      "id": "s43-q08",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-benefits-of-shell-scripting",
+        "s43-colorized-output-in-shell-scripts",
+        "s43-script-1-basic-hello-world-learning-script"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a variable in Shell Scripting?",
+      "prompt": "What is a variable in Shell Scripting?",
+      "reference_answer": "A variable stores a value that can be reused in the script.\n\nExample:\n\n```bash\nname=\"Vikas\"\necho $name\n```\n\nImportant: there should be **no spaces around `=`**.\n\nCorrect:\n\n```bash\nname=\"Vikas\"\n```\n\nIncorrect:\n\n```bash\nname = \"Vikas\"\n```",
+      "id": "s43-q09",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-variables-in-shell-scripting",
+        "s43-what-is-shell-scripting",
+        "s43-benefits-of-shell-scripting"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between single quotes and double quotes?",
+      "prompt": "What is the difference between single quotes and double quotes?",
+      "reference_answer": "Double quotes allow variable expansion, while single quotes treat the content as a literal string.\n\nExample:\n\n```bash\nname=\"Vikas\"\n\necho \"Hello $name\"\n```\n\nOutput:\n\n```text\nHello Vikas\n```\n\nWith single quotes:\n\n```bash\necho 'Hello $name'\n```\n\nOutput:\n\n```text\nHello $name\n```",
+      "id": "s43-q10",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-what-is-a-shell",
+        "s43-what-is-shell-scripting"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a pipe | in Linux?",
+      "prompt": "What is a pipe | in Linux?",
+      "reference_answer": "A pipe sends the output of one command as input to another command.\n\nExample:\n\n```bash\ndf -h | grep /dev\n```\n\nAnother example:\n\n```bash\nps -ef | grep nginx\n```\n\nThis is very useful when building monitoring and troubleshooting scripts.",
+      "id": "s43-q11",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-what-is-a-shell",
+        "s43-what-is-shell-scripting"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is && and ||?",
+      "prompt": "What is && and ||?",
+      "reference_answer": "`&&` means the second command runs only when the first command succeeds.\n\n```bash\nmkdir test && echo \"Directory created\"\n```\n\n`||` means the second command runs when the first command fails.\n\n```bash\nmkdir test || echo \"Directory creation failed\"\n```\n\nThese operators are commonly used for simple command-level error handling.",
+      "id": "s43-q12",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-what-is-a-shell",
+        "s43-what-is-shell-scripting"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between chmod +x and chmod 777?",
+      "prompt": "What is the difference between chmod +x and chmod 777?",
+      "reference_answer": "```bash\nchmod +x script.sh\n```\n\nadds executable permission while preserving the existing read/write permissions.\n\nBut:\n\n```bash\nchmod 777 script.sh\n```\n\ngrants read, write, and execute permissions to owner, group, and others.\n\nUsing `777` unnecessarily can create a security risk. In production, follow the principle of least privilege.",
+      "id": "s43-q13",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-what-is-a-shell",
+        "s43-what-is-shell-scripting"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you check disk usage from a shell script?",
+      "prompt": "How do you check disk usage from a shell script?",
+      "reference_answer": "The commonly used command is:\n\n```bash\ndf -h\n```\n\nFor checking a specific filesystem:\n\n```bash\ndf -h /\n```\n\nWe can combine it with tools such as `awk` and `tr` to extract the percentage and use it in an alert condition.\n\nExample:\n\n```bash\nUSAGE=$(df / | tail -1 | awk '{print $5}' | tr -d '%')\necho \"Disk Usage: $USAGE%\"\n```",
+      "id": "s43-q14",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-colorized-output-in-shell-scripts",
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-2-variable-usage"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you check memory usage in Linux?",
+      "prompt": "How do you check memory usage in Linux?",
+      "reference_answer": "We can use:\n\n```bash\nfree -h\n```\n\nFor example:\n\n```bash\nfree -h\n```\n\ncan be included in a system monitoring script along with `df`, `ps`, and `hostname`.",
+      "id": "s43-q15",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-2-variable-usage"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you check whether a Linux service is running?",
+      "prompt": "How do you check whether a Linux service is running?",
+      "reference_answer": "We can use:\n\n```bash\nsystemctl is-active --quiet nginx\n```\n\nExample:\n\n```bash\nif systemctl is-active --quiet nginx\nthen\n    echo \"Nginx is running\"\nelse\n    echo \"Nginx is not running\"\nfi\n```\n\nThis can also be scheduled using a cron job for regular health checks.",
+      "id": "s43-q16",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-running-a-script"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you delete log files older than 7 days?",
+      "prompt": "How do you delete log files older than 7 days?",
+      "reference_answer": "The `find` command can be used.\n\nExample:\n\n```bash\nfind /var/logs -name \"*.log\" -mtime +7 -exec rm {} \\;\n```\n\nThis searches for `.log` files older than 7 days and deletes them.\n\nIn production, always confirm the retention requirement and test the command before performing destructive actions.",
+      "id": "s43-q17",
+      "unit": "s43",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is a dry run in Shell Scripting?",
+      "prompt": "What is a dry run in Shell Scripting?",
+      "reference_answer": "A dry run means checking what a script is going to do without actually making the destructive change.\n\nFor example, before deleting files:\n\n```bash\nfind /var/logs -name \"*.log\" -mtime +7\n```\n\nWe can first verify the files returned by `find`.\n\nOnly after validation should we add the delete operation.\n\nThis is especially important in production environments.",
+      "id": "s43-q18",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-what-is-shell-scripting",
+        "s43-benefits-of-shell-scripting",
+        "s43-colorized-output-in-shell-scripts"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you schedule a shell script?",
+      "prompt": "How do you schedule a shell script?",
+      "reference_answer": "We can use **cron** to schedule shell scripts.\n\nExample:\n\n```bash\ncrontab -e\n```\n\nTo run a script every hour:\n\n```bash\n0 * * * * /home/devops/monitor.sh\n```\n\nThe script can then perform tasks such as disk checks, service checks, backups, or cleanup.",
+      "id": "s43-q19",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-colorized-output-in-shell-scripts",
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Shell Scripting vs Python/Boto3 — when would you use each?",
+      "prompt": "Shell Scripting vs Python/Boto3 — when would you use each?",
+      "reference_answer": "Shell scripting** is very useful for Linux and OS-level automation:\n\n```text\nFiles\nProcesses\nServices\nDisk\nMemory\nLogs\nLinux administration\n```\n\n**Python/Boto3** is better when interacting with AWS APIs:\n\n```text\nEC2\nS3\nIAM\nLambda\nCloudWatch\nRDS\n```\n\nA practical DevOps engineer may use both together depending on the requirement.",
+      "id": "s43-q20",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-benefits-of-shell-scripting",
+        "s43-colorized-output-in-shell-scripts",
+        "s43-script-1-basic-hello-world-learning-script"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Based Shell Scripting Interview Questions & Answers",
+      "prompt": "Based Shell Scripting Interview Questions & Answers",
+      "reference_answer": "These scenarios are closer to what an interviewer may ask a real DevOps engineer.",
+      "id": "s43-s04",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-benefits-of-shell-scripting",
+        "s43-colorized-output-in-shell-scripts",
+        "s43-script-1-basic-hello-world-learning-script"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Disk is 85% full. What will you do?",
+      "prompt": "Disk is 85% full. What will you do?",
+      "reference_answer": "First, identify the filesystem consuming space:\n\n```bash\ndf -h\n```\n\nThen identify large directories/files:\n\n```bash\ndu -sh /* 2>/dev/null\n```\n\nFor a specific directory:\n\n```bash\ndu -sh /var/*\n```\n\nIf logs are consuming the space, identify old logs:\n\n```bash\nfind /var/log -name \"*.log\" -mtime +7\n```\n\nI would not immediately delete files in production. I would first verify retention requirements and take the required approval.",
+      "id": "s43-s05",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-what-is-a-shell",
+        "s43-what-is-shell-scripting"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to alert when / disk usage crosses 80%.",
+      "prompt": "You need to alert when / disk usage crosses 80%.",
+      "reference_answer": "I would write a script like:\n\n```bash\n#!/bin/bash\n\nLIMIT=80\nUSAGE=$(df / | tail -1 | awk '{print $5}' | tr -d '%')\n\nif [ \"$USAGE\" -gt \"$LIMIT\" ]; then\n    echo \"WARNING: Disk usage is ${USAGE}%\"\nelse\n    echo \"Disk usage is normal: ${USAGE}%\"\nfi\n```\n\nThis script can later be connected to email, Slack, monitoring tools, or cron.",
+      "id": "s43-s06",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-2-variable-usage"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Jenkins is down. How will your script detect it?",
+      "prompt": "Jenkins is down. How will your script detect it?",
+      "reference_answer": "Use `systemctl`:\n\n```bash\n#!/bin/bash\n\nSERVICE=jenkins\n\nif systemctl is-active --quiet \"$SERVICE\"\nthen\n    echo \"Jenkins is running\"\nelse\n    echo \"Jenkins is DOWN\"\nfi\n```\n\nFor production, I would usually integrate this with monitoring/alerting rather than depending only on a shell script.",
+      "id": "s43-s07",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script",
+        "s43-ai-generated-script-chatgpt-demo"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your application generates thousands of .log files. How will you clean old logs safely?",
+      "prompt": "Your application generates thousands of .log files. How will you clean old logs safely?",
+      "reference_answer": "First perform a dry run:\n\n```bash\nfind /var/log/myapp -name \"*.log\" -mtime +30\n```\n\nReview the files.\n\nAfter confirming the retention requirement:\n\n```bash\nfind /var/log/myapp -name \"*.log\" -mtime +30 -exec rm {} \\;\n```\n\nI would also make the retention period a variable:\n\n```bash\nRETENTION=30\n\nfind /var/log/myapp -name \"*.log\" -mtime +$RETENTION -exec rm {} \\;\n```",
+      "id": "s43-s08",
+      "unit": "s43",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A script works manually but fails from cron. What will you check?",
+      "prompt": "A script works manually but fails from cron. What will you check?",
+      "reference_answer": "I would check:\n\n1. Absolute paths are being used.\n2. Environment variables are available in cron.\n3. The script has executable permission.\n4. The correct user is running the cron job.\n5. Output/error is redirected to a log file.\n6. File permissions are correct.\n\nFor example:\n\n```bash\n0 * * * * /home/devops/monitor.sh >> /home/devops/monitor.log 2>&1\n```\n\nThis captures both standard output and errors.",
+      "id": "s43-s09",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script",
+        "s43-ai-generated-script-chatgpt-demo"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to create a shell script but vi is not installed. What will you do?",
+      "prompt": "You need to create a shell script but vi is not installed. What will you do?",
+      "reference_answer": "I can create the file directly from the terminal using a heredoc:\n\n```bash\ncat > monitor.sh <<'EOF'\n#!/bin/bash\n\necho \"System Monitoring\"\nhostname\ndate\nfree -h\ndf -h\nEOF\n```\n\nThen:\n\n```bash\nchmod +x monitor.sh\n./monitor.sh\n```\n\nThis is also useful in cloud terminals and automation environments.",
+      "id": "s43-s10",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-colorized-output-in-shell-scripts",
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your script deletes the wrong files in production. How could you prevent this?",
+      "prompt": "Your script deletes the wrong files in production. How could you prevent this?",
+      "reference_answer": "I would add safety controls:\n\n- Validate the directory before running.\n- Use variables instead of hard-coded paths.\n- Print matched files before deletion.\n- Test in UAT first.\n- Add a dry-run option.\n- Use the correct retention period.\n- Avoid dangerous commands such as unrestricted `rm -rf`.\n- Require approval for destructive production changes.\n\nExample dry-run approach:\n\n```bash\nfind \"$LOG_DIR\" -name \"*.log\" -mtime +\"$RETENTION\"\n```\n\nThen perform deletion only after validation.",
+      "id": "s43-s11",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script",
+        "s43-ai-generated-script-chatgpt-demo"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You have to generate a daily server report.",
+      "prompt": "You have to generate a daily server report.",
+      "reference_answer": "I would combine multiple Linux commands into one script:\n\n```bash\n#!/bin/bash\n\nREPORT=\"server_report.txt\"\n\necho \"===== SERVER REPORT =====\" > \"$REPORT\"\ndate >> \"$REPORT\"\n\necho \"===== HOSTNAME =====\" >> \"$REPORT\"\nhostname >> \"$REPORT\"\n\necho \"===== MEMORY =====\" >> \"$REPORT\"\nfree -h >> \"$REPORT\"\n\necho \"===== DISK =====\" >> \"$REPORT\"\ndf -h >> \"$REPORT\"\n\necho \"===== PROCESSES =====\" >> \"$REPORT\"\nps -ef >> \"$REPORT\"\n```\n\nThen schedule it using cron.",
+      "id": "s43-s12",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-4-system-info-report-student-exercise"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "The interviewer asks you to explain why >> is used in a monitoring report.",
+      "prompt": "The interviewer asks you to explain why >> is used in a monitoring report.",
+      "reference_answer": "I use `>>` because I want to append the output of multiple commands into the same file.\n\nFor example:\n\n```bash\ndate >> report.txt\nhostname >> report.txt\ndf -h >> report.txt\n```\n\nIf I use `>` every time, the previous output will be overwritten.",
+      "id": "s43-s13",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-final-interview-preparation-checklist",
+        "s43-script-3-system-monitoring-script",
+        "s43-script-4-system-info-report-student-exercise"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A server has high CPU. How will you investigate using shell commands?",
+      "prompt": "A server has high CPU. How will you investigate using shell commands?",
+      "reference_answer": "First, I would inspect running processes:\n\n```bash\nps -ef\n```\n\nFor a more focused check:\n\n```bash\nps -eo pid,ppid,cmd,%mem,%cpu --sort=-%cpu | head\n```\n\nI would identify the process consuming the highest CPU and then investigate the application/service logs and recent changes.\n\nFor production systems, I would also use tools such as CloudWatch, Prometheus, Grafana, or another monitoring platform.",
+      "id": "s43-s14",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-benefits-of-shell-scripting",
+        "s43-colorized-output-in-shell-scripts",
+        "s43-types-of-shells"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to find whether Nginx is running.",
+      "prompt": "You need to find whether Nginx is running.",
+      "reference_answer": "One approach is:\n\n```bash\nsystemctl is-active nginx\n```\n\nOr:\n\n```bash\nps -ef | grep nginx\n```\n\nFor scripting, `systemctl is-active --quiet` is cleaner when Nginx is managed as a systemd service.",
+      "id": "s43-s15",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-running-a-script"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your script should print the current username dynamically. How?",
+      "prompt": "Your script should print the current username dynamically. How?",
+      "reference_answer": "Use:\n\n```bash\nwhoami\n```\n\nor:\n\n```bash\necho \"$USER\"\n```\n\nAnother useful pattern is command substitution:\n\n```bash\necho \"Current user: $(whoami)\"\n```",
+      "id": "s43-s16",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script",
+        "s43-ai-generated-script-chatgpt-demo"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A script accepts an email ID from a user. How would you implement it?",
+      "prompt": "A script accepts an email ID from a user. How would you implement it?",
+      "reference_answer": "```bash\n#!/bin/bash\n\necho \"Enter your email ID:\"\nread email\n\necho \"Welcome $email to the Linux Learning Session\"\n```\n\nFor production use, I would also validate the input before using it.",
+      "id": "s43-s17",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script",
+        "s43-ai-generated-script-chatgpt-demo"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your disk monitoring script always shows 85%, even when the disk is not actually 85%. What would you check?",
+      "prompt": "Your disk monitoring script always shows 85%, even when the disk is not actually 85%. What would you check?",
+      "reference_answer": "I would first inspect the raw command output:\n\n```bash\ndf /\n```\n\nThen verify the pipeline:\n\n```bash\ndf / | tail -1\ndf / | tail -1 | awk '{print $5}'\ndf / | tail -1 | awk '{print $5}' | tr -d '%'\n```\n\nThis helps identify whether the problem is in parsing, whitespace, filesystem selection, or the command logic.",
+      "id": "s43-s18",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-3-system-monitoring-script",
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-ai-generated-script-chatgpt-demo"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "An interviewer asks you to create a basic Linux health-check script in 5 minutes.",
+      "prompt": "An interviewer asks you to create a basic Linux health-check script in 5 minutes.",
+      "reference_answer": "I would create something simple and readable:\n\n```bash\n#!/bin/bash\n\necho \"===== SERVER HEALTH CHECK =====\"\n\necho \"Hostname:\"\nhostname\n\necho \"Date:\"\ndate\n\necho \"Memory:\"\nfree -h\n\necho \"Disk:\"\ndf -h\n\necho \"Running Processes:\"\nps -ef | head\n\necho \"Current User:\"\nwhoami\n```\n\nThen:\n\n```bash\nchmod +x healthcheck.sh\n./healthcheck.sh\n```\n\nThe important thing is to keep the script readable and explain every command.",
+      "id": "s43-s19",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script",
+        "s43-ai-generated-script-chatgpt-demo"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your script should print a warning only when disk usage is greater than 80%.",
+      "prompt": "Your script should print a warning only when disk usage is greater than 80%.",
+      "reference_answer": "```bash\n#!/bin/bash\n\nLIMIT=80\nUSAGE=$(df / | tail -1 | awk '{print $5}' | tr -d '%')\n\nif [ \"$USAGE\" -gt \"$LIMIT\" ]; then\n    echo \"WARNING: Disk usage is ${USAGE}%\"\nfi\n```\n\nThe key concept here is using a variable, extracting the percentage, and comparing it using an `if` condition.",
+      "id": "s43-s20",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-2-variable-usage",
+        "s43-script-3-system-monitoring-script"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "How would you run a health-check script every 6 hours?",
+      "prompt": "How would you run a health-check script every 6 hours?",
+      "reference_answer": "Add a cron entry:\n\n```bash\n0 */6 * * * /home/devops/healthcheck.sh\n```\n\nThis runs the script at minute `0` every 6 hours.",
+      "id": "s43-s21",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script",
+        "s43-ai-generated-script-chatgpt-demo"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your service is down and you want the script to restart it automatically. What would you do?",
+      "prompt": "Your service is down and you want the script to restart it automatically. What would you do?",
+      "reference_answer": "Example:\n\n```bash\n#!/bin/bash\n\nSERVICE=nginx\n\nif systemctl is-active --quiet \"$SERVICE\"\nthen\n    echo \"$SERVICE is running\"\nelse\n    echo \"$SERVICE is down\"\n    systemctl restart \"$SERVICE\"\nfi\n```\n\nIn production, I would add proper logging, alerting, permissions, and failure handling. I would also confirm whether automatic restart is approved for that service.",
+      "id": "s43-s22",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script",
+        "s43-ai-generated-script-chatgpt-demo"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You are reviewing a junior engineer's script. It uses chmod 777. What will you suggest?",
+      "prompt": "You are reviewing a junior engineer's script. It uses chmod 777. What will you suggest?",
+      "reference_answer": "I would explain that `chmod 777` gives read, write, and execute permission to everyone.\n\nInstead, I would grant only the permission required by the use case.\n\nFor an executable script:\n\n```bash\nchmod +x script.sh\n```\n\nIf specific owner/group permissions are needed, use a more restrictive mode such as:\n\n```bash\nchmod 750 script.sh\n```\n\nThe exact permission should depend on the application's requirements.",
+      "id": "s43-s23",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-script-1-basic-hello-world-learning-script",
+        "s43-script-3-system-monitoring-script",
+        "s43-ai-generated-script-chatgpt-demo"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your manager asks, \"Why do we still need Shell Scripting when we already have Prometheus, Grafana and CloudWatch?\"",
+      "prompt": "Your manager asks, \"Why do we still need Shell Scripting when we already have Prometheus, Grafana and CloudWatch?\"",
+      "reference_answer": "I would explain that these tools serve different purposes.\n\nMonitoring platforms provide centralized metrics, dashboards, alerting, and observability.\n\nShell scripting is still useful for:\n\n```text\nLinux automation\nFile operations\nLog cleanup\nService checks\nServer health checks\nDeployment helpers\nCron-based tasks\nTroubleshooting\n```\n\nFor example, Prometheus may tell us that CPU is high, while a shell script can quickly collect local process, disk, memory, and service information from the server.",
+      "id": "s43-s24",
+      "unit": "s43",
+      "concept_ids": [
+        "s43-benefits-of-shell-scripting",
+        "s43-colorized-output-in-shell-scripts",
+        "s43-script-1-basic-hello-world-learning-script"
+      ]
+    }
+  ]
+}

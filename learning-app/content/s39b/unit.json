@@ -1,0 +1,378 @@
+{
+  "id": "s39b",
+  "title": "Terraform AWS Resources · Day 5",
+  "subtitle": "Session 39 · Batch-44 · DevOps Batch-44 | Terraform Day 3: Real-Time Production Scenarios, State Disaste",
+  "session": 39,
+  "module": "M6 IaC + Automation",
+  "order": 3901,
+  "status": "ready",
+  "source_file": "Session-39-Terraform-AWS-Resources/🚀 Day-5 of Automation but Day-3 of Terraform for Batch-44 | 26th Aug 2026.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s39b-core-philosophy-interview-mindset",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Core Philosophy & Interview Mindset",
+      "text_md": "> [!IMPORTANT]\n> **Real-World Focus:** Memorizing command flags is insufficient. High-impact DevOps engineers and interviewers focus on **architectural decisions, disaster recovery, concurrency control, drift remediation, zero-downtime upgrades, and security governance**.\n\nKey themes covered:\n* **State Resiliency & Recovery:** Handling lost state files, automated state backups, and remote backend locking.\n* **Concurrency in Teams:** Preventing race conditions when multiple engineers deploy simultaneously.\n* **Lifecycle Rules:** Implementing blue/green style zero-downtime updates with `create_before_destroy` and protecting critical data stores with `prevent_destroy`.\n* **Drift & Brownfield Imports:** Detecting manual changes (ClickOps) and bringing legacy infrastructure under IaC without downtime.\n* **Performance Tuning:** Fine-tuning execution graphs with `-parallelism` without hitting cloud provider API rate limits.\n* **Meta-Arguments:** Dissecting the architectural differences between `count` (list indexing) and `for_each` (map keying).\n* **Terraform to Ansible Transition:** The clean boundary between Infrastructure Provisioning and Configuration Management.",
+      "diagram": null
+    },
+    {
+      "id": "s39b-end-to-end-terraform-execution-architecture",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "End-to-End Terraform Execution Architecture",
+      "text_md": "Terraform functions as a declarative state machine that bridges local intent (`.tf` configurations) with remote cloud reality (AWS, Azure, GCP APIs).\n\n```text\n┌─────────────────────────────────────────────────────────────────────────────┐\n│                         TERRAFORM CORE ENGINE                               │\n└──────────────────────────────────────┬──────────────────────────────────────┘\n                                       │\n                                       ▼\n┌─────────────────────────────────────────────────────────────────────────────┐\n│ 1. terraform init                                                           │\n│    Downloads provider plugins (.terraform/) & connects to Remote Backend    │\n└──────────────────────────────────────┬──────────────────────────────────────┘\n                                       │\n                                       ▼\n┌─────────────────────────────────────────────────────────────────────────────┐\n│ 2. terraform plan                                                           │\n│    Reads Current State ──▶ Queries Cloud API (Refresh) ──▶ Computes Diff    │\n│    Outputs: + Create, ~ Update in-place, - Destroy, -/+ Replace             │\n└──────────────────────────────────────┬──────────────────────────────────────┘\n                                       │\n                                       ▼\n┌─────────────────────────────────────────────────────────────────────────────┐\n│ 3. terraform apply                                                          │\n│    Acquires State Lock ──▶ Executes DAG Graph in Parallel ──▶ Updates State │\n│    Releases State Lock                                                      │\n└─────────────────────────────────────────────────────────────────────────────┘\n```\n\n### The 30-Second Interview Pitch:\n> \"Terraform is a declarative IaC engine. It parses HCL configurations to construct a Directed Acyclic Graph (DAG) of resources, discovers real-world infrastructure state via cloud APIs, computes a deterministic execution plan, and invokes provider APIs to converge the live environment to the declared desired state, storing metadata in a state backend.\"",
+      "diagram": null
+    },
+    {
+      "id": "s39b-the-critical-role-of-state",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "The Critical Role of State",
+      "text_md": "Terraform State (`terraform.tfstate`) is the **single source of truth** mapping declarative code blocks to physical cloud identifiers.\n\n```text\n               TERRAFORM STATE AS THE BIDIRECTIONAL MAPPING LAYER\n\n   Declarative HCL (*.tf)             State File (JSON)            AWS Cloud Infrastructure\n  ┌───────────────────────┐       ┌───────────────────────┐       ┌───────────────────────┐\n  │ resource \"aws_instance\"│◀────▶│ \"id\": \"i-09ab12cd34\"  │◀─────▶│ EC2: i-09ab12cd34     │\n  │   \"web_server\" { ... } │       │ \"private_ip\": \"10.0.1\"│       │ IP: 10.0.1.50         │\n  └───────────────────────┘       └───────────────────────┘       └───────────────────────┘\n```\n\n**Why State is Indispensable:**\n1. **Resource Mapping:** Cloud APIs return arbitrary IDs (`i-0a8f9c`, `vpc-0123ef`); Terraform requires state to map these to human-readable names (`aws_instance.web_server`).\n2. **Performance Caching:** For estates with 1,000+ resources, querying cloud provider APIs on every operation causes severe API throttling; state caches attributes locally.\n3. **Dependency Tracking:** Stores resource metadata allowing Terraform to calculate correct teardown sequences in reverse topological order.",
+      "diagram": null
+    },
+    {
+      "id": "s39b-state-backup-mechanisms",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "State Backup Mechanisms",
+      "text_md": "* On every `terraform apply` or `terraform refresh`, Terraform CLI automatically writes the previous state snapshot to `terraform.tfstate.backup`.\n* In production, **S3 Bucket Versioning** and **Multi-Region Replication** must be enabled on remote state buckets to provide automated point-in-time recovery.",
+      "diagram": null
+    },
+    {
+      "id": "s39b-multi-engineer-concurrency-challenges",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Multi-Engineer Concurrency Challenges",
+      "text_md": "```text\n                       RACE CONDITION (WITHOUT STATE LOCKING)\n\n    DevOps Engineer A                              DevOps Engineer B\n  ┌───────────────────┐                          ┌───────────────────┐\n  │  Modifying Subnet │                          │  Modifying EC2    │\n  └─────────┬─────────┘                          └─────────┬─────────┘\n            │                                              │\n            ▼                                              ▼\n   [ Reads State v1 ]                             [ Reads State v1 ]\n            │                                              │\n   [ Writes State v2A]                            [ Writes State v2B]\n            │                                              │\n            └───────────────▶ [ CORRUPTED STATE ] ◀────────┘\n                              (Race Condition Collision)\n```\n\nIf two engineers run `terraform apply` concurrently without locking, writes overwrite each other, leading to state corruption and orphaned infrastructure.",
+      "diagram": null
+    },
+    {
+      "id": "s39b-remote-backend-architecture-s3-dynamodb",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Remote Backend Architecture (S3 + DynamoDB)",
+      "text_md": "```text\n                ENTERPRISE AWS REMOTE BACKEND ARCHITECTURE\n\n                           ┌───────────────────────────┐\n                           │   DevOps Engineer / CI/CD │\n                           └─────────────┬─────────────┘\n                                         │\n                         1. Acquire Lock │ 3. Release Lock\n                                         ▼\n                           ┌───────────────────────────┐\n                           │      AWS DynamoDB         │\n                           │ (LockID State Locking)    │\n                           └─────────────┬─────────────┘\n                                         │\n                         2. Read/Write State\n                                         ▼\n                           ┌───────────────────────────┐\n                           │       AWS S3 Bucket       │\n                           │  - AES-256 Encryption     │\n                           │  - S3 Object Versioning   │\n                           │  - TLS Enforcement        │\n                           └───────────────────────────┘\n```\n\n#### Production Backend Configuration:\n\n```hcl\n# backend.tf\nterraform {\n  required_version = \">= 1.5.0\"\n  backend \"s3\" {\n    bucket         = \"corp-devops-tfstate-prod\"\n    key            = \"infrastructure/networking/terraform.tfstate\"\n    region         = \"us-east-1\"\n    dynamodb_table = \"terraform-state-locks\"\n    encrypt        = true\n  }\n}\n```",
+      "diagram": null
+    },
+    {
+      "id": "s39b-state-locking-versioning",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "State Locking & Versioning",
+      "text_md": "* **DynamoDB State Locking:** Terraform creates a lock record containing an md5 checksum, username, operation type, and timestamp in DynamoDB. Any concurrent run receives an immediate `Error: Error acquiring the state lock`.\n* **S3 Versioning:** Every state mutation generates a new immutable S3 version ID, guaranteeing a complete audit trail and single-click disaster rollback.",
+      "diagram": null
+    },
+    {
+      "id": "s39b-multi-environment-management-workspaces-vs-directory-separation",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Multi-Environment Management: Workspaces vs Directory Separation",
+      "text_md": "Organizations typically adopt one of two strategies to manage multiple environments (Dev, UAT, Prod):\n\n```text\n┌─────────────────────────────────────────────────────────────────────────────┐\n│                 APPROACH 1: TERRAFORM WORKSPACES (Single Codebase)          │\n│                                                                             │\n│                      ┌──────────────────────────────┐                       │\n│                      │    Root Directory (*.tf)     │                       │\n│                      └──────────────┬───────────────┘                       │\n│              ┌──────────────────────┼──────────────────────┐                │\n│              ▼                      ▼                      ▼                │\n│       [ dev.tfstate ]        [ uat.tfstate ]        [ prod.tfstate ]        │\n└─────────────────────────────────────────────────────────────────────────────┘\n\n┌─────────────────────────────────────────────────────────────────────────────┐\n│            APPROACH 2: DIRECTORY / VAR-FILE ISOLATION (Enterprise Standard) │\n│                                                                             │\n│  terraform-project/                                                         │\n│  ├── modules/vpc/ (Reusable Child Module)                                   │\n│  ├── environments/                                                          │\n│  │   ├── dev/  ──▶ backend-dev.tf, dev.tfvars  (Isolated State & IAM)       │\n│  │   ├── uat/  ──▶ backend-uat.tf, uat.tfvars  (Isolated State & IAM)       │\n│  │   └── prod/ ──▶ backend-prod.tf, prod.tfvars (Strict Production IAM)     │\n└─────────────────────────────────────────────────────────────────────────────┘\n```\n\n### Workspaces vs Directory Isolation Comparison:\n\n| Feature / Dimension | Terraform Workspaces | Directory & `-var-file` Isolation |\n| :--- | :--- | :--- |\n| **State Storage** | Single backend, prefixed keys | Completely separate S3 buckets/accounts |\n| **Blast Radius** | Medium (same backend permissions) | Minimal (strict IAM boundary per account) |\n| **Code Structure** | Single set of `.tf` files | Module calls per environment folder |\n| **Credential Boundaries** | Hard to enforce different AWS accounts | Native support for multi-account role assumption |\n| **Best For** | Ephemeral feature branches, QA testing | Enterprise Production / Multi-Account AWS |",
+      "diagram": null
+    },
+    {
+      "id": "s39b-zero-downtime-advanced-resource-lifecycles",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Zero-Downtime & Advanced Resource Lifecycles",
+      "text_md": "By default, when an immutable resource attribute changes (such as AMI ID, EC2 Subnet, or RDS Master Username), Terraform follows a **Destroy-First** strategy:\n\n```text\nDEFAULT LIFECYCLE (Causes Service Outage):\n  1. Terminate Old EC2 Instance ──▶ [ DOWNTIME WINDOW ] ──▶ 2. Launch New EC2 Instance\n```",
+      "diagram": null
+    },
+    {
+      "id": "s39b-avoiding-downtime-with-create-before-destroy",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Avoiding Downtime with create_before_destroy",
+      "text_md": "```hcl\nresource \"aws_instance\" \"web_app\" {\n  ami           = var.latest_ami_id\n  instance_type = \"t3.medium\"\n\n  lifecycle {\n    create_before_destroy = true\n  }\n}\n```\n\n```text\nZERO-DOWNTIME LIFECYCLE (create_before_destroy = true):\n  1. Launch & Health Check New EC2 ──▶ 2. Update Traffic Route ──▶ 3. Terminate Old EC2\n```\n\n> [!TIP]\n> `create_before_destroy` is the fundamental building block for Blue/Green deployments and Autoscaling Launch Template upgrades in Terraform.",
+      "diagram": null
+    },
+    {
+      "id": "s39b-accidental-deletion-prevention-with-prevent-destroy",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Accidental Deletion Prevention with prevent_destroy",
+      "text_md": "```hcl\nresource \"aws_rds_cluster\" \"production_database\" {\n  cluster_identifier = \"prod-aurora-cluster\"\n  engine             = \"aurora-postgresql\"\n\n  lifecycle {\n    prevent_destroy = true\n  }\n}\n```\n\n* If an engineer or pipeline accidentally runs `terraform destroy` or makes a change that forces cluster recreation, Terraform immediately errors out:\n  ```text\n  Error: Instance cannot be destroyed (lifecycle.prevent_destroy is set)\n  ```",
+      "diagram": null
+    },
+    {
+      "id": "s39b-ignoring-remote-attribute-changes-with-ignore-changes",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Ignoring Remote Attribute Changes with ignore_changes",
+      "text_md": "```hcl\nresource \"aws_instance\" \"app_server\" {\n  ami           = \"ami-0c55b159cbfafe1f0\"\n  instance_type = \"t3.micro\"\n\n  tags = {\n    Name = \"ApplicationServer\"\n  }\n\n  lifecycle {\n    # Ignore tags modified dynamically by external tools or autoscaling policies\n    ignore_changes = [\n      tags[\"LastScannedBySecOps\"],\n      user_data,\n    ]\n  }\n}\n```",
+      "diagram": null
+    },
+    {
+      "id": "s39b-production-troubleshooting-handling-failed-terraform-apply",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Production Troubleshooting: Handling Failed terraform apply",
+      "text_md": "### Real-Time Scenario:\n> \"You are deploying a 10-resource stack. Terraform successfully provisions 6 resources, but fails at Resource #7 due to an AWS IAM permission error. What is your troubleshooting protocol?\"\n\n```text\n┌─────────────────────────────────────────────────────────────────────────────┐\n│                    FAILED APPLY TROUBLESHOOTING PROTOCOL                    │\n└──────────────────────────────────────┬──────────────────────────────────────┘\n                                       │\n                                       ▼\n┌─────────────────────────────────────────────────────────────────────────────┐\n│ STEP 1: Parse CLI Error & Isolate Target                                    │\n│   - Check detailed error message, HTTP status codes (e.g., 403 AccessDenied)│\n│   - Note that 6 resources are ALREADY LIVE and recorded in state!           │\n└──────────────────────────────────────┬──────────────────────────────────────┘\n                                       │\n                                       ▼\n┌─────────────────────────────────────────────────────────────────────────────┐\n│ STEP 2: DO NOT Blindly Rerun or Destroy                                     │\n│   - Never run 'terraform destroy' immediately in production                 │\n│   - Fix root cause (e.g., grant IAM role permissions, fix CIDR clash)       │\n└──────────────────────────────────────┬──────────────────────────────────────┘\n                                       │\n                                       ▼\n┌─────────────────────────────────────────────────────────────────────────────┐\n│ STEP 3: Speculative Verification with 'terraform plan'                      │\n│   - Verify that Terraform only attempts to create remaining 4 resources     │\n│   - Confirm existing 6 resources show NO unexpected recreation (~ or -+)    │\n└──────────────────────────────────────┬──────────────────────────────────────┘\n                                       │\n                                       ▼\n┌─────────────────────────────────────────────────────────────────────────────┐\n│ STEP 4: Targeted or Full 'terraform apply' Convergence                      │\n│   - Re-run apply to complete the remaining infrastructure provision         │\n└─────────────────────────────────────────────────────────────────────────────┘\n```",
+      "diagram": null
+    },
+    {
+      "id": "s39b-understanding-drift",
+      "unit": "s39b",
+      "kind": "practical",
+      "title": "Understanding Drift",
+      "text_md": "**Drift** occurs when the state of live cloud resources diverges from the state recorded in Terraform's state file—typically due to manual console modifications (ClickOps), emergency hotfixes, or out-of-band scripts.\n\n```text\n                            INFRASTRUCTURE DRIFT\n\n   Terraform Config (*.tf)            State File (v1)             Live Cloud (AWS)\n  ┌───────────────────────┐       ┌───────────────────────┐       ┌───────────────────────┐\n  │ instance_type =       │       │ instance_type =       │       │ Modded via Console:   │\n  │ \"t3.micro\"            │◀─────▶│ \"t3.micro\"            │◀─ ❌ ─▶│ \"t3.xlarge\"           │\n  └───────────────────────┘       └───────────────────────┘       └───────────────────────┘\n```",
+      "diagram": null
+    },
+    {
+      "id": "s39b-reconciling-drift-with-terraform-refresh",
+      "unit": "s39b",
+      "kind": "practical",
+      "title": "Reconciling Drift with terraform refresh",
+      "text_md": "```bash\n# Refresh updates state with real-world infrastructure attributes:\nterraform apply -refresh-only\n# Or preview drift differences:\nterraform plan -refresh-only\n```\n\n```text\nREMEDIATION PATHWAYS:\n  Path A (Revert ClickOps to IaC):\n    Run 'terraform apply' ──▶ Overwrites manual change, returns instance to \"t3.micro\"\n\n  Path B (Adopt ClickOps into IaC):\n    Update *.tf code to \"t3.xlarge\" ──▶ Run 'terraform apply' (Zero changes, State aligned)\n```",
+      "diagram": null
+    },
+    {
+      "id": "s39b-brownfield-adoption-importing-existing-infrastructure-terraform-import",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Brownfield Adoption: Importing Existing Infrastructure (terraform import)",
+      "text_md": "When an organization already possesses thousands of manually created cloud assets, `terraform import` brings them under IaC management without recreation or downtime.\n\n```text\n               BROWNFIELD ADOPTION WORKFLOW (terraform import)\n\n  1. Write blank resource block in HCL:\n     resource \"aws_instance\" \"legacy_web\" {\n       # Empty shell\n     }\n\n  2. Execute Import CLI Command:\n     terraform import aws_instance.legacy_web i-0123456789abcdef0\n                                    │\n                                    ▼\n     [ Terraform contacts AWS API & writes attributes to terraform.tfstate ]\n                                    │\n                                    ▼\n  3. Run 'terraform plan' and backfill missing HCL attributes until diff is ZERO.\n```\n\n---\n\n### 9.2 `terraform import` vs. `terraform refresh`\n\n| Dimension | `terraform import` | `terraform refresh` (`plan -refresh-only`) |\n| :--- | :--- | :--- |\n| **Objective** | Add an **untracked resource** into Terraform management | Update attributes of an **already tracked resource** |\n| **Target** | Requires resource address and Cloud Resource ID | Operates globally or targeted on existing state items |\n| **HCL Requirement**| Resource block must be declared in `.tf` | Resource already exists in `.tf` and state file |\n| **When to Use** | Onboarding legacy infrastructure to IaC | Detecting and correcting manual console drift |",
+      "diagram": null
+    },
+    {
+      "id": "s39b-masking-outputs-with-sensitive-true",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Masking Outputs with sensitive = true",
+      "text_md": "```hcl\n# variables.tf\nvariable \"db_master_password\" {\n  type        = string\n  description = \"Database master administrator password\"\n  sensitive   = true\n}\n\n# outputs.tf\noutput \"database_password\" {\n  value       = var.db_master_password\n  sensitive   = true\n}\n```\n\n```text\nCLI Execution Output:\n  database_password = (sensitive value)\n```\n\n> [!CAUTION]\n> Marking a variable as `sensitive = true` prevents it from printing in plain text in CLI outputs and CI logs, but **the value is still stored in plain text inside `terraform.tfstate`**. Always encrypt remote state buckets (AES-256 / AWS KMS) and restrict access via IAM.",
+      "diagram": null
+    },
+    {
+      "id": "s39b-variable-precedence-external-vault-integration",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Variable Precedence & External Vault Integration",
+      "text_md": "```text\nTERRAFORM VARIABLE PRECEDENCE (Highest to Lowest):\n  1. CLI Flags: -var=\"db_pass=xyz\" or -var-file=\"secrets.tfvars\"\n  2. Environment Variables: TF_VAR_db_pass\n  3. terraform.tfvars or terraform.tfvars.json\n  4. *.auto.tfvars (lexicographical order)\n  5. Default value in variable definition block\n```",
+      "diagram": null
+    },
+    {
+      "id": "s39b-the-parallelism-flag",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "The -parallelism Flag",
+      "text_md": "Terraform provisions independent resources concurrently. By default, Terraform sets `-parallelism=10` (max 10 concurrent operations).\n\n```bash\n# Accelerate deployments on large infrastructures (e.g., 50+ independent subnets/S3 buckets):\nterraform apply -parallelism=25\n```\n\n> [!WARNING]\n> **API Rate Limiting Warning:** Setting parallelism too high (e.g., 50+) can trigger AWS/Azure API throttling (`RequestLimitExceeded` / HTTP 429), resulting in failed runs. Increase gradually and test under load.",
+      "diagram": null
+    },
+    {
+      "id": "s39b-directed-acyclic-graph-dag-dependency-constraints",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Directed Acyclic Graph (DAG) & Dependency Constraints",
+      "text_md": "Parallelism only accelerates **independent** resources. If resources are hierarchically chained (`VPC ──▶ Subnet ──▶ Route Table ──▶ EC2`), Terraform strictly respects dependencies regardless of parallelism settings.",
+      "diagram": null
+    },
+    {
+      "id": "s39b-provider-plugin-caching",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Provider Plugin Caching",
+      "text_md": "Prevent redownloading heavy provider binaries across multiple local workspaces:\n\n```bash\n# Set environment variable in ~/.bashrc or CI runner:\nexport TF_PLUGIN_CACHE_DIR=\"$HOME/.terraform.d/plugin-cache\"\n```",
+      "diagram": null
+    },
+    {
+      "id": "s39b-enterprise-project-structuring-module-best-practices",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Enterprise Project Structuring & Module Best Practices",
+      "text_md": "A clean, modular repository structure balances reusability, isolation, and readability:\n\n```text\nterraform-enterprise-architecture/\n├── modules/\n│   ├── networking/\n│   │   ├── main.tf\n│   │   ├── variables.tf\n│   │   └── outputs.tf\n│   ├── compute/\n│   │   ├── main.tf\n│   │   ├── variables.tf\n│   │   └── outputs.tf\n│   └── database/\n│       ├── main.tf\n│       ├── variables.tf\n│       └── outputs.tf\n├── environments/\n│   ├── dev/\n│   │   ├── backend.tf      # S3 Key: env/dev/terraform.tfstate\n│   │   ├── main.tf         # Calls modules with dev inputs\n│   │   ├── terraform.tfvars# dev specific values\n│   │   └── outputs.tf\n│   └── prod/\n│       ├── backend.tf      # S3 Key: env/prod/terraform.tfstate\n│       ├── main.tf         # Calls modules with prod inputs\n│       ├── terraform.tfvars# prod specific values\n│       └── outputs.tf\n```",
+      "diagram": null
+    },
+    {
+      "id": "s39b-targeted-operations-selective-destruction-target",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Targeted Operations & Selective Destruction (-target)",
+      "text_md": "In emergencies or large monorepos, engineers can isolate actions to a specific resource without processing the entire stack:\n\n```bash\n# Plan only for a specific EC2 instance:\nterraform plan -target=aws_instance.app_cluster[0]\n\n# Apply only the security group update:\nterraform apply -target=aws_security_group.web_firewall\n\n# Destroy a single corrupted instance without destroying the entire VPC:\nterraform destroy -target=aws_instance.worker_node\n```\n\n> [!CAUTION]\n> **Anti-Pattern Warning:** Repeatedly using `-target` creates state fragmentation and bypasses dependency graph validation. Use solely for disaster triage or debugging.",
+      "diagram": null
+    },
+    {
+      "id": "s39b-count-vs-for-each-deep-dive-best-practices",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "count vs. for_each: Deep Dive & Best Practices",
+      "text_md": "Understanding when to choose `count` versus `for_each` is one of the most heavily tested concepts in Senior DevOps interviews:\n\n```text\n┌─────────────────────────────────────────────────────────────────────────────┐\n│                         COUNT vs FOR_EACH ARCHITECTURE                      │\n├──────────────────────────────────────┬──────────────────────────────────────┤\n│                COUNT                 │               FOR_EACH               │\n│         (List Index Based)           │          (Map / Key Based)           │\n├──────────────────────────────────────┼──────────────────────────────────────┤\n│  List: [\"web\", \"api\", \"db\"]          │  Map: { web=\"t3.micro\", db=\"t3.med\" }│\n│  Index 0: aws_instance.server[0]     │  Key: aws_instance.server[\"web\"]     │\n│  Index 1: aws_instance.server[1]     │  Key: aws_instance.server[\"db\"]      │\n│  Index 2: aws_instance.server[2]     │                                      │\n├──────────────────────────────────────┼──────────────────────────────────────┤\n│  ⚠️ DANGER ON DELETION:              │  ✅ SAFE ON DELETION:                │\n│  Deleting \"api\" (Index 1) shifts     │  Deleting \"web\" removes only         │\n│  Index 2 to Index 1, forcing         │  server[\"web\"].                      │\n│  recreation of server[2]!            │  server[\"db\"] remains untouched!     │\n└──────────────────────────────────────┴──────────────────────────────────────┘\n```\n\n### Code Comparison:\n\n#### Using `count` (Best for identical identical pools):\n```hcl\nresource \"aws_instance\" \"cluster\" {\n  count         = 3\n  ami           = \"ami-0c55b159cbfafe1f0\"\n  instance_type = \"t3.micro\"\n\n  tags = {\n    Name = \"cluster-node-${count.index}\"\n  }\n}\n```\n\n#### Using `for_each` (Best for distinct configurations):\n```hcl\nvariable \"server_configs\" {\n  type = map(object({\n    instance_type = string\n    subnet_id     = string\n  }))\n  default = {\n    web = { instance_type = \"t3.micro\",  subnet_id = \"subnet-1111\" }\n    api = { instance_type = \"t3.medium\", subnet_id = \"subnet-2222\" }\n    db  = { instance_type = \"m5.large\",  subnet_id = \"subnet-3333\" }\n  }\n}\n\nresource \"aws_instance\" \"servers\" {\n  for_each      = var.server_configs\n  ami           = \"ami-0c55b159cbfafe1f0\"\n  instance_type = each.value.instance_type\n  subnet_id     = each.value.subnet_id\n\n  tags = {\n    Name = \"service-${each.key}\"\n  }\n}\n```",
+      "diagram": null
+    },
+    {
+      "id": "s39b-bridge-to-configuration-management-introduction-to-ansible",
+      "unit": "s39b",
+      "kind": "overview",
+      "title": "Bridge to Configuration Management: Introduction to Ansible",
+      "text_md": "As the session concluded, the boundary between Infrastructure Provisioning and Configuration Management was established:\n\n```text\n               THE DEVOPS AUTOMATION TOOLCHAIN HANDOFF\n\n   ┌─────────────────────────────────────────────────────────────┐\n   │                    TERRAFORM (Day 1 - Day 5)                │\n   │  - Cloud Infrastructure Provisioning (IaC)                  │\n   │  - Builds: VPC, Subnets, Internet Gateways, EC2, S3, RDS    │\n   │  - Manages API lifecycles and State                         │\n   └──────────────────────────────┬──────────────────────────────┘\n                                  │\n                                  ▼ (IPs, DNS endpoints generated)\n   ┌─────────────────────────────────────────────────────────────┐\n   │                    ANSIBLE (Next Module)                    │\n   │  - Configuration Management & App Deployment (CM)           │\n   │  - Configures OS inside VMs: Users, SSH keys, Firewalls     │\n   │  - Installs Software: NGINX, Docker, Java, PostgreSQL       │\n   │  - Agentless architecture (executes over SSH / WinRM)       │\n   └─────────────────────────────────────────────────────────────┘\n```",
+      "diagram": null
+    },
+    {
+      "id": "s39b-master-command-concept-reference-matrix",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Master Command & Concept Reference Matrix",
+      "text_md": "| Command / Flag | Scope | Operational Purpose |\n| :--- | :--- | :--- |\n| `terraform init -upgrade` | Lifecycle | Upgrades provider plugins and modules to latest allowed versions |\n| `terraform plan -out=tfplan` | CI/CD | Saves speculative execution plan to a file for deterministic apply |\n| `terraform apply tfplan` | CI/CD | Applies exact saved plan file without re-evaluating drift |\n| `terraform apply -parallelism=N` | Performance | Adjusts number of concurrent resource operations (default: 10) |\n| `terraform apply -refresh-only` | Drift | Updates state file with live infrastructure changes without modifying cloud |\n| `terraform import <addr> <id>` | Brownfield | Binds existing unmanaged cloud resource into Terraform state |\n| `terraform state list` | Inspection | Lists all resource addresses currently tracked in state |\n| `terraform state show <addr>` | Inspection | Dumps detailed state attributes for a specific resource address |\n| `terraform state rm <addr>` | Disaster Rec. | Removes resource from state without deleting live cloud asset |\n| `terraform state mv <src> <dst>` | Refactoring | Renames or moves resource in state without destroying live asset |\n| `terraform force-unlock <ID>` | Recovery | Manually removes stuck DynamoDB lock ID after verified pipeline crash |\n| `terraform destroy -target=<addr>` | Targeted Ops | Selectively tears down a single specific resource |",
+      "diagram": null
+    },
+    {
+      "id": "s39b-quick-revision-mindmap",
+      "unit": "s39b",
+      "kind": "concept",
+      "title": "Quick Revision Mindmap",
+      "text_md": "```text\n                               TERRAFORM PRODUCTION ENGINE\n\n             ┌──────────────────────────────┼──────────────────────────────┐\n             ▼                              ▼                              ▼\n    [ STATE MANAGEMENT ]           [ LIFECYCLE & DRIFT ]          [ PERFORMANCE & SCALE ]\n    • S3 Remote Backend            • create_before_destroy        • -parallelism=20\n    • DynamoDB State Locking       • prevent_destroy              • DAG Dependency Graph\n    • S3 Object Versioning         • ignore_changes               • Plugin Caching\n    • Disaster Recovery            • terraform refresh / import   • count vs for_each\n             │                              │                              │\n             └──────────────────────────────┼──────────────────────────────┘\n                                            │\n                                            ▼\n                           [ ANSIBLE CONFIGURATION HANDOFF ]\n                           • OS-level configuration & App runtimes\n                           • Dynamic Inventory from Terraform Outputs\n```\nTerraform drift is the gap that happens when your real-world cloud infrastructure changes outside of your configuration files and state file.\n  What Causes Drift?\n\n  or\n\n  The actual infrastructure AWS  has changed, but your Terraform configuration/state does not know about that change.\n\n  Now we have drift:\n\nTerraform Code       AWS manulaly\n     ↓                ↓\n  t2.micro 2am        t2.large\n       \\             /\n        \\           /\n          DRIFT\n\n       HOT FIX  situation\n\nHow does Terraform detect it?\n\nRun:\n\nterraform plan\n\n  Manual edits: Someone updates a setting directly in the cloud provider's console or dashboard.\n\n  External scripts: Emergency fixes or automation tools modify resources without updating your IAC code.\n\n  Provider updates: The cloud platform changes underlying resource parameters unexpectedly.\n\n  How to Detect Drift\n\n  Refresh state: Run terraform refresh or use terraform plan -refresh-only to check the actual cloud environment.\n\n  Run a plan: Execute terraform plan to compare your configuration against the updated state.\n\n\n\n  Automated checks: Set up a scheduled task or CI/CD pipeline using terraform plan -detailed-exitcode to alert your team when drift occurs\n\nImportant point: Drift is not always caused by Terraform\n\nDrift usually happens because of changes made outside Terraform, for example:\n\nAWS Console   aacecss\nAWS CLI acecs s\nAnother automation tool   2-3\nAWS Lambda\nCloudFormation\nManual changes by engineer\n\n\n\n---\n> [!NOTE]\n> **Next Session:** Transitioning to **Ansible Configuration Management** (Inventories, Playbooks, Modules, Roles, and Vault).",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "scenario",
+      "title": "2 State Loss Scenarios & Recovery",
+      "prompt": "2 State Loss Scenarios & Recovery",
+      "reference_answer": "```text\n┌─────────────────────────────────────────────────────────────────────────────┐\n│                     DISASTER: STATE FILE IS ACCIDENTALLY LOST               │\n├─────────────────────────────────────────────────────────────────────────────┤\n│                                                                             │\n│  Declarative Code (.tf)              State File                 AWS Cloud   │\n│ ┌──────────────────────┐             ┌───────┐            ┌───────────────┐ │\n│ │ resource aws_instance│ ──────────▶ │ LOST! ❌ ─────────▶ │ Active Server │ │\n│ └──────────────────────┘             └───────┘            │ Running Live  │ │\n│                                                           └───────────────┘ │\n│                                                                             │\n│  Consequence: Next 'terraform apply' attempts to recreate existing servers, │\n│  causing duplicate resource creation errors (e.g., naming/CIDR conflicts).  │\n└─────────────────────────────────────────────────────────────────────────────┘\n```\n\n#### What happens if state is lost?\n* Terraform forgets all relationship with existing live resources.\n* Running `terraform apply` attempts to create duplicate resources, resulting in API collision errors (e.g., `BucketAlreadyExists`, `VPC CIDR overlap`).\n* Running `terraform destroy` will do nothing because Terraform assumes zero resources exist.\n\n#### Recovery Strategy Matrix:\n1. **Remote Backend Versioning (Best Practice):** Roll back to the previous S3 object version.\n2. **Local Backup Inspection:** Restore from `terraform.tfstate.backup` auto-generated by Terraform on each modifying operation.\n3. **Targeted Import Re-creation (`terraform import`):** If no backup exists, manually rebuild state resource-by-resource using cloud IDs.",
+      "id": "s39b-s01",
+      "unit": "s39b",
+      "concept_ids": [
+        "s39b-state-backup-mechanisms",
+        "s39b-state-locking-versioning",
+        "s39b-the-critical-role-of-state"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Terraform and how does its declarative engine work?",
+      "prompt": "What is Terraform and how does its declarative engine work?",
+      "reference_answer": "Terraform is an Infrastructure as Code (IaC) tool by HashiCorp that uses HashiCorp Configuration Language (HCL) to define desired-state infrastructure. Unlike procedural tools, you declare *what* infrastructure should exist rather than the explicit step-by-step commands to create it. Terraform calculates the Directed Acyclic Graph (DAG), compares desired configuration against the state file, and executes minimal API calls to converge the environment.",
+      "id": "s39b-q01",
+      "unit": "s39b",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the role of the Terraform State file and what information does it store?",
+      "prompt": "What is the role of the Terraform State file and what information does it store?",
+      "reference_answer": "The state file (`terraform.tfstate`) acts as the single source of truth mapping declared HCL identifiers to physical cloud provider resource IDs. It stores:\n1. Bidirectional resource mappings (`aws_instance.app` ──▶ `i-0123abc`).\n2. Complete cached metadata and attributes for fast lookup.\n3. Dependency topology and module ancestry.\n4. Cryptographic provider hashes and schema versions.",
+      "id": "s39b-q02",
+      "unit": "s39b",
+      "concept_ids": [
+        "s39b-the-critical-role-of-state",
+        "s39b-state-backup-mechanisms",
+        "s39b-state-locking-versioning"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What catastrophic consequences occur if the Terraform State file is deleted?",
+      "prompt": "What catastrophic consequences occur if the Terraform State file is deleted?",
+      "reference_answer": "If the state file is deleted:\n* Terraform loses all memory of previously created infrastructure.\n* Subsequent `terraform apply` runs will fail or try to create duplicate resources, triggering cloud collision errors (e.g., duplicate VPC CIDRs, S3 bucket name conflicts).\n* `terraform destroy` will fail to clean up existing resources, leaving orphaned infrastructure and runaway cloud costs.",
+      "id": "s39b-q03",
+      "unit": "s39b",
+      "concept_ids": [
+        "s39b-state-backup-mechanisms",
+        "s39b-state-locking-versioning",
+        "s39b-the-critical-role-of-state"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you implement robust collaborative state management for a team of 20+ DevOps engineers?",
+      "prompt": "How do you implement robust collaborative state management for a team of 20+ DevOps engineers?",
+      "reference_answer": "1. **Remote Backend:** Store state in a centralized object store (e.g., AWS S3 with KMS encryption and Object Versioning).\n2. **State Locking:** Integrate with a distributed lock manager (AWS DynamoDB `LockID`) to reject concurrent writes.\n3. **Least Privilege RBAC:** Restrict state bucket read/write permissions to designated CI/CD service roles.\n4. **Directory/Account Isolation:** Separate state files per environment and per AWS account rather than sharing one giant state file.",
+      "id": "s39b-q04",
+      "unit": "s39b",
+      "concept_ids": [
+        "s39b-count-vs-for-each-deep-dive-best-practices",
+        "s39b-multi-engineer-concurrency-challenges",
+        "s39b-multi-environment-management-workspaces-vs-directory-separation"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How does create_before_destroy prevent service outages during resource replacement?",
+      "prompt": "How does create_before_destroy prevent service outages during resource replacement?",
+      "reference_answer": "Normally, if an immutable attribute (e.g., AMI or Subnet) changes, Terraform terminates the old resource first and then provisions the new one, resulting in a downtime window. With `lifecycle { create_before_destroy = true }`, Terraform provisions and health-checks the new resource *first*, updates upstream associations, and only terminates the old resource once the replacement is operational.",
+      "id": "s39b-q05",
+      "unit": "s39b",
+      "concept_ids": [
+        "s39b-accidental-deletion-prevention-with-prevent-destroy",
+        "s39b-avoiding-downtime-with-create-before-destroy",
+        "s39b-zero-downtime-advanced-resource-lifecycles"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Infrastructure Drift and how do you reconcile it in Terraform?",
+      "prompt": "What is Infrastructure Drift and how do you reconcile it in Terraform?",
+      "reference_answer": "Drift is divergence between live cloud infrastructure attributes and the recorded Terraform state, caused by manual ClickOps changes or outside automation.\n* **Detection:** Run `terraform plan -refresh-only` or `terraform plan` to view the attribute diff.\n* **Alignment (Option A - Enforce Code):** Run `terraform apply` to overwrite manual modifications and restore declared IaC state.\n* **Alignment (Option B - Accept Changes):** Update HCL configuration to match manual modifications and execute `terraform apply -refresh-only`.",
+      "id": "s39b-q06",
+      "unit": "s39b",
+      "concept_ids": [
+        "s39b-brownfield-adoption-importing-existing-infrastructure-terraform-import",
+        "s39b-reconciling-drift-with-terraform-refresh",
+        "s39b-understanding-drift"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How does terraform import work and what are its operational limitations?",
+      "prompt": "How does terraform import work and what are its operational limitations?",
+      "reference_answer": "`terraform import <resource_address> <cloud_id>` invokes the provider's read API for the given ID and inserts the resulting attributes into `terraform.tfstate`.\n**Limitations:** It only updates the state file; it does *not* automatically generate the corresponding HCL code in `.tf` files. The engineer must manually author matching HCL blocks until `terraform plan` shows zero pending diffs.",
+      "id": "s39b-q07",
+      "unit": "s39b",
+      "concept_ids": [
+        "s39b-brownfield-adoption-importing-existing-infrastructure-terraform-import",
+        "s39b-targeted-operations-selective-destruction-target"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the fundamental difference between count and for_each?",
+      "prompt": "What is the fundamental difference between count and for_each?",
+      "reference_answer": "`count`:** Uses integer indexing (`aws_instance.web[0]`, `aws_instance.web[1]`). If an item is deleted from the middle of a list, all subsequent elements shift indexes, causing unwanted resource recreation.\n* **`for_each`:** Uses map keys or set strings (`aws_instance.web[\"api\"]`, `aws_instance.web[\"db\"]`). Adding, deleting, or reordering elements only modifies the targeted key without affecting any other resources.",
+      "id": "s39b-q08",
+      "unit": "s39b",
+      "concept_ids": [
+        "s39b-count-vs-for-each-deep-dive-best-practices"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you pass sensitive variables into Terraform securely without leaking secrets in CI logs or Git?",
+      "prompt": "How do you pass sensitive variables into Terraform securely without leaking secrets in CI logs or Git?",
+      "reference_answer": "1. Mark variable blocks with `sensitive = true` to mask values from CLI outputs and CI logs.\n2. Inject secrets via environment variables (`TF_VAR_db_password`) or fetch them dynamically via external secret backends (HashiCorp Vault, AWS Secrets Manager data sources).\n3. Ensure `.tfvars` files containing credentials are listed in `.gitignore`.\n4. Restrict and encrypt remote state storage, as sensitive values remain visible in plaintext JSON state.",
+      "id": "s39b-q09",
+      "unit": "s39b",
+      "concept_ids": [
+        "s39b-masking-outputs-with-sensitive-true",
+        "s39b-variable-precedence-external-vault-integration"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How does Terraform handle resource dependencies and how can you optimize slow execution times?",
+      "prompt": "How does Terraform handle resource dependencies and how can you optimize slow execution times?",
+      "reference_answer": "Terraform parses resource expressions to construct an implicit dependency graph (e.g., `aws_instance` referencing `aws_subnet.id`), or explicit dependencies via `depends_on`.\n**Optimization strategies:**\n* Increase concurrency using `terraform apply -parallelism=20` (if resources are independent).\n* Enable local plugin caching via `TF_PLUGIN_CACHE_DIR`.\n* Modularize large monorepos into smaller, decoupled state configurations.",
+      "id": "s39b-q10",
+      "unit": "s39b",
+      "concept_ids": [
+        "s39b-end-to-end-terraform-execution-architecture",
+        "s39b-zero-downtime-advanced-resource-lifecycles"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Top 10 Real-World Scenario-Based Interview Questions & Solutions",
+      "prompt": "Top 10 Real-World Scenario-Based Interview Questions & Solutions",
+      "reference_answer": "### Scenario 1: A pipeline crashes midway during `apply` and leaves the DynamoDB state lock stuck.\n* **Problem:** Subsequent pipeline runs fail with `Error acquiring the state lock: Lock Info: ID: 8a4d...`.\n* **Solution:**\n  1. Confirm that no other engineer or CI pipeline is actively running.\n  2. Execute `terraform force-unlock 8a4d...` to release the DynamoDB lock record.\n  3. Run `terraform plan` to evaluate the current state and resume provisioning.\n\n---\n\n### Scenario 2: Production state file in S3 was overwritten or corrupted.\n* **Problem:** An accidental misconfiguration overwrote `terraform.tfstate` in AWS S3.\n* **Solution:**\n  1. Navigate to AWS S3 Console ──▶ Select State Bucket ──▶ Enable \"Show Versions\".\n  2. Locate the previous healthy state version prior to corruption.\n  3. Restore the previous version as current.\n  4. Run `terraform plan -refresh-only` to verify state integrity against live infrastructure.\n\n---\n\n### Scenario 3: Changing EC2 instance type vs. changing AMI ID.\n* **Problem:** How does Terraform treat changing `instance_type = \"t3.large\"` vs changing `ami = \"ami-new\"`?\n* **Solution:**\n  * Changing `instance_type` is an **in-place update (`~`)**; AWS modifies the VM size after a brief reboot without destroying the EBS volume.\n  * Changing `ami` is an **immutable replacement (`-+`)**; Terraform destroys the existing instance and creates a brand-new VM. Use `create_before_destroy` to prevent downtime.\n\n---\n\n### Scenario 4: Someone manually deleted an EC2 instance in AWS Console (ClickOps).\n* **Problem:** An engineer deleted an instance directly from AWS Console. Terraform still thinks it exists.\n* **Solution:**\n  1. Run `terraform plan` or `terraform apply -refresh-only`.\n  2. Terraform detects that the AWS API returned `404 NotFound` and refreshes state to show the resource was removed.\n  3. `terraform plan` outputs `+ create` to recreate the missing instance according to HCL configuration.\n\n---\n\n### Scenario 5: Managing 50 AWS accounts with different IAM roles.\n* **Problem:** A centralized DevOps platform needs to deploy resources across 50 AWS accounts without hardcoding credentials.\n* **Solution:**\n  * Configure an `assume_role` block inside the AWS Provider in each environment folder:\n  ```hcl\n  provider \"aws\" {\n    region = \"us-east-1\"\n    assume_role {\n      role_arn     = \"arn:aws:iam::ACCOUNT_ID:role/TerraformDeploymentRole\"\n      session_name = \"TerraformExecution\"\n    }\n  }\n  ```\n\n---\n\n### Scenario 6: Deleting 1 specific EC2 instance out of 20 without destroying the cluster.\n* **Problem:** 20 EC2 instances are managed in state. You only need to terminate instance #3.\n* **Solution:**\n  * Run targeted destroy: `terraform destroy -target=aws_instance.cluster[2]` (or by key if using `for_each`).\n  * Remove the instance entry from HCL code and re-apply to keep code and state synchronized.\n\n---\n\n### Scenario 7: Avoiding duplicate resources when adopting existing cloud assets.\n* **Problem:** A company already runs a production VPC and wants Terraform to manage it without downtime or recreation.\n* **Solution:**\n  1. Declare an empty resource shell: `resource \"aws_vpc\" \"existing_vpc\" {}`.\n  2. Run `terraform import aws_vpc.existing_vpc vpc-0123456789abcdef0`.\n  3. Run `terraform plan` and adjust CIDR and tag attributes in `.tf` until the diff displays `No changes. Your infrastructure matches the configuration.`\n\n---\n\n### Scenario 8: Protecting a production PostgreSQL RDS instance from accidental deletion.\n* **Problem:** A junior developer runs `terraform destroy` or alters an immutable database parameter.\n* **Solution:**\n  * Implement `prevent_destroy` in the lifecycle block:\n  ```hcl\n  resource \"aws_db_instance\" \"prod_db\" {\n    allocated_storage = 100\n    engine            = \"postgres\"\n    lifecycle {\n      prevent_destroy = true\n    }\n  }\n  ```\n  * Terraform will explicitly block any execution plan that proposes deleting this database.\n\n---\n\n### Scenario 9: Speeding up execution of 80 independent AWS S3 log buckets.\n* **Problem:** Running `terraform apply` takes 15 minutes due to serial resource creation.\n* **Solution:**\n  1. Verify buckets have no inter-dependencies.\n  2. Increase parallelism: `terraform apply -parallelism=30`.\n  3. Terraform will fire up to 30 simultaneous AWS API calls, slashing deployment time to under 2 minutes.\n\n---\n\n### Scenario 10: Seamless handoff from Terraform to Ansible.\n* **Problem:** Terraform provisions 10 EC2 instances; Ansible immediately needs to configure NGINX on them.\n* **Solution:**\n  1. Terraform outputs the provisioned public/private IP addresses:\n  ```hcl\n  output \"web_server_ips\" {\n    value = aws_instance.web[*].public_ip\n  }\n  ```\n  2. A CI/CD step dynamically generates an Ansible `hosts.ini` inventory file from the Terraform output:\n  ```bash\n  terraform output -json web_server_ips | jq -r '.[]' > inventory.ini\n  ansible-playbook -i inventory.ini configure-nginx.yml\n  ```",
+      "id": "s39b-s02",
+      "unit": "s39b",
+      "concept_ids": [
+        "s39b-core-philosophy-interview-mindset"
+      ]
+    }
+  ]
+}

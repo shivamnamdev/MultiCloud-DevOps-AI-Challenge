@@ -1,0 +1,331 @@
+{
+  "id": "s34a",
+  "title": "Kubernetes Components GKE · Day 3",
+  "subtitle": "Session 34 · Batch-44 · Day-3 of Kubernetes Batch-44 : Kubernetes Manifests, Pods, Deployments & Service",
+  "session": 34,
+  "module": "M5 Docker, Kubernetes, Monitoring",
+  "order": 3400,
+  "status": "ready",
+  "source_file": "Session-34-Kubernetes-Components-GKE/🚀 Day-3 of Kubernetes Batch-44 | 12th Aug 2026 .md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s34a-full-session-overview",
+      "unit": "s34a",
+      "kind": "overview",
+      "title": "Full Session Overview",
+      "text_md": "The session began with a quick review of what would be covered:\nKubernetes Deployments\nYAML\nPushing application artifacts/images to registries such as GCR/ACR\nNamespaces\nPods\nNode pools\nScaling\nKubernetes manifests\nThe instructor then created a Google Kubernetes Engine (GKE) Standard cluster and walked through its configuration.\nThe cluster configuration discussion covered:\nCluster type\nRegion/zone\nKubernetes version\nNetworking\nBackup configuration\nBackup retention\nRPO\nNode pools\nNumber of nodes\nCluster autoscaling\nUpgrade strategy\nOperating system\nMachine/CPU configuration\nMemory\nDisk\nMaximum Pods per node\nMetadata and labels\nThe instructor explained that node pools allow different groups of nodes to have different configurations, and demonstrated how adding nodes to a node pool represents node scaling.\nThe class then moved to using Google Cloud Shell and running GCloud commands. An important practical issue was demonstrated: when running GCP commands from a local machine rather than Cloud Shell, the required Google Cloud SDK/CLI and authentication are necessary.\nThe command:\n```bash\ngcloud auth login\n```\n\n\nwas discussed for authenticating a local environment.\n\nThe next major portion focused on Kubernetes YAML.\nStudents were asked to create YAML files and install a Kubernetes template extension in Visual Studio Code. The instructor demonstrated how a Kubernetes Pod manifest can be generated and explained the major sections:\napiVersion:\nkind:\nmetadata:\nspec:\n\nThe Pod configuration included:\nPod name\nLabels\nContainer\nContainer image\nResource requests/limits\nThe instructor also emphasized that students should be able to understand and explain the first portion of a Kubernetes manifest during interviews, rather than blindly memorizing every possible YAML field.\n\nThe session then moved into Namespaces.\nNamespaces were explained as a way of logically isolating resources inside a Kubernetes cluster.\nThe instructor used the example of:\nDevelopment\nQA\nPre-Production\nProduction\n\nInstead of necessarily creating a completely separate Kubernetes cluster for every environment, namespaces can be used to logically separate resources within a cluster.\nCommands such as:\n```bash\nkubectl get ns\nkubectl create namespace dev\n```\n\n\nwere demonstrated.\nThe instructor also showed how namespaces can be created through YAML.\n\nThe class then discussed IAM-based cluster access.\nA practical demonstration showed one person granting another person access to a Google Cloud project/cluster environment.\nThe discussion included:\nIAM\nGranting access\nRoles\nOwner/read/write permissions\nConditional access\nExpiring access\nConnecting to another user's cluster\nThis connected Kubernetes administration with the broader cloud security and access-control model.\n\nThe final major section focused on Pod communication, Services, replicas and Deployments.\nThe instructor explained why directly communicating with a Pod's IP address is not considered a reliable application-to-application communication method.\nPods can be recreated, moved or replaced, which means their IP addresses can change.\nTherefore:\nPod → Pod\n\nshould generally be abstracted through:\nPod → Service → Pod\n\nThe Service provides a stable endpoint for communication.\n\nThe instructor then introduced replicas and Deployments.\nInstead of manually managing individual Pods, a Deployment can manage the desired number of replicas.\nFor example:\nDeployment\n|\n+-- Pod\n+-- Pod\n+-- Pod\n\nIf one Pod is deleted:\nDeployment\n|\n+-- Pod\n+-- Pod\n+-- Pod ❌\n\nKubernetes creates another Pod so that the desired number of replicas is maintained.\nThe instructor demonstrated this behavior practically by deleting a Pod and showing that a replacement Pod was automatically created.\nThis was one of the most important practical demonstrations of the session.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-all-key-topics-covered",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "All Key Topics Covered",
+      "text_md": "Kubernetes Cluster Configuration\nGKE Standard cluster\nCluster creation\nCluster version\nRegion and zones\nNetworking\nBackup\nBackup retention\nRPO\nBackup scheduling\nNode pools\nNode scaling\nCluster autoscaler\nUpgrade strategy\nOperating system\nCPU configuration\nMemory configuration\nDisk configuration\nPod capacity per node\nCluster metadata\nLabels\nGoogle Cloud CLI\nCloud Shell\nGoogle Cloud SDK\nGCloud CLI\nLocal CLI usage\nAuthentication\n```bash\ngcloud auth login\n```\n\nActive account\nConnecting local CLI to GCP\nKubernetes YAML\nYAML syntax\nYAML indentation\nKubernetes manifest\napiVersion\nkind\nmetadata\nname\nlabels\nspec\nContainers\nContainer image\nResource requests\nResource limits\nYAML templates\nVisual Studio Code\nKubernetes YAML extension\nPods\nPod architecture\nContainers inside Pods\nMultiple containers\nVolumes\nPod IP\nPod lifecycle\nPod replacement\nPod-to-Pod communication\nNamespaces\nNamespace concept\nResource isolation\nDevelopment namespace\nQA namespace\nPre-production namespace\nProduction namespace\nNamespace creation through CLI\nNamespace creation through YAML\n```bash\nkubectl get ns\nkubectl create namespace\n```\n\nIAM and Access\nIAM\nProject access\nCluster access\nUser permissions\nOwner access\nRead access\nWrite access\nRole assignment\nConditional access\nExpiring access\nKubernetes Services\nService concept\nStable communication endpoint\nPod IP instability\nService-to-Service communication\nDNS/name-based communication\nService mapping\nLoadBalancer discussion\nService and port relationship\nReplicas\nReplica concept\nMultiple copies of a Pod\nDesired number of Pods\nScaling replicas\nReplica management\nDeployments\nDeployment concept\nCreating a Deployment\nDeployment managing Pods\nDeployment managing replicas\nSelf-healing\nPod replacement\nScaling through Deployment\nDeployment YAML\n```bash\nkubectl get deployment\n```\n\nKubernetes CLI\n```bash\nkubectl get\nkubectl get ns\nkubectl get pods\nkubectl get deploy\nkubectl create\nkubectl create namespace\nkubectl create -f\nkubectl apply\nkubectl delete pod\n```\n\nNamespace selection with -n",
+      "diagram": null
+    },
+    {
+      "id": "s34a-main-key-topics-explained-in-detail",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Main Key Topics Explained in Detail",
+      "text_md": "3.1 GKE Standard Cluster\nThe session started with the practical creation of a GKE Standard cluster.\nThe instructor specifically switched from Autopilot to Standard and explained various configuration options.\nA simplified structure is:\nGKE Cluster\n|\n+-- Node Pool\n|     |\n|     +-- Node\n|     +-- Node\n|\n+-- Kubernetes Workloads\n\nThe important lesson was that a cluster isn't simply \"click Create and forget about it.\" You need to understand:\nWhere it runs\nHow many nodes it has\nWhat resources those nodes provide\nHow nodes scale\nWhat OS they use\nHow upgrades work\nHow backups are configured",
+      "diagram": null
+    },
+    {
+      "id": "s34a-node-pools",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Node Pools",
+      "text_md": "Node pools were one of the major infrastructure topics.\nA node pool is a group of Kubernetes worker nodes managed together.\nFor example:\nCluster\n|\n+-- Node Pool\n|\n+-- Node 1\n+-- Node 2\n+-- Node 3\n\nIf you increase the number of nodes in the pool, you are performing node scaling.\nThe session also discussed that different node pools can have different configurations.\nFor example:\nCluster\n|\n```text\n +-- General Pool\n |     ├── Node\n |     └── Node\n |\n +-- High-CPU Pool\n       ├── Node\n       └── Node\n```\n\n\nThis becomes useful when different applications have different infrastructure requirements.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-cluster-autoscaler",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Cluster Autoscaler",
+      "text_md": "The instructor demonstrated the Cluster Autoscaler option.\nWhen enabled, Kubernetes/cloud infrastructure can automatically adjust the size of a node pool based on workload requirements.\nConceptually:\n```text\nMore workload\n      ↓\nMore capacity required\n      ↓\nNode Pool scales\n      ↓\nAdditional Nodes\n```\n\n\nSimilarly, when demand decreases, nodes may be reduced according to the configured autoscaling behavior.\nThis is different from simply increasing the number of Pods.\nImportant distinction\nPod scaling:\nIncrease the number of application instances.\nNode scaling:\nIncrease the infrastructure capacity available to run workloads.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-kubernetes-resource-capacity-and-pods-per-node",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Kubernetes Resource Capacity and Pods per Node",
+      "text_md": "The instructor highlighted the configuration showing a maximum of 110 Pods per node in the demonstrated setup.\nThis was presented as an interview-relevant point.\nThe session also clarified an important distinction:\nThe number of Pods and the number of containers are not necessarily the same thing.\nA Pod can contain one or multiple containers.\nFor example:\nNode\n|\n+-- Pod 1\n|    +-- Container\n|\n+-- Pod 2\n|    +-- Container\n|\n+-- Pod 3\n+-- Container\n+-- Container\n\nThe instructor emphasized the commonly used practical pattern of one main application container per Pod, while also explaining that multiple containers are possible.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-kubernetes-yaml-manifest",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Kubernetes YAML / Manifest",
+      "text_md": "One of the biggest focuses of Day 3 was learning how to write Kubernetes YAML.\nThe basic structure introduced was:\napiVersion:\nkind:\nmetadata:\nspec:\n\nThe instructor explained these sections conceptually.\napiVersion\nDefines which Kubernetes API version the resource uses.\nkind\nDefines what Kubernetes object you want to create.\nExamples discussed included:\nPod\nDeployment\nService\n\nmetadata\nContains information about the resource.\nFor example:\nmetadata:\nname: my-app\nlabels:\napp: web\n\nspec\nDefines the desired specification of the resource.\nFor a Pod, this can include:\nContainers\nImage\nResource configuration",
+      "diagram": null
+    },
+    {
+      "id": "s34a-kubernetes-pod-yaml",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Kubernetes Pod YAML",
+      "text_md": "The session demonstrated a Pod manifest containing a container and image.\nThe conceptual structure was:\napiVersion: v1\nkind: Pod\nmetadata:\nname: application\nlabels:\napp: web\nspec:\ncontainers:\n- name: application\nimage: nginx\n\nThe actual transcript contains a demonstration-specific example and resource configuration, but the important structure is the relationship:\nPod\n|\n+-- Metadata\n|\n+-- Specification\n|\n+-- Container\n|\n+-- Image\n+-- Resources",
+      "diagram": null
+    },
+    {
+      "id": "s34a-resource-requests-and-limits",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Resource Requests and Limits",
+      "text_md": "The instructor discussed CPU and memory configuration inside the container specification.\nThe important distinction is:\nRequest\nThe amount of resource the container asks Kubernetes to reserve/consider for scheduling.\nLimit\nThe maximum amount of that resource the container is allowed to consume according to the configuration.\nConceptually:\nContainer\n|\n+-- CPU Request\n+-- CPU Limit\n+-- Memory Request\n+-- Memory Limit\n\nThis is important because Kubernetes uses resource information when making scheduling decisions.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-namespace",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Namespace",
+      "text_md": "Namespace was one of the most important concepts of the session.\nThe instructor described namespaces as a way of isolating resources logically inside a cluster.\nFor example:\nKubernetes Cluster\n|\n+-- dev\n|\n+-- qa\n|\n+-- pre-prod\n|\n+-- prod\n\nInstead of creating a completely separate Kubernetes cluster for every environment, organizations can use namespaces to separate resources where appropriate.\nThis can reduce infrastructure duplication and therefore reduce cost.\nImportant clarification\nA namespace is primarily a logical isolation and organization mechanism. It should not be treated as a complete security boundary by itself.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-creating-a-namespace",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Creating a Namespace",
+      "text_md": "The session demonstrated creating a namespace using:\n```bash\nkubectl create namespace dev\n```\n\n\nTo list namespaces:\n```bash\nkubectl get ns\n```\n\n\nThis allows administrators to see the namespaces available in the cluster.\nThe session also demonstrated creating namespaces through YAML.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-namespace-selection-with-n",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Namespace Selection with -n",
+      "text_md": "The instructor discussed the use of the -n option.\nFor example:\n```bash\nkubectl get pods -n dev\n```\n\n\nThis tells kubectl to operate against the dev namespace.\nWithout specifying -n, commands generally operate against the currently configured/default namespace.\nThis is particularly important when multiple environments are running inside the same cluster.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-iam-based-cluster-access",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "IAM-Based Cluster Access",
+      "text_md": "A practical demonstration was performed where one user gave another user access to a Google Cloud project.\nThe flow was:\n```text\nUser A\n  ↓\nIAM\n  ↓\nGrant Role\n  ↓\nUser B\n  ↓\nProject/Cluster Access\n```\n\n\nThe instructor discussed different access levels and conditional access.\nFor example, access can potentially be configured to expire after a particular period.\nThis was explicitly identified as an interview-relevant topic.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-conditional-access",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Conditional Access",
+      "text_md": "The session demonstrated that access does not necessarily need to be permanent.\nA condition can be attached to access so that it expires at a specified time.\nConceptually:\n```text\nUser\n ↓\nIAM Role\n ↓\nCondition\n ↓\nAccess\n ↓\nExpiration\n```\n\n\nFor example:\n```text\nDeveloper\n   ↓\nTemporary Access\n   ↓\nExpires after defined period\n```\n\n\nThis is useful for temporary troubleshooting or controlled access.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-pod-ip-addresses",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Pod IP Addresses",
+      "text_md": "The session spent significant time discussing why relying directly on Pod IP addresses is problematic.\nPods can be recreated.\nWhen a Pod is recreated, its IP address can change.\nFor example:\nPod A\nIP: 10.0.0.10\n\nAfter replacement:\nNew Pod A\nIP: 10.0.0.25\n\nIf another application directly uses 10.0.0.10, communication can break.\nTherefore, direct Pod-IP communication should not be used as the normal application-discovery mechanism.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-services-provide-stable-communication",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Services Provide Stable Communication",
+      "text_md": "The instructor explained that Kubernetes Services provide a stable abstraction for communicating with workloads.\nInstead of:\n```text\nApplication A\n     ↓\nPod IP\n     ↓\nApplication B\n```\n\n\nthe preferred model discussed was:\n```text\nApplication A\n     ↓\nService\n     ↓\nPod\n```\n\n\nThe Service remains the stable endpoint while the underlying Pods can change.\nConceptually:\nService\n|\n+-- Pod 1\n+-- Pod 2\n+-- Pod 3\n\nIf Pod 1 disappears and Pod 4 is created:\nService\n|\n+-- Pod 2\n+-- Pod 3\n+-- Pod 4\n\nThe application consuming the Service does not need to know which individual Pod is currently serving the request.\nThis was one of the most important concepts of the entire session.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-service-to-service-communication",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Service-to-Service Communication",
+      "text_md": "The instructor emphasized the idea that applications should communicate through Services rather than hardcoded Pod IPs.\nFor example:\n```text\nFrontend\n   ↓\nBackend Service\n   ↓\nBackend Pods\n```\n\n\nAnd:\n```text\nBackend\n   ↓\nDatabase Service\n   ↓\nDatabase Pods\n```\n\n\nThis makes the architecture more resilient because Pods can be recreated without requiring every application configuration to be manually updated.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-replicas",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Replicas",
+      "text_md": "A replica means another running copy of a workload.\nFor example:\nReplicas = 3\n\nPod 1\nPod 2\nPod 3\n\nIf the application requires more capacity, the number of replicas can be increased.\nFor example:\nReplicas = 5\n\nPod 1\nPod 2\nPod 3\nPod 4\nPod 5\n\nThe instructor also emphasized that manually managing each Pod is not the preferred approach.\nThat leads directly to Deployments.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-deployment",
+      "unit": "s34a",
+      "kind": "practical",
+      "title": "Deployment",
+      "text_md": "A Deployment manages application Pods and their desired state.\nInstead of manually creating:\nPod 1\nPod 2\nPod 3\n\nyou can define a Deployment that says:\nDesired replicas = 3\n\nKubernetes then works to maintain that state.\nConceptually:\nDeployment\n```text\n     |\n     ↓\nReplicaSet\n     |\n     +-- Pod 1\n     +-- Pod 2\n     +-- Pod 3\n```\n\n\nThe instructor demonstrated this behavior practically.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-kubernetes-self-healing",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Kubernetes Self-Healing",
+      "text_md": "This was one of the most important practical demonstrations.\nSuppose a Deployment has three replicas:\nDeployment\n|\n+-- Pod 1\n+-- Pod 2\n+-- Pod 3\n\nIf Pod 2 is manually deleted:\nDeployment\n|\n+-- Pod 1\n+-- Pod 2 ❌\n+-- Pod 3\n\nKubernetes notices that the desired state is:\n3 Pods\n\nbut the current state is:\n2 Pods\n\nSo it creates a replacement:\nDeployment\n|\n+-- Pod 1\n+-- Pod 3\n+-- Pod 4\n\nThis demonstrates Kubernetes' self-healing behavior.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-scaling-deployments",
+      "unit": "s34a",
+      "kind": "practical",
+      "title": "Scaling Deployments",
+      "text_md": "The instructor demonstrated changing the number of replicas from one to three.\nConceptually:\nBefore:\nreplicas: 1\n\nAfter:\nreplicas: 3\n\nThe result:\nDeployment\n|\n+-- Pod 1\n+-- Pod 2\n+-- Pod 3\n\nThe Deployment manages the Pods automatically.\nThis is much more practical than manually creating three individual Pods.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-deployment-vs-individual-pods",
+      "unit": "s34a",
+      "kind": "practical",
+      "title": "Deployment vs Individual Pods",
+      "text_md": "The instructor made an important practical distinction.\nIndividual Pod\nYou manage the Pod directly.\nPod\n\nIf the Pod is deleted, there is no Deployment automatically maintaining it.\nDeployment\nThe Deployment maintains the desired number of Pods.\nDeployment\n|\n+-- Pod\n+-- Pod\n+-- Pod\n\nIf one disappears, Kubernetes works to replace it.\nTherefore, for normal stateless application workloads, a Deployment is generally preferred over manually managing individual Pods.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-kubectl-create-vs-kubectl-apply",
+      "unit": "s34a",
+      "kind": "practical",
+      "title": "kubectl create vs kubectl apply",
+      "text_md": "The instructor explicitly discussed this as an interview question.\nThe session's simplified teaching was:\n```bash\nkubectl create\n```\n\nCommonly used when creating a resource for the first time.\n```bash\nkubectl create -f file.yaml\n```\n\n\n```bash\nkubectl apply\n```\n\nUsed to apply configuration and is especially useful when you want to update an existing resource declaratively.\n```bash\nkubectl apply -f file.yaml\n```\n\n\nThe instructor's practical recommendation was that YAML + apply is generally more convenient for maintaining and modifying Kubernetes configuration.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-why-yaml-is-preferred-for-kubernetes-configuration",
+      "unit": "s34a",
+      "kind": "practical",
+      "title": "Why YAML Is Preferred for Kubernetes Configuration",
+      "text_md": "The instructor explained that very long CLI commands can become difficult to remember and customize.\nFor example, a large cluster-creation or resource command can become unwieldy.\nA YAML manifest provides a reusable template:\n```text\nYAML\n ↓\nVersion-controlled\n ↓\nReusable\n ↓\nModifiable\n ↓\nkubectl apply\n```\n\n\nThis makes YAML particularly useful for:\nVersion control\nCI/CD\nReproducible deployments\nConfiguration management\nTeam collaboration",
+      "diagram": null
+    },
+    {
+      "id": "s34a-important-interview-perspective",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Important Interview Perspective",
+      "text_md": "The instructor repeatedly emphasized that students should be able to write and explain Kubernetes YAML during interviews.\nThe goal is not to memorize every Kubernetes property.\nYou should understand the important structure:\n```text\napiVersion\n    ↓\nkind\n    ↓\nmetadata\n    ↓\nspec\n    ↓\ncontainers\n    ↓\nimage\n    ↓\nresources\n```\n\n\nYou should also understand how changing:\nreplicas: 1\n\nto:\nreplicas: 3\n\nchanges the desired application capacity.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-most-important-topics-from-day-3",
+      "unit": "s34a",
+      "kind": "concept",
+      "title": "Most Important Topics from Day 3",
+      "text_md": "If you are preparing for a DevOps/Kubernetes interview, I would prioritize these topics from this session:\n🔥 1. Namespace\nUnderstand why namespaces are used and how they help separate environments/resources.\n🔥 2. Pod vs Deployment\nKnow why production workloads are normally managed through Deployments rather than manually created Pods.\n🔥 3. Service vs Pod IP\nThis is extremely important.\nRemember:\nPod IP can change. Service provides a stable endpoint.\n🔥 4. Deployment Self-Healing\nBe able to explain exactly what happens when a Pod managed by a Deployment is deleted.\n🔥 5. Replicas\nUnderstand how replicas provide multiple instances of the same workload.\n🔥 6. YAML Structure\nKnow:\napiVersion:\nkind:\nmetadata:\nspec:\n\nand be able to explain each section.\n🔥 7. kubectl create vs kubectl apply\nThis was explicitly discussed as an interview question.\n🔥 8. Node Pools and Scaling\nUnderstand the difference between:\nNode scaling\nPod/replica scaling\nCluster autoscaling\n🔥 9. Resource Requests and Limits\nUnderstand why CPU and memory requests/limits are configured and how they relate to scheduling and resource consumption.\n🔥 10. IAM and Conditional Access\nKnow how cloud IAM can provide access to projects/resources and how temporary/conditional permissions can be configured.",
+      "diagram": null
+    },
+    {
+      "id": "s34a-day-3-practical-flow",
+      "unit": "s34a",
+      "kind": "practical",
+      "title": "Day 3 Practical Flow",
+      "text_md": "The whole session can be summarized as:\n```text\nGKE Cluster\n     ↓\nNode Pool\n     ↓\nNodes\n     ↓\nNamespace\n     ↓\nDeployment\n     ↓\nReplicas\n     ↓\nPods\n     ↓\nContainers\n     ↓\nService\n     ↓\nStable Application Communication\n```\n\n\nAnd the configuration flow is:\n```text\nKubernetes YAML\n      ↓\nkubectl create/apply\n      ↓\nKubernetes API\n      ↓\nResource Created/Updated\n      ↓\nDeployment\n      ↓\nPods\n```",
+      "diagram": null
+    },
+    {
+      "id": "s34a-final-session-takeaway",
+      "unit": "s34a",
+      "kind": "overview",
+      "title": "Final Session Takeaway",
+      "text_md": "Kubernetes Day 3 was primarily about moving from Kubernetes concepts into actual resource configuration and workload management.\nThe most important progression was:\nCreate/configure a GKE cluster → understand node pools and scaling → create YAML manifests → create namespaces → deploy Pods → expose/communicate through Services → manage Pods using Deployments → configure replicas → observe Kubernetes self-healing.\nThe session also established a very important production principle:\nDo not build an application architecture around individual Pod IP addresses. Pods are replaceable and their IPs can change. Use Kubernetes Services as the stable communication layer.\nAnd the other major practical principle was:\nDo not manually manage individual application Pods when a Deployment can manage the desired number of replicas and automatically replace failed Pods.\nFor interview preparation, the strongest areas from this session are Namespaces, YAML structure, Pod vs Deployment, Services and Pod IPs, replicas, self-healing, kubectl create vs kubectl apply, node pools, scaling, resource requests/limits, and IAM-based access.\n\n\nKubernetes Day 3: 10 Interview Questions & Answers\nThese questions are based on the Day 3 session topics, especially YAML, Namespaces, Pods, Deployments, Services, replicas, node pools, scaling, IAM, and kubectl.",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is a Kubernetes Namespace and why is it used?",
+      "prompt": "What is a Kubernetes Namespace and why is it used?",
+      "reference_answer": "A Namespace provides a logical way to organize and isolate Kubernetes resources within the same cluster.\nFor example, a company can have:\n```text\nKubernetes Cluster\n├── dev\n├── qa\n├── staging\n└── production\n```\n\n\nResources such as Pods, Deployments and Services can be separated by namespace.\nWe can create a namespace using:\n```bash\nkubectl create namespace dev\n```\n\n\nAnd list namespaces using:\n```bash\nkubectl get ns\n```\n\n\nInterview point: A Namespace provides logical isolation and organization. It does not automatically provide complete security isolation.",
+      "id": "s34a-q01",
+      "unit": "s34a",
+      "concept_ids": [
+        "s34a-why-yaml-is-preferred-for-kubernetes-configuration",
+        "s34a-creating-a-namespace",
+        "s34a-kubernetes-pod-yaml"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What are the main sections of a Kubernetes YAML file?",
+      "prompt": "What are the main sections of a Kubernetes YAML file?",
+      "reference_answer": "A typical Kubernetes manifest contains:\napiVersion:\nkind:\nmetadata:\nspec:\n\napiVersion\nSpecifies the Kubernetes API version used by the resource.\nkind\nDefines the resource type, such as:\nPod\nDeployment\nService\n\nmetadata\nContains information such as:\nName\nLabels\nNamespace\nspec\nDefines the desired configuration of the resource.\nFor a Pod, this can include:\nContainers\nImage\nPorts\nResources\nThe important interview point is to understand what each section represents rather than simply memorizing YAML.",
+      "id": "s34a-q02",
+      "unit": "s34a",
+      "concept_ids": [
+        "s34a-kubernetes-pod-yaml",
+        "s34a-kubernetes-yaml-manifest",
+        "s34a-why-yaml-is-preferred-for-kubernetes-configuration"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between a Pod and a Deployment?",
+      "prompt": "What is the difference between a Pod and a Deployment?",
+      "reference_answer": "A Pod is the basic execution unit in Kubernetes and contains one or more containers.\nA Deployment manages application Pods and maintains the desired number of replicas.\nFor example:\nDeployment\n|\n+-- Pod 1\n+-- Pod 2\n+-- Pod 3\n\nIf one of these Pods is deleted, the Deployment works to create a replacement.\nTherefore:\nPod = workload execution unit\nDeployment = manages and maintains Pods\nFor normal stateless applications, we generally use Deployments rather than manually managing individual Pods.",
+      "id": "s34a-q03",
+      "unit": "s34a",
+      "concept_ids": [
+        "s34a-deployment",
+        "s34a-deployment-vs-individual-pods",
+        "s34a-kubernetes-pod-yaml"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why should applications not directly depend on Pod IP addresses?",
+      "prompt": "Why should applications not directly depend on Pod IP addresses?",
+      "reference_answer": "Pod IP addresses are not guaranteed to remain permanent.\nIf a Pod is deleted and Kubernetes creates a replacement, the replacement Pod can receive a different IP address.\nFor example:\nOld Pod\n```text\n10.0.0.10\n   ↓\nPod deleted\n   ↓\nNew Pod\n10.0.0.25\n```\n\n\nIf another application directly uses 10.0.0.10, communication can fail.\nInstead, Kubernetes Services provide a stable endpoint:\n```text\nApplication\n     ↓\nService\n     ↓\nPod(s)\n```\n\n\nThis allows Pods to be replaced without requiring the client application to know their individual IP addresses.\n\n5. What is a Kubernetes Service?\n**💡 Answer:**\n\nA Service provides a stable network endpoint for accessing a group of Pods.\nFor example:\n```text\nFrontend\n   ↓\nBackend Service\n   ↓\nBackend Pods\n```\n\n\nThe Service selects the appropriate Pods and provides a stable way to communicate with them.\nThis is particularly important because Pod IP addresses can change.\nServices can also be used for different types of access, such as:\nInternal communication\nNode-level exposure\nExternal/cloud load balancing\n\n6. What is a replica in Kubernetes?\n**💡 Answer:**\n\nA replica is an additional running instance of an application workload.\nIf a Deployment specifies:\nreplicas: 3\n\nKubernetes attempts to maintain three Pods:\nDeployment\n|\n+-- Pod 1\n+-- Pod 2\n+-- Pod 3\n\nIf one Pod fails or is deleted, the Deployment works to create another Pod so that the desired number remains three.\nReplicas therefore provide availability and scaling for the workload.\n\n7. What happens when a Pod managed by a Deployment is deleted?\n**💡 Answer:**\n\nThe Deployment has a desired state.\nFor example:\nDesired replicas = 3\n\nIf one Pod is deleted:\nCurrent replicas = 2\n\nKubernetes detects that the current state doesn't match the desired state.\nIt then creates another Pod:\nPod 1\nPod 2\nPod 3 ← replacement\n\nThis demonstrates Kubernetes' self-healing behavior.\n\n8. What is the difference between kubectl create and kubectl apply?\n**💡 Answer:**\n\n```bash\nkubectl create is commonly used to create a resource.\n```\n\nFor example:\n```bash\nkubectl create -f pod.yaml\n```\n\n\n```bash\nkubectl apply is used to apply a configuration and is particularly useful when maintaining resources through YAML.\nkubectl apply -f deployment.yaml\n```\n\n\nThe practical advantage of YAML with apply is that the configuration can be:\nStored in Git\nReviewed\nModified\nReused\nApplied repeatedly\nThis makes declarative configuration very useful for DevOps and CI/CD workflows.\n\n9. What is a node pool?\n**💡 Answer:**\n\nA node pool is a group of worker nodes managed together with a particular configuration.\nFor example:\nCluster\n|\n+-- General Node Pool\n|      +-- Node 1\n|      +-- Node 2\n|\n+-- High-CPU Node Pool\n+-- Node 1\n+-- Node 2\n\nDifferent node pools can be configured for different workload requirements.\nNode pools are also important for node scaling and cluster capacity management.\n\n10. What are resource requests and limits in Kubernetes?\n**💡 Answer:**\n\nResource requests and limits define how much CPU and memory a container requires and is allowed to consume.\nFor example:\nresources:\nrequests:\ncpu: \"250m\"\nmemory: \"256Mi\"\nlimits:\ncpu: \"500m\"\nmemory: \"512Mi\"\n\nRequest\nRepresents the amount of resource the workload requests and is important for scheduling.\nLimit\nDefines the maximum resource consumption configured for the container.\nThese settings help Kubernetes make better scheduling decisions and prevent workloads from consuming unlimited resources.\n\n10 Scenario-Based Kubernetes Interview Questions",
+      "id": "s34a-q04",
+      "unit": "s34a",
+      "concept_ids": [
+        "s34a-pod-ip-addresses",
+        "s34a-kubernetes-pod-yaml",
+        "s34a-why-yaml-is-preferred-for-kubernetes-configuration"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario: You have a Deployment with 3 replicas. One Pod is manually deleted. What happens?",
+      "prompt": "Scenario: You have a Deployment with 3 replicas. One Pod is manually deleted. What happens?",
+      "reference_answer": "The Deployment continuously tries to maintain the desired state.\nInitially:\nDesired = 3\nCurrent = 3\n\nAfter deleting one Pod:\nDesired = 3\nCurrent = 2\n\nKubernetes detects the difference and creates a replacement.\nPod 1\nPod 2\nPod 3 ← New Pod\n\nThis is an example of Kubernetes self-healing.",
+      "id": "s34a-s01",
+      "unit": "s34a",
+      "concept_ids": [
+        "s34a-deployment",
+        "s34a-deployment-vs-individual-pods",
+        "s34a-kubernetes-pod-yaml"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario: Your backend application is configured to connect directly to 10.0.0.15, which is the IP of a Pod. The connection suddenly stops working. What could have happened?",
+      "prompt": "Scenario: Your backend application is configured to connect directly to 10.0.0.15, which is the IP of a Pod. The connection suddenly stops working. What could have happened?",
+      "reference_answer": "The Pod may have been deleted and recreated.\nThe new Pod could have a different IP:\n```text\nOld Pod → 10.0.0.15\n     ↓\nPod deleted\n     ↓\nNew Pod → 10.0.0.27\n```\n\n\nThe backend is still trying to contact the old IP.\nThe correct architecture is:\n```text\nBackend\n   ↓\nBackend Service\n   ↓\nBackend Pod(s)\n```\n\n\nThe Service provides a stable endpoint while Pods can change.\n\n3. Scenario: Your organization wants separate environments for Development, QA and Production, but doesn't want to create three Kubernetes clusters. What can you use?\n**💡 Answer:**\n\nNamespaces can be used to logically separate the environments:\nCluster\n|\n+-- dev\n+-- qa\n+-- production\n\nFor example:\n```bash\nkubectl create namespace dev\nkubectl create namespace qa\nkubectl create namespace production\n```\n\n\nResources can then be deployed into their respective namespaces.\nHowever, the organization should still evaluate whether separate clusters are required for stronger isolation, security or operational reasons.\n\n4. Scenario: You changed replicas: 1 to replicas: 5 in your Deployment YAML and ran kubectl apply. What should happen?\n**💡 Answer:**\n\nKubernetes should update the Deployment's desired state from one replica to five.\nBefore:\nDeployment\n|\n+-- Pod 1\n\nAfter:\nDeployment\n|\n+-- Pod 1\n+-- Pod 2\n+-- Pod 3\n+-- Pod 4\n+-- Pod 5\n\nAssuming sufficient cluster resources are available, Kubernetes will create the additional Pods.\n\n5. Scenario: You created a Deployment, but the new Pods remain Pending. What would you investigate?\n**💡 Answer:**\n\nI would first check:\n```bash\nkubectl get pods\n```\n\n\nThen:\n```bash\nkubectl describe pod <pod-name>\n```\n\n\nI would inspect the Events and determine whether the problem is related to:\nInsufficient CPU\nInsufficient memory\nNode availability\nScheduling constraints\nResource requests\nNode capacity\nI would also inspect the nodes:\n```bash\nkubectl get nodes\nkubectl describe node <node-name>\n```\n\n\nIf the cluster doesn't have sufficient capacity, I may need to increase the node pool size or enable/use cluster autoscaling.\n\n6. Scenario: Your application has 10 replicas, but all of them are running on the same node. Is that necessarily a problem?\n**💡 Answer:**\n\nIt can be a reliability concern.\nIf all replicas are concentrated on one node and that node fails, multiple application instances could become unavailable simultaneously.\nThe appropriate scheduling and workload-distribution strategy depends on the application's requirements.\nIn a production environment, we would consider distributing workloads across multiple nodes/zones using appropriate Kubernetes scheduling mechanisms.\nThe important principle is:\nScaling the number of Pods does not automatically mean the Pods are distributed exactly how you want.\n\n7. Scenario: A developer asks you to give temporary access to a Google Cloud project so they can troubleshoot a Kubernetes issue. What approach would you use?\n**💡 Answer:**\n\nI would use IAM to grant the required role rather than sharing credentials.\nIf supported by the organization's access policy, I would use conditional/temporary access so that the permission automatically expires.\nConceptually:\n```text\nDeveloper\n    ↓\nIAM Role\n    ↓\nTemporary Condition\n    ↓\nKubernetes/Cloud Access\n    ↓\nExpiration\n```\n\n\nThis follows the principle of giving users the required access for the required period rather than permanent excessive permissions.\n\n8. Scenario: Your team has a CPU-intensive application and a memory-intensive application. How could node pools help?\n**💡 Answer:**\n\nWe could create separate node pools with different machine configurations.\nFor example:\nCluster\n|\n+-- CPU-Optimized Pool\n|      +-- Nodes\n|\n+-- Memory-Optimized Pool\n+-- Nodes\n\nThe workloads can then be scheduled appropriately using Kubernetes scheduling mechanisms.\nThis allows infrastructure to match workload requirements instead of putting every workload onto identical nodes.\n\n9. Scenario: A junior engineer manually creates five Pods for an application instead of creating a Deployment. Would you recommend this approach?\n**💡 Answer:**\n\nGenerally, no for a normal stateless application.\nManually created Pods do not provide the same desired-state management offered by a Deployment.\nInstead, I would create a Deployment specifying:\nspec:\nreplicas: 5\n\nThe Deployment will manage the Pods and maintain the desired number.\nIf one Pod is deleted:\n```text\n5 replicas desired\n        ↓\n4 running\n        ↓\nDeployment detects difference\n        ↓\nNew Pod created\n        ↓\n5 running\n```\n\n\nThis provides self-healing and easier scaling.",
+      "id": "s34a-s02",
+      "unit": "s34a",
+      "concept_ids": [
+        "s34a-kubernetes-pod-yaml",
+        "s34a-pod-ip-addresses"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You have created a Kubernetes YAML file, but another engineer says, \"Why don't we just use one huge kubectl command instead?\" How would you respond?",
+      "prompt": "You have created a Kubernetes YAML file, but another engineer says, \"Why don't we just use one huge kubectl command instead?\" How would you respond?",
+      "reference_answer": "For simple one-time operations, CLI commands can be convenient.\nHowever, YAML manifests are generally more practical for maintaining Kubernetes configurations because they can be:\nStored in Git\nVersion-controlled\nReviewed through pull requests\nReused\nModified\nApplied consistently across environments\nIntegrated into CI/CD\nFor example:\n```bash\nkubectl apply -f deployment.yaml\n```\n\n\nThis gives the team a declarative configuration that can be maintained as code.\nThe key DevOps principle is:\nInfrastructure and application configuration should be reproducible and version-controlled wherever practical.\n\nQuick Interview Revision Sheet\nTopic\nOne-Line Answer\nNamespace\nLogical isolation and organization of Kubernetes resources\nPod\nSmallest deployable execution unit containing one or more containers\nDeployment\nManages Pods and maintains desired replicas\nReplica\nAdditional instance of a workload\nService\nStable network endpoint for accessing Pods\nPod IP\nCan change when Pods are recreated\nNode Pool\nGroup of similarly configured worker nodes\nYAML\nDeclarative configuration for Kubernetes resources\n```bash\nkubectl create\n```\n\nCommonly used to create resources\n```bash\nkubectl apply\n```\n\nApplies/updates declarative configuration\nResource Request\nResource amount used when considering scheduling\nResource Limit\nMaximum configured resource consumption\nIAM\nControls access to cloud resources\nSelf-Healing\nKubernetes works to restore the desired workload state\nCluster Autoscaling\nAdjusts node capacity based on workload requirements",
+      "id": "s34a-s03",
+      "unit": "s34a",
+      "concept_ids": [
+        "s34a-kubectl-create-vs-kubectl-apply",
+        "s34a-why-yaml-is-preferred-for-kubernetes-configuration",
+        "s34a-kubernetes-pod-yaml"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "id": "s14",
+  "title": "Session 14 — Elastic Load Balancer",
+  "subtitle": "Session 14",
+  "session": 14,
+  "module": "M3 AWS",
+  "order": 1400,
+  "status": "light",
+  "source_file": "Session-14-Elastic-Load-Balancer/README.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s14-topics-covered",
+      "unit": "s14",
+      "kind": "overview",
+      "title": "Topics covered",
+      "text_md": "- ELB Types: ALB NLB GLB and Classic Load Balancer\n- How Load Balancers Distribute Traffic across targets\n- Target Groups & Health Checks — configuration\n- SSL/TLS Termination at ELB — certificate management\n- Cross-Zone Load Balancing behavior\n- High Availability with ELB across multiple AZs",
+      "diagram": null
+    },
+    {
+      "id": "s14-key-learnings",
+      "unit": "s14",
+      "kind": "concept",
+      "title": "Key learnings",
+      "text_md": "- ALB is Layer 7 HTTP/HTTPS and routes based on URL path or host header values\n- NLB is Layer 4 TCP for ultra-high performance handling millions of requests per second\n- Health checks automatically remove unhealthy instances from rotation within seconds\n- SSL termination at ELB saves compute resources on EC2 instances for application work\n- One ELB can route traffic to EC2 instances across multiple Availability Zones",
+      "diagram": null
+    },
+    {
+      "id": "s14-task-027",
+      "unit": "s14",
+      "kind": "practical",
+      "title": "Task 027",
+      "text_md": "**Lab task 027:** Create ALB and register 2 EC2 instances as targets — verify traffic distribution in browser\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    },
+    {
+      "id": "s14-task-028",
+      "unit": "s14",
+      "kind": "practical",
+      "title": "Task 028",
+      "text_md": "**Lab task 028:** Test load distribution by stopping one EC2 — verify the other handles all traffic automatically\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

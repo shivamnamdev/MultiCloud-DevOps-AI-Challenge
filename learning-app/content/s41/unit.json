@@ -1,0 +1,160 @@
+{
+  "id": "s41",
+  "title": "Ansible Architect",
+  "subtitle": "Session 41 · Ansible Setup with Ubuntu Docker Containers",
+  "session": 41,
+  "module": "M6 IaC + Automation",
+  "order": 4100,
+  "status": "ready",
+  "source_file": "Session-41-Ansible-Architect",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s41-step-1-create-a-docker-playground-instance",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Step 1: Create a Docker Playground Instance",
+      "text_md": "Go to Docker Playground, create an instance/node, and create 3 Ubuntu containers.\n\n1. **1st container** - `ansible_master`\n2. **2nd container** - `target1`\n3. **3rd container** - `target2`",
+      "diagram": null
+    },
+    {
+      "id": "s41-step-2-create-containers",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Step 2: Create Containers",
+      "text_md": "Run the following commands:\n\n```bash\nsudo apt-get update && sudo apt install docker.io -y\n\ndocker run -itd --name ansible_master ubuntu /bin/bash\ndocker run -itd --name target1 ubuntu /bin/bash\ndocker run -itd --name target2 ubuntu /bin/bash\n```",
+      "diagram": null
+    },
+    {
+      "id": "s41-step-3-check-the-containers",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Step 3: Check the Containers",
+      "text_md": "Check the running containers and verify their names:\n\n```bash\ndocker ps\n```\n\nYou should see:\n\n```text\nansible_master\ntarget1\ntarget2\n```",
+      "diagram": null
+    },
+    {
+      "id": "s41-part-2-install-ansible-and-required-tools-in-ansible-master",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Part 2: Install Ansible and Required Tools in ansible_master",
+      "text_md": "### Step 4: Login to ansible_master\n\nGo inside the `ansible_master` container:\n\n```bash\ndocker exec -it ansible_master bash\n```\n\nUpdate Ubuntu and install the required dependencies:\n\n```bash\napt update\napt install python-is-python3 vim iputils-ping openssh-client -y\n```\n\nInstall the required software-properties package:\n\n```bash\napt install software-properties-common\n```\n\nAdd the Ansible PPA:\n\n```bash\nadd-apt-repository --yes --update ppa:ansible/ansible\n```\n\nInstall Ansible:\n\n```bash\napt install ansible\n```\n\nVerify the Ansible installation:\n\n```bash\nansible --version\n```",
+      "diagram": null
+    },
+    {
+      "id": "s41-part-3-setup-target-machines",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Part 3: Setup Target Machines",
+      "text_md": "We will configure 2 target containers:\n\n* `target1`\n* `target2`",
+      "diagram": null
+    },
+    {
+      "id": "s41-step-5-login-to-target1",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Step 5: Login to target1",
+      "text_md": "From the Docker node, run:\n\n```bash\ndocker exec -it target1 bash\n```",
+      "diagram": null
+    },
+    {
+      "id": "s41-step-6-update-and-install-ssh-and-required-dependencies",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Step 6: Update and Install SSH and Required Dependencies",
+      "text_md": "Run:\n\n```bash\napt update\napt install vim python-is-python3 iputils-ping openssh-client -y\napt-get install openssh-client openssh-server -y\n```",
+      "diagram": null
+    },
+    {
+      "id": "s41-step-7-configure-ssh",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Step 7: Configure SSH",
+      "text_md": "Edit the SSH configuration file:\n\n```bash\ncd /etc/ssh\nvi sshd_config\n```\n\nUncomment the required parameters and modify them as follows:\n\n```text\nPermitRootLogin yes\nPasswordAuthentication yes\n```\n\nThis will allow root login and password authentication for the lab environment.",
+      "diagram": null
+    },
+    {
+      "id": "s41-step-8-start-the-ssh-service",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Step 8: Start the SSH Service",
+      "text_md": "Check the SSH service:\n\n```bash\nservice ssh status\n```\n\nStart the SSH service:\n\n```bash\nservice ssh start\n```\n\nCheck the status again:\n\n```bash\nservice ssh status\n```",
+      "diagram": null
+    },
+    {
+      "id": "s41-step-9-change-the-root-password",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Step 9: Change the Root Password",
+      "text_md": "Set the root password:\n\n```bash\npasswd root\n```\n\nUse:\n\n```text\nAdmin\nAdmin\n```\n\nas the password and confirmation.",
+      "diagram": null
+    },
+    {
+      "id": "s41-part-4-perform-the-same-steps-on-target2",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Part 4: Perform the Same Steps on target2",
+      "text_md": "### Step 10: Configure target2\n\nLogin to `target2`:\n\n```bash\ndocker exec -it target2 bash\n```\n\nPerform the same steps used for `target1`:\n\n```bash\napt update\napt install vim python-is-python3 iputils-ping openssh-client -y\napt-get install openssh-client openssh-server -y\n```\n\nEdit SSH configuration:\n\n```bash\ncd /etc/ssh\nvi sshd_config\n```\n\nConfigure:\n\n```text\nPermitRootLogin yes\nPasswordAuthentication yes\n```\n\nStart SSH:\n\n```bash\nservice ssh status\nservice ssh start\nservice ssh status\n```\n\nChange the root password:\n\n```bash\npasswd root\n```\n\nUse:\n\n```text\nAdmin\nAdmin\n```",
+      "diagram": null
+    },
+    {
+      "id": "s41-part-5-find-the-ip-addresses-of-target-containers",
+      "unit": "s41",
+      "kind": "concept",
+      "title": "Part 5: Find the IP Addresses of Target Containers",
+      "text_md": "We need the IP addresses of the target containers so that we can add them to the Ansible hosts file.\n\n### Step 11: Check Target IP Addresses\n\nCome out of the target container and go back to the Docker node.\n\nRun:\n\n```bash\nsudo docker inspect target1\nsudo docker inspect target2\n```\n\nLook for the `IPAddress` value.\n\nFor example:\n\n```text\n172.17.0.3\n```\n\nYou may get different IP addresses in your environment.",
+      "diagram": null
+    },
+    {
+      "id": "s41-part-6-setup-ansible-master-for-ssh-connectivity",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Part 6: Setup ansible_master for SSH Connectivity",
+      "text_md": "### Step 12: Go to ansible_master\n\nRun:\n\n```bash\ndocker exec -it ansible_master bash\n```\n\n### Step 13: Configure the Ansible Hosts File\n\nGo to the Ansible directory:\n\n```bash\ncd /etc/ansible/\n```\n\nCheck the files:\n\n```bash\nls\n```\n\nOpen the `hosts` file:\n\n```bash\nvi hosts\n```\n\nProvide the IP addresses of the target machines.\n\nFor example:\n\n```text\n172.17.0.3\n172.17.0.4\n```\n\nUse the actual IP addresses of your `target1` and `target2` containers.\n\n### Step 14: Verify Connectivity\n\nFrom `ansible_master`, ping the target machines:\n\n```bash\nping <Target machine IP>\n```\n\nFor example:\n\n```bash\nping 172.17.0.3\n```\n\nMake sure the target machine is reachable from `ansible_master`.",
+      "diagram": null
+    },
+    {
+      "id": "s41-part-7-configure-ssh-key-based-connectivity",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Part 7: Configure SSH Key-Based Connectivity",
+      "text_md": "Go back to the `ansible_master` container.\n\n### Step 15: Generate SSH Key\n\nGenerate an SSH key using:\n\n```bash\nssh-keygen\n```\n\nPress **Enter** 3 times:\n\n1. Enter to accept the default location\n2. Enter for an empty passphrase\n3. Enter to confirm the empty passphrase\n\n---\n\n### Step 16: Copy the SSH Key to the Target Machine\n\nCopy the generated SSH key from `ansible_master` to the remote target:\n\n```bash\nssh-copy-id root@172.17.0.3\n```\n\nWhen prompted, enter:\n\n```text\nyes\n```\n\nThen provide the root password of the target machine.\n\nRepeat the same process for `target2` using its IP address.\n\n---\n\n### Step 17: Verify SSH Connectivity\n\nFrom `ansible_master`, connect to the target machine:\n\n```bash\nssh root@172.17.0.3\n```\n\nIf everything is configured correctly, you should be able to login without entering the password again.\n\n---\n\n### Step 18: Verify Nginx\n\nAfter connecting to the target machine, check whether Nginx is installed:\n\n```bash\nservice nginx status\n```",
+      "diagram": null
+    },
+    {
+      "id": "s41-part-8-create-and-run-an-ansible-playbook",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Part 8: Create and Run an Ansible Playbook",
+      "text_md": "Now we will create an Ansible playbook to install Nginx on all target machines.\n\n### Step 19: Create installnginx.yaml\n\nGo to the Ansible directory:\n\n```bash\ncd /etc/ansible\n```\n\nCreate the playbook:\n\n```bash\nvi installnginx.yaml\n```\n\nAdd the following code:\n\n```yaml\n---\n- hosts: all\n  tasks:\n    - name: ensure nginx is at the latest version\n      apt: name=nginx state=latest\n```\n\nSave and exit the file.",
+      "diagram": null
+    },
+    {
+      "id": "s41-part-9-run-the-ansible-playbook",
+      "unit": "s41",
+      "kind": "concept",
+      "title": "Part 9: Run the Ansible Playbook",
+      "text_md": "Run the playbook using:\n\n```bash\nansible-playbook installnginx.yaml\n```\n\nAnsible will connect to all machines listed in the `/etc/ansible/hosts` file and execute the task.\n\nThe task will make sure that Nginx is installed and updated to the latest available version.\n\nYou can then verify Nginx on the target machines:\n\n```bash\nservice nginx status\n```",
+      "diagram": null
+    },
+    {
+      "id": "s41-lab-architecture",
+      "unit": "s41",
+      "kind": "practical",
+      "title": "Lab Architecture",
+      "text_md": "```text\n                    Ansible Master\n                  ┌─────────────────┐\n                  │ ansible_master  │\n                  │                 │\n                  │ Ansible         │\n                  │ SSH Client      │\n                  └────────┬────────┘\n                           │\n                 SSH / Ansible\n                    ┌──────┴──────┐\n                    │             │\n                    ▼             ▼\n             ┌────────────┐  ┌────────────┐\n             │  target1   │  │  target2   │\n             │            │  │            │\n             │ Ubuntu     │  │ Ubuntu     │\n             │ SSH Server │  │ SSH Server │\n             └────────────┘  └────────────┘\n```",
+      "diagram": null
+    },
+    {
+      "id": "s41-final-verification",
+      "unit": "s41",
+      "kind": "concept",
+      "title": "Final Verification",
+      "text_md": "Check Ansible version:\n\n```bash\nansible --version\n```\n\nCheck the inventory:\n\n```bash\ncat /etc/ansible/hosts\n```\n\nTest Ansible connectivity:\n\n```bash\nansible all -m ping\n```\n\nRun the Nginx installation playbook:\n\n```bash\nansible-playbook installnginx.yaml\n```\n\nVerify Nginx on the target machines:\n\n```bash\nservice nginx status\n```\n\n**Expected flow:**\n\n```text\nDocker Playground\n       ↓\nCreate 3 Ubuntu Containers\n       ↓\nansible_master + target1 + target2\n       ↓\nInstall Ansible on ansible_master\n       ↓\nConfigure SSH on target machines\n       ↓\nFind Target IP Addresses\n       ↓\nConfigure /etc/ansible/hosts\n       ↓\nGenerate SSH Keys\n       ↓\nCopy SSH Keys to Targets\n       ↓\nTest SSH Connectivity\n       ↓\nCreate Ansible Playbook\n       ↓\nRun ansible-playbook\n       ↓\nInstall Nginx on Target Machines\n```",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

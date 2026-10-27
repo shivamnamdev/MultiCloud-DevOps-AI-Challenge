@@ -1,0 +1,617 @@
+{
+  "id": "s11",
+  "title": "EC2 Scalability AMI · Day 2",
+  "subtitle": "Session 11 · Batch-45 · Part 1: Basic to Advanced Q&A",
+  "session": 11,
+  "module": "M3 AWS",
+  "order": 1100,
+  "status": "ready",
+  "source_file": "Session-11-EC2-Scalability-AMI/NEW link 🚀 Day-2 of AWS with Batch-45 _ 06th Oct 2026 _ 8_00 AM IST _ Zoom Session 2026-10-06 07_50(GMT+5_30).md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s11-elasticity",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "Elasticity",
+      "text_md": "- **Elasticity** = ability to increase or decrease compute resources; all AWS services starting with \"E\" (EC2, EBS, ECR, ECS, EFS, EKS) are elastic services\n- Elasticity is a **concept**; auto-scaling is the **feature** that implements it",
+      "diagram": null
+    },
+    {
+      "id": "s11-scaling-types",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "Scaling Types",
+      "text_md": "- **Vertical scaling**: same machine gets a larger size (e.g., upgrading a laptop's RAM); scale-down requires restart, cannot be done automatically\n- **Horizontal scaling**: additional separate resources added to handle load; auto scale-down is possible by terminating excess instances\n- Horizontal scaling uses **identical-sized replicas** created via AMI + Launch Templates",
+      "diagram": null
+    },
+    {
+      "id": "s11-auto-scaling",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "Auto-Scaling",
+      "text_md": "- Resources automatically increase or decrease based on configurable conditions: **CPU, memory, or traffic**\n- Real-world example: Flipkart running 100 servers normally scales up by 10% when traffic increases by 10%\n- Configuration options include minimum, desired, and maximum instance counts with trigger thresholds",
+      "diagram": null
+    },
+    {
+      "id": "s11-high-availability-ha",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "High Availability (HA)",
+      "text_md": "- Running the same application stack across **two different regions** (e.g., Mumbai + UAE) so that if one data center goes down, the other serves traffic\n- Cost is **double** since full hardware resources are duplicated\n- **Database sync layer required** between HA zones; web/middleware servers do not need sync\n- HA is part of horizontal scaling conceptually — more data centers added",
+      "diagram": null
+    },
+    {
+      "id": "s11-disaster-recovery-dr",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "Disaster Recovery (DR)",
+      "text_md": "- DR is **separate from HA**: kept in a third zone, **passive** (not actively serving traffic)\n- DR is activated only when both primary and HA regions go down\n- **Active-Active**: both instances serving traffic simultaneously; **Active-Passive**: one serves traffic, one is on standby",
+      "diagram": null
+    },
+    {
+      "id": "s11-cdn-edge-locations",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "CDN / Edge Locations",
+      "text_md": "- **CDN (Content Delivery Network)** = delivers content from edge locations near the end user rather than the origin data center\n- AWS CDN service is **CloudFront**; 900+ edge locations globally — no need to memorize count\n- Analogy: like Blinkit's dark stores near your neighborhood delivering goods in 10 minutes instead of from a central warehouse\n- CDN is for **front-end content delivery** (caching/distribution), not load balancing\n- Edge locations ≠ full data centers; they serve cached content to reduce latency",
+      "diagram": null
+    },
+    {
+      "id": "s11-aws-account-types-poc-vs-standard",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "AWS Account Types: POC vs. Standard",
+      "text_md": "- New AWS accounts are now **POC (Proof of Concept) accounts** with limited access\n- POC accounts: DigiLocker verification mandatory, 200 free credits provided, regions limited (only one region visible/usable)\n- POC account has a **[settings.aws.amazon.com](https://settings.aws.amazon.com)** portal (new) with Projects, Teams, Billing, Support tabs; IAM users created via Teams section\n- **Do not mention POC account in interviews** — state that you worked on a paid/production account\n- Standard console access: **[console.aws.amazon.com/console](https://console.aws.amazon.com/console)**\n- Students on POC accounts should use the root account for all practicals",
+      "diagram": null
+    },
+    {
+      "id": "s11-ami-amazon-machine-image",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "AMI (Amazon Machine Image)",
+      "text_md": "- AMI = **customized operating system image** provided by Amazon, optimized for AWS hardware\n- Includes pre-installed software for: faster boot times, monitoring agents, Active Directory integration, application optimization\n- Each AMI has a **unique AMI ID**; ID changes if the region changes\n- AMI ID changes per region — same image in Mumbai vs. UAE will have different IDs\n- **Always select verified AMIs** (green tick) in production and interviews; avoid unverified community AMIs\n- 5,163+ AMIs available in the marketplace including third-party and community images\n- Custom AMIs can be created and shared (used as \"golden images\" for replication)\n- AMI is the basis for horizontal scaling replicas — template contains the AMI, which is used to spin up identical instances",
+      "diagram": null
+    },
+    {
+      "id": "s11-linux-vm-amazon-linux-2023",
+      "unit": "s11",
+      "kind": "practical",
+      "title": "Linux VM (Amazon Linux 2023)",
+      "text_md": "Key configuration steps covered:\n\n- **Name**: descriptive label for the instance\n- **AMI**: Amazon Linux 2023 (free tier eligible, kernel version 6)\n- **Instance type**: t3.micro (2 vCPU, 1 GB RAM) — free tier\n- **Key pair**: skipped for browser-based console connection\n- **Network**: left as default (networking covered in a separate dedicated class)\n- **Storage (EBS)**: 30 GB root volume (C drive equivalent); additional EBS volumes can be added as D drive equivalent via \"Add New Volume\"\n- **Traffic**: HTTP and HTTPS allowed",
+      "diagram": null
+    },
+    {
+      "id": "s11-windows-vm-windows-server-2025-base",
+      "unit": "s11",
+      "kind": "practical",
+      "title": "Windows VM (Windows Server 2025 Base)",
+      "text_md": "- Select **Windows Server 2025 Base** AMI (Data Center Edition used in real enterprise)\n- Instance type t3.micro has only 1 GB RAM — slow for Windows but free tier; 2 GB RAM minimum recommended\n- **Key pair required** (PEM format, RSA algorithm) to decrypt the administrator password for RDP login\n- Minimum **30 GB storage** for Windows",
+      "diagram": null
+    },
+    {
+      "id": "s11-linux-vm-browser-console",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "Linux VM — Browser Console",
+      "text_md": "1. Select instance → click **Connect**\n2. Choose **EC2 Instance Connect** option\n3. Click **Connect** — lands directly in terminal\n- Total clicks: ~4 from VM creation to connected terminal",
+      "diagram": null
+    },
+    {
+      "id": "s11-windows-vm-rdp-6-step-process",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "Windows VM — RDP (6-Step Process)",
+      "text_md": "1. Install/open RDP client (pre-installed on Windows; Mac users download **Windows App** from Microsoft's official website)\n2. Download the **RDP shortcut file** from the Connect tab\n3. Open RDP client and run the shortcut file\n4. **Retrieve password**: upload the downloaded PEM key file → click **Decrypt** to generate the password\n5. Enter **username** (`Administrator` by default) and the decrypted password\n6. Accept the certificate prompt (first-time connection) → logged in\n\n**Important notes:**\n\n- Windows Home Edition **does not support RDP** — Windows Professional required\n- Public IP = External IP = same thing; used as the hostname in RDP\n- If public IP is not generated, check **Network Settings → Auto-assign Public IP** is enabled\n- Mac users: install **Windows App** from Microsoft's official site (not App Store)",
+      "diagram": null
+    },
+    {
+      "id": "s11-instance-lifecycle-termination-behavior",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "Instance Lifecycle & Termination Behavior",
+      "text_md": "- **Terminate = Delete** in AWS terminology — both are identical\n- After termination, instance remains **visible for 10–15 minutes intentionally** — AWS keeps it so accidental deletions can be identified and configuration info retrieved\n- Information retrievable post-termination: instance name, CPU/memory specs, key pair used, network configuration\n- **VM itself cannot be recovered** after termination — only metadata/configuration info is accessible\n- Data can be recovered if **snapshots/backups** were taken before termination\n- Resources are fully released after the grace period — no billing continues\n- Reboot option available from right-click menu on instance without needing to log in",
+      "diagram": null
+    },
+    {
+      "id": "s11-ebs-elastic-block-storage",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "EBS (Elastic Block Storage)",
+      "text_md": "- EBS = **virtual external hard drive** attached to an EC2 instance\n- Root volume (C drive) = minimum 8 GB, class uses 30 GB\n- Additional EBS volumes added as separate drives (D drive equivalent) via \"Add New Volume\"\n- Volume types: **GP3 SSD** is the standard in real-time use; magnetic (HDD) types are being deprecated\n- In Linux terminology, attaching EBS = **mounting** a volume to a mount point (directory)\n- EBS described as a \"virtual raw hard drive\" — accurate technical characterization",
+      "diagram": null
+    },
+    {
+      "id": "s11-region-selection-logic",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "Region Selection Logic",
+      "text_md": "- Use **latency ping tool** (link shared in Zoom chat) to ping all AWS data centers and select the one with lowest response time\n- Share the ping link with clients and have them test from their location over 24 hours; use the average result\n- **Never select a region purely based on your own location** — base it on where end users are\n- Avoid placing HA/DR in the same country to protect against country-level outages (e.g., AWS India contract termination scenario)\n- CDN edge locations handle geographic distribution; full data centers only needed where primary user base is concentrated",
+      "diagram": null
+    },
+    {
+      "id": "s11-real-world-windows-admin-context-gangadhar-s-experience",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "Real-World Windows Admin Context (Gangadhar's Experience)",
+      "text_md": "Gangadhar (10 years Windows Admin) shared how Windows Server is used in production:\n\n- **Splunk** installed on Windows Server for log monitoring and alerting\n- **Windows patching** managed via **BigFix** (third-party patching tool) — not built-in Windows Update\n- Patching workflow: identify unpatched servers → raise change management ticket → coordinate with application team for downtime window → inject KB articles → reboot multiple times → confirm services are up\n- **Disk space management**: C drive space monitored and cleaned before patching\n- Database servers: DB team informed to bring down and restart instances during maintenance\n- AWS **CloudWatch** handles automatic monitoring of Windows servers in the cloud\n- VDI environments use the same RDP/remote connectivity principles; only the client software differs (e.g., Citrix vs. standard RDP)",
+      "diagram": null
+    },
+    {
+      "id": "s11-iam-roles-policies-brief-coverage",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "IAM, Roles & Policies (Brief Coverage)",
+      "text_md": "- **Policy**: set of permissions applicable broadly (e.g., all users can start/stop EC2 but not delete)\n- **Role**: permissions scoped to a department or function (e.g., IT team vs. marketing team gets different access)\n- Analogy: company ID card = policy (everyone gets one); department access card = role (specific to your team)\n- Best practice: use **IAM users** rather than root for daily work; root acceptable in POC accounts where IAM is restricted",
+      "diagram": null
+    },
+    {
+      "id": "s11-upcoming-session-day-3",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "Upcoming Session (Day 3)",
+      "text_md": "- **Linux configuration** deep dive\n- Create **Apache / Nginx web server** on EC2\n- Connect using **MobaXterm** or other third-party SSH tools\n- **Snapshots and backups** of EBS volumes\n- Networking fundamentals scheduled for **Day 7**\n\n- # AWS Day-2 — 20 Basic to Advanced Q&A + 20 Scenario-Based Q&A\n\nBased on the AWS Day-2 training notes covering elasticity, scaling, HA, DR, CDN, AWS account types, AMI, EC2, EBS, region selection, Windows/Linux connectivity, IAM, and instance lifecycle.",
+      "diagram": null
+    },
+    {
+      "id": "s11-quick-interview-revision",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "Quick Interview Revision",
+      "text_md": "| Topic | Key Point |\n|---|---|\n| Elasticity | Increase/decrease resources based on demand |\n| Auto Scaling | Feature used to implement automatic scaling |\n| Vertical Scaling | Make the same machine bigger |\n| Horizontal Scaling | Add more machines |\n| HA | Keep application available through another environment |\n| DR | Separate recovery environment, generally passive |\n| Active-Active | Both environments serve traffic |\n| Active-Passive | One active, one standby |\n| CDN | Faster front-end content delivery |\n| CloudFront | AWS CDN service |\n| Edge Location | Location for cached/distributed content |\n| AMI | Image/template for EC2 |\n| Golden Image | Standardized reusable custom AMI |\n| EC2 | AWS virtual compute instance |\n| EBS | Persistent block storage for EC2 |\n| GP3 | Standard SSD volume used in the training |\n| EC2 Instance Connect | Browser-based Linux connection |\n| RDP | Remote connection method for Windows |\n| Key Pair | Used in Windows process to decrypt Administrator password |\n| Terminate | Delete the EC2 instance |\n| Region Selection | Based on users, latency, and architecture requirements |\n| IAM | Controls permissions and access |",
+      "diagram": null
+    },
+    {
+      "id": "s11-important-interview-note",
+      "unit": "s11",
+      "kind": "concept",
+      "title": "Important Interview Note",
+      "text_md": "The training notes specifically instruct students on POC accounts **not to describe the account as a POC account during interviews** and instead describe their experience in terms of paid/production AWS account usage.\n\nFor technical interviews, focus on explaining the architecture, services, configuration, troubleshooting approach, and practical work you actually performed.",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is Elasticity in AWS?",
+      "prompt": "What is Elasticity in AWS?",
+      "reference_answer": "Elasticity is the ability to increase or decrease compute resources according to the workload. For example, when traffic increases, more resources can be added, and when traffic decreases, resources can be reduced.\n\nElasticity is a **concept**, while Auto Scaling is a **feature/mechanism** used to implement elasticity.",
+      "id": "s11-q01",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-ebs-elastic-block-storage",
+        "s11-elasticity"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between Vertical Scaling and Horizontal Scaling?",
+      "prompt": "What is the difference between Vertical Scaling and Horizontal Scaling?",
+      "reference_answer": "Vertical scaling** means increasing the capacity of the same machine. For example, changing an EC2 instance to a larger instance with more CPU or RAM.\n\n**Horizontal scaling** means adding more separate machines/instances to handle additional load.\n\nA simple example:\n\n- Vertical: 1 EC2 → larger EC2\n- Horizontal: 1 EC2 → 3 identical EC2 instances",
+      "id": "s11-q02",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-auto-scaling",
+        "s11-scaling-types"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Auto Scaling?",
+      "prompt": "What is Auto Scaling?",
+      "reference_answer": "Auto Scaling automatically increases or decreases resources based on configured conditions such as CPU utilization, memory usage, or traffic.\n\nIt normally uses minimum, desired, and maximum instance counts along with trigger thresholds.",
+      "id": "s11-q03",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-auto-scaling",
+        "s11-scaling-types"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why is horizontal scaling commonly used for application replicas?",
+      "prompt": "Why is horizontal scaling commonly used for application replicas?",
+      "reference_answer": "Horizontal scaling allows additional instances to be added when demand increases and excess instances to be removed when demand decreases.\n\nIdentical instances can be created using an **AMI and Launch Template**, which helps maintain a consistent application environment.",
+      "id": "s11-q04",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-auto-scaling",
+        "s11-scaling-types"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is High Availability (HA)?",
+      "prompt": "What is High Availability (HA)?",
+      "reference_answer": "High Availability means designing an application so that it can continue serving users even if one infrastructure location becomes unavailable.\n\nThe training example uses application stacks across two different regions, such as Mumbai and UAE, so another region can serve traffic if the primary region goes down.",
+      "id": "s11-q05",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-high-availability-ha"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between Active-Active and Active-Passive?",
+      "prompt": "What is the difference between Active-Active and Active-Passive?",
+      "reference_answer": "Active-Active:** Both environments are running and serving traffic at the same time.\n\n**Active-Passive:** One environment actively serves traffic while the other remains on standby and can be activated when required.",
+      "id": "s11-q06",
+      "unit": "s11",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "How is Disaster Recovery different from High Availability?",
+      "prompt": "How is Disaster Recovery different from High Availability?",
+      "reference_answer": "HA and DR solve different availability problems.\n\n**HA** keeps another environment available to continue serving traffic when a primary environment fails.\n\n**DR** is a separate recovery environment, described in the training as a passive third zone. It is activated when both the primary and HA environments are unavailable.",
+      "id": "s11-q07",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-disaster-recovery-dr",
+        "s11-high-availability-ha"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why is database synchronization important in an HA architecture?",
+      "prompt": "Why is database synchronization important in an HA architecture?",
+      "reference_answer": "If an application is running across multiple locations, the database data must remain synchronized so that users do not receive inconsistent information.\n\nThe training specifically highlights the need for a **database sync layer** between HA zones. Web and middleware servers do not require the same type of data synchronization.",
+      "id": "s11-q08",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-important-interview-note"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a CDN and why is it used?",
+      "prompt": "What is a CDN and why is it used?",
+      "reference_answer": "A **Content Delivery Network (CDN)** delivers content from edge locations closer to end users instead of always serving it from the origin data center.\n\nAWS provides CDN functionality through **CloudFront**.\n\nThe main benefit discussed in the training is reduced latency for front-end content delivery.",
+      "id": "s11-q09",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-cdn-edge-locations"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between an Edge Location and a Data Center?",
+      "prompt": "What is the difference between an Edge Location and a Data Center?",
+      "reference_answer": "An edge location is used mainly to cache and distribute content closer to users.\n\nIt is not the same as a complete data center running the full application infrastructure.\n\nFor example, CloudFront can use edge locations to deliver cached front-end content quickly to users.",
+      "id": "s11-q10",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-cdn-edge-locations"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is an AMI in AWS?",
+      "prompt": "What is an AMI in AWS?",
+      "reference_answer": "AMI stands for **Amazon Machine Image**.\n\nIt is a customized operating system image used as a template for launching EC2 instances. It can contain the operating system and pre-installed software or configuration.\n\nAMI is also important for creating identical EC2 replicas during horizontal scaling.",
+      "id": "s11-q11",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-ami-amazon-machine-image"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why can the AMI ID be different in different AWS regions?",
+      "prompt": "Why can the AMI ID be different in different AWS regions?",
+      "reference_answer": "AMI IDs are region-specific.\n\nFor example, an AMI available in Mumbai can have a different AMI ID from the corresponding image in UAE.\n\nTherefore, when creating infrastructure in another region, you should verify the AMI available in that region instead of assuming the same AMI ID will work.",
+      "id": "s11-q12",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-ami-amazon-machine-image",
+        "s11-region-selection-logic"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a Golden Image?",
+      "prompt": "What is a Golden Image?",
+      "reference_answer": "A Golden Image is a standardized, preconfigured image that can be used to create consistent servers.\n\nIn AWS, a custom AMI can act as a Golden Image. It can be shared and reused to create identical EC2 instances.\n\nThis is useful for horizontal scaling and standardizing production environments.",
+      "id": "s11-q13",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-ami-amazon-machine-image"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is EC2?",
+      "prompt": "What is EC2?",
+      "reference_answer": "Amazon EC2 provides virtual machines/compute instances in AWS.\n\nIn the training, students created both:\n\n- Amazon Linux 2023 EC2 instances\n- Windows Server 2025 Base EC2 instances\n\nThese instances can be configured with a selected AMI, instance type, storage, networking, and connectivity options.",
+      "id": "s11-q14",
+      "unit": "s11",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is EBS?",
+      "prompt": "What is EBS?",
+      "reference_answer": "EBS stands for **Elastic Block Store**.\n\nIt provides persistent block storage that can be attached to EC2 instances.\n\nA simple way to understand it is as a **virtual external hard drive** for an EC2 instance.\n\nThe training uses GP3 SSD as the standard EBS volume type for real-time production examples.",
+      "id": "s11-q15",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-ebs-elastic-block-storage"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between an EC2 instance and an EBS volume?",
+      "prompt": "What is the difference between an EC2 instance and an EBS volume?",
+      "reference_answer": "An **EC2 instance** provides compute resources such as CPU and memory.\n\nAn **EBS volume** provides block storage.\n\nFor example:\n\n- EC2 = the virtual computer\n- EBS = the virtual disk attached to that computer\n\nThe root EBS volume can be treated like the main system drive, while additional EBS volumes can be attached as separate drives.",
+      "id": "s11-q16",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-ebs-elastic-block-storage"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you connect to a Linux EC2 instance using the browser console?",
+      "prompt": "How do you connect to a Linux EC2 instance using the browser console?",
+      "reference_answer": "The training process is:\n\n1. Select the EC2 instance.\n2. Click **Connect**.\n3. Choose **EC2 Instance Connect**.\n4. Click **Connect**.\n\nThis opens a terminal directly in the browser.\n\nFor this browser-based method, the training notes specify that a key pair can be skipped.",
+      "id": "s11-q17",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-linux-vm-browser-console",
+        "s11-linux-vm-amazon-linux-2023"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why is a key pair required for Windows EC2 RDP access?",
+      "prompt": "Why is a key pair required for Windows EC2 RDP access?",
+      "reference_answer": "For the Windows RDP process covered in the training, the PEM key is used to decrypt the Windows Administrator password.\n\nThe basic flow is:\n\n**PEM key → Decrypt password → Administrator credentials → RDP login**\n\nThe key pair is not required when using the browser-based Linux EC2 Instance Connect method described in the training.",
+      "id": "s11-q18",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-windows-vm-rdp-6-step-process"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What happens when an EC2 instance is terminated?",
+      "prompt": "What happens when an EC2 instance is terminated?",
+      "reference_answer": "In AWS terminology, **Terminate means Delete** for the EC2 instance.\n\nAfter termination, the instance may remain visible for around 10–15 minutes so that configuration information can still be identified.\n\nThe actual VM cannot be recovered after termination. However, data may be recoverable if snapshots or backups were created before termination.",
+      "id": "s11-q19",
+      "unit": "s11",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "How should you select an AWS region for a production workload?",
+      "prompt": "How should you select an AWS region for a production workload?",
+      "reference_answer": "The region should not be selected only because it is geographically close to the engineer.\n\nThe training recommends using latency/ping results from the actual user/client location. Ideally, clients can test AWS data centers over a period such as 24 hours and use average latency results.\n\nThe region should therefore be selected based on factors such as:\n\n- User location\n- Network latency\n- Application requirements\n- HA/DR requirements\n- Geographic outage risk",
+      "id": "s11-q20",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-region-selection-logic"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Traffic suddenly increases",
+      "prompt": "Your application normally handles traffic using 10 EC2 instances, but traffic suddenly increases significantly. What AWS concept would you use?",
+      "reference_answer": "Use **horizontal scaling with Auto Scaling**. Configure minimum, desired, and maximum instance counts and define suitable triggers such as CPU, memory, or traffic.\n\nNew identical instances can be launched using an AMI and Launch Template.",
+      "id": "s11-s01",
+      "unit": "s11",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "One EC2 needs more CPU and RAM",
+      "prompt": "Your application is running on one EC2 instance and the workload has increased. Instead of adding more servers, you want to make the existing machine larger. What type of scaling is this?",
+      "reference_answer": "This is **vertical scaling**.\n\nYou increase the capacity of the same machine by moving it to a larger instance size.\n\nThe training notes also mention that scale-down through vertical scaling requires a restart and cannot be done automatically in the same way as horizontal scaling.",
+      "id": "s11-s02",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-scaling-types",
+        "s11-ami-amazon-machine-image",
+        "s11-auto-scaling"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "One region goes down",
+      "prompt": "Your application is running in Mumbai, but the Mumbai data center becomes unavailable. You already have the same application stack running in UAE. What architecture concept does this represent?",
+      "reference_answer": "This represents **High Availability across regions**.\n\nThe second region can serve users when the primary region becomes unavailable.\n\nThe architecture has higher cost because resources are duplicated.",
+      "id": "s11-s03",
+      "unit": "s11",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Both primary and HA environments fail",
+      "prompt": "Your primary environment and HA environment are both unavailable. You have a third environment that is normally passive. What is this environment used for?",
+      "reference_answer": "It is the **Disaster Recovery (DR)** environment.\n\nThe training describes DR as a separate passive zone that is activated when both the primary and HA environments go down.",
+      "id": "s11-s04",
+      "unit": "s11",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Users from another location experience high latency",
+      "prompt": "Your application is hosted in Mumbai, but most users are located in another geographic region and are experiencing high latency. What should you investigate first?",
+      "reference_answer": "Check network latency between the users and AWS regions using a latency/ping tool.\n\nRegion selection should be based on the actual user location and average latency rather than only the engineer's physical location.\n\nFor front-end content, a CDN such as CloudFront can also help by serving cached content from nearby edge locations.",
+      "id": "s11-s05",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-high-availability-ha",
+        "s11-region-selection-logic"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Static website content is slow",
+      "prompt": "Your web application has static front-end content that takes a long time to load for users in different geographic locations. Would you use EC2 Auto Scaling or a CDN?",
+      "reference_answer": "For front-end content delivery, use a **CDN such as CloudFront**.\n\nA CDN caches/distributes content through edge locations closer to users, reducing latency.\n\nAuto Scaling is a compute scaling mechanism and is not a replacement for CDN content delivery.",
+      "id": "s11-s06",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-auto-scaling",
+        "s11-cdn-edge-locations",
+        "s11-scaling-types"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Need identical EC2 servers",
+      "prompt": "Your company needs 20 EC2 instances with exactly the same operating system, software, and configuration. How can you approach this?",
+      "reference_answer": "Create a customized **AMI** containing the required configuration and use it as the template for launching identical EC2 instances.\n\nThis approach can also be combined with a Launch Template for horizontal scaling.",
+      "id": "s11-s07",
+      "unit": "s11",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Same AMI ID doesn't work in another region",
+      "prompt": "You launched an EC2 instance using an AMI in Mumbai. You move your deployment to UAE and try to use the same AMI ID, but it is not available. Why?",
+      "reference_answer": "AMI IDs are **region-specific**.\n\nYou need to select or copy/use the appropriate AMI available in the target region.\n\nThe same operating system image can have different AMI IDs in different AWS regions.",
+      "id": "s11-s08",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-ami-amazon-machine-image"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Linux EC2 connection without downloading a key",
+      "prompt": "A student needs to connect to an Amazon Linux EC2 instance quickly from a browser and does not want to configure an external SSH client. What method was demonstrated?",
+      "reference_answer": "Use **EC2 Instance Connect** from the EC2 Connect option.\n\nThe training process is:\n\n**Instance → Connect → EC2 Instance Connect → Connect**",
+      "id": "s11-s09",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-linux-vm-amazon-linux-2023",
+        "s11-linux-vm-browser-console",
+        "s11-ami-amazon-machine-image"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Windows RDP password cannot be retrieved",
+      "prompt": "You created a Windows EC2 instance and want to connect using RDP, but you cannot decrypt the Administrator password. What should you check?",
+      "reference_answer": "Check that you have the correct **PEM key file** associated with the instance.\n\nThe Windows connection process uses the PEM key to decrypt the Administrator password before RDP login.",
+      "id": "s11-s10",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-real-world-windows-admin-context-gangadhar-s-experience",
+        "s11-windows-vm-rdp-6-step-process"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Windows EC2 has no public IP",
+      "prompt": "You created a Windows EC2 instance but no public IP is visible, so RDP cannot connect using the public address. What should you check?",
+      "reference_answer": "Check the instance's network settings and verify that **Auto-assign Public IP** is enabled during instance creation.\n\nThe public IP is used as the hostname/address for the RDP connection described in the training.",
+      "id": "s11-s11",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-windows-vm-rdp-6-step-process"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Mac user needs to connect to Windows EC2",
+      "prompt": "A student is using a Mac and needs to connect to a Windows EC2 instance through RDP. What client was recommended in the training?",
+      "reference_answer": "Use **Windows App** from Microsoft's official website.\n\nThe user can download the RDP shortcut file from the AWS Connect section and open it through the RDP client.",
+      "id": "s11-s12",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-windows-vm-rdp-6-step-process"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "EC2 instance was terminated accidentally",
+      "prompt": "An EC2 instance was terminated accidentally. Can you simply start the same VM again?",
+      "reference_answer": "No. **Terminate means delete**, and the VM itself cannot be recovered after termination.\n\nHowever, some configuration metadata may remain visible temporarily, and data can potentially be recovered if snapshots or backups were created before termination.",
+      "id": "s11-s13",
+      "unit": "s11",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Student keeps EC2 instances running after practice",
+      "prompt": "Students finish their daily EC2 practice but leave all instances running. What operational problem can this create?",
+      "reference_answer": "Running resources can result in unnecessary AWS charges.\n\nThe training action item is to **terminate the Linux and Windows practice instances after each session** to avoid unnecessary billing.",
+      "id": "s11-s14",
+      "unit": "s11",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Need a second disk on EC2",
+      "prompt": "A Windows EC2 server has a root disk and the application requires an additional disk similar to a D: drive. What AWS resource should you use?",
+      "reference_answer": "Create and attach an additional **EBS volume**.\n\nThe training describes the root volume as similar to the C: drive and additional EBS volumes as separate drives such as a D: drive.",
+      "id": "s11-s15",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-windows-vm-windows-server-2025-base"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Linux server needs an additional storage volume",
+      "prompt": "You attach an EBS volume to a Linux EC2 instance. What Linux concept is used to make the storage available through a directory?",
+      "reference_answer": "The EBS volume needs to be **mounted** to a mount point/directory.\n\nIn Linux terminology, attaching an EBS volume and mounting it are related but distinct steps.",
+      "id": "s11-s16",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-ebs-elastic-block-storage",
+        "s11-linux-vm-amazon-linux-2023",
+        "s11-linux-vm-browser-console"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Production team wants a standardized image",
+      "prompt": "A company wants every production EC2 server to start with the same OS and pre-installed monitoring/application software. What would you recommend?",
+      "reference_answer": "Create a **custom AMI / Golden Image** containing the required operating system and software configuration.\n\nUse that image when launching new instances so that production servers remain consistent.",
+      "id": "s11-s17",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-windows-vm-windows-server-2025-base"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Choosing a region only because the engineer is in Mumbai",
+      "prompt": "An engineer in Mumbai says, \"We are in Mumbai, so production should automatically be hosted in Mumbai.\" Is that a good region-selection approach?",
+      "reference_answer": "Not by itself.\n\nThe training recommends selecting a region based on **user/client location and latency**, not simply the engineer's physical location.\n\nIf most customers are elsewhere, another AWS region may provide better latency.",
+      "id": "s11-s18",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-region-selection-logic",
+        "s11-auto-scaling"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "HA and DR are placed in the same country",
+      "prompt": "A company keeps its primary, HA, and DR environments in the same country. What risk should the architecture team consider?",
+      "reference_answer": "A country-level outage or major regional event could affect multiple environments at the same time.\n\nThe training recommends avoiding placing HA/DR in the same country when possible to provide protection against country-level outages.",
+      "id": "s11-s19",
+      "unit": "s11",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "EC2 works but users still experience slow front-end delivery",
+      "prompt": "Your EC2 infrastructure is healthy and Auto Scaling is working, but users in distant geographic locations still experience slow delivery of front-end content. What component should you consider?",
+      "reference_answer": "Consider using **CloudFront/CDN**.\n\nAuto Scaling handles compute capacity, while a CDN improves front-end content delivery by caching and distributing content through edge locations closer to users.",
+      "id": "s11-s20",
+      "unit": "s11",
+      "concept_ids": [
+        "s11-auto-scaling",
+        "s11-cdn-edge-locations",
+        "s11-real-world-windows-admin-context-gangadhar-s-experience"
+      ]
+    }
+  ]
+}

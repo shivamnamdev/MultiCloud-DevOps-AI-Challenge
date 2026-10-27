@@ -1,0 +1,393 @@
+{
+  "id": "s34b",
+  "title": "Kubernetes Components GKE · Day 4",
+  "subtitle": "Session 34 · Batch-44 · Day-4 of Kubernetes Batch-44 : Kubernetes Production Troubleshooting & Advanced ",
+  "session": 34,
+  "module": "M5 Docker, Kubernetes, Monitoring",
+  "order": 3401,
+  "status": "ready",
+  "source_file": "Session-34-Kubernetes-Components-GKE/🚀 Day-4 of Kubernetes Batch-44 | 13th Aug 2026 .md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s34b-full-session-overview",
+      "unit": "s34b",
+      "kind": "overview",
+      "title": "Full Session Overview",
+      "text_md": "The session started with a detailed comparison between:\nDocker Compose\nDocker Swarm\nKubernetes\nThe instructor explained that Docker Compose is primarily useful for simple/local environments and smaller deployments, while Docker Swarm provides basic orchestration capabilities. Kubernetes was presented as the more advanced orchestration platform for large-scale, production and enterprise environments.\nThe comparison focused on:\nSingle-host vs multi-host environments\nManual vs automated management\nManual scaling vs autoscaling\nHigh availability\nSelf-healing\nNetworking\nMonitoring\nRolling updates\nEcosystem and integrations\nMulti-node/multi-region environments\nThe instructor emphasized that Kubernetes provides much more automation and a broader ecosystem.\nThe discussion then moved toward Kubernetes networking and storage concepts, including CNI and persistent storage.\n\nDocker vs Kubernetes\nThe instructor explained that Docker/Compose environments can require more manual management, whereas Kubernetes provides mechanisms for:\nScheduling\nAutomation\nScaling\nSelf-healing\nRolling updates\nNetworking\nMonitoring\nMulti-node deployments\nThe session also discussed the use cases:\n```text\nDocker Compose\n    ↓\nLocal / Simple Applications\n```\n\n\n```text\nDocker Swarm\n    ↓\nBasic Container Orchestration\n```\n\n\n```text\nKubernetes\n    ↓\n```\n\nEnterprise / Production / Large-Scale Orchestration\n\nThe instructor specifically highlighted Kubernetes' ecosystem and its ability to integrate with many other tools.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-docker-networking-practical",
+      "unit": "s34b",
+      "kind": "practical",
+      "title": "Docker Networking Practical",
+      "text_md": "A practical Docker networking demonstration was performed.\nThe instructor created a custom Docker bridge network and then launched multiple containers into that network.\nThe basic concept demonstrated was:\nCustom Bridge Network\n|\n+----+----+\n|         |\nContainer 1  Container 2\n|         |\n+----+----+\n|\nCommunication\n\nThe containers could communicate with each other because they were connected to the same bridge network.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-commands-around",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Commands around",
+      "text_md": "```bash\ndocker network ls\n```\n\n\nand Docker container execution were discussed.\nThe instructor used this demonstration to explain the purpose of a bridge network.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-docker-image-and-gcr-workflow",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Docker Image and GCR Workflow",
+      "text_md": "A major practical section involved pushing a Docker image to Google Container Registry (GCR).\nThe workflow discussed was:\n```text\nDocker Image\n     ↓\nGCloud Authentication\n     ↓\nDocker Authentication\n     ↓\nTag Image\n     ↓\nPush Image\n     ↓\nGCR\n```\n\n\nThe instructor demonstrated:\nCreating a Google Cloud VM\nInstalling Docker\nAuthenticating with GCloud\nSetting the GCP project\nConfiguring Docker authentication\nTagging a Docker image\nChecking available images\nPushing the image to GCR\nThe instructor emphasized that students should understand the commands instead of blindly copying them.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-google-cloud-vm-setup",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Google Cloud VM Setup",
+      "text_md": "The instructor created an Ubuntu-based VM in Google Cloud for the practical.\nThe demonstrated setup included:\nUbuntu\nLTS version\nApproximately 30 GB disk\nNetwork access\nDocker installation\nDocker was installed using commands around:\n```bash\nsudo apt-get update\nsudo apt install docker.io -y\n```\n\n\nThe purpose was to provide a machine from which Docker and GCloud commands could be executed.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-gcloud-authentication-from-a-vm",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "GCloud Authentication from a VM",
+      "text_md": "One of the practical objectives was to demonstrate that authentication does not have to happen only from Cloud Shell.\nThe instructor used:\n```bash\ngcloud auth login\n```\n\n\nfrom the VM.\nThe process involved:\nRunning gcloud auth login\nReceiving an authentication URL\nOpening the URL in a browser\nSelecting the appropriate Google account\nGranting permissions\nCompleting verification\nReturning to the VM\nSelecting/configuring the correct GCP project\nThis demonstrated how a VM can be authenticated to interact with Google Cloud resources.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-configuring-docker-authentication-for-gcr",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Configuring Docker Authentication for GCR",
+      "text_md": "After authenticating GCloud, the instructor configured Docker to authenticate with the Google Container Registry.\nThe general workflow discussed was:\n```text\ngcloud authentication\n       ↓\nConfigure Docker\n       ↓\nDocker can communicate with GCR\n```\n\n\nThe session emphasized that authentication and Docker registry access are separate steps that need to be configured properly.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-docker-image-tagging",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Docker Image Tagging",
+      "text_md": "Before pushing an image to GCR, the instructor explained that the image needs to be tagged with the appropriate registry/repository path.\nConceptually:\n```text\nLocal Image\n     ↓\ndocker tag\n     ↓\nRegistry-specific Image Tag\n     ↓\ndocker push\n```\n\n\nThe instructor demonstrated checking images with:\n```bash\ndocker images\n```\n\n\nand then tagging the appropriate image.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-docker-push",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Docker Push",
+      "text_md": "Once the image was authenticated and tagged, it could be pushed to the registry.\nThe command discussed was:\n```bash\ndocker push <image>\n```\n\n\nThe complete flow was:\n```text\nDocker Image\n     ↓\ndocker tag\n     ↓\nGCR image path\n     ↓\ndocker push\n     ↓\nContainer Registry\n```\n\n\nThis was important because the Kubernetes cluster needs access to a registry from which it can pull application images.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-kubernetes-troubleshooting",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Kubernetes Troubleshooting",
+      "text_md": "The second major portion of the session focused on real-world Kubernetes troubleshooting.\nThe instructor repeatedly emphasized that Kubernetes troubleshooting should not be based on guessing.\nA basic troubleshooting process discussed was:\n```text\nProblem\n  ↓\nkubectl get\n  ↓\nkubectl describe\n  ↓\nCheck Events\n  ↓\nkubectl logs\n  ↓\nIdentify Root Cause\n  ↓\nFix Configuration/Application/Infrastructure\n```\n\n\nThe instructor specifically connected troubleshooting with:\nPod status\nEvents\nLogs\nCPU\nMemory\nImages\nDockerfile\nApplication behavior\nScheduling\nNetworking",
+      "diagram": null
+    },
+    {
+      "id": "s34b-kubectl-describe",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "kubectl describe",
+      "text_md": "```bash\nkubectl describe was repeatedly emphasized as one of the most useful troubleshooting commands.\n```\n\nFor example:\n```bash\nkubectl describe pod <pod-name>\n```\n\n\nThe instructor explained that the output contains useful information and especially Events.\nEvents can reveal problems such as:\nImage pull failures\nScheduling failures\nResource shortages\nConfiguration problems\nContainer failures\nA DevOps engineer should therefore read the Events instead of randomly restarting everything. Humanity has suffered enough from \"restart and pray\" as a troubleshooting methodology.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-application-logs",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Application Logs",
+      "text_md": "The instructor explained that application logs are important when diagnosing failures.\nThe troubleshooting process discussed was:\n```text\nPod Running?\n     ↓\nYes\n     ↓\nCheck Logs\n     ↓\nApplication Error?\n     ↓\nInform/Fix Application\n```\n\n\nIf the infrastructure is healthy but the application itself is generating errors, the problem may need to be investigated by the development team.\nThis introduced the important DevOps principle of distinguishing between:\nInfrastructure problem\nContainer problem\nApplication problem\nConfiguration problem",
+      "diagram": null
+    },
+    {
+      "id": "s34b-image-pull-errors",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Image Pull Errors",
+      "text_md": "The session discussed image pull errors as a real-world Kubernetes issue.\nPossible reasons discussed include:\nIncorrect image name\nIncorrect image tag\nRegistry issue\nAuthentication issue\nImage not available\nIncorrect configuration\nThe instructor explained that the first step should be checking:\n```bash\nkubectl describe pod <pod-name>\n```\n\n\nand examining the Events.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-liveness-probe",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Liveness Probe",
+      "text_md": "One of the most important topics in the session was Liveness Probe.\nA liveness probe checks whether the application/container is still alive and functioning sufficiently to remain running.\nConceptually:\n```text\nKubernetes\n    ↓\nLiveness Probe\n    ↓\nIs application alive?\n    ↓\nYes → Continue\nNo  → Kubernetes can restart container\n```\n\n\nThe instructor described it as checking whether the application/container/Pod is alive.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-readiness-probe",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Readiness Probe",
+      "text_md": "The instructor compared Readiness Probe with Liveness Probe.\nA Readiness Probe determines whether the application is ready to receive traffic.\nFor example:\n```text\nApplication Started\n       ↓\nStill initializing\n       ↓\nReadiness = FALSE\n       ↓\nNo traffic\n       ↓\nApplication becomes ready\n       ↓\nReadiness = TRUE\n       ↓\nTraffic allowed\n```\n\n\nThe instructor gave the important conceptual distinction:\nLiveness asks: \"Is the application alive?\"\nReadiness asks: \"Is the application ready to take traffic?\"\nThis is one of the most important interview concepts from the session.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-startup-time-and-probe-configuration",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Startup Time and Probe Configuration",
+      "text_md": "The session discussed an important practical issue with probes.\nSome applications take time to start.\nFor example:\n```text\nApplication starts\n      ↓\n30 seconds initialization\n      ↓\nApplication ready\n```\n\n\nIf a probe is configured too aggressively, Kubernetes may assume that the application is unhealthy before it has finished starting.\nTherefore, probe timing needs to be configured according to the actual application's startup behavior.\nThe instructor emphasized that students should understand that real applications may need an appropriate waiting period before probes are evaluated aggressively.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-kubernetes-service-as-a-best-practice",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Kubernetes Service as a Best Practice",
+      "text_md": "The instructor discussed the importance of using a Service when exposing an application.\nThe idea was that putting all communication directly around individual Pods is not a good approach because Pods can change.\nInstead:\n```text\nClient\n  ↓\nService\n  ↓\nPod\n```\n\n\nThe Service provides a stable communication layer.\nThe instructor described Service usage as a practical best practice when working with Kubernetes applications.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-crashloopbackoff",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "CrashLoopBackOff",
+      "text_md": "The session specifically discussed CrashLoopBackOff.\nThis occurs when a container repeatedly starts and then crashes, causing Kubernetes to repeatedly restart it with increasing delays.\nThe conceptual pattern is:\n```text\nContainer starts\n      ↓\nContainer crashes\n      ↓\nRestart\n      ↓\nContainer crashes\n      ↓\nRestart\n      ↓\nCrashLoopBackOff\n```\n\n\nThe instructor discussed several possible causes:\nApplication failure\nIncorrect configuration\nIncorrect Dockerfile\nIncorrect image\nInsufficient CPU\nInsufficient memory\nApplication startup issue\nIncorrect environment/configuration",
+      "diagram": null
+    },
+    {
+      "id": "s34b-troubleshooting-crashloopbackoff",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Troubleshooting CrashLoopBackOff",
+      "text_md": "The instructor emphasized checking logs and Pod details.\nA practical process is:\n```text\nCrashLoopBackOff\n      ↓\nkubectl describe pod\n      ↓\nCheck Events\n      ↓\nkubectl logs\n      ↓\nCheck application\n      ↓\nCheck CPU/Memory\n      ↓\nCheck image/Dockerfile\n      ↓\nFix root cause\n```\n\n\nThe instructor specifically warned against immediately increasing CPU or memory.\nThe correct approach is:\nFirst determine whether the application actually requires more resources or whether the application/configuration itself is broken.\nThis is particularly important for cost optimization.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-resource-problems",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Resource Problems",
+      "text_md": "The discussion connected repeated crashes with resource constraints.\nFor example:\n```text\nApplication\n    ↓\nHigh Memory Usage\n    ↓\nMemory Limit Reached\n    ↓\nContainer Failure\n```\n\n\nSimilarly, insufficient CPU can affect application performance.\nThe instructor explained that increasing resources can be a solution when the workload genuinely requires them, but optimization should be considered first where appropriate.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-node-selector",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Node Selector",
+      "text_md": "The session introduced Node Selector.\nNode Selector can be used to influence which node a Pod should run on based on node labels.\nConceptually:\nNodes\n\nNode 1 → environment=dev\nNode 2 → environment=prod\n\n```text\nPod\n ↓\nnodeSelector: environment=prod\n ↓\nNode 2\n```\n\n\nThis is useful when certain workloads need to run on particular types of nodes.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-node-affinity",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Node Affinity",
+      "text_md": "The instructor then discussed Node Affinity.\nNode Affinity provides more flexible control over Pod placement than a basic node selector.\nThe session described affinity as a more advanced scheduling mechanism.\nConceptually:\n```text\nPod\n ↓\nNode Affinity Rules\n ↓\nEligible Nodes\n ↓\nScheduler\n ↓\nSelected Node\n```\n\n\nThe discussion contrasted Node Selector and Node Affinity, with the latter providing more sophisticated placement rules.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-taints-and-tolerations",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Taints and Tolerations",
+      "text_md": "This was another major scheduling topic.\nThe instructor explained the relationship as:\nTaint is applied to a Node.\nToleration is configured for a Pod.\nConceptually:\n```text\nNode\n ↓\nTaint\n ↓\n\"Do not schedule ordinary Pods here\"\n```\n\n\nA Pod with a matching toleration can then be scheduled onto that node.\n```text\nPod\n ↓\nToleration\n ↓\nAllowed onto tainted Node\n```",
+      "diagram": null
+    },
+    {
+      "id": "s34b-real-world-use-case-for-taints-and-tolerations",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Real-World Use Case for Taints and Tolerations",
+      "text_md": "The instructor gave the example of having several applications and wanting a particular application to run on a particular node.\nFor example:\n```text\nNode A\n├── Application 1\n├── Application 2\n├── Application 3\n└── Application 4\n```\n\n\n```text\nNode B\n└── Special Application\n```\n\n\nTaints and tolerations can be used to control which workloads are allowed onto Node B.\nThis is particularly useful when certain nodes are reserved for specific workloads.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-node-maintenance",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Node Maintenance",
+      "text_md": "The session also discussed a scenario where a node needs to be restarted or taken out of service while applications are already running on it.\nThe discussion connected this with scheduling rules and moving workloads to other nodes.\nThe key idea was:\n```text\nNode 1\n  ↓\nMaintenance\n  ↓\nWorkloads need another suitable location\n  ↓\nNode 2 / Other eligible node\n```\n\n\nScheduling rules must be designed carefully so they do not prevent Kubernetes from finding another suitable node.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-scheduling-conflicts",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Scheduling Conflicts",
+      "text_md": "The instructor discussed situations where manually hard-coded scheduling rules can conflict with Kubernetes' automated scheduling behavior.\nFor example, if a workload is heavily restricted to one node and that node becomes unavailable, Kubernetes may not have another valid location to place the Pod.\nThis is why scheduling configurations should be designed carefully.\nThe important lesson:\nDo not over-constrain Kubernetes scheduling unless there is a real requirement.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-ingress",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Ingress",
+      "text_md": "The session introduced Ingress as another important networking topic.\nThe instructor explained that using a separate external LoadBalancer for every application can become expensive.\nInstead, Ingress can help route traffic to different applications.\nConceptually:\n```text\n                Internet\n                    ↓\n                 Ingress\n              /     |      \\\n             /      |       \\\n            ↓       ↓        ↓\n        App 1     App 2     App 3\n```",
+      "diagram": null
+    },
+    {
+      "id": "s34b-path-based-url-based-routing",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Path-Based / URL-Based Routing",
+      "text_md": "The instructor used an example similar to a large e-commerce platform where different applications are accessed through different URLs or paths.\nFor example:\nexample.com/\nexample.com/grocery\nexample.com/delivery\nexample.com/products\n\nIngress can route different requests to different backend Services.\nConceptually:\n```text\nURL / Path\n    ↓\nIngress\n    ↓\nService\n    ↓\nPod\n```\n\n\nThis allows multiple applications to share an external entry point.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-why-ingress-can-reduce-loadbalancer-costs",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Why Ingress Can Reduce LoadBalancer Costs",
+      "text_md": "The instructor discussed that external cloud LoadBalancers can be expensive when every application has its own one.\nInstead:\nWithout Ingress\n\nInternet\n|\n+-- LoadBalancer → App 1\n+-- LoadBalancer → App 2\n+-- LoadBalancer → App 3\n\nWith an Ingress-based architecture:\nInternet\n|\nLoadBalancer / Ingress\n|\n+-- App 1\n+-- App 2\n+-- App 3\n\nThe session presented this as a practical approach for handling multiple applications and routing traffic.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-cni",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "CNI",
+      "text_md": "The instructor introduced CNI, referring to the Container Network Interface.\nThe discussion connected CNI with Kubernetes/container networking.\nThe important takeaway from the session was:\nCNI is related to how networking is provided and configured for containers and Kubernetes workloads.\nThe instructor intentionally kept the explanation simple rather than diving deeply into individual CNI implementations.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-persistent-storage",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Persistent Storage",
+      "text_md": "The session also touched on persistent storage.\nThe instructor explained the difference between temporary container storage and persistent storage.\nThe basic idea was:\n```text\nContainer\n    ↓\nContainer deleted\n    ↓\nTemporary data may disappear\n```\n\n\nPersistent storage is intended to survive workload/container replacement.\nThe session mentioned persistent storage concepts and later connected them with questions about PV and PVC.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-rolling-updates",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Rolling Updates",
+      "text_md": "Rolling updates were discussed as a way to update applications gradually instead of taking everything down simultaneously.\nFor example:\nVersion 1\nPod 1\nPod 2\nPod 3\n\nInstead of updating all three at once:\nPod 1 → Update\nPod 2 → Update\nPod 3 → Update\n\nThe update progresses gradually.\nThe goal is to minimize or avoid downtime.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-rolling-rollbacks",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Rolling Rollbacks",
+      "text_md": "The instructor also discussed rolling rollback.\nIf a new deployment causes a problem, Kubernetes can return toward a previous working version.\nConceptually:\n```text\nVersion 1\n   ↓\nRolling Update\n   ↓\nVersion 2\n   ↓\nProblem\n   ↓\nRollback\n   ↓\nVersion 1\n```\n\n\nThis is extremely useful in production because not every deployment behaves nicely just because someone confidently clicked \"Deploy.\"",
+      "diagram": null
+    },
+    {
+      "id": "s34b-sidecar-containers",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Sidecar Containers",
+      "text_md": "The session discussed Sidecar Containers.\nA sidecar container runs alongside the primary application container within the same Pod.\nConceptually:\nPod\n|\n+-- Main Application Container\n|\n+-- Sidecar Container\n\nThe sidecar can support the primary application by handling responsibilities such as:\nLogging\nMonitoring\nNetworking-related support\nAuxiliary processing\nThe instructor used logging/monitoring as examples.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-init-container-vs-sidecar-container",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Init Container vs Sidecar Container",
+      "text_md": "The instructor asked students to distinguish between Init Containers and Sidecar Containers.\nThe key conceptual difference is:\nInit Container\nRuns initialization work before the main application container starts.\n```text\nInit Container\n      ↓\nCompletes\n      ↓\nApplication Container\n```\n\n\nSidecar Container\nRuns alongside the main application container.\nPod\n|\n+-- Application Container\n|\n+-- Sidecar Container\n\nTherefore:\nInit Container = initialization before application\nSidecar = supporting container running alongside application",
+      "diagram": null
+    },
+    {
+      "id": "s34b-rbac",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "RBAC",
+      "text_md": "The session also revisited Role-Based Access Control.\nThe instructor gave a practical example where a team member might only need read access rather than full administrative access.\nConceptually:\n```text\nUser\n ↓\nRole\n ↓\nPermissions\n ↓\nAllowed Kubernetes Operations\n```\n\n\nRBAC can control what a user or service account is allowed to do.\nFor example:\nDeveloper A → Read\nDeveloper B → Read + Write\nAdmin → Full Access\n\nThe instructor highlighted RBAC as an important Kubernetes security feature.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-kubernetes-ecosystem",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Kubernetes Ecosystem",
+      "text_md": "The instructor emphasized that Kubernetes has a large ecosystem.\nTools can be integrated with Kubernetes for:\nMonitoring\nLogging\nNetworking\nSecurity\nCI/CD\nStorage\nService management\nThe session specifically mentioned tools such as Prometheus and Grafana during the monitoring discussion.\nThe main message was that Kubernetes itself does not need to perform every function. Its ecosystem allows specialized tools to integrate with it.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-production-troubleshooting-mindset",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Production Troubleshooting Mindset",
+      "text_md": "One of the strongest themes throughout Day 4 was real-world troubleshooting.\nThe instructor repeatedly pushed students to think in terms of:\n```text\nSymptom\n   ↓\nEvidence\n   ↓\nRoot Cause\n   ↓\nSolution\n```\n\n\nFor example:\nPod keeps restarting\nDon't immediately increase CPU.\nInstead:\n```text\nCrashLoopBackOff\n      ↓\nDescribe\n      ↓\nEvents\n      ↓\nLogs\n      ↓\nApplication?\nDockerfile?\nImage?\nMemory?\nCPU?\nConfiguration?\n      ↓\nFix root cause\n```\n\n\nThis is much closer to actual production work than memorizing 50 Kubernetes commands and hoping the interviewer doesn't notice.",
+      "diagram": null
+    },
+    {
+      "id": "s34b-main-key-topics-to-prioritize",
+      "unit": "s34b",
+      "kind": "concept",
+      "title": "Main Key Topics to Prioritize",
+      "text_md": "From the entire session, these are the topics I would consider the most important for DevOps/Kubernetes interviews and real-world work.\n🔥 1. Docker Compose vs Docker Swarm vs Kubernetes\nYou should be able to explain:\nFeature\nDocker Compose\nDocker Swarm\nKubernetes\nMain use\nSimple/local multi-container apps\nBasic orchestration\nAdvanced orchestration\nScaling\nMore manual\nBasic\nAdvanced/automated\nSelf-healing\nLimited\nAvailable\nStrong\nScheduling\nLimited\nBasic\nAdvanced\nEcosystem\nSmaller\nSmaller\nVery large\nProduction scale\nLimited\nPossible\nStrong\nNetworking\nBasic\nDistributed\nAdvanced\nRolling updates\nLimited/basic\nSupported\nStrong\nMulti-node\nLimited\nYes\nYes\nMulti-region\nNot the focus\nLimited\nSupported architecture\n\nThe instructor's central point was that Kubernetes becomes more valuable as application scale and operational complexity increase.\n\n39. 🔥 Kubernetes Troubleshooting\nThis is probably the most valuable section of Day 4.\nWhen something breaks:\n```bash\nkubectl get pods\n```\n\n\nThen:\n```bash\nkubectl describe pod <pod-name>\n```\n\n\nThen:\n```bash\nkubectl logs <pod-name>\n```\n\n\nCheck:\nEvents\nImage\nContainer status\nRestarts\nCPU\nMemory\nConfiguration\nScheduling\nApplication logs\nDo not jump directly to changing random settings.\n\n40. 🔥 CrashLoopBackOff\nUnderstand this deeply.\n```text\nContainer starts\n      ↓\nApplication crashes\n      ↓\nRestart\n      ↓\nCrashes again\n      ↓\nRepeated restarts\n      ↓\nCrashLoopBackOff\n```\n\n\nPossible causes:\nApplication crash\nWrong configuration\nBad Docker image\nDockerfile problem\nInsufficient memory\nInsufficient CPU\nStartup issue\nDependency failure\nTroubleshooting:\n```bash\nkubectl describe pod <pod>\nkubectl logs <pod>\n```\n\n\n\n41. 🔥 Liveness vs Readiness Probe\nMemorize the concept, not merely the words.\nLiveness\nIs the application alive?\nIf it repeatedly fails the liveness check, Kubernetes may restart the container.\nReadiness\nIs the application ready to receive traffic?\nIf readiness fails, the application can remain running but should not receive normal traffic through the Service.\nThe classic interview example:\nApplication is alive\nBUT\nApplication is still initializing\n\nResult:\nLiveness → PASS\nReadiness → FAIL\n\nThis distinction is extremely important.\n\n42. 🔥 Node Selector vs Node Affinity\nNode Selector\nSimple node placement based on labels.\n```text\nPod\n ↓\nnodeSelector\n ↓\nMatching Node\n```\n\n\nNode Affinity\nMore expressive scheduling rules.\n```text\nPod\n ↓\nAffinity Rules\n ↓\nEligible Nodes\n```\n\n\nThe session described Node Affinity as the more flexible/advanced mechanism.\n\n43. 🔥 Taints and Tolerations\nRemember the simplest rule:\nTaint belongs to the Node.\nToleration belongs to the Pod.\nExample:\n```text\nNode\n ↓\nTaint\n ↓\nReject ordinary Pods\n```\n\n\nA Pod with a matching toleration can be scheduled there.\nThis is particularly useful for dedicated/special-purpose nodes.\n\n44. 🔥 Ingress\nUnderstand why Ingress exists.\nInstead of:\nInternet\n|\n+-- LB → App 1\n+-- LB → App 2\n+-- LB → App 3\n\nyou can have:\n```text\nInternet\n    ↓\nIngress\n    ↓\n+---+---+---+\n|   |   |   |\nApp1 App2 App3\n```\n\n\nIngress can route requests using:\nHost-based routing\nPath-based routing\nThis can simplify external traffic management and reduce the need for separate external load-balancing endpoints.\n\n45. 🔥 Rolling Update and Rollback\nRolling Update\nGradually replace the old application version.\nv1 → v1/v2 → v2\n\nRollback\nReturn to a previous version if the new deployment causes problems.\n```text\nv1\n ↓\nv2\n ↓\nProblem\n ↓\nRollback\n ↓\nv1\n```\n\n\nThis is a critical production deployment concept.\n\n46. 🔥 Sidecar vs Init Container\nInit Container\n```text\nInit\n ↓\nFinish\n ↓\nMain Application\n```\n\n\nUsed for initialization.\nSidecar\nMain Application\n+\nSidecar\n\nRuns alongside the main application and can provide supporting functionality such as logging or monitoring.\n\n47. 🔥 Docker Image → GCR → Kubernetes\nThe practical registry workflow from the session can be remembered as:\n```text\nDocker Image\n     ↓\ngcloud auth login\n     ↓\nConfigure Project\n     ↓\nConfigure Docker Authentication\n     ↓\ndocker images\n     ↓\ndocker tag\n     ↓\ndocker push\n     ↓\nGCR\n     ↓\nKubernetes pulls image\n```\n\n\nThis connects the Docker and Kubernetes portions of the course.\n\n48. 🔥 RBAC\nRBAC controls who can perform which operations.\n```text\nUser\n ↓\nRole\n ↓\nPermissions\n```\n\n\nExample:\nDeveloper → Read Pods\nDevOps → Read + Modify\nAdmin → Full Access\n\nThe principle is least privilege: give users only the access they actually need.\n\n\n\nKubernetes Day 4: 10 Interview Questions with Answers",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is the difference between Docker Compose, Docker Swarm, and Kubernetes?",
+      "prompt": "What is the difference between Docker Compose, Docker Swarm, and Kubernetes?",
+      "reference_answer": "Docker Compose is mainly used to define and run multiple containers, commonly for local or relatively simple environments.\nDocker Swarm provides container orchestration across multiple Docker nodes with features such as scaling and service management.\nKubernetes is a more advanced container orchestration platform designed for production environments and larger-scale workloads.\nFeature\nDocker Compose\nDocker Swarm\nKubernetes\nPrimary use\nLocal/simple apps\nBasic orchestration\nAdvanced orchestration\nMulti-node\nLimited\nYes\nYes\nScaling\nMostly manual\nSupported\nAdvanced\nSelf-healing\nLimited\nSupported\nStrong\nScheduling\nBasic\nBasic\nAdvanced\nEcosystem\nSmaller\nSmaller\nLarge\n\nInterview point: Kubernetes provides a broader set of capabilities for production orchestration, scheduling, networking, scaling and automation.",
+      "id": "s34b-q01",
+      "unit": "s34b",
+      "concept_ids": [
+        "s34b-configuring-docker-authentication-for-gcr",
+        "s34b-docker-image-and-gcr-workflow",
+        "s34b-docker-image-tagging"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between a Liveness Probe and a Readiness Probe?",
+      "prompt": "What is the difference between a Liveness Probe and a Readiness Probe?",
+      "reference_answer": "A Liveness Probe checks whether the application is still alive and functioning.\nIf the liveness check repeatedly fails, Kubernetes can restart the container.\nA Readiness Probe checks whether the application is ready to receive traffic.\nFor example, an application may be running but still initializing:\nApplication\n|\n+-- Running\n|\n+-- Still initializing\n\nIn this situation:\nLiveness  → PASS\nReadiness → FAIL\n\nOnce initialization completes:\nLiveness  → PASS\nReadiness → PASS\n\nSimple way to remember:\nLiveness = \"Are you alive?\"\nReadiness = \"Can you handle traffic?\"\n\n3. What is CrashLoopBackOff and how would you troubleshoot it?\n**💡 Answer:**\n\nCrashLoopBackOff occurs when a container repeatedly starts, crashes and gets restarted by Kubernetes.\nThe pattern is:\n```text\nContainer starts\n      ↓\nContainer crashes\n      ↓\nRestart\n      ↓\nContainer crashes again\n      ↓\nCrashLoopBackOff\n```\n\n\nPossible causes include:\nApplication errors\nIncorrect configuration\nIncorrect Docker image\nDockerfile problems\nInsufficient CPU\nInsufficient memory\nStartup problems\nI would start with:\n```bash\nkubectl get pods\n```\n\n\nThen:\n```bash\nkubectl describe pod <pod-name>\n```\n\n\nAnd check the logs:\n```bash\nkubectl logs <pod-name>\n```\n\n\nI would inspect the Events and application logs before changing resources or restarting everything.\n\n4. What is the purpose of kubectl describe during troubleshooting?\n**💡 Answer:**\n\n```bash\nkubectl describe provides detailed information about a Kubernetes resource.\n```\n\nFor a Pod:\n```bash\nkubectl describe pod <pod-name>\n```\n\n\nIt provides information about:\nPod status\nContainers\nEvents\nScheduling\nImage-related problems\nRestart information\nResource-related issues\nThe Events section is particularly useful for identifying why Kubernetes couldn't start or schedule a workload.\nA typical troubleshooting sequence is:\n```text\nkubectl get\n     ↓\nkubectl describe\n     ↓\nCheck Events\n     ↓\nkubectl logs\n     ↓\nFind root cause\n```\n\n\n\n5. What is the difference between Node Selector and Node Affinity?\n**💡 Answer:**\n\nBoth are used to influence where Pods are scheduled.\nNode Selector\nProvides a relatively simple mechanism based on node labels.\nFor example:\nNode:\nenvironment=production\n\nA Pod can specify that it should run on nodes having that label.\nNode Affinity\nProvides more flexible and advanced scheduling rules.\nConceptually:\n```text\nPod\n ↓\nAffinity Rules\n ↓\nEligible Nodes\n ↓\nScheduler\n```\n\n\nTherefore:\nNode Selector = simpler placement requirement\nNode Affinity = more flexible placement rules\n\n6. What are taints and tolerations?\n**💡 Answer:**\n\nA taint is applied to a node and can prevent ordinary Pods from being scheduled there.\nA toleration is configured on a Pod and allows that Pod to tolerate a matching taint.\nThe easiest way to remember it is:\nTaint → Node\nToleration → Pod\n\nFor example:\n```text\nSpecial Node\n    ↓\nTaint\n    ↓\nOrdinary Pods rejected\n```\n\n\nA Pod with the appropriate toleration can be scheduled onto that node.\nThis is useful when dedicating nodes to specific workloads.\n\n7. What is Kubernetes Ingress and why is it useful?\n**💡 Answer:**\n\nIngress provides a mechanism for routing external HTTP/HTTPS traffic to Kubernetes Services.\nFor example:\n```text\nInternet\n    ↓\nIngress\n   /    \\\n  /      \\\nApp 1    App 2\n```\n\n\nIngress can route traffic using:\nHost-based routing\nPath-based routing\nFor example:\nexample.com/\nexample.com/products\nexample.com/grocery\n\nDifferent paths can be routed to different Services.\nIt can also reduce the need for having a separate externally exposed LoadBalancer for every application, depending on the architecture.\n\n8. What is a rolling update in Kubernetes?\n**💡 Answer:**\n\nA rolling update gradually replaces the old version of an application with a new version.\nFor example:\nVersion 1\nPod 1\nPod 2\nPod 3\n\nDuring an update, Kubernetes gradually replaces the old Pods with the new version rather than immediately removing all old Pods.\nConceptually:\n```text\nv1\n ↓\nv1 + v2\n ↓\nv2\n```\n\n\nThe goal is to update the application while minimizing downtime.\nIf the new version causes problems, a rollback can be performed.\n\n9. What is the difference between an Init Container and a Sidecar Container?\n**💡 Answer:**\n\nAn Init Container performs initialization tasks before the main application container starts.\n```text\nInit Container\n      ↓\nCompletes\n      ↓\nMain Application\n```\n\n\nA Sidecar Container runs alongside the main application container within the same Pod.\nPod\n|\n+-- Main Application\n|\n+-- Sidecar\n\nA sidecar can be used for supporting functionality such as:\nLogging\nMonitoring\nAuxiliary processing\n> [!TIP]\n> **Interview shortcut:**\n\nInit Container = runs before the application.\nSidecar = runs alongside the application.",
+      "id": "s34b-q02",
+      "unit": "s34b",
+      "concept_ids": [
+        "s34b-liveness-probe",
+        "s34b-readiness-probe",
+        "s34b-startup-time-and-probe-configuration"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is RBAC in Kubernetes?",
+      "prompt": "What is RBAC in Kubernetes?",
+      "reference_answer": "RBAC stands for Role-Based Access Control.\nIt controls what users or service accounts are allowed to do within Kubernetes.\nThe basic model is:\n```text\nUser\n ↓\nRole\n ↓\nPermissions\n ↓\nAllowed Operations\n```\n\n\nFor example:\nDeveloper → Read Pods\nDevOps    → Read + Modify\nAdmin     → Full Access\n\nRBAC helps implement the least-privilege principle, where users receive only the permissions they actually require.\n\n10 Scenario-Based Kubernetes Interview Questions with Answers",
+      "id": "s34b-q03",
+      "unit": "s34b",
+      "concept_ids": [
+        "s34b-kubernetes-ecosystem",
+        "s34b-kubernetes-service-as-a-best-practice",
+        "s34b-kubernetes-troubleshooting"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario: A Pod is showing CrashLoopBackOff. What steps would you take?",
+      "prompt": "Scenario: A Pod is showing CrashLoopBackOff. What steps would you take?",
+      "reference_answer": "I would not immediately increase CPU or memory.\nFirst:\n```bash\nkubectl get pods\n```\n\n\nThen:\n```bash\nkubectl describe pod <pod-name>\n```\n\n\nI would inspect the Events.\nNext:\n```bash\nkubectl logs <pod-name>\n```\n\n\nI would investigate:\nApplication errors\nConfiguration\nDocker image\nDockerfile\nCPU\nMemory\nStartup behavior\nThe troubleshooting flow would be:\n```text\nCrashLoopBackOff\n       ↓\nDescribe Pod\n       ↓\nCheck Events\n       ↓\nCheck Logs\n       ↓\nFind Root Cause\n       ↓\nApply Correct Fix\n```\n\n\n\n2. Scenario: Your application takes 60 seconds to start, but Kubernetes restarts it after 10 seconds. What could be wrong?\n**💡 Answer:**\n\nThe probe configuration may be too aggressive for the application's startup time.\nThe application needs enough time to initialize before Kubernetes starts treating it as unhealthy.\nI would review:\nProbe configuration\nInitial delay\nProbe frequency\nFailure threshold\nStartup behavior\nThe key lesson is:\nProbe configuration must match the application's actual startup characteristics.\nA slow-starting application should not be treated as failed simply because it needs more time to initialize.\n\n3. Scenario: Your application is running but should not receive traffic until initialization is complete. Which probe would you use?\n**💡 Answer:**\n\nI would use a Readiness Probe.\nThe application can remain running while readiness is false:\n```text\nApplication Running\n       ↓\nStill Initializing\n       ↓\nReadiness = FALSE\n       ↓\nNo normal traffic\n```\n\n\nOnce initialization finishes:\n```text\nReadiness = TRUE\n       ↓\nTraffic Allowed\n```\n\n\nA liveness probe is not the appropriate mechanism for determining whether the application is ready to receive traffic.\n\n4. Scenario: You have a special GPU/high-performance node and want only specific workloads to run there. What Kubernetes features could you use?\n**💡 Answer:**\n\nI could use taints and tolerations, along with node labels and scheduling rules.\nFor example:\n```text\nSpecial Node\n     ↓\nTaint\n     ↓\nOnly Pods with matching toleration\n     ↓\nCan run there\n```\n\n\nI could also use:\nNode Selector\nNode Affinity\ndepending on the exact scheduling requirement.\nThe purpose would be to prevent unrelated workloads from consuming the specialized node.\n\n5. Scenario: A Pod is scheduled successfully but is running on the wrong type of node. How would you control its placement?\n**💡 Answer:**\n\nI would first label the appropriate nodes and then use a scheduling mechanism such as:\nNode Selector\nNode Affinity\nFor example:\nNode\nlabel:\nenvironment=production\n\nThen configure the Pod to prefer or require nodes matching the appropriate label.\nIf the requirement is stronger and the node should be reserved for specific workloads, I could also consider taints and tolerations.\n\n6. Scenario: Your company has five applications and each application currently has its own external LoadBalancer. What Kubernetes feature could help simplify this architecture?\n**💡 Answer:**\n\nI would evaluate Ingress.\nInstead of exposing every application separately:\n```text\nInternet\n ├── LB → App 1\n ├── LB → App 2\n ├── LB → App 3\n ├── LB → App 4\n └── LB → App 5\n```\n\n\nwe could use an Ingress-based routing architecture:\n```text\nInternet\n    ↓\nIngress\n ├── App 1\n ├── App 2\n ├── App 3\n ├── App 4\n └── App 5\n```\n\n\nIngress can route requests based on hostnames or URL paths.\nThis can simplify traffic management and potentially reduce external load-balancing costs.\n\n7. Scenario: You deployed a new application version, but users are reporting errors. What would you do if the previous version was working correctly?\n**💡 Answer:**\n\nI would investigate the new version using:\nPod status\nEvents\nApplication logs\nProbe status\nConfiguration\nImage\nIf the new release is confirmed to be responsible for the issue, I would use a rollback to return toward the previous known-working version.\nConceptually:\n```text\nv1 → v2\n       ↓\n    Errors\n       ↓\n   Rollback\n       ↓\n      v1\n```\n\n\nAfter restoring service, I would investigate the root cause of the failed deployment.\n\n8. Scenario: A developer says, \"The Pod is Running, so the application must be healthy.\" Would you agree?\n**💡 Answer:**\n\nNot necessarily.\nA Pod being in the Running state does not automatically mean the application is ready to serve traffic or functioning correctly.\nFor example:\nPod = Running\nApplication = Still Initializing\n\nThe Readiness Probe could still be failing.\nSimilarly, application-level problems may exist even though the container itself is running.\nI would check:\n```bash\nkubectl get pods\nkubectl describe pod <pod>\nkubectl logs <pod>\n```\n\n\nand examine readiness/liveness status.\n\n9. Scenario: Your Docker image works locally, but Kubernetes cannot start the Pod because it cannot pull the image. What would you investigate?\n**💡 Answer:**\n\nI would investigate the image-pull process.\nFirst:\n```bash\nkubectl describe pod <pod-name>\n```\n\n\nI would check Events for the exact image-pull error.\nThen verify:\nImage name\nImage tag\nRegistry path\nWhether the image actually exists\nRegistry authentication\nKubernetes access to the registry\nThe workflow discussed in the session was:\n```text\nDocker Image\n     ↓\nTag Image\n     ↓\nAuthenticate Registry\n     ↓\ndocker push\n     ↓\nContainer Registry\n     ↓\nKubernetes pulls image\n```\n\n\nA common mistake is having the image locally but forgetting that the Kubernetes environment needs access to the registry containing that image.",
+      "id": "s34b-s01",
+      "unit": "s34b",
+      "concept_ids": [
+        "s34b-crashloopbackoff",
+        "s34b-troubleshooting-crashloopbackoff"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A production node needs maintenance, but several applications are running on it. What should you consider before taking the node down?",
+      "prompt": "A production node needs maintenance, but several applications are running on it. What should you consider before taking the node down?",
+      "reference_answer": "I would first understand how the workloads are distributed and whether Kubernetes can schedule replacement Pods onto other suitable nodes.\nI would check:\nNumber of replicas\nAvailable nodes\nNode affinity\nNode selectors\nTaints and tolerations\nResource capacity\nScheduling restrictions\nA problem can occur if a workload is overly restricted to a single node.\nFor example:\n```text\nApplication\n    ↓\nOnly allowed on Node A\n    ↓\nNode A goes down\n    ↓\nNo eligible node\n    ↓\nPod cannot be scheduled\n```\n\n\nTherefore, scheduling rules should be designed carefully so that maintenance or node failure does not unnecessarily make workloads unavailable.",
+      "id": "s34b-s02",
+      "unit": "s34b",
+      "concept_ids": [
+        "s34b-node-maintenance",
+        "s34b-application-logs",
+        "s34b-main-key-topics-to-prioritize"
+      ]
+    }
+  ]
+}

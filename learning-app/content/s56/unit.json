@@ -1,0 +1,240 @@
+{
+  "id": "s56",
+  "title": "Project 7 MLOps in EKS",
+  "subtitle": "Session 56 · Batch-44 · Project 7: AIOps — AI-Powered Automated Log Anomaly Detection & Incident Intelli",
+  "session": 56,
+  "module": "M9 Live projects",
+  "order": 5600,
+  "status": "ready",
+  "source_file": "Session-56-Project-7-MLOps-in-EKS/🚀 Project-7 on AI OPS Batch-44 | 9th Sep 2026  .md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s56-project-overview-core-objective",
+      "unit": "s56",
+      "kind": "overview",
+      "title": "Project Overview & Core Objective",
+      "text_md": "Modern cloud infrastructures generate gigabytes to terabytes of machine-generated logs, metrics, and events every single day across distributed microservices, containers, and databases. When incidents occur—such as database connection exhaustion, CPU starvation (e.g. 95%+ utilization), memory leaks, brute-force authentication attacks, or transaction rollbacks—traditional manual triage by L1/L2 operations engineers takes anywhere from 30 minutes to several hours in high-pressure incident war rooms.\n\n**AIOps (Artificial Intelligence for IT Operations)** applies Machine Learning and algorithmic data processing to streamline, enhance, and automate IT operations.\n\n### Core Functionality Built in this Project:\n* **Log Ingestion & Normalization:** Ingests raw, unstructured text log files (timestamps, log levels, service names, messages, resource metrics) into structured `pandas` DataFrames.\n* **Algorithmic Anomaly Detection:** Utilizes Python Machine Learning (`scikit-learn` Isolation Forest) and statistical thresholds to isolate abnormal system behavior, critical failures, and sudden metric spikes without hardcoded static rules.\n* **Terminal Incident Reporting:** Delivers formatted, color-coded terminal alerts (`colorama`, `tabulate`) displaying critical events, warnings, error distributions, and isolated outliers.\n* **Artifact Generation:** Automatically exports high-priority anomalies to structured CSV reports (`anomalies_report.csv`) and generates visual trend charts (`log_anomaly_chart.png`) using `matplotlib`.\n* **Automated Continuous Monitoring:** Schedules autonomous periodic anomaly detection runs using Linux `cron` jobs to simulate enterprise-grade near-real-time observability.",
+      "diagram": null
+    },
+    {
+      "id": "s56-technology-stack-system-requirements",
+      "unit": "s56",
+      "kind": "concept",
+      "title": "Technology Stack & System Requirements",
+      "text_md": "| Component | Technology / Tool | Purpose |\n| :--- | :--- | :--- |\n| **Cloud Host** | AWS EC2 (Ubuntu 24.04 LTS) | Compute instance hosting Python scripts and log storage |\n| **Networking** | AWS Security Group | Inbound SSH (Port `22`) for secure CLI access |\n| **Runtime Language** | Python 3.10+ | Core data processing and ML pipeline execution |\n| **Environment Isolation** | `python3-venv` | Isolated virtual environment preventing system dependency conflicts |\n| **Data Cleaning & Wrangling** | `pandas` | Parsing raw log entries into tabular DataFrames |\n| **Numerical Processing** | `numpy` | Vectorized numerical operations and statistical calculations |\n| **Machine Learning Engine** | `scikit-learn` (`sklearn`) | Unsupervised anomaly detection via `IsolationForest` |\n| **Terminal Formatting** | `tabulate` & `colorama` | Clean table formatting and ANSI colorized severity output |\n| **Data Visualization** | `matplotlib` | Generating offline graphical distributions and anomaly charts |\n| **Scheduled Automation** | Linux `crontab` | Periodic background execution for continuous log analysis |\n| **Artifact Transfer** | SCP / MobaXterm / WinSCP | Extracting generated CSV and PNG reports to local workstations |",
+      "diagram": null
+    },
+    {
+      "id": "s56-project-directory-file-structure",
+      "unit": "s56",
+      "kind": "concept",
+      "title": "Project Directory & File Structure",
+      "text_md": "```text\naiops-log-monitor/\n├── system.log                   # Raw incoming application/system logs\n├── simple_log_analysis.py       # Basic structured log viewer & table generator\n├── aiops_logs_analysis.py       # ML-based anomaly detector & report exporter\n├── requirements.txt             # Python package dependencies\n├── venv/                        # Python virtual environment\n├── anomalies_report.csv         # Generated CSV of critical detected anomalies\n└── log_anomaly_chart.png        # Generated anomaly distribution visualization\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-launch-the-ec2-instance",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Launch the EC2 Instance",
+      "text_md": "1. Log in to the **AWS Management Console** and navigate to the **EC2 Dashboard** in your preferred region (e.g., `ap-south-1` Mumbai).\n2. Click **Launch Instances** and specify:\n   * **Name:** `AIOps-Log-Analyzer`\n   * **AMI:** `Ubuntu Server 24.04 LTS` (64-bit x86)\n   * **Instance Type:** `t2.medium` or `t3.medium` (2 vCPU, 4 GiB RAM recommended; `t2.micro` is also acceptable).\n   * **Key Pair:** Select an existing key pair or create a new RSA key pair (`.pem` format).\n   * **Storage:** `20 GiB` gp3 root volume.",
+      "diagram": null
+    },
+    {
+      "id": "s56-security-group-configuration",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Security Group Configuration",
+      "text_md": "1. Under **Network Settings**, ensure an inbound security rule exists:\n   * **Type:** `SSH`\n   * **Port:** `22`\n   * **Source:** `My IP` (or `0.0.0.0/0`)\n2. Click **Launch Instance**.",
+      "diagram": null
+    },
+    {
+      "id": "s56-connect-to-the-instance",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Connect to the Instance",
+      "text_md": "Connect via **EC2 Instance Connect** or an SSH terminal (MobaXterm, PuTTY, or terminal):\n```bash\nssh -i \"your-key.pem\" ubuntu@<EC2-PUBLIC-IP>\n```\n\nElevate to root privileges to avoid repeated permission prompts:\n```bash\nsudo -i\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-update-repositories-and-install-python-tooling",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Update Repositories and Install Python Tooling",
+      "text_md": "```bash\napt update -y && apt upgrade -y\napt install -y python3 python3-pip python3-venv git\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-verify-installed-versions",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Verify Installed Versions",
+      "text_md": "```bash\npython3 --version\npip3 --version\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-create-project-directory",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Create Project Directory",
+      "text_md": "```bash\nmkdir -p /root/aiops-log-monitor\ncd /root/aiops-log-monitor\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-create-and-activate-virtual-environment",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Create and Activate Virtual Environment",
+      "text_md": "```bash\npython3 -m venv venv\nsource venv/bin/activate\n```\n\n> Once activated, your shell prompt will show `(venv) root@ip-...:~/aiops-log-monitor#`.",
+      "diagram": null
+    },
+    {
+      "id": "s56-create-requirements-txt",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Create requirements.txt",
+      "text_md": "```bash\ncat << 'EOF' > requirements.txt\npandas\nnumpy\nscikit-learn\ntabulate\nmatplotlib\ncolorama\nEOF\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-install-dependencies-inside-virtual-environment",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Install Dependencies inside Virtual Environment",
+      "text_md": "```bash\npip install --upgrade pip\npip install -r requirements.txt\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-step-4-sample-enterprise-log-data-generation-system-log",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Step 4: Sample Enterprise Log Data Generation (system.log)",
+      "text_md": "To demonstrate real-world log parsing and anomaly detection, create a realistic enterprise log file containing routine activities mixed with critical infrastructure anomalies (high CPU utilization, failed logins, slow database queries, and transaction rollbacks).\n\n```bash\ncat << 'EOF' > system.log\n2026-09-09 08:00:01 INFO [AuthService] User login successful: user_id=101\n2026-09-09 08:00:15 INFO [PaymentService] Transaction initialized: tx_id=8801\n2026-09-09 08:00:22 INFO [PaymentService] Transaction committed: tx_id=8801\n2026-09-09 08:01:05 WARNING [OrderService] High response time detected: 1200ms\n2026-09-09 08:01:30 INFO [AuthService] User login successful: user_id=102\n2026-09-09 08:02:10 ERROR [Database] Connection timeout: host=db-primary-01 port=5432\n2026-09-09 08:02:11 ERROR [Database] Connection pool exhausted: active_connections=100 max=100\n2026-09-09 08:02:45 INFO [InventoryService] Stock updated for item_id=452\n2026-09-09 08:03:00 CRITICAL [SystemMonitor] CPU usage exceeded threshold: cpu_utilization=95.8%\n2026-09-09 08:03:12 WARNING [AuthService] Multiple failed login attempts: user=admin ip=192.168.1.140\n2026-09-09 08:03:15 CRITICAL [AuthService] Account locked out due to brute-force attempts: user=admin\n2026-09-09 08:04:02 INFO [PaymentService] Transaction initialized: tx_id=8802\n2026-09-09 08:04:20 ERROR [PaymentService] Transaction rollback: tx_id=8802 reason=\"Gateway Timeout\"\n2026-09-09 08:05:00 WARNING [Database] Slow query detected: query_time=4820ms query=\"SELECT * FROM orders\"\n2026-09-09 08:05:30 INFO [OrderService] Order placed successfully: order_id=5501\n2026-09-09 08:06:10 CRITICAL [SystemMonitor] Memory usage critical: memory_free=120MB threshold=500MB\n2026-09-09 08:06:40 ERROR [NotificationService] Failed to send SMS alert: provider=\"Twilio\" status=503\n2026-09-09 08:07:05 INFO [AuthService] User logout: user_id=101\n2026-09-09 08:07:45 WARNING [OrderService] Cart abandoned event triggered: cart_id=9902\n2026-09-09 08:08:12 CRITICAL [Database] Deadlock detected during transaction execution: tx_id=8803\n2026-09-09 08:08:50 INFO [HealthCheck] System health check passed: all services responsive\nEOF\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-step-5-basic-structured-log-parser-implementation-simple-log-analysis-py",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Step 5: Basic Structured Log Parser Implementation (simple_log_analysis.py)",
+      "text_md": "This script parses raw text log entries into structured fields (`Timestamp`, `Level`, `Service`, `Message`), converts them into a `pandas` DataFrame, and renders a structured tabular view in the terminal.\n\n```bash\ncat << 'EOF' > simple_log_analysis.py\nimport re\nimport pandas as pd\nfrom tabulate import tabulate\n\nLOG_FILE = \"system.log\"\n\ndef parse_logs(file_path):\n    log_pattern = re.compile(\n        r'^(?P<timestamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})\\s+'\n        r'(?P<level>[A-Z]+)\\s+'\n        r'\\[(?P<service>[A-Za-z0-9_-]+)\\]\\s+'\n        r'(?P<message>.*)$'\n    )\n\n    parsed_entries = []\n    with open(file_path, 'r') as f:\n        for line in f:\n            match = log_pattern.match(line.strip())\n            if match:\n                parsed_entries.append(match.groupdict())\n\n    return pd.DataFrame(parsed_entries)\n\ndef display_summary(df):\n    print(\"\\n========================================================\")\n    print(\"           STRUCTURED LOG INGESTION SUMMARY            \")\n    print(\"========================================================\")\n    print(f\"Total Log Records Ingested : {len(df)}\")\n    print(f\"Unique Services Monitored   : {df['service'].nunique()}\")\n    print(\"\\n[Log Level Breakdown]:\")\n    level_counts = df['level'].value_counts().reset_index()\n    level_counts.columns = ['Level', 'Count']\n    print(tabulate(level_counts, headers='keys', tablefmt='psql', showindex=False))\n\n    print(\"\\n[Recent 10 Log Entries]:\")\n    display_df = df[['timestamp', 'level', 'service', 'message']].tail(10)\n    print(tabulate(display_df, headers='keys', tablefmt='grid', showindex=False))\n\nif __name__ == \"__main__\":\n    df_logs = parse_logs(LOG_FILE)\n    if not df_logs.empty:\n        display_summary(df_logs)\n    else:\n        print(\"No valid logs found in file.\")\nEOF\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-step-6-advanced-aiops-anomaly-detection-engine-aiops-logs-analysis-py",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Step 6: Advanced AIOps Anomaly Detection Engine (aiops_logs_analysis.py)",
+      "text_md": "This core script builds an intelligent AIOps engine that:\n1. Converts textual severity and resource utilization into numeric feature vectors.\n2. Applies unsupervised Machine Learning (`scikit-learn` `IsolationForest`) to discover anomalous events.\n3. Classifies critical incidents (`CRITICAL`, `ERROR`, high CPU, deadlocks, connection pool exhaustions).\n4. Prints formatted, colorized terminal alerts using `colorama`.\n5. Exports isolated anomalies to `anomalies_report.csv`.\n6. Renders and saves a visual graph (`log_anomaly_chart.png`) using `matplotlib`.\n\n```bash\ncat << 'EOF' > aiops_logs_analysis.py\nimport re\nimport os\nimport pandas as pd\nimport numpy as np\nfrom tabulate import tabulate\nfrom colorama import Fore, Style, init\nfrom sklearn.ensemble import IsolationForest\nimport matplotlib\nmatplotlib.use('Agg')\nimport matplotlib.pyplot as plt\n\n# Initialize colorama for ANSI terminal output\ninit(autoreset=True)\n\nLOG_FILE = \"system.log\"\nCSV_REPORT = \"anomalies_report.csv\"\nCHART_FILE = \"log_anomaly_chart.png\"\n\ndef parse_logs(file_path):\n    log_pattern = re.compile(\n        r'^(?P<timestamp>\\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2})\\s+'\n        r'(?P<level>[A-Z]+)\\s+'\n        r'\\[(?P<service>[A-Za-z0-9_-]+)\\]\\s+'\n        r'(?P<message>.*)$'\n    )\n    records = []\n    with open(file_path, 'r') as f:\n        for line in f:\n            match = log_pattern.match(line.strip())\n            if match:\n                data = match.groupdict()\n                records.append(data)\n    return pd.DataFrame(records)\n\ndef extract_features_and_detect_anomalies(df):\n    # Mapping log severity to numerical weights\n    severity_map = {\n        'INFO': 1.0,\n        'WARNING': 2.5,\n        'ERROR': 4.0,\n        'CRITICAL': 5.0\n    }\n    df['severity_score'] = df['level'].map(severity_map).fillna(1.0)\n\n    # Keyword impact scoring based on incident indicators\n    keyword_weights = {\n        'timeout': 2.0,\n        'exhausted': 2.5,\n        'cpu': 3.0,\n        'locked': 2.5,\n        'rollback': 2.5,\n        'deadlock': 3.5,\n        'critical': 3.0\n    }\n\n    def calculate_msg_weight(msg):\n        msg_lower = msg.lower()\n        score = 0.0\n        for kw, weight in keyword_weights.items():\n            if kw in msg_lower:\n                score += weight\n        return score\n\n    df['keyword_score'] = df['message'].apply(calculate_msg_weight)\n    df['anomaly_feature'] = df['severity_score'] * 1.5 + df['keyword_score']\n\n    # Feature matrix for Isolation Forest\n    X = df[['severity_score', 'keyword_score', 'anomaly_feature']].values\n\n    # Isolation Forest model for unsupervised anomaly detection\n    model = IsolationForest(contamination=0.25, random_state=42)\n    model.fit(X)\n\n    # -1 indicates anomaly, 1 indicates normal\n    predictions = model.predict(X)\n    df['is_anomaly'] = np.where(predictions == -1, True, False)\n\n    # Flag severe entries directly\n    df.loc[df['level'].isin(['CRITICAL', 'ERROR']), 'is_anomaly'] = True\n\n    return df\n\ndef generate_terminal_report(df):\n    total_logs = len(df)\n    anomalies = df[df['is_anomaly'] == True]\n    critical_count = (df['level'] == 'CRITICAL').sum()\n    error_count = (df['level'] == 'ERROR').sum()\n    warning_count = (df['level'] == 'WARNING').sum()\n    info_count = (df['level'] == 'INFO').sum()\n\n    print(Fore.CYAN + Style.BRIGHT + \"\\n========================================================\")\n    print(Fore.CYAN + Style.BRIGHT + \"       AIOPS LOG INTELLIGENCE & ANOMALY REPORT          \")\n    print(Fore.CYAN + Style.BRIGHT + \"========================================================\")\n\n    print(Fore.WHITE + f\"Total Processed Logs  : {total_logs}\")\n    print(Fore.RED + Style.BRIGHT + f\"Total Anomalies Flagged: {len(anomalies)} ({len(anomalies)/total_logs*100:.1f}%)\")\n    print(Fore.RED + f\"Critical Incidents    : {critical_count}\")\n    print(Fore.LIGHTRED_EX + f\"Errors Detected       : {error_count}\")\n    print(Fore.YELLOW + f\"Warnings              : {warning_count}\")\n    print(Fore.GREEN + f\"Normal / Info Logs    : {info_count}\")\n\n    print(Fore.YELLOW + Style.BRIGHT + \"\\n[ISOLATED HIGH-PRIORITY ANOMALIES]:\")\n    if not anomalies.empty:\n        table_data = anomalies[['timestamp', 'level', 'service', 'message']]\n        print(tabulate(table_data, headers=['Timestamp', 'Level', 'Service', 'Message'], tablefmt='fancy_grid', showindex=False))\n    else:\n        print(Fore.GREEN + \"No anomalies detected.\")\n\ndef export_artifacts(df):\n    anomalies = df[df['is_anomaly'] == True]\n    anomalies.to_csv(CSV_REPORT, index=False)\n    print(Fore.GREEN + f\"\\n[+] Anomaly report successfully saved to: {CSV_REPORT}\")\n\n    # Generate Visualization Chart\n    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))\n\n    # Subplot 1: Severity Distribution\n    level_counts = df['level'].value_counts()\n    colors = ['#2ca02c', '#ffbb78', '#d62728', '#9467bd']\n    ax1.bar(level_counts.index, level_counts.values, color=['green', 'orange', 'red', 'darkred'][:len(level_counts)])\n    ax1.set_title(\"Log Level Severity Distribution\")\n    ax1.set_xlabel(\"Severity Level\")\n    ax1.set_ylabel(\"Event Count\")\n    ax1.grid(axis='y', linestyle='--', alpha=0.7)\n\n    # Subplot 2: Normal vs Anomaly Pie Chart\n    anomaly_counts = df['is_anomaly'].value_counts()\n    labels = ['Normal', 'Anomaly'] if False in anomaly_counts.index else ['Anomaly']\n    ax2.pie(\n        anomaly_counts.values,\n        labels=['Normal', 'Anomaly'],\n        autopct='%1.1f%%',\n        colors=['#1f77b4', '#d62728'],\n        startangle=140\n    )\n    ax2.set_title(\"AIOps Anomaly Ratio\")\n\n    plt.tight_layout()\n    plt.savefig(CHART_FILE, dpi=300)\n    plt.close()\n    print(Fore.GREEN + f\"[+] Visual anomaly distribution saved to: {CHART_FILE}\\n\")\n\nif __name__ == \"__main__\":\n    if not os.path.exists(LOG_FILE):\n        print(Fore.RED + f\"Error: Log file '{LOG_FILE}' not found.\")\n        exit(1)\n\n    df_raw = parse_logs(LOG_FILE)\n    df_analyzed = extract_features_and_detect_anomalies(df_raw)\n    generate_terminal_report(df_analyzed)\n    export_artifacts(df_analyzed)\nEOF\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-execute-simple-log-analysis",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Execute Simple Log Analysis",
+      "text_md": "Run the basic parser to inspect structured output:\n```bash\npython3 simple_log_analysis.py\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-execute-advanced-aiops-anomaly-engine",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Execute Advanced AIOps Anomaly Engine",
+      "text_md": "Run the machine-learning-driven detector:\n```bash\npython3 aiops_logs_analysis.py\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-expected-terminal-output",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Expected Terminal Output",
+      "text_md": "```text\n========================================================\n       AIOPS LOG INTELLIGENCE & ANOMALY REPORT\n========================================================\nTotal Processed Logs  : 21\nTotal Anomalies Flagged: 7 (33.3%)\nCritical Incidents    : 3\nErrors Detected       : 4\nWarnings              : 3\nNormal / Info Logs    : 11\n\n[ISOLATED HIGH-PRIORITY ANOMALIES]:\n╒═════════════════════╤══════════╤═════════════════════╤══════════════════════════════════════════════════════════════════╕\n│ Timestamp           │ Level    │ Service             │ Message                                                          │\n╞═════════════════════╪══════════╪═════════════════════╪══════════════════════════════════════════════════════════════════╡\n│ 2026-09-09 08:02:10 │ ERROR    │ Database            │ Connection timeout: host=db-primary-01 port=5432                 │\n│ 2026-09-09 08:02:11 │ ERROR    │ Database            │ Connection pool exhausted: active_connections=100 max=100        │\n│ 2026-09-09 08:03:00 │ CRITICAL │ SystemMonitor       │ CPU usage exceeded threshold: cpu_utilization=95.8%              │\n│ 2026-09-09 08:03:15 │ CRITICAL │ AuthService         │ Account locked out due to brute-force attempts: user=admin       │\n│ 2026-09-09 08:04:20 │ ERROR    │ PaymentService      │ Transaction rollback: tx_id=8802 reason=\"Gateway Timeout\"        │\n│ 2026-09-09 08:06:10 │ CRITICAL │ SystemMonitor       │ Memory usage critical: memory_free=120MB threshold=500MB        │\n│ 2026-09-09 08:06:40 │ ERROR    │ NotificationService │ Failed to send SMS alert: provider=\"Twilio\" status=503           │\n│ 2026-09-09 08:08:12 │ CRITICAL │ Database            │ Deadlock detected during transaction execution: tx_id=8803       │\n╘═════════════════════╧══════════╧═════════════════════╧══════════════════════════════════════════════════════════════════╛\n\n[+] Anomaly report successfully saved to: anomalies_report.csv\n[+] Visual anomaly distribution saved to: log_anomaly_chart.png\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-verify-generated-artifacts",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Verify Generated Artifacts",
+      "text_md": "```bash\nls -lh anomalies_report.csv log_anomaly_chart.png\n```\n\nView the generated CSV contents:\n```bash\ncat anomalies_report.csv\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-step-8-setting-up-automated-continuous-monitoring-with-linux-cron",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Step 8: Setting Up Automated Continuous Monitoring with Linux Cron",
+      "text_md": "In real production environments, logs flow continuously. To automate scheduled periodic log inspections, configure a Linux `cron` job.",
+      "diagram": null
+    },
+    {
+      "id": "s56-create-a-runner-script",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Create a Runner Script",
+      "text_md": "Create an automated execution script that loads the virtual environment and triggers the AIOps engine:\n\n```bash\ncat << 'EOF' > /root/aiops-log-monitor/run_aiops.sh\n#!/bin/bash\ncd /root/aiops-log-monitor\nsource venv/bin/activate\npython3 aiops_logs_analysis.py >> /root/aiops-log-monitor/aiops_cron.log 2>&1\nEOF\n\nchmod +x /root/aiops-log-monitor/run_aiops.sh\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-schedule-cron-job-every-5-minutes",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Schedule Cron Job (Every 5 Minutes)",
+      "text_md": "Open the crontab editor:\n```bash\ncrontab -e\n```\n\nAdd the following entry at the bottom of the crontab:\n```text\n*/5 * * * * /root/aiops-log-monitor/run_aiops.sh\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-verify-active-cron-jobs",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Verify Active Cron Jobs",
+      "text_md": "```bash\ncrontab -l\n```\n\nTo view continuous execution logs:\n```bash\ntail -f /root/aiops-log-monitor/aiops_cron.log\n```",
+      "diagram": null
+    },
+    {
+      "id": "s56-option-a-using-scp-from-local-machine-terminal",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Option A: Using SCP from Local Machine Terminal",
+      "text_md": "Open a terminal on your local laptop (PowerShell, Command Prompt, or Mac/Linux terminal):\n```bash\n# Copy CSV Report\nscp -i \"your-key.pem\" ubuntu@<EC2-PUBLIC-IP>:/root/aiops-log-monitor/anomalies_report.csv ./\n\n# Copy PNG Visualization Chart\nscp -i \"your-key.pem\" ubuntu@<EC2-PUBLIC-IP>:/root/aiops-log-monitor/log_anomaly_chart.png ./\n```\n\n> **Note:** If permission is denied copying from `/root`, first copy the files to `/home/ubuntu/` on EC2:\n> ```bash\n> cp /root/aiops-log-monitor/anomalies_report.csv /root/aiops-log-monitor/log_anomaly_chart.png /home/ubuntu/\n> chown ubuntu:ubuntu /home/ubuntu/anomalies_report.csv /home/ubuntu/log_anomaly_chart.png\n> ```",
+      "diagram": null
+    },
+    {
+      "id": "s56-option-b-using-mobaxterm-or-winscp",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Option B: Using MobaXterm or WinSCP",
+      "text_md": "1. Connect to the EC2 instance using **SFTP** session with your `.pem` key.\n2. Navigate to `/root/aiops-log-monitor` or `/home/ubuntu`.\n3. Drag and drop `anomalies_report.csv` and `log_anomaly_chart.png` to your local folder.",
+      "diagram": null
+    },
+    {
+      "id": "s56-step-10-real-world-troubleshooting-error-resolution-matrix",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Step 10: Real-World Troubleshooting & Error Resolution Matrix",
+      "text_md": "| Symptom / Error | Root Cause | Exact Solution |\n| :--- | :--- | :--- |\n| **`ModuleNotFoundError: No module named 'sklearn'`** | Executed script using system Python rather than activated virtual environment. | Run `source venv/bin/activate` inside `/root/aiops-log-monitor` before running Python scripts. |\n| **`UserWarning: Matplotlib is currently using agg, which is a non-GUI backend`** | Expected warning on headless Linux servers lacking an X11 desktop display. | Harmless warning; `matplotlib.use('Agg')` safely writes charts directly to disk without requiring a monitor. |\n| **`Permission denied: run_aiops.sh`** | Runner script missing execute permissions. | Run `chmod +x /root/aiops-log-monitor/run_aiops.sh`. |\n| **`Cron job not executing / no log created`** | Relative file paths used in cron script or cron daemon stopped. | Always use absolute paths (e.g., `/root/aiops-log-monitor/run_aiops.sh`). Verify cron status with `systemctl status cron`. |\n| **`Permission denied (publickey)` on SSH** | Wrong EC2 key pair used, wrong user name, or permissions too open on `.pem` file. | Ensure user is `ubuntu` (not `root`) and key permissions on local machine are set with `chmod 400 your-key.pem`. |\n| **`Empty DataFrame / 0 logs processed`** | Log format does not match regular expression pattern. | Verify timestamp format in `system.log`. For production logs, point path to `/var/log/syslog` or your app log directory and adjust regex pattern. |",
+      "diagram": null
+    },
+    {
+      "id": "s56-step-11-infrastructure-cleanup-cost-optimization",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Step 11: Infrastructure Cleanup & Cost Optimization",
+      "text_md": "To avoid ongoing AWS cloud compute charges after completing the lab:\n\n1. **Terminate EC2 Instance:**\n   * Go to **AWS EC2 Console** → **Instances**.\n   * Select `AIOps-Log-Analyzer`.\n   * Click **Instance State** → **Terminate Instance**.\n2. **Confirm Volume Deletion:**\n   * Verify the 20 GiB root EBS volume is automatically detached and terminated with the instance.\n3. **Delete Security Group & Key Pair (Optional):**\n   * If you created a dedicated security group or temporary key pair for this lab, remove them under **Security Groups** and **Key Pairs**.",
+      "diagram": null
+    },
+    {
+      "id": "s56-step-12-professional-resume-points-interview-highlights",
+      "unit": "s56",
+      "kind": "practical",
+      "title": "Step 12: Professional Resume Points & Interview Highlights",
+      "text_md": "Add these bullet points to your resume to showcase enterprise-grade AIOps and site reliability engineering (SRE) capabilities:\n\n* **AIOps & Log Intelligence Pipeline:** Engineered an automated, end-to-end AIOps log anomaly detection system on AWS EC2 using Python, `pandas`, and `scikit-learn` (`IsolationForest`) to automatically detect infrastructure incidents without static alerting thresholds.\n* **Proactive Outage Prevention:** Reduced Mean Time to Detect (MTTD) by parsing multi-source log streams to surface database deadlocks, CPU usage spikes (95%+), connection pool exhaustions, and brute-force security threats in near-real-time.\n* **Incident Reporting & Observability Automation:** Built automated reporting pipelines exporting prioritized incident CSV reports and visualization charts (`matplotlib`), orchestrated via automated Linux `cron` background jobs.\n* **SRE & Production Readiness:** Designed fault-tolerant Python scripts with structured regex normalization, isolated virtual environments, and ANSI-colored terminal alerting matrices for operational engineering teams.\n\n---\n> [🏠 Back to Master Index](README.md)",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

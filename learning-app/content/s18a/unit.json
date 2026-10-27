@@ -1,0 +1,408 @@
+{
+  "id": "s18a",
+  "title": "AWS VPC Networking",
+  "subtitle": "Session 18 · Networking Fundamentals for DevOps and AWS VPC",
+  "session": 18,
+  "module": "M3 AWS",
+  "order": 1800,
+  "status": "ready",
+  "source_file": "Session-18-AWS-VPC-Networking/Networking for DevOps.md",
+  "needs_authoring": [],
+  "unparsed_qa": [
+    {
+      "section": "20. Practice Questions",
+      "chars": 1267
+    }
+  ],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s18a-how-communication-works",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "How Communication Works",
+      "text_md": "Suppose you open `https://example.com`.\n\nAt a simplified level:\n\n1. Your computer asks DNS to find the IP address for `example.com`.\n2. Your computer establishes a connection to the destination.\n3. Network devices route packets toward the destination.\n4. The server receives the request and sends a response.\n5. Your browser displays the result.\n\nA connection can fail at several points: DNS resolution, routing, firewall rules, the application process, or the return path.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-packet",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Packet",
+      "text_md": "A **packet** is a unit of data sent across a network. Networking protocols add information such as source and destination addresses so devices can deliver it.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-client-and-server",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Client and server",
+      "text_md": "- **Client:** Starts a request, such as a browser or command-line tool.\n- **Server:** Receives requests and provides a service, such as Nginx or an API.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-important-networking-terms",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Important Networking Terms",
+      "text_md": "| Term | Simple meaning | Example |\n|---|---|---|\n| Network | Connected devices that communicate | Office network |\n| Node/host | A device connected to a network | Laptop, EC2 instance |\n| IP address | Logical address used to identify an interface | `192.168.1.10` |\n| MAC address | Link-layer address used on a local network | `00:1A:2B:3C:4D:5E` |\n| Packet | Unit of network data | IP packet |\n| Router | Forwards traffic between networks | Home router |\n| Switch | Connects devices within a local network | Office Ethernet switch |\n| Gateway | A path or device used to reach another network | Default gateway |\n| Route | Rule that says where traffic should go | `0.0.0.0/0` via a gateway |\n| Firewall | Controls allowed and denied traffic | Security group |\n| Bandwidth | Maximum data-transfer capacity | 1 Gbps |\n| Latency | Time taken for data to travel | 25 ms |\n| Packet loss | Packets that fail to reach their destination | 2% packet loss |\n| Throughput | Actual data transferred per unit of time | 80 Mbps |\n| MTU | Maximum packet size supported on a link | Often 1500 bytes on Ethernet |\n| CIDR | Notation for an IP range and prefix length | `10.0.0.0/16` |\n| Subnet | A smaller logical IP network | `10.0.1.0/24` |\n| VLAN | Logical separation on a Layer 2 network | VLAN 10 |\n| VPN | Encrypted connection across an untrusted network | Site-to-site VPN |\n\n**Bandwidth vs throughput:** Bandwidth is the capacity; throughput is what is actually achieved.\n\n**Latency vs bandwidth:** Latency is delay; bandwidth is capacity. A connection can have high bandwidth and still feel slow if latency is high.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-ip-address-fundamentals",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "IP Address Fundamentals",
+      "text_md": "An **IP address** identifies a network interface so IP traffic can be addressed and routed.\n\nThere are two main IP versions:",
+      "diagram": null
+    },
+    {
+      "id": "s18a-ipv4",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "IPv4",
+      "text_md": "IPv4 uses 32 bits and is commonly written as four decimal numbers separated by dots.\n\nExample: `192.168.1.10`\n\nEach part is an octet and ranges from `0` to `255`.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-ipv6",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "IPv6",
+      "text_md": "IPv6 uses 128 bits and is written in hexadecimal groups separated by colons.\n\nExample: `2001:db8::10`\n\nIPv6 provides a much larger address space than IPv4.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-ipv4-address-structure",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "IPv4 address structure",
+      "text_md": "An IPv4 address has 32 bits. The prefix length tells us how many bits identify the network. The remaining bits are used for addresses within that network.\n\nExample: `192.168.1.10/24`\n- IP address: `192.168.1.10`\n- Prefix: `/24`\n- Network: `192.168.1.0`\n- Traditional subnet mask: `255.255.255.0`",
+      "diagram": null
+    },
+    {
+      "id": "s18a-public-ip-vs-private-ip",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Public IP vs Private IP",
+      "text_md": "### Private IPv4 ranges\n\nThese ranges are reserved for private networks and are not directly routed across the public internet:\n\n| Range | CIDR |\n|---|---|\n| `10.0.0.0` – `10.255.255.255` | `10.0.0.0/8` |\n| `172.16.0.0` – `172.31.255.255` | `172.16.0.0/12` |\n| `192.168.0.0` – `192.168.255.255` | `192.168.0.0/16` |\n\nExamples of private IPs:\n- `10.0.1.25`\n- `172.16.10.5`\n- `192.168.1.100`\n\nA **public IP** is globally routable, subject to routing and security controls. A private IP is normally used for internal communication.\n\nImportant:\n- A public IP alone does not guarantee connectivity. Routes and firewall rules must also allow traffic.\n- Private IPs can communicate across connected networks through routing, VPNs, or other private connectivity.\n- NAT can allow private-addressed systems to initiate internet connections without assigning each system a public IPv4 address.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-ports-and-protocols",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Ports and Protocols",
+      "text_md": "An IP address identifies a host/interface; a **port** identifies a service endpoint on that host.\n\nExamples of commonly used TCP ports:\n\n| Port | Service | Typical use |\n|---:|---|---|\n| 22 | SSH | Linux server administration |\n| 25 | SMTP | Email transfer |\n| 53 | DNS | Name resolution (DNS can use UDP and TCP) |\n| 80 | HTTP | Web traffic |\n| 123 | NTP | Time synchronization (usually UDP) |\n| 443 | HTTPS | Encrypted web traffic |\n| 3306 | MySQL | Database connections |\n| 5432 | PostgreSQL | Database connections |\n| 6379 | Redis | Cache/data store |\n| 8080 | Alternative HTTP | Application or proxy traffic |\n| 9090 | Common Prometheus port | Metrics interface (default configuration) |\n| 3000 | Common development/web port | Often used by frontend tools or Grafana in some setups |\n\nPorts are conventions, not guarantees: applications can be configured to listen on different ports.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-tcp-vs-udp",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "TCP vs UDP",
+      "text_md": "**TCP**\n- Connection-oriented.\n- Provides ordered delivery and retransmission.\n- Common for HTTPS, SSH, and database connections.\n\n**UDP**\n- Connectionless.\n- Has lower protocol overhead but does not itself guarantee delivery or order.\n- Common for DNS queries, voice/video traffic, and telemetry.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-http-vs-https",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "HTTP vs HTTPS",
+      "text_md": "- **HTTP:** Web protocol without transport encryption by itself.\n- **HTTPS:** HTTP protected by TLS encryption and server authentication.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-subnet-mask-and-cidr",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Subnet Mask and CIDR",
+      "text_md": "**CIDR** means *Classless Inter-Domain Routing*. CIDR notation represents an IP network using an address followed by a prefix length.\n\nExamples:\n- `10.0.0.0/8`\n- `172.16.0.0/16`\n- `192.168.1.0/24`\n- `192.168.1.10/32`\n\nThe number after `/` tells us how many of the 32 IPv4 bits are network bits.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-common-ipv4-prefix-sizes",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Common IPv4 prefix sizes",
+      "text_md": "| CIDR | Subnet mask | Total IPv4 addresses |\n|---|---|---:|\n| `/32` | `255.255.255.255` | 1 |\n| `/30` | `255.255.255.252` | 4 |\n| `/29` | `255.255.255.248` | 8 |\n| `/28` | `255.255.255.240` | 16 |\n| `/27` | `255.255.255.224` | 32 |\n| `/26` | `255.255.255.192` | 64 |\n| `/25` | `255.255.255.128` | 128 |\n| `/24` | `255.255.255.0` | 256 |\n| `/23` | `255.255.254.0` | 512 |\n| `/22` | `255.255.252.0` | 1,024 |\n| `/20` | `255.255.240.0` | 4,096 |\n| `/16` | `255.255.0.0` | 65,536 |\n| `/8` | `255.0.0.0` | 16,777,216 |\n\nFor a conventional IPv4 subnet, the number of addresses is:\n\n`2^(32 - prefix length)`\n\nFor many traditional IPv4 LAN subnets, two addresses are reserved for network and broadcast, leaving `total addresses - 2` host addresses. This rule does **not** directly describe AWS subnet usable-address capacity; AWS reserves five IPv4 addresses in each subnet.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-easy-rule",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Easy rule",
+      "text_md": "- Smaller prefix number = larger network.\n- Larger prefix number = smaller network.\n\nFor example:\n- `/16` is larger than `/24`.\n- `/24` contains 256 total IPv4 addresses.\n- `/26` contains 64 total IPv4 addresses.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-example-1-192-168-1-0-24",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Example 1: 192.168.1.0/24",
+      "text_md": "- Prefix length: 24\n- Host bits: `32 - 24 = 8`\n- Total addresses: `2^8 = 256`\n- Address range: `192.168.1.0` to `192.168.1.255`\n- Traditional usable host range: `192.168.1.1` to `192.168.1.254`",
+      "diagram": null
+    },
+    {
+      "id": "s18a-example-2-10-0-0-0-16",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Example 2: 10.0.0.0/16",
+      "text_md": "- Prefix length: 16\n- Host bits: `32 - 16 = 16`\n- Total addresses: `2^16 = 65,536`\n- Address range: `10.0.0.0` to `10.0.255.255`\n- Traditional usable host range: `10.0.0.1` to `10.0.255.254`",
+      "diagram": null
+    },
+    {
+      "id": "s18a-example-3-10-0-1-0-24-inside-10-0-0-0-16",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Example 3: 10.0.1.0/24 inside 10.0.0.0/16",
+      "text_md": "The `/16` network covers `10.0.0.0` through `10.0.255.255`. The `/24` network `10.0.1.0/24` is one smaller network inside it.\n\nThis is useful when dividing a cloud network into subnets.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-example-4-divide-10-0-0-0-16-into-24-subnets",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Example 4: Divide 10.0.0.0/16 into /24 subnets",
+      "text_md": "A `/16` contains 65,536 addresses. Each `/24` contains 256 addresses.\n\n`65,536 / 256 = 256` subnets.\n\nExamples:\n- `10.0.0.0/24`\n- `10.0.1.0/24`\n- `10.0.2.0/24`\n- ...\n- `10.0.255.0/24`",
+      "diagram": null
+    },
+    {
+      "id": "s18a-example-5-what-does-32-mean",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Example 5: What does /32 mean?",
+      "text_md": "`10.0.1.25/32` identifies exactly one IPv4 address. `/32` routes are often used to represent a single host.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-cidr-practice-tip",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "CIDR practice tip",
+      "text_md": "Use a subnet calculator when planning production networks, and verify that:\n- The network address is aligned to the prefix.\n- Subnet ranges do not overlap.\n- There is enough address capacity for growth.\n- Connected networks do not use conflicting CIDR ranges.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-subnet-fundamentals",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Subnet Fundamentals",
+      "text_md": "A **subnet** is a smaller IP network carved out of a larger address range.\n\nWhy create subnets?\n- Separate public-facing resources from internal resources.\n- Divide workloads by environment or function.\n- Control routing and security boundaries.\n- Place resources across multiple Availability Zones for resilience.\n- Plan IP address capacity.\n\nExample VPC CIDR: `10.0.0.0/16`\n\nPossible subnet plan:\n- `10.0.1.0/24` — public subnet in Availability Zone A\n- `10.0.2.0/24` — public subnet in Availability Zone B\n- `10.0.11.0/24` — private application subnet in AZ A\n- `10.0.12.0/24` — private application subnet in AZ B\n- `10.0.21.0/24` — private database subnet in AZ A\n- `10.0.22.0/24` — private database subnet in AZ B\n\nEach subnet must fit completely inside the VPC CIDR and must not overlap another subnet in the same VPC.\n\n### AWS subnet address reservation\n\nFor an IPv4 subnet in AWS, AWS reserves the first four IP addresses and the last IP address of the subnet. For example, in `10.0.1.0/24`, these are:\n- `10.0.1.0` — network address\n- `10.0.1.1` — reserved by AWS for the VPC router\n- `10.0.1.2` — reserved by AWS for DNS\n- `10.0.1.3` — reserved by AWS for future use\n- `10.0.1.255` — reserved as the subnet's last address\n\nSo a `/24` AWS IPv4 subnet has **251 usable IPv4 addresses**, not 254.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-routing-and-gateways",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Routing and Gateways",
+      "text_md": "A **route table** contains rules that determine where network traffic is sent.\n\nA route normally has:\n- **Destination:** The network or IP range being reached.\n- **Target/next hop:** Where traffic should be forwarded.\n\nExample:\n\n| Destination | Target | Meaning |\n|---|---|---|\n| `10.0.0.0/16` | Local | Traffic within the VPC |\n| `0.0.0.0/0` | Internet/NAT gateway | Default route for IPv4 traffic, depending on the table |\n\n`0.0.0.0/0` means all IPv4 destinations. It is called a **default route**.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-default-gateway",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Default gateway",
+      "text_md": "A default gateway is the next hop used when there is no more specific route for a destination. In AWS, route tables specify targets such as an internet gateway, NAT gateway, transit gateway, virtual private gateway, or network interface, depending on the design.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-longest-prefix-match",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Longest prefix match",
+      "text_md": "When multiple routes match a destination, routing generally selects the most specific matching prefix.\n\nFor example, a route to `10.0.1.0/24` is more specific than a route to `10.0.0.0/16`.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-dns-domain-name-system",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "DNS — Domain Name System",
+      "text_md": "DNS translates names such as `example.com` into IP addresses and can provide other records.\n\nUseful commands:\n```bash\nnslookup example.com\ndig example.com\n```",
+      "diagram": null
+    },
+    {
+      "id": "s18a-dhcp-dynamic-host-configuration-protocol",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "DHCP — Dynamic Host Configuration Protocol",
+      "text_md": "DHCP automatically provides network configuration such as an IP address, subnet mask, default gateway, and DNS servers. Cloud platforms may manage this configuration for instances.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-nat-network-address-translation",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "NAT — Network Address Translation",
+      "text_md": "NAT translates network addresses. A common cloud use case is allowing private instances to initiate outbound internet connections without giving each instance a public IPv4 address.\n\nNAT does not automatically make private instances reachable from the internet.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-arp-address-resolution-protocol",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "ARP — Address Resolution Protocol",
+      "text_md": "On IPv4 local networks, ARP helps map an IP address to a link-layer (MAC) address. IPv6 uses Neighbor Discovery rather than ARP.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-icmp-and-ping",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "ICMP and ping",
+      "text_md": "ICMP supports network diagnostics and error reporting. `ping` commonly uses ICMP Echo Request and Echo Reply messages. A failed ping does not always mean a host is down; a firewall may block ICMP while TCP services still work.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-test-dns-resolution",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Test DNS resolution",
+      "text_md": "```bash\nnslookup example.com\ndig example.com\ngetent hosts example.com\n```",
+      "diagram": null
+    },
+    {
+      "id": "s18a-test-connectivity",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Test connectivity",
+      "text_md": "```bash\nping -c 4 8.8.8.8\ncurl -I https://example.com\ncurl -v https://example.com\n```",
+      "diagram": null
+    },
+    {
+      "id": "s18a-trace-the-route",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Trace the route",
+      "text_md": "```bash\ntraceroute example.com\ntracepath example.com\n```\n\nInstall the appropriate package if a command is missing. Some networks block ping or traceroute, so interpret results together with route, DNS, and port checks.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-a-practical-troubleshooting-sequence",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "A practical troubleshooting sequence",
+      "text_md": "When an application cannot connect to a service, check in this order:\n\n1. Is the application/service running?\n2. Is it listening on the expected IP and port?\n3. Does the hostname resolve to the expected IP?\n4. Is the destination IP correct?\n5. Is there a valid route in both directions?\n6. Are host firewalls, cloud security groups, and network ACLs allowing the traffic?\n7. Is the service healthy and accepting requests?\n8. Check logs for the exact error and timestamp.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-aws-vpc-fundamentals",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "AWS VPC Fundamentals",
+      "text_md": "**Amazon VPC (Virtual Private Cloud)** lets you create a logically isolated virtual network in AWS.\n\nInside a VPC, you can launch resources such as EC2 instances and connect services such as load balancers, databases, and Kubernetes clusters.\n\nCore VPC components:\n\n| Component | Purpose |\n|---|---|\n| VPC | Your isolated virtual network |\n| CIDR block | IP address range allocated to the VPC |\n| Subnet | IP range within a VPC, associated with one Availability Zone |\n| Route table | Controls where subnet traffic is sent |\n| Internet Gateway (IGW) | Enables internet connectivity for resources with appropriate routes and addressing |\n| NAT Gateway | Allows private-subnet resources to initiate outbound connections |\n| Security Group | Stateful virtual firewall for supported resources |\n| Network ACL (NACL) | Stateless subnet-level traffic filter |\n| VPC endpoint | Private connectivity to supported AWS services |\n| VPC peering | Private routing between two VPCs, subject to non-overlapping CIDRs and route configuration |\n| Transit Gateway | Hub for connecting multiple VPCs and networks |\n| VPN connection | Encrypted connectivity between networks |\n| VPC Flow Logs | Records information about IP traffic to and from network interfaces, subnets, or VPCs |\n\n### VPC CIDR planning\n\nA VPC IPv4 CIDR is commonly chosen from private ranges, such as `10.0.0.0/16`. Choose a range that:\n- Is large enough for planned subnets and future growth.\n- Does not overlap with on-premises or connected VPC networks.\n- Can be divided cleanly into subnet ranges.\n\nAWS VPC CIDR rules and supported sizes can vary by address type and feature; check current AWS documentation before finalizing production CIDR plans.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-aws-subnets-public-and-private",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "AWS Subnets: Public and Private",
+      "text_md": "A subnet is considered **public** when its associated route table has a route to an Internet Gateway. For an EC2 instance to communicate directly over the public internet, it also needs suitable public addressing and security rules.\n\nA **private subnet** does not have a direct route to an Internet Gateway. It can still access other VPC resources and may have outbound internet access through a NAT Gateway or another network path.\n\n### Typical placement\n\n**Public subnet**\n- Internet-facing Application Load Balancer\n- Bastion host, if needed\n- NAT Gateway (for IPv4 outbound access from private subnets)\n\n**Private application subnet**\n- Application servers\n- Internal services\n- Worker nodes, depending on architecture\n\n**Private database subnet**\n- RDS database instances\n- Other data services that should not be directly exposed to the public internet\n\nDo not rely only on the subnet name. The route table, addressing, and security controls determine actual connectivity.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-internet-gateway-igw",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Internet Gateway (IGW)",
+      "text_md": "An IGW attaches to a VPC. A route such as `0.0.0.0/0 -> IGW` allows internet-bound IPv4 traffic to use the IGW. The resource still needs appropriate public addressing and security rules.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-nat-gateway",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "NAT Gateway",
+      "text_md": "A NAT Gateway is commonly placed in a public subnet and associated with an Elastic IP for IPv4 internet access. A private subnet's route table can use `0.0.0.0/0 -> NAT Gateway`.\n\nImportant:\n- NAT Gateway enables outbound-initiated connectivity; it does not provide unsolicited inbound internet access to private instances.\n- For high availability, production designs often use a NAT Gateway per Availability Zone and route each private subnet to the NAT Gateway in the same AZ, considering cost and architecture.\n- IPv6 egress has different options, such as an egress-only internet gateway, depending on the use case.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-example-route-tables",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Example route tables",
+      "text_md": "**Public subnet route table**\n\n| Destination | Target |\n|---|---|\n| `10.0.0.0/16` | local |\n| `0.0.0.0/0` | Internet Gateway |\n\n**Private application subnet route table (IPv4 outbound internet via NAT)**\n\n| Destination | Target |\n|---|---|\n| `10.0.0.0/16` | local |\n| `0.0.0.0/0` | NAT Gateway |\n\nA private subnet does not require a default route to a NAT Gateway if it does not need that outbound path. Use VPC endpoints where appropriate to reach supported AWS services privately.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-security-groups-vs-network-acls",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Security Groups vs Network ACLs",
+      "text_md": "| Feature | Security Group | Network ACL |\n|---|---|---|\n| Scope | Resource/network interface level | Subnet level |\n| State | Stateful | Stateless |\n| Rules | Allow rules | Allow and deny rules |\n| Return traffic | Automatically allowed for established tracked connections | Must be allowed by rules in both directions |\n| Rule evaluation | All applicable allow rules are considered | Rules evaluated in ascending rule-number order |\n| Common use | Control access to EC2, load balancers, and other supported resources | Additional subnet-level traffic filtering |\n\n### Example security group rules for a web application\n\n| Type | Port | Source | Reason |\n|---|---:|---|---|\n| SSH | 22 | Trusted admin IP only | Server administration, if SSH is required |\n| HTTP | 80 | `0.0.0.0/0` | Public HTTP traffic, if required |\n| HTTPS | 443 | `0.0.0.0/0` | Public encrypted web traffic |\n| Application port | 8080 | Application load balancer security group | Only the load balancer should reach the app |\n| MySQL | 3306 | Application security group | Only the application tier should reach the database |\n\nAvoid exposing SSH or database ports to `0.0.0.0/0`. Use the narrowest source range or security group reference that meets the requirement.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-sample-aws-vpc-design",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Sample AWS VPC Design",
+      "text_md": "Example CIDR plan for a simple two-AZ application:\n\n**VPC:** `10.0.0.0/16`\n\n| Subnet | CIDR | Purpose |\n|---|---|---|\n| Public AZ-A | `10.0.1.0/24` | Public load balancer / NAT Gateway |\n| Public AZ-B | `10.0.2.0/24` | Public load balancer / NAT Gateway |\n| App private AZ-A | `10.0.11.0/24` | Application instances |\n| App private AZ-B | `10.0.12.0/24` | Application instances |\n| DB private AZ-A | `10.0.21.0/24` | Database subnet |\n| DB private AZ-B | `10.0.22.0/24` | Database subnet |",
+      "diagram": null
+    },
+    {
+      "id": "s18a-request-flow",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Request flow",
+      "text_md": "```text\nUser / Internet\n      |\n      v\nInternet Gateway\n      |\n      v\nPublic Load Balancer\n      |\n      v\nPrivate Application Instances\n      |\n      v\nPrivate RDS Database\n```\n\nThe exact route and security configuration must permit each required connection. The database should normally accept traffic only from the application tier, not directly from the internet.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-design-checklist",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Design checklist",
+      "text_md": "- [ ] VPC CIDR is planned and does not overlap connected networks.\n- [ ] Subnet ranges fit inside the VPC and do not overlap.\n- [ ] Subnets are spread across Availability Zones for resilience where needed.\n- [ ] Route tables are associated with the correct subnets.\n- [ ] Internet-facing resources have appropriate public routing and addressing.\n- [ ] Private resources do not have unintended direct internet exposure.\n- [ ] Security groups allow only required traffic.\n- [ ] Network ACLs are understood and do not block required flows.\n- [ ] VPC Flow Logs and application/system logs are enabled where appropriate.\n- [ ] Address capacity and expected growth have been considered.",
+      "diagram": null
+    },
+    {
+      "id": "s18a-quick-revision-cheat-sheet",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Quick Revision Cheat Sheet",
+      "text_md": "| Concept | Remember |\n|---|---|\n| IP address | Logical address for network communication |\n| MAC address | Link-layer address on a local network |\n| CIDR `/24` | 256 total IPv4 addresses |\n| CIDR `/16` | 65,536 total IPv4 addresses |\n| `0.0.0.0/0` | All IPv4 destinations |\n| `/32` | One IPv4 address |\n| Private IPv4 | `10/8`, `172.16/12`, `192.168/16` |\n| DNS | Resolves names to records such as IP addresses |\n| DHCP | Automatically provides IP configuration |\n| NAT | Translates addresses; often used for outbound IPv4 access |\n| TCP | Reliable, ordered byte stream |\n| UDP | Connectionless datagrams |\n| Port 22 | Common SSH port |\n| Port 80 | Common HTTP port |\n| Port 443 | Common HTTPS port |\n| VPC | Isolated virtual network in AWS |\n| Public subnet | Route table has a route to an IGW |\n| Private subnet | No direct route to an IGW |\n| Internet Gateway | VPC component for internet connectivity |\n| NAT Gateway | Common outbound IPv4 path for private subnets |\n| Security Group | Stateful resource-level firewall |\n| Network ACL | Stateless subnet-level filter |\n| VPC Flow Logs | IP traffic metadata for network troubleshooting |",
+      "diagram": null
+    },
+    {
+      "id": "s18a-further-learning",
+      "unit": "s18a",
+      "kind": "concept",
+      "title": "Further Learning",
+      "text_md": "Recommended topics to learn next:\n- OSI and TCP/IP models\n- DNS records and troubleshooting\n- Linux firewall basics (`iptables`, `nftables`, `ufw`)\n- AWS VPC route tables, endpoints, peering, and Transit Gateway\n- Load balancers and health checks\n- Docker bridge networking and port mapping\n- Kubernetes Services, Ingress, and NetworkPolicy\n- TLS certificates and HTTPS troubleshooting\n- VPC Flow Logs and packet-level diagnostics\n\n**Note:** This guide is an educational introduction. Verify AWS service behavior, quotas, and design details against the current AWS documentation before using a network design in production.",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What Is Networking?",
+      "prompt": "What Is Networking?",
+      "reference_answer": "A **computer network** is a group of devices connected so they can exchange data.\n\nExamples:\n- Your laptop connects to a website over the internet.\n- A DevOps engineer connects to an EC2 instance using SSH.\n- A Kubernetes pod calls another service.\n- An application running on EC2 connects to an RDS database.\n\nNetworking makes communication between these systems possible.\n\n### Why networking matters in DevOps\n\nNetworking is involved in:\n- Connecting users to applications.\n- Allowing CI/CD tools to reach servers.\n- Connecting containers and Kubernetes services.\n- Exposing applications through load balancers.\n- Connecting application servers to databases.\n- Securing access with firewalls and network rules.\n- Troubleshooting timeouts, DNS failures, and connection errors.",
+      "id": "s18a-q01",
+      "unit": "s18a",
+      "concept_ids": [
+        "s18a-example-5-what-does-32-mean",
+        "s18a-important-networking-terms",
+        "s18a-nat-network-address-translation"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Common Networking Troubleshooting Scenarios",
+      "prompt": "Common Networking Troubleshooting Scenarios",
+      "reference_answer": "### Scenario 1: Cannot SSH into an EC2 instance\n\nCheck:\n1. The instance is running and has a reachable public IP or an alternative private access path.\n2. The subnet route table has the expected route.\n3. The security group allows TCP 22 from your trusted public IP.\n4. The network ACL allows inbound and return traffic.\n5. The operating system firewall allows SSH.\n6. The SSH service is running and the key/user are correct.\n\n### Scenario 2: EC2 in a private subnet cannot download packages\n\nCheck:\n1. Is outbound access actually required?\n2. Does the private route table have a route to a NAT Gateway or another approved egress path?\n3. Is the NAT Gateway in a public subnet with a route to an IGW?\n4. Does the NAT Gateway have the needed public addressing?\n5. Do security groups, NACLs, DNS, and OS settings allow the connection?\n6. Could a VPC endpoint provide private access to the needed AWS service?\n\n### Scenario 3: Application cannot connect to RDS\n\nCheck:\n1. RDS endpoint hostname resolves correctly.\n2. RDS is available and listening on the expected database port.\n3. The RDS security group allows the database port from the application security group.\n4. Routes exist between the app and database subnets.\n5. Network ACLs and host/application configuration do not block traffic.\n6. Database credentials, TLS settings, and database permissions are correct.\n\n### Scenario 4: Website resolves but does not load\n\nDNS may be working, but the TCP/TLS/application path can still fail. Check:\n- The resolved IP address.\n- Port 80 or 443 connectivity.\n- Load balancer target health.\n- TLS certificate and hostname.\n- Listener and target-group configuration.\n- Security groups, routes, and application logs.\n\n### Scenario 5: Two VPCs cannot communicate\n\nCheck:\n- VPC peering, Transit Gateway, VPN, or other connectivity is configured.\n- CIDR ranges do not overlap where the chosen connectivity method requires non-overlapping ranges.\n- Routes exist in both directions.\n- Security groups and NACLs allow traffic.\n- DNS resolution settings are configured if using private hostnames.\n\n### Scenario 6: Ping fails, but the website works\n\nICMP may be blocked while TCP port 443 is allowed. Test the actual application port with `curl` or `nc`; do not use ping alone to determine service availability.\n\n### Scenario 7: Connection times out vs connection refused\n\n- **Timeout:** Often suggests dropped traffic, missing routes, a firewall, or an unreachable destination.\n- **Connection refused:** Often means the destination was reached but no process is accepting connections on that port, or the destination actively rejected the connection.\n\nThese are clues, not absolute rules. Check logs and the network path to confirm.",
+      "id": "s18a-q02",
+      "unit": "s18a",
+      "concept_ids": [
+        "s18a-a-practical-troubleshooting-sequence",
+        "s18a-common-ipv4-prefix-sizes",
+        "s18a-important-networking-terms"
+      ]
+    }
+  ]
+}

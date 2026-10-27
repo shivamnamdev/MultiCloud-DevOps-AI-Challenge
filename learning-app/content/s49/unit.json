@@ -1,0 +1,48 @@
+{
+  "id": "s49",
+  "title": "Session 49 — AI + Generative AI + AI Agents + Copilot",
+  "subtitle": "Session 49",
+  "session": 49,
+  "module": "M8 Azure + AI",
+  "order": 4900,
+  "status": "light",
+  "source_file": "Session-49-AI-Generative-AI-AI-Agents-Copilot/README.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s49-topics-covered",
+      "unit": "s49",
+      "kind": "overview",
+      "title": "Topics covered",
+      "text_md": "- Best AI Use Cases for DevOps Teams in 2024\n- Gen AI Tools Comparison — ChatGPT Gemini Claude Copilot\n- AI Agents in CI/CD Pipelines — autonomous deployment\n- Copilot for Infrastructure Code generation\n- AI-Powered Monitoring & Anomaly Detection\n- Real-Time AI Integration in DevOps workflows",
+      "diagram": null
+    },
+    {
+      "id": "s49-key-learnings",
+      "unit": "s49",
+      "kind": "concept",
+      "title": "Key learnings",
+      "text_md": "- AI in DevOps is not the future it is the present — teams using AI ship 2 times faster\n- Copilot explains code writes tests and suggests security fixes — use it for everything\n- AI monitoring uses anomaly detection to find patterns in logs humans miss completely\n- Every prompt is an investment — save your best DevOps prompts in a personal library\n- AI plus DevOps skills together is the rarest and highest-paying combination in 2024 and 2025",
+      "diagram": null
+    },
+    {
+      "id": "s49-task-097",
+      "unit": "s49",
+      "kind": "practical",
+      "title": "Task 097",
+      "text_md": "**Lab task 097:** Implement 3 real-time AI use cases in your DevOps workflow — document the ROI of each\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    },
+    {
+      "id": "s49-task-098",
+      "unit": "s49",
+      "kind": "practical",
+      "title": "Task 098",
+      "text_md": "**Lab task 098:** Create AI-assisted deployment pipeline that explains each stage decision automatically\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

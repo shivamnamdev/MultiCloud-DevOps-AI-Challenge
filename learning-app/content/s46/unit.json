@@ -1,0 +1,48 @@
+{
+  "id": "s46",
+  "title": "Session 46 — Students Choice Topics",
+  "subtitle": "Session 46",
+  "session": 46,
+  "module": "M7 Career",
+  "order": 4600,
+  "status": "light",
+  "source_file": "Session-46-Students-Choice-Topics/README.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s46-topics-covered",
+      "unit": "s46",
+      "kind": "overview",
+      "title": "Topics covered",
+      "text_md": "- Group Choice: Splunk or AWS Lambda or YAML Deep Dive\n- DevSecOps: Trivy vulnerability scanning SonarQube quality\n- AWS DevOps native services: CodePipeline CodeBuild CodeDeploy\n- Azure DevOps Advanced pipelines and artifacts\n- GitHub Actions CI/CD — YAML pipeline from scratch\n- Kafka Introduction or GitLab CI/CD or N8n Automation",
+      "diagram": null
+    },
+    {
+      "id": "s46-key-learnings",
+      "unit": "s46",
+      "kind": "concept",
+      "title": "Key learnings",
+      "text_md": "- GitHub Actions YAML is free CI/CD directly in GitHub — no Jenkins server required\n- DevSecOps shifts security left — scan code and containers before reaching production\n- AWS Lambda plus EventBridge creates event-driven architecture without any servers\n- N8n is open-source automation with 400 plus integrations — the open-source Zapier\n- GitLab combines Git plus CI/CD plus Registry plus Security scanning in one platform",
+      "diagram": null
+    },
+    {
+      "id": "s46-task-091",
+      "unit": "s46",
+      "kind": "practical",
+      "title": "Task 091",
+      "text_md": "**Lab task 091:** Implement the group-chosen topic with a mini hands-on project — document in GitHub repo\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    },
+    {
+      "id": "s46-task-092",
+      "unit": "s46",
+      "kind": "practical",
+      "title": "Task 092",
+      "text_md": "**Lab task 092:** Write a 5-point LinkedIn article or summary post about what you built and learned\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

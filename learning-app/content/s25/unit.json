@@ -1,0 +1,241 @@
+{
+  "id": "s25",
+  "title": "Jenkins Jobs Maven · Day 5",
+  "subtitle": "Session 25 · Batch-44 · DevOps Batch-44 | Day 05: Jenkins CI Pipeline with Java Spring Boot Project",
+  "session": 25,
+  "module": "M4 CI/CD: Git, GitHub, Jenkins",
+  "order": 2500,
+  "status": "ready",
+  "source_file": "Session-25-Jenkins-Jobs-Maven/🚀 Day-5 of DevOps i.e Day-3 of Jenkins with JAVA mini Project Batch-44 | 24th July 2026.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [
+    "Scenario 2",
+    "Scenario 3",
+    "Scenario 4",
+    "Scenario 5",
+    "Scenario 6",
+    "Scenario 7",
+    "Scenario 8",
+    "Scenario 9",
+    "Scenario 10",
+    "Scenario 11",
+    "Scenario 12",
+    "Scenario 13",
+    "Scenario 14",
+    "Scenario 15",
+    "Scenario 16",
+    "Scenario 17",
+    "Scenario 18",
+    "Scenario 19",
+    "Scenario 20"
+  ],
+  "concepts": [
+    {
+      "id": "s25-completed-milestones",
+      "unit": "s25",
+      "kind": "concept",
+      "title": "Completed Milestones",
+      "text_md": "- Jenkins installed on GCP VM; version 2.5x confirmed\n- Jenkins admin user created; additional user (Shalini) created to demonstrate user management\n- RBAC plugin installed via Manage Jenkins → Plugins; safe restart performed\n- Bitbucket and Docker plugins installed to demonstrate extensibility\n- Freestyle job created with GitHub repo (public) as source; branch set to main\n- mvn install added as Execute Shell build step; build succeeded in ~40 seconds\n- Spring Boot app deployed manually using java -jar command on port 3000; confirmed running on both Linux and Windows (platform independence demonstrated)",
+      "diagram": null
+    },
+    {
+      "id": "s25-key-concepts-covered",
+      "unit": "s25",
+      "kind": "concept",
+      "title": "Key Concepts Covered",
+      "text_md": "- Maven lifecycle: mvn compile → mvn test → mvn package → mvn install (does all); mvn clean recommended for repeated runs\n- pom.xml: Project Object Model — written by developers; defines dependencies, artifact name, version, build config\n- MVNW (Maven Wrapper): Allows running Maven without installation but is slower and not recommended for real-time/large projects\n- Workspace: Temporary Jenkins working directory where code is cloned and builds execute\n- Target folder: Created after build; contains the JAR artifact\n- Artifact storage: JFrog and Nexus identified as tools for maintaining artifacts in real-time environments\n- Safe restart: Jenkins should be restarted only when no jobs are running after plugin installation\n- Master/Slave Jenkins: Recommended for scaling — isolate heavy or non-critical jobs on slave nodes",
+      "diagram": null
+    },
+    {
+      "id": "s25-blockers-resolutions",
+      "unit": "s25",
+      "kind": "concept",
+      "title": "Blockers & Resolutions",
+      "text_md": "- Region availability error on GCP (E2 standard unavailable in US Central B) → resolved by switching to a different region\n- File lock error during package update (process conflict) → resolved by waiting and re-running\n- mvn install failed initially because Maven was not installed on the server → resolved with apt install maven\n- Space in Jenkins workspace path caused directory navigation errors → resolved using backslash escape or TAB autocomplete\n- Multiple participants unable to log in to Jenkins after plugin install → required waiting for restart to complete",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is Jenkins?",
+      "prompt": "What is Jenkins?",
+      "reference_answer": "Jenkins is an open-source automation server used to automate Continuous Integration (CI) and Continuous Delivery (CD). It automatically builds, tests, and deploys applications whenever developers push code to a Git repository.",
+      "id": "s25-q01",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Continuous Integration (CI)?",
+      "prompt": "What is Continuous Integration (CI)?",
+      "reference_answer": "Continuous Integration is the practice of frequently merging code into a shared repository where every commit is automatically built and tested.\nBenefits\nDetects bugs early\nReduces integration issues\nImproves code quality\nSaves developer time",
+      "id": "s25-q02",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Why is Jenkins widely used in DevOps?",
+      "prompt": "Why is Jenkins widely used in DevOps?",
+      "reference_answer": "Jenkins supports:\n2000+ plugins\nGitHub, GitLab, Bitbucket integration\nDocker and Kubernetes integration\nPipeline as Code\nDistributed builds\nEasy automation",
+      "id": "s25-q03",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Explain the Maven lifecycle.",
+      "prompt": "Explain the Maven lifecycle.",
+      "reference_answer": "Main Maven phases:\n```bash\nmvn validate\nmvn compile\nmvn test\nmvn package\nmvn verify\nmvn install\nmvn deploy\n```\n\nMost companies commonly use:\n```bash\nmvn clean install\n```\n\nbecause it cleans old files and builds everything from scratch.",
+      "id": "s25-q04",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between mvn compile and mvn install?",
+      "prompt": "What is the difference between mvn compile and mvn install?",
+      "reference_answer": "Answer\nCommand\nPurpose\n```bash\nmvn compile\n```\n\nCompiles Java code only\n```bash\nmvn package\n```\n\nCreates JAR/WAR\n```bash\nmvn install\n```\n\nCompiles, tests, packages and stores artifact in local Maven repository",
+      "id": "s25-q05",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is pom.xml?",
+      "prompt": "What is pom.xml?",
+      "reference_answer": "POM stands for Project Object Model.\nIt contains\nProject information\nDependencies\nPlugins\nJava version\nArtifact name\nPackaging type\nBuild configuration\nDevelopers usually maintain this file.",
+      "id": "s25-q06",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the target folder?",
+      "prompt": "What is the target folder?",
+      "reference_answer": "Answer\nAfter Maven builds a project, it creates a target directory.\nIt contains:\nCompiled classes\nJAR/WAR file\nReports\nTemporary build files\nExample:\n```text\ntarget/\n ├── classes\n ├── generated-sources\n ├── springboot-demo.jar\n```",
+      "id": "s25-q07",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Maven Wrapper (MVNW)?",
+      "prompt": "What is Maven Wrapper (MVNW)?",
+      "reference_answer": "Answer\nMVNW allows developers to run Maven without installing Maven manually.\nExample\n./mvnw clean install\nAdvantages\nSame Maven version for everyone\nDisadvantages\nSlightly slower\nNot preferred for very large production builds",
+      "id": "s25-q08",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Why do companies install Maven on Jenkins servers instead of using MVNW?",
+      "prompt": "Why do companies install Maven on Jenkins servers instead of using MVNW?",
+      "reference_answer": "Answer\nBecause\nFaster\nCentralized version management\nBetter performance\nEasier maintenance\nStandard enterprise practice",
+      "id": "s25-q09",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What happens when Jenkins runs a Freestyle Job?",
+      "prompt": "What happens when Jenkins runs a Freestyle Job?",
+      "reference_answer": "Answer\nSequence:\nClone code from Git\nCreate Workspace\nExecute build commands\nGenerate artifact\nShow logs\nArchive build",
+      "id": "s25-q10",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Jenkins Workspace?",
+      "prompt": "What is Jenkins Workspace?",
+      "reference_answer": "Answer\nWorkspace is the directory where Jenkins downloads project source code and executes builds.\nExample\n/var/lib/jenkins/workspace/MyProject",
+      "id": "s25-q11",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is an Artifact?",
+      "prompt": "What is an Artifact?",
+      "reference_answer": "Answer\nArtifact is the output generated after a successful build.\nExamples\nJAR\nWAR\nZIP\nDocker Image",
+      "id": "s25-q12",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Where are artifacts stored in enterprises?",
+      "prompt": "Where are artifacts stored in enterprises?",
+      "reference_answer": "Answer\nMostly in\nNexus Repository\nJFrog Artifactory\nBenefits\nVersioning\nBackup\nSecurity\nEasy deployment",
+      "id": "s25-q13",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Why should Jenkins Safe Restart be used?",
+      "prompt": "Why should Jenkins Safe Restart be used?",
+      "reference_answer": "Answer\nSafe Restart waits until all running jobs finish before restarting Jenkins.\nIt prevents:\nBuild failures\nData corruption\nInterrupted deployments",
+      "id": "s25-q14",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is RBAC in Jenkins?",
+      "prompt": "What is RBAC in Jenkins?",
+      "reference_answer": "Answer\nRBAC means Role Based Access Control.\nDifferent permissions are assigned to:\nDeveloper\nQA\nDevOps\nAdmin\nL1 Support\nThis improves security.\n\n16. Difference between Jenkins Admin and Normal User?\nAnswer\nAdmin\nInstall plugins\nManage credentials\nRestart Jenkins\nConfigure jobs\nNormal User\nBuild projects\nView logs\nAccess assigned jobs only",
+      "id": "s25-q15",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Jenkins Master-Agent (Master-Slave) Architecture?",
+      "prompt": "What is Jenkins Master-Agent (Master-Slave) Architecture?",
+      "reference_answer": "Answer\nMaster\nControls Jenkins\nSchedules builds\nAgent\nExecutes build jobs\nAdvantages\nFaster builds\nBetter scalability\nWorkload distribution",
+      "id": "s25-q16",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Why do we use java -jar?",
+      "prompt": "Why do we use java -jar?",
+      "reference_answer": "Answer\nTo start a Spring Boot application.\nExample\n```bash\njava -jar springboot-demo.jar\n```\n\nThis launches the embedded Tomcat server.",
+      "id": "s25-q17",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Why shouldn't DevOps change the application port?",
+      "prompt": "Why shouldn't DevOps change the application port?",
+      "reference_answer": "Answer\nThe application port is defined by developers inside\napplication.properties\nChanging it without approval may cause:\nApplication failures\nEnvironment mismatch\nUnexpected production issues",
+      "id": "s25-q18",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Explain the complete CI flow using Jenkins.",
+      "prompt": "Explain the complete CI flow using Jenkins.",
+      "reference_answer": "Answer\n```text\nDeveloper\n  \t↓\nPush Code to GitHub\n  \t↓\nJenkins Pulls Code\n  \t↓\nWorkspace Created\n  \t↓\nmvn clean install\n  \t↓\nTarget Folder\n  \t↓\nJAR Generated\n  \t↓\nArtifact Stored\n  \t↓\nDeployment\n```\n\n\n20 Real-Time Scenario Based Interview Questions & Answers",
+      "id": "s25-q19",
+      "unit": "s25",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 1",
+      "prompt": "Scenario 1",
+      "reference_answer": "Verify Maven installation\nmvn -version\nInstall Maven\n```bash\nsudo apt update\nsudo apt install maven\n```\n\nVerify PATH\nRebuild",
+      "id": "s25-s01",
+      "unit": "s25",
+      "concept_ids": []
+    }
+  ]
+}

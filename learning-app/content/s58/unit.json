@@ -1,0 +1,48 @@
+{
+  "id": "s58",
+  "title": "Session 58 — Q&A + Meet & Greet + Graduation",
+  "subtitle": "Session 58",
+  "session": 58,
+  "module": "M10 Graduation",
+  "order": 5800,
+  "status": "light",
+  "source_file": "Session-58-QA-Meet-Greet-Graduation/README.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s58-topics-covered",
+      "unit": "s58",
+      "kind": "overview",
+      "title": "Topics covered",
+      "text_md": "- Unlimited Q&A Session — every question answered\n- Career Guidance for Cloud DevOps SRE and Architect paths\n- Placement Strategy & Job Application Tips\n- Portfolio Review — GitHub and LinkedIn final check\n- Community Networking — peer connections matter\n- Certificate Distribution and next steps guidance",
+      "diagram": null
+    },
+    {
+      "id": "s58-key-learnings",
+      "unit": "s58",
+      "kind": "concept",
+      "title": "Key learnings",
+      "text_md": "- Your GitHub portfolio plus LinkedIn profile IS your resume in the DevOps market\n- Network beats Skills beats Resume — the right referral opens doors certifications cannot\n- Target companies by tech stack and apply where your exact skills are required\n- Negotiate with data: research Glassdoor AmbitionBox LinkedIn Salary before every offer\n- You are not a fresher anymore — you are a Multi-Cloud DevOps Engineer with 8 real projects",
+      "diagram": null
+    },
+    {
+      "id": "s58-task-115",
+      "unit": "s58",
+      "kind": "practical",
+      "title": "Task 115",
+      "text_md": "**Lab task 115:** Finalize all 8 projects in GitHub with architecture diagrams and detailed README files\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    },
+    {
+      "id": "s58-task-116",
+      "unit": "s58",
+      "kind": "practical",
+      "title": "Task 116",
+      "text_md": "**Lab task 116:** Complete final LinkedIn update with all certifications projects skills and CloudDevOpsHub program\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

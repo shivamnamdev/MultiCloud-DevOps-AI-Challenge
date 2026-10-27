@@ -1,0 +1,256 @@
+{
+  "id": "s42",
+  "title": "Ansible Playbooks Roles · Day 6",
+  "subtitle": "Session 42 · Batch-44 · Part 2: Install Ansible and Required Tools in ansible_master",
+  "session": 42,
+  "module": "M6 IaC + Automation",
+  "order": 4200,
+  "status": "ready",
+  "source_file": "Session-42-Ansible-Playbooks-Roles/🚀 Day-6 of Automation i.e Ansible Setup for Batch-44 _ 27th Aug 2026 _ 8_00 AM IST _ Live Session.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s42-ansible-concepts-covered",
+      "unit": "s42",
+      "kind": "concept",
+      "title": "Ansible Concepts Covered",
+      "text_md": "- **Configuration Management** defined as the automated execution of repeated operational activities across multiple IT systems (Linux servers, databases, monitoring setups, backups) to maintain a consistent desired state.\n- **Ansible vs. Terraform** distinction emphasized: Terraform is an Infrastructure-as-Code (IaC) tool for *creating* infrastructure; Ansible is a *configuration management* tool for managing and operating existing infrastructure.\n- **Ansible vs. Puppet/Chef**: Puppet and Chef are considered outdated (~5 years ago); Ansible now dominates with approximately 75–80% market adoption.\n- **Agentless architecture**: No Ansible software needs to be installed on target/client machines; connectivity is established purely via SSH, making it lightweight and scalable to thousands of VMs.\n- **Python dependency**: Python must be present on all target machines as Ansible depends on it; Python is not optional.\n- **Language**: Ansible configurations and tasks are written in **YAML**, referred to as **playbooks**.\n- **Developed by Red Hat** as an open-source product; freely available with no licensing cost.\n- **Windows support**: Ansible can connect to Windows machines via **WinRM**, but the session focused on Linux (Ubuntu), which represents ~98% of real-world use.\n- **Ansible came to market in 2012**; 2–4 years of Ansible automation experience is considered a strong resume asset.",
+      "diagram": null
+    },
+    {
+      "id": "s42-ansible-architecture-components",
+      "unit": "s42",
+      "kind": "concept",
+      "title": "Ansible Architecture Components",
+      "text_md": "- **Ansible Master (Control Node)**: The central machine where Ansible is installed and all configuration files are stored; SSH connections originate from here to all target machines.\n- **Target Machines (Managed Nodes)**: Remote servers on which tasks are executed; no Ansible installation required on these nodes.\n- **Inventory / Host File** (`/etc/ansible/hosts`): Contains IP addresses or hostnames of all target machines, organized into groups (e.g., `[DB]`, `[Ubuntu]`, `[CentOS]`); multiple host files are supported for different server categories.\n- **Playbook**: A YAML file containing one or more tasks (commands) to be executed on target machines; tasks describe the desired state (e.g., install NGINX latest version).\n- **CMDB (Configuration Management Database)**: Stores the current state and history of changes made by Ansible, analogous to Terraform's state file or Kubernetes' etcd.\n- **SSH Key-Based (Passwordless) Authentication**: Required for Ansible to connect to 100+ machines without manual password entry; public/private key pair generated on master and public key copied to each target.\n- **Grouping in Host File**: IP addresses can be organized under named groups (e.g., `[DB]`, `[CentOS]`, `[Ubuntu]`); the playbook's `hosts:` field references the group name to scope execution.",
+      "diagram": null
+    },
+    {
+      "id": "s42-environment-preparation",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Environment Preparation",
+      "text_md": "- Students logged into **Google Cloud Console** and created a VM instance (Ubuntu 24.04 LTS, 2 vCPU, 8 GB RAM, 40 GB disk) with all network traffic allowed.\n- **Docker** was installed on the GCP VM using `apt update` followed by `apt install docker.io`; students verified installation with `docker -v`.\n- Three Ubuntu containers were created via Docker: `ansible_master`, `target1`, and `target2`; confirmed running with `docker ps`.\n- Students on AWS were advised the commands are identical since both platforms use Ubuntu 24.04.",
+      "diagram": null
+    },
+    {
+      "id": "s42-ansible-master-setup-part-2",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Ansible Master Setup (Part 2)",
+      "text_md": "- Entered the master container: `docker exec -it ansible_master bash`, then switched to root with `sudo -i`.\n- Ran `apt update` to refresh package lists inside the container.\n- Installed four dependencies in one command: **Python**, **VI editor**, **ping utility**, and **SSH client** — all mandatory for Ansible to function.\n    - Python: required as Ansible's runtime dependency\n    - VI editor: required to edit configuration files inside the container\n    - Ping: required to verify connectivity between containers\n    - SSH client: required to SSH from master to targets\n- Installed **software-properties-common** to enable adding external repositories.\n- Added the **Ansible PPA repository** (`ppa:ansible/ansible`) so Ubuntu recognizes the Ansible package.\n- Ran `apt install ansible`; Ansible 2.21 (approximately 28.1 MB) was installed and verified with `ansible --version`.\n- **Ansible configuration file** location confirmed: `/etc/ansible/ansible.cfg`; the host/inventory file is at `/etc/ansible/hosts`.",
+      "diagram": null
+    },
+    {
+      "id": "s42-target-machine-setup-part-3",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Target Machine Setup (Part 3)",
+      "text_md": "- Exited master container, then entered `target1`: `docker exec -it target1 bash`.\n- Ran `apt update` and installed **Python**, **ping**, and **SSH client** on target1 — **Ansible was intentionally NOT installed** on target machines.\n- Navigated to `/etc/ssh/` and opened `sshd_config` to make two critical changes:\n    - **PermitRootLogin yes** — uncommented and set to `yes` to allow root login via SSH\n    - **PasswordAuthentication yes** — uncommented and set to `yes` to allow password-based login\n- Started the SSH service: `service ssh start`; verified it was running.\n- Set the root password to `admin` using `passwd root`.\n- Repeated the same target setup steps for `target2`.",
+      "diagram": null
+    },
+    {
+      "id": "s42-ip-address-discovery-and-host-file-configuration-parts-4-5",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "IP Address Discovery and Host File Configuration (Parts 4–5)",
+      "text_md": "- Exited target containers and returned to the base GCP VM.\n- Found container IP addresses using `docker inspect target1` and `docker inspect target2`; target1 received `172.17.0.3`, target2 received `172.17.0.4`.\n- Re-entered the Ansible master container and navigated to `/etc/ansible/`.\n- Opened the **hosts file** with `vi hosts`; all default content is commented out — added the target IP addresses in empty space and saved.\n- Verified connectivity by pinging target IP addresses from the master; ping confirmed working.",
+      "diagram": null
+    },
+    {
+      "id": "s42-ssh-passwordless-authentication-setup-part-6",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "SSH Passwordless Authentication Setup (Part 6)",
+      "text_md": "- Generated SSH key pair on the Ansible master using `ssh-keygen`; keys stored in `/root/.ssh/` (private key: `id_rsa`, public key: `id_rsa.pub`).\n- Copied the **public key** to target1 using `ssh-copy-id root@172.17.0.3`; accepted the fingerprint prompt and provided the `admin` password.\n- Verified passwordless SSH: `ssh root@172.17.0.3` connected without a password prompt.\n- Confirmed NGINX was not yet installed on target1 (returned \"unrecognized service\").",
+      "diagram": null
+    },
+    {
+      "id": "s42-playbook-creation-and-execution-parts-7-9",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Playbook Creation and Execution (Parts 7–9)",
+      "text_md": "- Navigated to `/etc/ansible/` on the master and created a new YAML playbook file: `vi install_nginx.yml`.\n- Playbook structure explained:\n    - `---` : Three dashes indicate the start of a YAML file\n    - `hosts: all` : Targets all IP addresses in the inventory file; can be scoped to a group name (e.g., `hosts: DB`, `hosts: CentOS`)\n    - **Indentation** is critical in YAML — spaces define scope; no brackets used\n    - `name:` : Human-readable task description\n    - `apt:` module with `name: nginx` and `state: latest` : Installs the latest version of NGINX using apt\n- Executed the playbook from the master: `ansible-playbook install_nginx.yml`\n    - Result: **2 changes** on target1 — apt cache updated (task 1) and NGINX installed (task 2)\n    - Output showed `changed=2` confirming successful installation\n- Students verified NGINX was installed on target1 by entering the container and checking `service nginx status`; NGINX was installed but not yet running (service not started).",
+      "diagram": null
+    },
+    {
+      "id": "s42-real-time-issues-and-troubleshooting",
+      "unit": "s42",
+      "kind": "concept",
+      "title": "Real-Time Issues and Troubleshooting",
+      "text_md": "- **Unreachable error**: Occurs when SSH keys are not properly copied to target or SSH service is not running on the target; resolution — verify with ping, check SSH service status.\n- **Permission denied**: Occurs when `PermitRootLogin` or `PasswordAuthentication` is not enabled in `sshd_config`; resolution — manually verify SSH config changes on target.\n- **Port mismatch**: Ansible defaults to port 22; if the target uses a different port, all settings must be reconfigured to port 22.\n- **No hosts matched**: Occurs when the playbook's `hosts:` value does not match any group or entry in the inventory file.\n- **Second target unreachable**: When target2's IP (172.17.0.4) was added to the hosts file and the playbook re-run, target1 showed `ok=2 changed=0` (idempotent — NGINX already installed, no changes needed), while target2 showed `unreachable=1` because SSH was not yet configured on it.",
+      "diagram": null
+    },
+    {
+      "id": "s42-yaml-playbook-structure-deep-dive",
+      "unit": "s42",
+      "kind": "concept",
+      "title": "YAML Playbook Structure Deep Dive",
+      "text_md": "- Students were asked to write the playbook from memory (without looking) on paper to reinforce recall for interviews.\n- **`hosts: all`** executes on every IP in the inventory; replacing `all` with a group name (e.g., `DB`, `Ubuntu`, `CentOS`) scopes execution to that group only.\n- **Specific version installation**: Use `state: present` for default, or `state: 3.17` to pin a specific version.\n- **Service management**: To start/restart a service after installation, use the `service` module with `state: started` or `state: restarted`.\n- **Multiple playbooks** are supported; each can reference different host groups; all playbooks should be stored in `/etc/ansible/` and can also be maintained in GitHub.\n- Real-world use cases mentioned: Apache/HTTPD installation, Tomcat, Jenkins, PostgreSQL, user creation/deletion, backup scripts, patching.",
+      "diagram": null
+    },
+    {
+      "id": "s42-docker-image-commit-and-push",
+      "unit": "s42",
+      "kind": "concept",
+      "title": "Docker Image Commit and Push",
+      "text_md": "- After completing the Ansible master setup, the container was committed as a reusable Docker image: `docker commit ansible_master vikas_cloud/ansible_master`.\n- Tagged and pushed to Docker Hub: `docker tag [image_id] vikas_cloud/ansible_master` → `docker push vikas_cloud/ansible_master`.\n- Same process performed for target1: `docker commit target1 vikas_cloud/target1` → pushed to Docker Hub.\n- **Purpose**: Students who could not complete the practical can `docker pull` the pre-configured image and resume from a known-good state without repeating all setup steps.\n- Images are public on Docker Hub, accessible to all batch members.",
+      "diagram": null
+    },
+    {
+      "id": "s42-terraform-drift-concept-and-resolution",
+      "unit": "s42",
+      "kind": "concept",
+      "title": "Terraform Drift — Concept and Resolution",
+      "text_md": "- **Drift definition**: The gap between what is defined in Terraform code/state file and the actual state of infrastructure in the cloud console.\n- **Common causes**:\n    - Manual changes made directly via AWS/GCP console or CLI (e.g., upgrading T2 micro to T2 large during a 2AM incident)\n    - External scripts or automation tools modifying resources outside Terraform\n    - Cloud provider updates that rename or deprecate resource types (e.g., T2 micro decommissioned)\n    - Multiple IaC tools in use simultaneously (e.g., Terraform + CloudFormation + Lambda)\n    - Broad console/CLI access given to L1/L2 engineers\n- **Detection**: Run `terraform plan`; it will highlight the difference between desired state (code) and actual state.\n- **Resolution options**:\n    - Update the Terraform code to match the manual change, then re-apply\n    - Run `terraform refresh` to update the state file to reflect current real-world state\n    - Implement weekly/monthly pipeline checks to detect drift proactively\n- **Real-world scenario shared by student (Rajvaibhav)**: During high-priority incidents, teams sometimes bypass pipelines and make direct manual changes to avoid approval delays; after the incident, the code must be updated to match, and the pipeline plan will detect and flag the discrepancy.",
+      "diagram": null
+    },
+    {
+      "id": "s42-step-1-create-a-docker-playground-instance",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Step 1: Create a Docker Playground Instance",
+      "text_md": "Go to Docker Playground, create an instance/node, and create 3 Ubuntu containers.\n\n1. **1st container** - `ansible_master`\n2. **2nd container** - `target1`\n3. **3rd container** - `target2`",
+      "diagram": null
+    },
+    {
+      "id": "s42-step-2-create-containers",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Step 2: Create Containers",
+      "text_md": "Run the following commands:\n\n```bash\nsudo apt-get update && sudo apt install docker.io -y\n\ndocker run -itd --name ansible_master ubuntu /bin/bash\ndocker run -itd --name target1 ubuntu /bin/bash\ndocker run -itd --name target2 ubuntu /bin/bash\n```",
+      "diagram": null
+    },
+    {
+      "id": "s42-step-3-check-the-containers",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Step 3: Check the Containers",
+      "text_md": "Check the running containers and verify their names:\n\n```bash\ndocker ps\n```\n\nYou should see:\n\n```text\nansible_master\ntarget1\ntarget2\n```",
+      "diagram": null
+    },
+    {
+      "id": "s42-part-2-install-ansible-and-required-tools-in-ansible-master",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Part 2: Install Ansible and Required Tools in ansible_master",
+      "text_md": "### Step 4: Login to ansible_master\n\nGo inside the `ansible_master` container:\n\n```bash\ndocker exec -it ansible_master bash\n```\n\nUpdate Ubuntu and install the required dependencies:\n\n```bash\napt update\napt install python-is-python3 vim iputils-ping openssh-client -y\n```\n\nInstall the required software-properties package:\n\n```bash\napt install software-properties-common\n```\n\nAdd the Ansible PPA:\n\n```bash\nadd-apt-repository --yes --update ppa:ansible/ansible\n```\n\nInstall Ansible:\n\n```bash\napt install ansible\n```\n\nVerify the Ansible installation:\n\n```bash\nansible --version\n```",
+      "diagram": null
+    },
+    {
+      "id": "s42-part-3-setup-target-machines",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Part 3: Setup Target Machines",
+      "text_md": "We will configure 2 target containers:\n\n* `target1`\n* `target2`",
+      "diagram": null
+    },
+    {
+      "id": "s42-step-5-login-to-target1",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Step 5: Login to target1",
+      "text_md": "From the Docker node, run:\n\n```bash\ndocker exec -it target1 bash\n```",
+      "diagram": null
+    },
+    {
+      "id": "s42-step-6-update-and-install-ssh-and-required-dependencies",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Step 6: Update and Install SSH and Required Dependencies",
+      "text_md": "Run:\n\n```bash\napt update\napt install vim python-is-python3 iputils-ping openssh-client -y\napt-get install openssh-client openssh-server -y\n```",
+      "diagram": null
+    },
+    {
+      "id": "s42-step-7-configure-ssh",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Step 7: Configure SSH",
+      "text_md": "Edit the SSH configuration file:\n\n```bash\ncd /etc/ssh\nvi sshd_config\n```\n\nUncomment the required parameters and modify them as follows:\n\n```text\nPermitRootLogin yes\nPasswordAuthentication yes\n```\n\nThis will allow root login and password authentication for the lab environment.",
+      "diagram": null
+    },
+    {
+      "id": "s42-step-8-start-the-ssh-service",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Step 8: Start the SSH Service",
+      "text_md": "Check the SSH service:\n\n```bash\nservice ssh status\n```\n\nStart the SSH service:\n\n```bash\nservice ssh start\n```\n\nCheck the status again:\n\n```bash\nservice ssh status\n```",
+      "diagram": null
+    },
+    {
+      "id": "s42-step-9-change-the-root-password",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Step 9: Change the Root Password",
+      "text_md": "Set the root password:\n\n```bash\npasswd root\n```\n\nUse:\n\n```text\nAdmin\nAdmin\n```\n\nas the password and confirmation.",
+      "diagram": null
+    },
+    {
+      "id": "s42-part-4-perform-the-same-steps-on-target2",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Part 4: Perform the Same Steps on target2",
+      "text_md": "### Step 10: Configure target2\n\nLogin to `target2`:\n\n```bash\ndocker exec -it target2 bash\n```\n\nPerform the same steps used for `target1`:\n\n```bash\napt update\napt install vim python-is-python3 iputils-ping openssh-client -y\napt-get install openssh-client openssh-server -y\n```\n\nEdit SSH configuration:\n\n```bash\ncd /etc/ssh\nvi sshd_config\n```\n\nConfigure:\n\n```text\nPermitRootLogin yes\nPasswordAuthentication yes\n```\n\nStart SSH:\n\n```bash\nservice ssh status\nservice ssh start\nservice ssh status\n```\n\nChange the root password:\n\n```bash\npasswd root\n```\n\nUse:\n\n```text\nAdmin\nAdmin\n```",
+      "diagram": null
+    },
+    {
+      "id": "s42-part-5-find-the-ip-addresses-of-target-containers",
+      "unit": "s42",
+      "kind": "concept",
+      "title": "Part 5: Find the IP Addresses of Target Containers",
+      "text_md": "We need the IP addresses of the target containers so that we can add them to the Ansible hosts file.\n\n### Step 11: Check Target IP Addresses\n\nCome out of the target container and go back to the Docker node.\n\nRun:\n\n```bash\nsudo docker inspect target1\nsudo docker inspect target2\n```\n\nLook for the `IPAddress` value.\n\nFor example:\n\n```text\n172.17.0.3\n```\n\nYou may get different IP addresses in your environment.",
+      "diagram": null
+    },
+    {
+      "id": "s42-part-6-setup-ansible-master-for-ssh-connectivity",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Part 6: Setup ansible_master for SSH Connectivity",
+      "text_md": "### Step 12: Go to ansible_master\n\nRun:\n\n```bash\ndocker exec -it ansible_master bash\n```\n\n### Step 13: Configure the Ansible Hosts File\n\nGo to the Ansible directory:\n\n```bash\ncd /etc/ansible/\n```\n\nCheck the files:\n\n```bash\nls\n```\n\nOpen the `hosts` file:\n\n```bash\nvi hosts\n```\n\nProvide the IP addresses of the target machines.\n\nFor example:\n\n```text\n172.17.0.3\n172.17.0.4\n```\n\nUse the actual IP addresses of your `target1` and `target2` containers.\n\n### Step 14: Verify Connectivity\n\nFrom `ansible_master`, ping the target machines:\n\n```bash\nping <Target machine IP>\n```\n\nFor example:\n\n```bash\nping 172.17.0.3\n```\n\nMake sure the target machine is reachable from `ansible_master`.",
+      "diagram": null
+    },
+    {
+      "id": "s42-part-7-configure-ssh-key-based-connectivity",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Part 7: Configure SSH Key-Based Connectivity",
+      "text_md": "Go back to the `ansible_master` container.\n\n### Step 15: Generate SSH Key\n\nGenerate an SSH key using:\n\n```bash\nssh-keygen\n```\n\nPress **Enter** 3 times:\n\n1. Enter to accept the default location\n2. Enter for an empty passphrase\n3. Enter to confirm the empty passphrase\n\n---\n\n### Step 16: Copy the SSH Key to the Target Machine\n\nCopy the generated SSH key from `ansible_master` to the remote target:\n\n```bash\nssh-copy-id root@172.17.0.3\n```\n\nWhen prompted, enter:\n\n```text\nyes\n```\n\nThen provide the root password of the target machine.\n\nRepeat the same process for `target2` using its IP address.\n\n---\n\n### Step 17: Verify SSH Connectivity\n\nFrom `ansible_master`, connect to the target machine:\n\n```bash\nssh root@172.17.0.3\n```\n\nIf everything is configured correctly, you should be able to login without entering the password again.\n\n---\n\n### Step 18: Verify Nginx\n\nAfter connecting to the target machine, check whether Nginx is installed:\n\n```bash\nservice nginx status\n```",
+      "diagram": null
+    },
+    {
+      "id": "s42-part-8-create-and-run-an-ansible-playbook",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Part 8: Create and Run an Ansible Playbook",
+      "text_md": "Now we will create an Ansible playbook to install Nginx on all target machines.\n\n### Step 19: Create installnginx.yaml\n\nGo to the Ansible directory:\n\n```bash\ncd /etc/ansible\n```\n\nCreate the playbook:\n\n```bash\nvi installnginx.yaml\n```\n\nAdd the following code:\n\n```yaml\n---\n- hosts: all\n  tasks:\n    - name: ensure nginx is at the latest version\n      apt: name=nginx state=latest\n```\n\nSave and exit the file.",
+      "diagram": null
+    },
+    {
+      "id": "s42-part-9-run-the-ansible-playbook",
+      "unit": "s42",
+      "kind": "concept",
+      "title": "Part 9: Run the Ansible Playbook",
+      "text_md": "Run the playbook using:\n\n```bash\nansible-playbook installnginx.yaml\n```\n\nAnsible will connect to all machines listed in the `/etc/ansible/hosts` file and execute the task.\n\nThe task will make sure that Nginx is installed and updated to the latest available version.\n\nYou can then verify Nginx on the target machines:\n\n```bash\nservice nginx status\n```",
+      "diagram": null
+    },
+    {
+      "id": "s42-lab-architecture",
+      "unit": "s42",
+      "kind": "practical",
+      "title": "Lab Architecture",
+      "text_md": "```text\n                    Ansible Master\n                  ┌─────────────────┐\n                  │ ansible_master  │\n                  │                 │\n                  │ Ansible         │\n                  │ SSH Client      │\n                  └────────┬────────┘\n                           │\n                 SSH / Ansible\n                    ┌──────┴──────┐\n                    │             │\n                    ▼             ▼\n             ┌────────────┐  ┌────────────┐\n             │  target1   │  │  target2   │\n             │            │  │            │\n             │ Ubuntu     │  │ Ubuntu     │\n             │ SSH Server │  │ SSH Server │\n             └────────────┘  └────────────┘\n```",
+      "diagram": null
+    },
+    {
+      "id": "s42-final-verification",
+      "unit": "s42",
+      "kind": "concept",
+      "title": "Final Verification",
+      "text_md": "Check Ansible version:\n\n```bash\nansible --version\n```\n\nCheck the inventory:\n\n```bash\ncat /etc/ansible/hosts\n```\n\nTest Ansible connectivity:\n\n```bash\nansible all -m ping\n```\n\nRun the Nginx installation playbook:\n\n```bash\nansible-playbook installnginx.yaml\n```\n\nVerify Nginx on the target machines:\n\n```bash\nservice nginx status\n```\n\n**Expected flow:**\n\n```text\nDocker Playground\n       ↓\nCreate 3 Ubuntu Containers\n       ↓\nansible_master + target1 + target2\n       ↓\nInstall Ansible on ansible_master\n       ↓\nConfigure SSH on target machines\n       ↓\nFind Target IP Addresses\n       ↓\nConfigure /etc/ansible/hosts\n       ↓\nGenerate SSH Keys\n       ↓\nCopy SSH Keys to Targets\n       ↓\nTest SSH Connectivity\n       ↓\nCreate Ansible Playbook\n       ↓\nRun ansible-playbook\n       ↓\nInstall Nginx on Target Machines\n```",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

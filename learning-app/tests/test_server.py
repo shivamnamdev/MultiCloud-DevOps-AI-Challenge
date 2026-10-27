@@ -67,6 +67,41 @@ class ServerTest(unittest.TestCase):
         self.assertEqual(self.call("/static/%2e%2e/tools/server.py")[0], 404)
         self.assertEqual(self.call("/content/fw1/unit.json")[0], 404)
 
+    def test_search_endpoint(self):
+        code, body, _ = self.call("/api/search?q=terraform%20state")
+        hits = json.loads(body)
+        self.assertEqual(code, 200)
+        self.assertTrue(hits)
+        self.assertEqual(set(hits[0]), {"item_id", "unit_id", "unit_title", "kind", "title", "snippet"})
+        self.assertEqual(json.loads(self.call("/api/search?q=")[1]), [])
+        self.assertEqual(self.call("/api/search?q=%22%20OR%20NEAR(&limit=abc")[0], 200)
+        self.assertEqual(self.call("/api/search?q=" + "a" * 5000)[0], 200)
+
+    def test_notes_roundtrip_and_validation(self):
+        self.assertEqual(self.call("/api/notes", {"item_id": "fw1-provider", "text": "my note"})[0], 200)
+        self.assertEqual(json.loads(self.call("/api/notes")[1])["fw1-provider"], "my note")
+        mine = json.loads(self.call("/api/mine")[1])
+        row = [m for m in mine if m["item_id"] == "fw1-provider"][0]
+        self.assertEqual((row["note"], row["unit_id"], row["bookmarked"]), ("my note", "fw1", False))
+        self.assertEqual(self.call("/api/notes", {"item_id": "fw1-provider", "text": "x" * 5001})[0], 400)
+        self.assertEqual(self.call("/api/notes", {"item_id": "fw1-provider", "text": 5})[0], 400)
+        self.assertEqual(self.call("/api/notes", {"item_id": "nope", "text": "a"})[0], 404)
+        self.call("/api/notes", {"item_id": "fw1-provider", "text": "   "})  # blank deletes
+        self.assertNotIn("fw1-provider", json.loads(self.call("/api/notes")[1]))
+
+    def test_bookmarks(self):
+        self.assertEqual(self.call("/api/bookmarks", {"item_id": "fw1-q01", "on": True})[0], 200)
+        self.assertIn("fw1-q01", json.loads(self.call("/api/bookmarks")[1]))
+        row = [m for m in json.loads(self.call("/api/mine")[1]) if m["item_id"] == "fw1-q01"][0]
+        self.assertTrue(row["bookmarked"])
+        self.assertEqual(self.call("/api/bookmarks", {"item_id": "fw1-q01", "on": "yes"})[0], 400)
+        self.assertEqual(self.call("/api/bookmarks", {"item_id": "fw1-q01", "on": False})[0], 200)
+        self.assertNotIn("fw1-q01", json.loads(self.call("/api/bookmarks")[1]))
+
+    def test_post_rejects_non_objects_and_unknown_paths(self):
+        self.assertEqual(self.call("/api/notes", [1, 2])[0], 400)
+        self.assertEqual(self.call("/api/other", {"item_id": "fw1-q01"})[0], 404)
+
 
 if __name__ == "__main__":
     unittest.main()

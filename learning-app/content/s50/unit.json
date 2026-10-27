@@ -1,0 +1,433 @@
+{
+  "id": "s50",
+  "title": "Project 1 CICD Pipeline Automation",
+  "subtitle": "Session 50 · Batch-44 · Project 1: End-to-End CI/CD Automation on AWS Using Jenkins, Docker & Node.js",
+  "session": 50,
+  "module": "M9 Live projects",
+  "order": 5000,
+  "status": "ready",
+  "source_file": "Session-50-Project-1-CICD-Pipeline-Automation/🚀 CI-CD Project-1 with Batch 44 .md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s50-project-overview-business-problem",
+      "unit": "s50",
+      "kind": "overview",
+      "title": "Project Overview & Business Problem",
+      "text_md": "In modern software delivery, manual software compilation, testing, image packaging, and deployment are prone to human error, environment inconsistencies, configuration drift, and lengthy release cycles.\n\nThis capstone project demonstrates how to build an **enterprise-grade, completely open-source Continuous Integration and Continuous Delivery/Deployment (CI/CD) automation pipeline** on **AWS Infrastructure** from scratch.\n\nThe demonstration application deployed is a feature-rich, high-performance **Starbucks Web Application** built with **Node.js and React**. While Node.js was selected for its asynchronous non-blocking event-driven architecture, the automated CI/CD pipeline principles established here apply universally to Java Spring Boot, Python Django/Flask, Golang, or PHP microservices.\n\n### Key Objectives\n\n- Provision and harden an **AWS EC2 Ubuntu compute instance** with precise inbound security rules.\n- Deploy and configure an open-source **Jenkins LTS Automation Server** on Java OpenJDK 21.\n- Automate **Docker CE runtime** provisioning, socket permissions, and daemon configurations.\n- Establish centralized **Jenkins Tool Configuration** (OpenJDK 17, Node.js 16, and Docker CLI).\n- Secure sensitive credentials (Docker Hub tokens) avoiding hardcoded credentials in source control.\n- Write and execute a **Declarative Jenkinsfile** for Continuous Integration (Checkout, NPM dependency installation, static compilation/build, Docker image creation, and automated push to Docker Hub registry).\n- Implement a decoupled **Continuous Delivery (CD) pipeline** managing Docker container lifecycles (idempotent stop, removal, port mapping to port `3000`).\n- Convert manual Continuous Delivery into zero-touch **Continuous Deployment** through Jenkins downstream build triggers.\n- Master enterprise production scenarios: Parameterized multi-environment builds, private repository access, remote SSH deployments, and monorepo management.",
+      "diagram": null
+    },
+    {
+      "id": "s50-open-source-vs-managed-cloud-ci-cd-the-from-scratch-philosophy",
+      "unit": "s50",
+      "kind": "concept",
+      "title": "Open-Source vs Managed Cloud CI/CD (The \"From Scratch\" Philosophy)",
+      "text_md": "In previous sessions, cloud-managed CI/CD services (such as Azure DevOps Pipelines or AWS CodePipeline) were utilized. However, enterprise organizations frequently demand or maintain fully self-hosted, cloud-agnostic, open-source CI/CD architectures for three primary reasons:\n\n| Evaluation Dimension | Managed Cloud CI/CD (Azure DevOps / AWS CodePipeline) | Open-Source Self-Hosted (Jenkins + Docker on AWS EC2) |\n| :--- | :--- | :--- |\n| **Vendor Lock-In** | High; tied to provider-specific agent runtimes, APIs, and billing models. | **Zero Lock-In;** pipeline definitions and containers execute identically on AWS, Azure, GCP, or on-premise bare metal. |\n| **Cost Predictability** | Pay-per-minute build agents or per-user monthly licensing fees escalate rapidly with large teams. | **Fixed Infrastructure Cost;** pay only for standard EC2 compute and EBS storage; unlimited builds and concurrent jobs. |\n| **Customizability & Ecosystem** | Constrained to plugins and extensions approved in vendor marketplaces. | **Infinite Flexibility;** 1,800+ open-source plugins, deep Linux CLI integration, custom runners, and bespoke toolchains. |\n| **Data & Secret Governance** | Code, secrets, and build logs reside inside cloud provider infrastructure. | **Complete Control;** secrets, build artifacts, network traffic, and code checkouts remain strictly within private subnets. |\n\n> **Key Rule from Vikas:** *\"Whatever the code is—Node.js, Java, or Python—the DevOps methodology does not change. Our goal is to take raw source code from Git, build it, package it into immutable container images, push it to a registry, and deploy it seamlessly.\"*",
+      "diagram": null
+    },
+    {
+      "id": "s50-end-to-end-ci-cd-architecture-execution-workflow",
+      "unit": "s50",
+      "kind": "concept",
+      "title": "End-to-End CI/CD Architecture & Execution Workflow",
+      "text_md": "The complete end-to-end automation workflow transitions code from a developer's commit to a live customer-facing web application:\n\n```text\n+-------------------------------------------------------------------------------------------------------------------+\n|                                            DEVELOPER & SOURCE CODE REPO                                           |\n|                                                                                                                   |\n|   [ Developer ] ---> git push ---> [ GitHub Repository (Monorepo) ]                                               |\n|                                       - Application Code (/src)                                                   |\n|                                       - Dockerfile & Jenkinsfile                                                  |\n+---------------------------------------------------|---------------------------------------------------------------+\n                                                    |\n                                    Webhook / Poll / Manual Trigger\n                                                    |\n                                                    v\n+-------------------------------------------------------------------------------------------------------------------+\n|                                      AWS EC2 INSTANCE (JENKINS & DOCKER ENGINE)                                   |\n|                                                                                                                   |\n|  +-------------------------------------------------------------------------------------------------------------+  |\n|  | [ STEP 1: CONTINUOUS INTEGRATION (CI PIPELINE) ]                                                            |  |\n|  |                                                                                                             |  |\n|  |  1. Checkout SCM          2. Tool Provisioning         3. Build & Package      4. Containerization          |  |\n|  |     Clone Monorepo           Inject JDK 17 &              npm install             docker build               |  |\n|  |     into Workspace           Node.js 16 runtimes          npm run build           -t starbucks:latest        |  |\n|  +----------------------------------------------------------------------------------------|--------------------+  |\n|                                                                                           |                       |\n|                                                                            withCredentials(ID: 'docker')          |\n|                                                                                           |                       |\n|                                                                                           v                       |\n|                                                                           +------------------------------------+  |\n|                                                                           |   [ Docker Hub Registry ]          |  |\n|                                                                           |   Push image:                      |  |\n|                                                                           |   <username>/starbucks:latest      |  |\n|                                                                           +-----------------|------------------+  |\n|                                                                                             |                     |\n|                                     Continuous Delivery (Manual Trigger / Approval)         |                     |\n|                                                      OR                                     |                     |\n|                                     Continuous Deployment (Downstream Build Trigger)        |                     |\n|                                                                                             v                     |\n|  +-------------------------------------------------------------------------------------------------------------+  |\n|  | [ STEP 2: CONTINUOUS DELIVERY / DEPLOYMENT (CD PIPELINE) ]                                                  |  |\n|  |                                                                                                             |  |\n|  |  1. Pull Latest Image: docker pull <username>/starbucks:latest                                              |  |\n|  |  2. Stop & Remove Old Container: docker stop starbucks || true && docker rm starbucks || true               |  |\n|  |  3. Run Isolated Container: docker run -d --name starbucks -p 3000:3000 <username>/starbucks:latest        |  |\n|  +-------------------------------------------------------------------------------------------------------------+  |\n+---------------------------------------------------|---------------------------------------------------------------+\n                                                    |\n                                    Inbound HTTP Traffic on Port 3000\n                                                    |\n                                                    v\n                                      +---------------------------+\n                                      | End User / Client Browser |\n                                      | http://<EC2-IP>:3000      |\n                                      +---------------------------+\n```",
+      "diagram": null
+    },
+    {
+      "id": "s50-technology-stack-core-components",
+      "unit": "s50",
+      "kind": "concept",
+      "title": "Technology Stack & Core Components",
+      "text_md": "| Technology / Component | Role in Architecture | Version / Configuration |\n| :--- | :--- | :--- |\n| **AWS EC2** | Scalable Infrastructure as a Service (IaaS) host server. | Ubuntu 24.04 LTS, `t2.medium` / `t2.large`, 40 GB gp3 EBS. |\n| **AWS Security Groups** | Virtual stateful firewall controlling inbound/outbound instance traffic. | Inbound Ports: `22` (SSH), `8080` (Jenkins), `3000` (Node.js App). |\n| **OpenJDK 21** | Host Java runtime dependency required to execute Jenkins LTS daemon. | OpenJDK 21 headless package (`fontconfig openjdk-21-jre`). |\n| **Jenkins LTS** | Central automation orchestration server executing CI and CD pipelines. | Jenkins LTS (Debian/Ubuntu stable binary release). |\n| **Docker CE** | Container engine building immutable application images and running containers. | Docker Community Edition v29.x + Docker Compose CLI. |\n| **Adoptium JDK 17** | Pipeline build tool dependency for auxiliary compilation plugins. | Eclipse Temurin 17.0.8.1+1 configured via Jenkins Global Tools. |\n| **NodeJS & NPM** | Application execution runtime and package dependency manager. | Node.js v16.20.0 configured via Jenkins NodeJS Tool Plugin. |\n| **Docker Hub** | Central public/private container image registry storing packaged artifacts. | Cloud-hosted registry authenticated via Jenkins Global Credentials. |\n| **Starbucks Web App** | Modern single-page web application compiled with React and Node.js. | Monorepo containing `/src`, `package.json`, Dockerfile, Jenkinsfile. |",
+      "diagram": null
+    },
+    {
+      "id": "s50-high-level-project-execution-roadmap-8-core-steps",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "High-Level Project Execution Roadmap (8 Core Steps)",
+      "text_md": "During the live session, the implementation was structured into 8 progressive milestones:\n\n1. **AWS EC2 Provisioning:** Launch Ubuntu 24.04 compute instance with 40GB storage and configure Security Group rules.\n2. **Host Dependencies:** Update system packages and install OpenJDK 21 for Jenkins.\n3. **Jenkins Setup:** Install Jenkins LTS, start service, retrieve initial admin password, and setup administrative users.\n4. **Docker Automation:** Clone project repository and execute `docker.sh` to install Docker CE and configure user group permissions.\n5. **Jenkins Tooling & Plugins:** Install Eclipse Temurin, NodeJS, Docker Pipeline, and Stage View plugins; configure JDK 17, Node 16, and Docker CLI.\n6. **Credential Management:** Securely register Docker Hub username and access token under Global Credentials with ID `docker`.\n7. **Continuous Integration (CI) Job:** Create a Declarative Pipeline job to checkout code, install NPM packages, compile React code, build a Docker image, and push to Docker Hub.\n8. **Continuous Delivery (CD) Job:** Create a decoupled deployment pipeline to stop stale containers, run new containers on port 3000, verify the application, and wire automated downstream build triggers for continuous deployment.",
+      "diagram": null
+    },
+    {
+      "id": "s50-launching-the-compute-instance",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Launching the Compute Instance",
+      "text_md": "To provide sufficient CPU and RAM for concurrent NPM package installations and Docker image layer builds without freezing or running out of memory:\n\n1. Navigate to the **AWS Management Console** and switch to the target region (e.g., `ap-south-1` Mumbai).\n2. Open the **EC2 Dashboard** and click **Launch Instance**.\n3. Configure the following parameters:\n   - **Name:** `Starbucks-CICD-Server`\n   - **Application and OS Images (AMI):** `Ubuntu Server 24.04 LTS (HVM), SSD Volume Type` (64-bit x86).\n   - **Instance Type:** `t2.medium` (2 vCPU, 4 GiB RAM) minimum; `t2.large` (2 vCPU, 8 GiB RAM) recommended for superior build throughput.\n   - **Key Pair:** Proceed without a key pair (if connecting via EC2 Instance Connect) or select an existing `.pem` key pair.\n   - **Storage Configuration:** Increase root volume size from default 8 GB to **40 GB gp3** to accommodate Docker images, Jenkins build caches, and NPM node modules.",
+      "diagram": null
+    },
+    {
+      "id": "s50-security-group-inbound-firewall-rules",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Security Group Inbound Firewall Rules",
+      "text_md": "Network security must be configured to permit administrative access, Jenkins Web UI access, and web application traffic:\n\n| Type | Port Range | Protocol | Source | Purpose |\n| :--- | :--- | :--- | :--- | :--- |\n| **SSH** | `22` | TCP | `0.0.0.0/0` | Host terminal management via SSH / EC2 Instance Connect. |\n| **Custom TCP** | `8080` | TCP | `0.0.0.0/0` | Access to Jenkins Automation Server Web Interface. |\n| **Custom TCP** | `3000` | TCP | `0.0.0.0/0` | Access to the live Starbucks Node.js / React application. |\n\n> **Security Note:** In strict enterprise environments, ports `22` and `8080` should be restricted to an internal Corporate VPN or specific bastion host CIDR blocks. Port `3000` is exposed publicly for end-user testing.",
+      "diagram": null
+    },
+    {
+      "id": "s50-connecting-to-the-instance",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Connecting to the Instance",
+      "text_md": "Connect to the instance using **EC2 Instance Connect** (browser-based) or terminal SSH:\n\n```bash\n# Elevate to root privileges\nsudo -i\n\n# Verify Linux distribution and kernel version\ncat /etc/os-release\nuname -r\n```",
+      "diagram": null
+    },
+    {
+      "id": "s50-step-2-host-preparation-openjdk-21-installation",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Step 2: Host Preparation & OpenJDK 21 Installation",
+      "text_md": "Jenkins is written in Java and requires a Java Runtime Environment (JRE/JDK) on the host operating system to execute its master controller process.\n\n```bash\n# Update local package repository index\nsudo apt update\n\n# Install OpenJDK 21 and font configuration dependencies\nsudo apt install -y fontconfig openjdk-21-jre\n\n# Validate Java version on host system\njava -version\n```\n\n**Expected Verification Output:**\n\n```text\nopenjdk version \"21.0.x\" 202x-xx-xx\nOpenJDK Runtime Environment (build 21.0.x+...)\nOpenJDK 64-Bit Server VM (build 21.0.x+..., mixed mode, sharing)\n```",
+      "diagram": null
+    },
+    {
+      "id": "s50-adding-official-jenkins-debian-keyring-repositories",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Adding Official Jenkins Debian Keyring & Repositories",
+      "text_md": "```bash\n# Fetch and store the official Jenkins GPG signing key\nsudo wget -O /usr/share/keyrings/jenkins-keyring.asc \\\n  https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key\n\n# Register the stable Jenkins apt repository\necho \"deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] https://pkg.jenkins.io/debian-stable binary/\" | \\\n  sudo tee /etc/apt/sources.list.d/jenkins.list > /dev/null\n\n# Refresh package lists to include Jenkins repository\nsudo apt update\n\n# Install Jenkins LTS package\nsudo apt install -y jenkins\n\n# Enable and verify Jenkins service status\nsudo systemctl enable jenkins\nsudo systemctl status jenkins --no-pager\n```",
+      "diagram": null
+    },
+    {
+      "id": "s50-unlocking-jenkins-via-browser-ui",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Unlocking Jenkins via Browser UI",
+      "text_md": "1. Open your web browser and navigate to: `http://<EC2-PUBLIC-IP>:8080`\n2. Jenkins presents an **\"Unlock Jenkins\"** screen requesting an administrator password.\n3. Retrieve the generated initial administrator password from the server terminal:\n\n```bash\ncat /var/lib/jenkins/secrets/initialAdminPassword\n```\n\n4. Paste the 32-character alphanumeric key into the browser and click **Continue**.\n5. Select **Install suggested plugins** and allow the initial plugin setup wizard to finish.\n6. When prompted to **Create First Admin User**, configure:\n   - **Username:** `admin`\n   - **Password:** `admin` (or your chosen secure password)\n   - **Full Name:** `Administrator`\n   - **E-mail Address:** `admin@example.com`\n7. Confirm Instance URL configuration (`http://<EC2-PUBLIC-IP>:8080`) and click **Save and Finish**.",
+      "diagram": null
+    },
+    {
+      "id": "s50-step-4-automated-docker-ce-permissions-setup-via-shell-script",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Step 4: Automated Docker CE & Permissions Setup via Shell Script",
+      "text_md": "Rather than manually running disparate commands for Docker repositories, keys, and daemons, the project repository provides an automated installation script (`docker.sh`).",
+      "diagram": null
+    },
+    {
+      "id": "s50-cloning-the-project-monorepo-onto-the-ec2-host",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Cloning the Project Monorepo onto the EC2 Host",
+      "text_md": "```bash\n# Clone the Starbucks DevOps project repository\ngit clone https://github.com/CloudDevOpsHub/Starbucks-Application.git\n\n# Navigate into the project folder\ncd Starbucks-Application\n\n# List files to inspect available installation scripts\nls -la\n```",
+      "diagram": null
+    },
+    {
+      "id": "s50-inspecting-and-executing-the-docker-setup-script",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Inspecting and Executing the Docker Setup Script",
+      "text_md": "```bash\n# Make the Docker installation script executable\nchmod +x 2-docker.sh\n\n# Execute the Docker installation script\n./2-docker.sh\n```",
+      "diagram": null
+    },
+    {
+      "id": "s50-what-the-automation-script-does-internally",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "What the Automation Script Does Internally",
+      "text_md": "The shell script performs the following critical tasks:\n1. Removes any legacy conflicting Docker packages (`docker`, `docker-engine`, `docker.io`, `containerd`).\n2. Configures Docker official apt repository and imports the official Docker GPG key.\n3. Installs `docker-ce`, `docker-ce-cli`, `containerd.io`, `docker-buildx-plugin`, and `docker-compose-plugin`.\n4. Starts and enables the `docker` daemon service.\n5. Adds the current user (`ubuntu`) and the `jenkins` system user to the `docker` group:\n\n```bash\n# Manual commands if executed outside the script:\nsudo usermod -aG docker jenkins\nsudo usermod -aG docker ubuntu\n\n# Restart Jenkins service to apply new group membership permissions\nsudo systemctl restart jenkins\n\n# Verify Docker engine version\ndocker --version\n```\n\n**Expected Verification Output:**\n\n```text\nDocker version 27.x.x or 29.x.x, build xxxxxxx\n```",
+      "diagram": null
+    },
+    {
+      "id": "s50-step-5-essential-jenkins-plugins-tool-global-configuration",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Step 5: Essential Jenkins Plugins & Tool Global Configuration",
+      "text_md": "For Jenkins to recognize, compile, and containerize a Node.js application, specialized plugins and runtimes must be configured within the Jenkins controller.",
+      "diagram": null
+    },
+    {
+      "id": "s50-required-plugins-installation",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Required Plugins Installation",
+      "text_md": "1. From the Jenkins dashboard, navigate to: **Manage Jenkins** → **Plugins** → **Available plugins**.\n2. Search and select the following plugins:\n   - **Eclipse Temurin installer:** Allows automatic dynamic provisioning of specific JDK versions inside build jobs.\n   - **NodeJS Plugin:** Enables Node.js runtime management and injects `npm` binaries into pipeline workspaces.\n   - **Docker Pipeline:** Provides dynamic DSL syntax (`docker.image`, `docker.build`) and credentials management inside pipelines.\n   - **Docker Commons:** Common Docker API libraries for Jenkins integration.\n   - **Pipeline: Stage View:** Renders an intuitive visual pipeline execution dashboard displaying status, runtime, and logs per stage.\n3. Click **Install**. Check the box: **Restart Jenkins when installation is complete and no jobs are running**.",
+      "diagram": null
+    },
+    {
+      "id": "s50-global-tool-configuration-jdk-17-node-js-16-docker",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Global Tool Configuration (JDK 17, Node.js 16, Docker)",
+      "text_md": "Navigate to: **Manage Jenkins** → **Tools**.\n\n#### 1. JDK Configuration\n- Click **Add JDK**.\n- **Name:** `JDK17` *(Must match the exact string referenced in the Jenkinsfile)*\n- Check **Install automatically**.\n- Select **Install from adoptium.net**.\n- **Version:** `17.0.8.1+1` (or latest JDK 17 release).\n\n#### 2. NodeJS Configuration\n- Click **Add NodeJS**.\n- **Name:** `node16` *(Must match the exact string referenced in the Jenkinsfile)*\n- Check **Install automatically**.\n- Select **Install from nodejs.org**.\n- **Version:** `NodeJS 16.20.0`.\n\n#### 3. Docker CLI Configuration\n- Click **Add Docker**.\n- **Name:** `docker` *(Must match the exact string referenced in the Jenkinsfile)*\n- Check **Install automatically**.\n- Select **Download from docker.com**.\n- Click **Save**.",
+      "diagram": null
+    },
+    {
+      "id": "s50-step-6-secure-credential-management-in-jenkins",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Step 6: Secure Credential Management in Jenkins",
+      "text_md": "In enterprise pipelines, access credentials must never be written in plain text inside a `Jenkinsfile` or committed to Git repositories. Jenkins provides an encrypted credential store to mask sensitive tokens during console logging.\n\n### 11.1 Adding Docker Hub Credentials\n\n1. Navigate to: **Manage Jenkins** → **Credentials** → **System** → **Global credentials (unrestricted)**.\n2. Click **Add Credentials**.\n3. Fill out the credential form:\n   - **Kind:** `Username with password`\n   - **Scope:** `Global (Jenkins, nodes, items, all child items)`\n   - **Username:** Your Docker Hub username (e.g., `vikascloud` or your personal username).\n   - **Password:** Your Docker Hub Personal Access Token (PAT) or account password.\n   - **ID:** `docker` *(Critical: This must strictly be named `docker` to bind directly to the `credentialsId: 'docker'` call in the Jenkinsfile).*\n   - **Description:** `Docker Hub Global Credentials`\n4. Click **Create**.",
+      "diagram": null
+    },
+    {
+      "id": "s50-monorepo-architecture-code-organization",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Monorepo Architecture & Code Organization",
+      "text_md": "The application uses a **Monorepo** pattern, housing application source code, Docker build instructions, and Jenkins declarative pipeline files in a single unified Git repository:\n\n```text\nStarbucks-Application/\n├── public/                 # Static web assets (HTML templates, logos, icons)\n├── src/                    # React & Node.js frontend and UI logic components\n├── 1-jenkins.sh            # Auxiliary Jenkins automation script\n├── 2-docker.sh             # Automated Docker CE setup script\n├── Dockerfile              # Container image packaging definition\n├── Jenkinsfile             # Declarative CI pipeline configuration\n├── package.json            # NPM dependencies and build script definitions\n└── README.md               # Application documentation\n```",
+      "diagram": null
+    },
+    {
+      "id": "s50-declarative-jenkinsfile-syntax-analysis",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Declarative Jenkinsfile Syntax & Analysis",
+      "text_md": "Below is the complete Declarative CI pipeline code utilized in the project:\n\n```groovy\npipeline {\n    agent any\n\n    tools {\n        jdk 'JDK17'\n        nodejs 'node16'\n    }\n\n    environment {\n        // Replace with your personal Docker Hub account username\n        DOCKER_IMAGE = \"vikascloud/starbucks:latest\"\n    }\n\n    stages {\n        stage('Clean Workspace') {\n            steps {\n                cleanWs()\n            }\n        }\n\n        stage('Checkout Code') {\n            steps {\n                git branch: 'main', url: 'https://github.com/CloudDevOpsHub/Starbucks-Application.git'\n            }\n        }\n\n        stage('Install Dependencies') {\n            steps {\n                sh 'npm install'\n            }\n        }\n\n        stage('Build Application') {\n            steps {\n                sh 'npm run build'\n            }\n        }\n\n        stage('Build Docker Image') {\n            steps {\n                sh \"docker build -t ${DOCKER_IMAGE} .\"\n            }\n        }\n\n        stage('Push Image to Docker Hub') {\n            steps {\n                withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {\n                    sh \"echo \\$DOCKER_PASS | docker login -u \\$DOCKER_USER --password-stdin\"\n                    sh \"docker push ${DOCKER_IMAGE}\"\n                }\n            }\n        }\n    }\n\n    post {\n        always {\n            echo \"CI Pipeline execution completed.\"\n        }\n        success {\n            echo \"CI Pipeline succeeded! Docker image successfully published to Docker Hub.\"\n        }\n        failure {\n            echo \"CI Pipeline failed! Check the console output for troubleshooting.\"\n        }\n    }\n}\n```",
+      "diagram": null
+    },
+    {
+      "id": "s50-running-verifying-the-ci-pipeline",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Running & Verifying the CI Pipeline",
+      "text_md": "1. From the Jenkins dashboard, click **New Item**.\n2. **Item Name:** `Starbucks-CI-Pipeline`.\n3. Select **Pipeline** and click **OK**.\n4. Scroll to the **Pipeline** section at the bottom:\n   - **Definition:** `Pipeline script from SCM`\n   - **SCM:** `Git`\n   - **Repository URL:** `https://github.com/<your-username>/Starbucks-Application.git`\n   - **Branch Specifier:** `*/main`\n   - **Script Path:** `Jenkinsfile`\n5. Click **Save**.\n6. Click **Build Now**.\n7. Observe the **Pipeline Stage View** as each stage executes sequentially:\n   - `Clean Workspace` → `Checkout Code` → `Install Dependencies` → `Build Application` → `Build Docker Image` → `Push Image to Docker Hub`.\n8. Log into your **Docker Hub** web console and verify that the `starbucks` repository contains a freshly pushed image with the tag `latest`.",
+      "diagram": null
+    },
+    {
+      "id": "s50-continuous-delivery-vs-continuous-deployment-enterprise-reality",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Continuous Delivery vs Continuous Deployment: Enterprise Reality",
+      "text_md": "A major focus of the session was understanding the technical and operational boundaries between **Continuous Delivery** and **Continuous Deployment**.\n\n```text\n+----------------------------------------------------------------------------------------------------------+\n|                                    CONTINUOUS DELIVERY VS DEPLOYMENT                                     |\n+----------------------------------------------------------------------------------------------------------+\n|                                                                                                          |\n|   [ Code Commit ] ---> [ Build ] ---> [ Automated Tests ] ---> [ Staging / QA ]                          |\n|                                                                      |                                   |\n|                               +--------------------------------------+                                   |\n|                               |                                                                          |\n|                               v                                                                          |\n|               +-------------------------------+                                                          |\n|               |  Manual Approval / Gateway    |  <=== [ CONTINUOUS DELIVERY: ~95% Enterprise Companies ] |\n|               |  (CRQ Ticket / Release Mgr)   |       Requires Change Request (CRQ), Maintenance Window  |\n|               +---------------+---------------+                                                          |\n|                               |                                                                          |\n|                               v                                                                          |\n|               +-------------------------------+                                                          |\n|               | Deployment to Production Host |                                                          |\n|               +-------------------------------+                                                          |\n|                               ^                                                                          |\n|                               |                                                                          |\n|    No Human Intervention / Direct Automation <====== [ CONTINUOUS DEPLOYMENT: ~5% SaaS / Tech Giants ]   |\n|                                                      Zero manual intervention; code pushed directly to   |\n|                                                      production as soon as all tests pass.               |\n+----------------------------------------------------------------------------------------------------------+\n```\n\n### Comparison Matrix\n\n| Feature | Continuous Delivery | Continuous Deployment |\n| :--- | :--- | :--- |\n| **Production Trigger** | **Manual Gate / Approval;** requires sign-off from a Release Manager, Product Owner, or QA Lead. | **Fully Automated;** every passing build immediately and automatically deploys to Production. |\n| **ITSM & Compliance** | Strict adherence to IT Service Management (ServiceNow, Jira Service Desk, BMC Remedy) Change Requests (CRQ). | Automated change logging via APIs; no manual ticket approval gating the release. |\n| **Rollback Strategy** | Controlled maintenance windows with scheduled rollbacks if anomalies appear. | Automated canary analysis, automated health checks, and instant automated rollback triggers. |\n| **Industry Adoption** | **~95% of enterprise companies** (Banking, Healthcare, Retail, Telecom, Defense). | **~5% of companies** (High-velocity tech companies like Netflix, Amazon, Meta). |\n\n> **Interview Gold Advice:** When interviewers ask *\"What does your company follow?\"*, always state **Continuous Delivery**. If you claim Continuous Deployment, the panel will press deeply into automated canary analysis, chaos testing, dynamic feature flagging, and automated error-budget rollbacks.",
+      "diagram": null
+    },
+    {
+      "id": "s50-step-8-continuous-delivery-cd-pipeline-implementation",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Step 8: Continuous Delivery (CD) Pipeline Implementation",
+      "text_md": "In this step, a dedicated, decoupled **Continuous Delivery (CD)** pipeline is constructed to pull the Docker image published by the CI pipeline, stop any pre-existing container, and run the new container on port `3000`.",
+      "diagram": null
+    },
+    {
+      "id": "s50-cd-pipeline-script-analysis",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "CD Pipeline Script Analysis",
+      "text_md": "```groovy\npipeline {\n    agent any\n\n    environment {\n        DOCKER_IMAGE = \"vikascloud/starbucks:latest\"\n        CONTAINER_NAME = \"starbucks-app\"\n    }\n\n    stages {\n        stage('Pull Docker Image') {\n            steps {\n                sh \"docker pull ${DOCKER_IMAGE}\"\n            }\n        }\n\n        stage('Stop & Remove Stale Container') {\n            steps {\n                // Gracefully stop and remove existing container if running; ignore errors if container doesn't exist\n                sh \"docker stop ${CONTAINER_NAME} || true\"\n                sh \"docker rm ${CONTAINER_NAME} || true\"\n            }\n        }\n\n        stage('Deploy Application Container') {\n            steps {\n                // Run new container in detached mode with host-to-container port mapping (3000:3000)\n                sh \"docker run -d --name ${CONTAINER_NAME} -p 3000:3000 ${DOCKER_IMAGE}\"\n            }\n        }\n\n        stage('Sanity Health Check') {\n            steps {\n                sh \"sleep 5\"\n                sh \"docker ps | grep ${CONTAINER_NAME}\"\n            }\n        }\n    }\n\n    post {\n        success {\n            echo \"Application successfully deployed and running on port 3000!\"\n        }\n        failure {\n            echo \"Deployment failed! Check container logs using: docker logs ${CONTAINER_NAME}\"\n        }\n    }\n}\n```",
+      "diagram": null
+    },
+    {
+      "id": "s50-container-lifecycle-port-mapping",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Container Lifecycle & Port Mapping",
+      "text_md": "Understanding the command:\n```bash\ndocker run -d --name starbucks-app -p 3000:3000 vikascloud/starbucks:latest\n```\n\n- `-d`: Detached mode; runs the container as a background daemon, returning control of the terminal to Jenkins.\n- `--name starbucks-app`: Assigns a fixed, human-readable identifier to the running container instance.\n- `-p 3000:3000`: Port Forwarding / Port Mapping:\n  - **First 3000:** The external host port exposed on the AWS EC2 instance.\n  - **Second 3000:** The internal container port on which the Node.js application process listens.\n- `vikascloud/starbucks:latest`: The immutable image artifact pulled from Docker Hub.",
+      "diagram": null
+    },
+    {
+      "id": "s50-live-application-verification-on-port-3000",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Live Application Verification on Port 3000",
+      "text_md": "1. Once the CD job completes with a green checkmark, copy your AWS EC2 instance's **Public IPv4 Address**.\n2. Open a new browser tab and navigate to: `http://<EC2-PUBLIC-IP>:3000`\n3. You should see the fully functional **Starbucks Web Application** displaying products, categories, interactive menus, and an animated shopping cart.",
+      "diagram": null
+    },
+    {
+      "id": "s50-automating-continuous-deployment-via-build-triggers",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Automating Continuous Deployment via Build Triggers",
+      "text_md": "To transform this setup from manual **Continuous Delivery** into fully automated **Continuous Deployment**, configure downstream build triggers in Jenkins.\n\n### 15.1 Setting Up Downstream Triggers\n\n1. Open the **CD Job** (`Starbucks-CD-Pipeline`) and click **Configure**.\n2. Scroll to the **Build Triggers** section.\n3. Check the box: **Build after other projects are built**.\n4. In the **Projects to watch** text box, enter: `Starbucks-CI-Pipeline`.\n5. Select: **Trigger only if build is stable**.\n6. Click **Save**.\n\n```text\n[ Developer git push ]\n         |\n         v\n[ Starbucks-CI-Pipeline Runs ]\n         | (Builds, Tests & Pushes Docker Image)\n         |\n    (Build Stable?)\n         |\n        YES\n         |\n         v\n[ Starbucks-CD-Pipeline Triggered Automatically ]\n         | (Pulls Image, Recreates Container)\n         |\n         v\n[ Live Application Updated with Zero Manual Touch ]\n```",
+      "diagram": null
+    },
+    {
+      "id": "s50-smoke-testing-post-deployment-sanity-checks",
+      "unit": "s50",
+      "kind": "practical",
+      "title": "Smoke Testing & Post-Deployment Sanity Checks",
+      "text_md": "Following deployment, **Smoke Testing** is performed—a lightweight suite of sanity checks verifying that the critical path of the application is operational before routing user traffic:\n\n```bash\n# Verify container process is actively running and listening on port 3000\ndocker ps --filter \"name=starbucks-app\"\n\n# Perform local HTTP GET request checking for HTTP 200 OK status\ncurl -I http://localhost:3000\n\n# Inspect real-time application logs inside the container\ndocker logs --tail 50 starbucks-app\n```\n\n**Common Smoke Test Checks:**\n1. **Network Binding:** Host port 3000 is open and responding.\n2. **HTTP Status Code:** Application returns `HTTP 200 OK` rather than `500 Internal Server Error` or `502 Bad Gateway`.\n3. **Asset Delivery:** Static HTML, JavaScript bundles, and CSS stylesheets render without missing asset errors.",
+      "diagram": null
+    },
+    {
+      "id": "s50-real-world-troubleshooting-errors-rca-matrix",
+      "unit": "s50",
+      "kind": "concept",
+      "title": "Real-World Troubleshooting, Errors & RCA Matrix",
+      "text_md": "During the live implementation, participants encountered several authentic errors. Below is the Root Cause Analysis (RCA) and resolution guide:\n\n| Issue Encountered | Error Output / Symptoms | Root Cause Analysis (RCA) | Corrective Action & Solution |\n| :--- | :--- | :--- | :--- |\n| **Docker Permission Denied** | `Got permission denied while trying to connect to the Docker daemon socket` | The `jenkins` system user was not a member of the Linux `docker` group. | Run `sudo usermod -aG docker jenkins` followed by `sudo systemctl restart jenkins`. |\n| **Docker Hub Push Unauthorized** | `denied: requested access to the resource is denied` at line 32-33 of Jenkinsfile | The Jenkinsfile was attempting to push to `vikascloud/starbucks:latest` instead of the student's own Docker Hub account. | Fork the repository, edit the image tag to `<your-dockerhub-id>/starbucks:latest`, and update Jenkins SCM to point to your fork. |\n| **Jenkins Web UI Unreachable** | Browser connection times out when navigating to `http://<IP>:8080` | AWS Security Group inbound rule for TCP port `8080` was missing or bound to incorrect CIDR block. | Add an Inbound Rule to the EC2 Security Group: Type `Custom TCP`, Port `8080`, Source `0.0.0.0/0`. |\n| **App Web Page Unreachable** | Browser cannot load `http://<IP>:3000` after successful CD pipeline run | Security Group port `3000` was not allowed in AWS, or Docker container port forwarding was omitted. | Ensure inbound rule allows port `3000` from `0.0.0.0/0`, and verify Docker command includes `-p 3000:3000`. |\n| **Node.js Deprecation Warning** | `npm WARN deprecated ... engine unsupported` during build stage | Certain nested NPM dependencies threw deprecation notices on Node 16 runtime. | Non-fatal warning; pipeline continued and succeeded. For future builds, upgrade NodeJS tool to v18/v20 LTS. |\n| **Container Name Conflict** | `docker: Error response from daemon: Conflict. The container name \"/starbucks-app\" is already in use` | A prior deployment container was already running with that name. | Add idempotent cleanup before `docker run`: `docker stop starbucks-app \\|\\| true && docker rm starbucks-app \\|\\| true`. |",
+      "diagram": null
+    },
+    {
+      "id": "s50-infrastructure-teardown-cloud-cost-optimization",
+      "unit": "s50",
+      "kind": "concept",
+      "title": "Infrastructure Teardown & Cloud Cost Optimization",
+      "text_md": "AWS EC2 instances accrue compute and block storage costs when left running. Always clean up resources when completing practice sessions:\n\n```bash\n# Stop running application containers\ndocker stop starbucks-app && docker rm starbucks-app\n\n# Clean up unused Docker image layers and cache\ndocker system prune -af\n```\n\n### In the AWS Console:\n1. Navigate to the **EC2 Instances Dashboard**.\n2. Select `Starbucks-CICD-Server`.\n3. Click **Instance State** → **Terminate Instance**.\n4. Confirm termination to release the attached EBS volume and eliminate cloud billing.",
+      "diagram": null
+    },
+    {
+      "id": "s50-project-in-one-page",
+      "unit": "s50",
+      "kind": "concept",
+      "title": "Project in One Page",
+      "text_md": "```text\n====================================================================================================\nPROJECT 1: END-TO-END CI/CD AUTOMATION ON AWS USING JENKINS, DOCKER & NODE.JS\n====================================================================================================\n1. Infrastructure:    AWS EC2 Ubuntu 24.04 LTS (t2.medium/t2.large, 40GB EBS, SG: 22, 8080, 3000).\n2. Automation Server: Jenkins LTS installed on OpenJDK 21, unlocked via initialAdminPassword.\n3. Container Engine:  Docker CE installed via automated shell script (2-docker.sh); jenkins user in docker group.\n4. Tool Plugins:      Eclipse Temurin (JDK 17), NodeJS Plugin (Node 16.20.0), Docker Pipeline, Stage View.\n5. Secrets Mgmt:      Docker Hub PAT stored in Jenkins Global Credentials (ID: 'docker').\n6. Monorepo App:      Starbucks React/Node.js web application (code in /src, Dockerfile, Jenkinsfile in root).\n7. CI Pipeline:       Declarative pipeline: cleanWs -> git clone -> npm install -> npm run build ->\n                      docker build -t <user>/starbucks:latest -> docker push to Docker Hub.\n8. Delivery vs Deploy:Delivery requires manual approval/CRQ (95% enterprises); Deployment is zero-touch (5%).\n9. CD Pipeline:       Pulls latest image, stops existing container (idempotent), runs container on -p 3000:3000.\n10. Trigger Linking:  CD Job configured with \"Build after other projects are built\" (Starbucks-CI-Pipeline).\n11. Verification:     Live UI accessed on http://<EC2-IP>:3000; Smoke tests verify HTTP 200 & container health.\n====================================================================================================\n```",
+      "diagram": null
+    },
+    {
+      "id": "s50-professional-resume-points-real-time-job-roles",
+      "unit": "s50",
+      "kind": "concept",
+      "title": "Professional Resume Points & Real-Time Job Roles",
+      "text_md": "Use these production-tested bullet points to showcase this project on your resume for **DevOps Engineer**, **Cloud Engineer**, or **Site Reliability Engineer (SRE)** roles:\n\n- **Architected and implemented an end-to-end, open-source CI/CD automation pipeline** on AWS EC2, slashing software release lead times by 75% for microservices applications.\n- **Configured and hardened a self-hosted Jenkins LTS cluster** on Ubuntu Linux, integrating global toolchains including OpenJDK 17, Node.js 16 runtimes, and Docker CE engines.\n- **Engineered Declarative Jenkinsfiles utilizing the Monorepo strategy**, orchestrating static code compilation, automated NPM dependency management, and container image generation.\n- **Implemented zero-downtime containerized application deployments** utilizing Docker port mapping (`-p 3000:3000`), container lifecycle management, and automated sanity smoke tests.\n- **Established strict credential isolation and security best practices**, leveraging Jenkins Global Credential Stores and secret masking to prevent access token exposure across CI/CD logs.\n- **Constructed parameterized multi-environment pipelines** supporting seamless, gated deployments across Dev, QA, Staging, and Production tiers with automated downstream triggers.\n- **Participated in on-call incident triage and ITSM Change Request (CRQ) governance**, resolving build failures, Docker socket permission issues, and container port conflicts.",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "scenario",
+      "title": "Enterprise Production Scenarios & Advanced Configurations",
+      "prompt": "Enterprise Production Scenarios & Advanced Configurations",
+      "reference_answer": "The session addressed four critical real-world architectural scenarios encountered in commercial production environments:\n\n### 16.1 Scenario 1: Multi-Environment Parameterized Pipeline (Dev, QA, Staging, Prod)\n\nInstead of maintaining 4 duplicate pipelines for Dev, QA, Staging, and Production, a single **Parameterized Pipeline** is created using Jenkins build parameters:\n\n1. In the pipeline configuration, check: **This project is parameterized**.\n2. Add a **Choice Parameter**:\n   - **Name:** `TARGET_ENV`\n   - **Choices:**\n     ```text\n     DEV\n     QA\n     STAGING\n     PROD\n     ```\n3. Add a **String Parameter**:\n   - **Name:** `TARGET_SERVER_IP`\n   - **Default Value:** `10.0.1.50`\n4. Modify the Jenkinsfile to conditionally route deployments based on user selection:\n\n```groovy\npipeline {\n    agent any\n    parameters {\n        choice(name: 'ENVIRONMENT', choices: ['DEV', 'QA', 'STAGING', 'PROD'], description: 'Select deployment target')\n        string(name: 'TARGET_HOST', defaultValue: '10.0.1.25', description: 'Destination IP')\n    }\n    stages {\n        stage('Deploy to Target Environment') {\n            steps {\n                script {\n                    echo \"Deploying Starbucks Container to ${params.ENVIRONMENT} on host ${params.TARGET_HOST}...\"\n                    if (params.ENVIRONMENT == 'PROD') {\n                        // Insert production approval gates or change request checks\n                        input message: 'Approve deployment to Production?'\n                    }\n                    sh \"ssh -o StrictHostKeyChecking=no ubuntu@${params.TARGET_HOST} 'docker pull vikascloud/starbucks:latest && docker stop starbucks || true && docker run -d --name starbucks -p 3000:3000 vikascloud/starbucks:latest'\"\n                }\n            }\n        }\n    }\n}\n```\n\n### 16.2 Scenario 2: Handling Private GitHub & Docker Registries\n\nWhen repositories or container registries are private:\n\n1. **Private GitHub Repository:**\n   - Generate a **Personal Access Token (PAT)** or an **SSH Key Pair** on GitHub.\n   - Store it in Jenkins under: **Credentials** → **Username with password** (for PAT) or **SSH Username with private key**.\n   - In the pipeline configuration under SCM, select the stored credential from the dropdown.\n2. **Private Docker Registry (Docker Hub / AWS ECR / Azure ACR):**\n   - Bind credentials inside the Jenkinsfile using the `withCredentials` block:\n   ```groovy\n   withCredentials([usernamePassword(credentialsId: 'docker', usernameVariable: 'REG_USER', passwordVariable: 'REG_PASS')]) {\n       sh 'echo $REG_PASS | docker login --username $REG_USER --password-stdin'\n       sh 'docker pull myorg/private-repo:latest'\n   }\n   ```\n\n### 16.3 Scenario 3: Remote Target Host Deployment via SSH\n\nIn real enterprise clusters, Jenkins controllers rarely run application containers on the same virtual machine. Deployments target remote application servers:\n\n1. Store the remote server's SSH Private Key (`.pem`) in Jenkins credentials (`ID: 'app-server-ssh-key'`).\n2. Use the **SSH Agent Plugin** or standard OpenSSH commands:\n\n```groovy\nstage('Remote SSH Deploy') {\n    steps {\n        sshagent(['app-server-ssh-key']) {\n            sh '''\n                ssh -o StrictHostKeyChecking=no ubuntu@172.31.25.10 << 'EOF'\n                    docker pull vikascloud/starbucks:latest\n                    docker stop starbucks || true\n                    docker rm starbucks || true\n                    docker run -d --name starbucks -p 3000:3000 vikascloud/starbucks:latest\n            EOF\n            '''\n        }\n    }\n}\n```\n\n### 16.4 Scenario 4: Monorepo vs Multi-Repo Strategy\n\n- **Monorepo (This Project):** A single repository holds application code in `/src`, web assets in `/public`, and DevOps infrastructure code (`Dockerfile`, `Jenkinsfile`, setup scripts) in the root.\n  - *Advantage:* Developers and DevOps engineers share unified version control; every code change is tightly bound to its build definition.\n- **Multi-Repo:** Application source code resides in one repo (e.g., `frontend-starbucks`), while CI/CD pipelines, Terraform templates, and Kubernetes manifests reside in an independent `devops-infrastructure` repo.\n  - *Advantage:* Granular RBAC permissions; developers cannot alter deployment manifests or cloud parameters.",
+      "id": "s50-s01",
+      "unit": "s50",
+      "concept_ids": [
+        "s50-continuous-delivery-vs-continuous-deployment-enterprise-reality",
+        "s50-global-tool-configuration-jdk-17-node-js-16-docker",
+        "s50-step-5-essential-jenkins-plugins-tool-global-configuration"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why did you install OpenJDK 21 on the host, but configure JDK 17 inside Jenkins Tools?",
+      "prompt": "Why did you install OpenJDK 21 on the host, but configure JDK 17 inside Jenkins Tools?",
+      "reference_answer": "OpenJDK 21 was installed on the operating system host as a required system dependency to start and run the Jenkins LTS controller daemon itself. Inside Jenkins, JDK 17 was configured in **Global Tool Configuration** via Eclipse Temurin because the specific application build tools and compilation plugins strictly required a Java 17 runtime environment. Jenkins allows multiple independent JDK versions to coexist without collision.",
+      "id": "s50-q01",
+      "unit": "s50",
+      "concept_ids": [
+        "s50-global-tool-configuration-jdk-17-node-js-16-docker",
+        "s50-step-2-host-preparation-openjdk-21-installation",
+        "s50-step-5-essential-jenkins-plugins-tool-global-configuration"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the fundamental difference between Continuous Delivery and Continuous Deployment?",
+      "prompt": "What is the fundamental difference between Continuous Delivery and Continuous Deployment?",
+      "reference_answer": "Both automate the build, test, and release artifact generation stages. The crucial distinction lies in the deployment to production:\n- **Continuous Delivery:** The code is always in a deployable state, but deployment to production requires an explicit manual trigger or business approval (e.g., Change Request / CRQ sign-off). Approximately 95% of enterprises use this model.\n- **Continuous Deployment:** Every change that passes automated CI tests is immediately and automatically deployed to production with zero human intervention. Approximately 5% of high-velocity tech companies use this model.",
+      "id": "s50-q02",
+      "unit": "s50",
+      "concept_ids": [
+        "s50-continuous-delivery-vs-continuous-deployment-enterprise-reality",
+        "s50-automating-continuous-deployment-via-build-triggers",
+        "s50-step-8-continuous-delivery-cd-pipeline-implementation"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How does Jenkins mask passwords and secrets during pipeline execution?",
+      "prompt": "How does Jenkins mask passwords and secrets during pipeline execution?",
+      "reference_answer": "Jenkins stores secrets encrypted using AES-128 keys on the controller. When a pipeline accesses secrets via the `withCredentials([usernamePassword(...)])` block, the Jenkins pipeline engine wraps the execution block in a filtering stream. Any occurrence of the secret variable's plain text value printed to standard output or standard error is dynamically intercepted and replaced with `` in the console log.",
+      "id": "s50-q03",
+      "unit": "s50",
+      "concept_ids": [
+        "s50-adding-official-jenkins-debian-keyring-repositories",
+        "s50-cd-pipeline-script-analysis",
+        "s50-end-to-end-ci-cd-architecture-execution-workflow"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why is a Declarative Pipeline preferred over a Scripted Pipeline?",
+      "prompt": "Why is a Declarative Pipeline preferred over a Scripted Pipeline?",
+      "reference_answer": "Declarative Pipelines (`pipeline { ... }`) provide a structured, predefined schema that enforces readability, standardized stages, built-in post actions (`always`, `success`, `failure`), and automated syntax validation before execution. Scripted Pipelines (`node { ... }`) rely on Groovy code, which offers greater imperative programming power but suffers from steep learning curves, poor standardization, and difficulty in maintenance across large engineering teams.",
+      "id": "s50-q04",
+      "unit": "s50",
+      "concept_ids": [
+        "s50-cd-pipeline-script-analysis",
+        "s50-declarative-jenkinsfile-syntax-analysis",
+        "s50-inspecting-and-executing-the-docker-setup-script"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does the Docker port mapping -p 3000:3000 signify?",
+      "prompt": "What does the Docker port mapping -p 3000:3000 signify?",
+      "reference_answer": "In Docker, containers run inside isolated network namespaces with private IP addresses inaccessible from the host's external network by default. The `-p <HOST_PORT>:<CONTAINER_PORT>` flag sets up an iptables NAT forwarding rule on the host OS. Traffic arriving on the EC2 host's physical network interface on port `3000` is forwarded to port `3000` inside the container where the Node.js application is listening.",
+      "id": "s50-q05",
+      "unit": "s50",
+      "concept_ids": [
+        "s50-container-lifecycle-port-mapping",
+        "s50-live-application-verification-on-port-3000",
+        "s50-what-the-automation-script-does-internally"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What caused the Got permission denied while trying to connect to the Docker daemon socket error?",
+      "prompt": "What caused the Got permission denied while trying to connect to the Docker daemon socket error?",
+      "reference_answer": "The Docker daemon communicates over a Unix socket (`/var/run/docker.sock`) owned by the `root` user and the `docker` group. When Jenkins runs build steps, it executes under the unprivileged `jenkins` system service user account. Because the `jenkins` user initially was not a member of the `docker` group, the operating system rejected access to the socket. Adding `jenkins` to the `docker` group (`usermod -aG docker jenkins`) and restarting Jenkins resolved the issue.",
+      "id": "s50-q06",
+      "unit": "s50",
+      "concept_ids": [
+        "s50-step-4-automated-docker-ce-permissions-setup-via-shell-script",
+        "s50-global-tool-configuration-jdk-17-node-js-16-docker",
+        "s50-inspecting-and-executing-the-docker-setup-script"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why should the Continuous Delivery (CD) pipeline be decoupled from the Continuous Integration (CI) pipeline?",
+      "prompt": "Why should the Continuous Delivery (CD) pipeline be decoupled from the Continuous Integration (CI) pipeline?",
+      "reference_answer": "Decoupling CI and CD maintains the single responsibility principle:\n- **CI focuses on testing and artifact generation:** It runs frequently on every developer branch, feature PR, and commit.\n- **CD focuses on environment provisioning and state management:** It runs selectively based on approvals, schedules, or release windows. Decoupling ensures that a deployment failure does not corrupt or invalidate a successful code build artifact, and allows identical artifacts to be promoted across Dev, QA, and Prod independently.",
+      "id": "s50-q07",
+      "unit": "s50",
+      "concept_ids": [
+        "s50-continuous-delivery-vs-continuous-deployment-enterprise-reality",
+        "s50-step-8-continuous-delivery-cd-pipeline-implementation",
+        "s50-automating-continuous-deployment-via-build-triggers"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a Monorepo and what are its trade-offs?",
+      "prompt": "What is a Monorepo and what are its trade-offs?",
+      "reference_answer": "A Monorepo is a version control pattern where multiple components—such as application frontend code, backend services, Dockerfiles, and CI/CD pipeline scripts—coexist within a single repository.\n- **Benefits:** Atomic commits across code and infrastructure; centralized visibility; simplified dependency synchronization.\n- **Drawbacks:** Repository size grows rapidly; potential merge conflicts; granular role-based access control (RBAC) is harder to enforce without specialized branch policies.",
+      "id": "s50-q08",
+      "unit": "s50",
+      "concept_ids": [
+        "s50-cloning-the-project-monorepo-onto-the-ec2-host",
+        "s50-monorepo-architecture-code-organization",
+        "s50-what-the-automation-script-does-internally"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you ensure that a previous container is cleaned up before launching a new one?",
+      "prompt": "How do you ensure that a previous container is cleaned up before launching a new one?",
+      "reference_answer": "By implementing idempotent shell commands prior to container creation:\n```bash\ndocker stop starbucks-app || true\ndocker rm starbucks-app || true\n```\nThe `|| true` operator ensures that if the container is not running or does not exist (such as during the first run), the shell command exits with a return code of `0`, preventing Jenkins from prematurely aborting the pipeline.",
+      "id": "s50-q09",
+      "unit": "s50",
+      "concept_ids": [
+        "s50-container-lifecycle-port-mapping",
+        "s50-launching-the-compute-instance",
+        "s50-project-in-one-page"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you verify the health of a containerized application programmatically in a pipeline?",
+      "prompt": "How do you verify the health of a containerized application programmatically in a pipeline?",
+      "reference_answer": "Add a post-deployment verification stage using `curl` or automated health check probes:\n```groovy\nstage('Health Sanity Check') {\n    steps {\n        sh 'curl --fail --retry 5 --retry-delay 3 http://localhost:3000 || exit 1'\n    }\n}\n```\nThe `--fail` flag ensures `curl` returns an error status code on HTTP 4xx/5xx responses, triggering a pipeline failure if the application fails to boot.",
+      "id": "s50-q10",
+      "unit": "s50",
+      "concept_ids": [
+        "s50-cd-pipeline-script-analysis",
+        "s50-container-lifecycle-port-mapping",
+        "s50-live-application-verification-on-port-3000"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Top 10 Scenario-Based Production Interview Questions & Solutions",
+      "prompt": "Top 10 Scenario-Based Production Interview Questions & Solutions",
+      "reference_answer": "### Scenario 1: Preventing Deployment When Docker Hub Authentication Fails\n**Question:** During a CI pipeline run, the Docker build completes, but the push stage fails due to rate limits or invalid registry credentials. However, the subsequent CD job still triggers and restarts the container using a stale image. How do you prevent this?\n**Solution:**\n1. Configure the downstream build trigger to run **strictly when the upstream build is STABLE** (`Trigger only if build is stable`).\n2. Utilize unique image tags bound to the commit hash (`${GIT_COMMIT}`) or Jenkins build number (`${BUILD_NUMBER}`) rather than the mutable `latest` tag:\n   ```groovy\n   DOCKER_IMAGE = \"vikascloud/starbucks:${env.BUILD_NUMBER}\"\n   ```\n3. If the CI push fails, the CI job transitions to `FAILURE`, aborting the downstream trigger. If the CD job cannot find the exact build-numbered image tag, it halts immediately rather than deploying stale code.\n\n### Scenario 2: Zero-Downtime Deployment on Single Host\n**Question:** In our project, running `docker stop` and `docker rm` caused 5-10 seconds of downtime before the new container started. How would you achieve zero downtime on a single EC2 instance without Kubernetes?\n**Solution:**\nImplement a **Blue-Green Port Switching** deployment strategy using a reverse proxy (e.g., NGINX):\n1. Run the existing production container on port `3001` (Blue).\n2. Spin up the new application container on port `3002` (Green).\n3. Execute smoke tests against `http://localhost:3002`.\n4. If healthy, update the NGINX upstream configuration block from `3001` to `3002` and run `nginx -s reload`.\n5. Safely terminate the old container on port `3001` with zero dropped requests.\n\n### Scenario 3: Secret Leakage Mitigation in Pull Requests\n**Question:** A junior developer creates a pull request modifying the Jenkinsfile to print environment variables (`sh 'env'`) in an attempt to debug a build, which risks dumping secrets to the console log. How do you safeguard production secrets?\n**Solution:**\n1. Avoid storing global credentials at the folder level for untrusted pull requests. Use Jenkins **Credentials Binding** with `withCredentials` which automatically masks bound variables.\n2. In Jenkins Multibranch / PR pipelines, enable the setting: **\"Filter pull requests from untrusted contributors\"** and disable access to production credentials on non-main branches.\n3. Integrate static code analysis tools (such as Gitleaks or TruffleHog) in the earliest stage of the pipeline to detect and fail builds attempting to log or commit secret tokens.\n\n### Scenario 4: Jenkins Disk Exhaustion (No Space Left on Device)\n**Question:** After 3 weeks in production, your Jenkins EC2 server crashes with `java.io.IOException: No space left on device`. Inspection shows Docker images and Jenkins workspaces consumed 100% of the 40GB root disk. How do you permanently resolve this?\n**Solution:**\n1. **Automated Docker Garbage Collection:** Add a post-build or nightly cron job executing `docker image prune -af --filter \"until=72h\"` and `docker builder prune -af`.\n2. **Workspace Cleanup:** Include the `cleanWs()` step in the `post { always { ... } }` block of every Jenkinsfile.\n3. **Build Discarder Configuration:** Configure Jenkins project settings to keep only the last 10 builds and discard older logs/artifacts:\n   ```groovy\n   options {\n       buildDiscarder(logRotator(numToKeepStr: '10'))\n   }\n   ```\n4. **CloudWatch Alarm:** Set up an AWS CloudWatch Disk Utilization alarm triggering an alert at 80% capacity.\n\n### Scenario 5: Multi-Tenant Kubernetes Node Disk Pressure\n**Question:** The session discussed an interview scenario where a Kubernetes worker node enters `NotReady` state with `DiskPressure=True`. How do you troubleshoot and fix this in production?\n**Solution:**\n1. Run `kubectl describe node <node-name>` and observe the `Conditions` table. Look for `DiskPressure=True`.\n2. SSH into the troubled node and inspect disk usage: `df -h` and `docker system df`.\n3. Check Kubelet system logs: `journalctl -u kubelet -f` to identify if log rotation or container image garbage collection thresholds (default 85% high watermark) were breached.\n4. Clean orphaned container layers and unused images: `crictl rmi --prune`.\n5. In cloud environments (EKS/GKE), adjust the Auto Scaling Node Group or provision persistent volumes on external block storage (EBS/GCP Persistent Disk) rather than the root filesystem.\n\n### Scenario 6: Deploying Across Multi-Cloud Environments\n**Question:** Your organization mandates building containers on AWS Jenkins but deploying the resulting application into an Azure Web App or GCP GKE cluster. How do you architect this pipeline?\n**Solution:**\n1. Use an intermediate, cloud-agnostic container registry (such as Docker Hub, Quay.io, or Harbor) accessible across cloud boundaries.\n2. Store cloud provider service principal credentials securely inside Jenkins:\n   - For Azure: Store Azure Service Principal (Client ID, Secret, Tenant ID).\n   - For GCP: Store Service Account JSON key.\n3. Add a specialized deployment stage inside the Jenkinsfile utilizing CLI tools or Terraform:\n   ```groovy\n   stage('Deploy to Azure Web App') {\n       steps {\n           withCredentials([azureServicePrincipal('azure-sp-creds')]) {\n               sh 'az login --service-principal -u $AZURE_CLIENT_ID -p $AZURE_CLIENT_SECRET --tenant $AZURE_TENANT_ID'\n               sh 'az webapp create --resource-group prod-rg --plan app-plan --name starbucks-web --deployment-container-image-name vikascloud/starbucks:latest'\n           }\n       }\n   }\n   ```\n\n### Scenario 7: Integrating ITSM Change Management into Continuous Delivery\n**Question:** An enterprise client requires that no deployment can occur in Production without an approved ServiceNow Change Request (CRQ) number that is active for a 4-hour window. How do you implement this in Jenkins?\n**Solution:**\n1. In the production deployment stage, inject a Jenkins input parameter:\n   ```groovy\n   stage('ITSM Gate') {\n       steps {\n           script {\n               def crqNumber = input(\n                   message: 'Enter Approved ServiceNow CRQ Number:',\n                   parameters: [string(name: 'CRQ_ID', description: 'CRQ-XXXXXX')]\n               )\n               // Make API call to ServiceNow validating CRQ status\n               def response = httpRequest(\n                   url: \"https://instance.service-now.com/api/now/table/change_request?number=${crqNumber}\",\n                   customHeaders: [[name: 'Authorization', value: 'Basic ...']]\n               )\n               if (!response.content.contains('\"state\":\"scheduled\"')) {\n                   error \"Change Request ${crqNumber} is not approved or currently active!\"\n               }\n           }\n       }\n   }\n   ```\n\n### Scenario 8: Build Pipeline Optimization for Long NPM Builds\n**Question:** The `npm install` and `npm run build` stages take 8 minutes on every pipeline execution because dependencies are downloaded from the internet repeatedly. How do you optimize build time down to under 2 minutes?\n**Solution:**\n1. **Docker Layer Caching:** Leverage Docker build caching by copying `package.json` and `package-lock.json` before copying the rest of the source code in the Dockerfile:\n   ```dockerfile\n   COPY package*.json ./\n   RUN npm install\n   COPY . .\n   RUN npm run build\n   ```\n2. **Persistent NPM Cache:** Mount an EC2 host cache directory into the build workspace:\n   ```groovy\n   sh 'npm config set cache /var/cache/npm --global'\n   sh 'npm ci --prefer-offline'\n   ```\n3. **Upgrade Hardware:** Scale the build instance from `t2.medium` to a compute-optimized instance (e.g., `c5.large` or `c6i.large`) with high-speed gp3 IOPS.\n\n### Scenario 9: Handling Concurrent Pipeline Runs Clashing on Host Ports\n**Question:** Two developers commit changes simultaneously. Two parallel pipeline executions attempt to run `docker run -d -p 3000:3000 ...` on the same EC2 instance, causing the second build to crash with `port is already allocated`. How do you handle this?\n**Solution:**\n1. **Disable Concurrent Builds:** In the Jenkinsfile options, specify:\n   ```groovy\n   options {\n       disableConcurrentBuilds()\n   }\n   ```\n2. **Dynamic Port Allocation:** If testing feature branches in parallel, allocate dynamic host ports based on the Jenkins executor number or build number:\n   ```groovy\n   environment {\n       APP_PORT = \"${3000 + env.EXECUTOR_NUMBER.toInteger()}\"\n   }\n   steps {\n       sh \"docker run -d --name starbucks-${env.BUILD_NUMBER} -p ${APP_PORT}:3000 ${DOCKER_IMAGE}\"\n   }\n   ```\n\n### Scenario 10: Automatic Rollback on Production Failure\n**Question:** After a Continuous Deployment pipeline updates the container in production, the application crashes 30 seconds later due to an unhandled runtime exception. How do you design an automated recovery mechanism?\n**Solution:**\n1. Tag previous successful images with a `stable` or `backup` tag before deploying the new version:\n   ```bash\n   docker tag vikascloud/starbucks:stable vikascloud/starbucks:backup || true\n   ```\n2. Add a robust health-check verification stage with a timeout and retry loop:\n   ```groovy\n   stage('Post-Deploy Verification') {\n       steps {\n           retry(3) {\n               sleep 10\n               sh 'curl --fail http://localhost:3000/api/health || exit 1'\n           }\n       }\n   }\n   ```\n3. Implement automated recovery in the `post { failure { ... } }` block:\n   ```groovy\n   post {\n       failure {\n           echo \"New deployment failed health checks! Rolling back to backup container...\"\n           sh 'docker stop starbucks-app || true'\n           sh 'docker run -d --name starbucks-app -p 3000:3000 vikascloud/starbucks:backup'\n       }\n   }\n   ```",
+      "id": "s50-s02",
+      "unit": "s50",
+      "concept_ids": []
+    }
+  ]
+}

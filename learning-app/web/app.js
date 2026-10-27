@@ -1,7 +1,7 @@
 import { render, esc } from './md.js';
 
 const app = document.getElementById('app');
-const state = { progress: {}, mermaid: null, mermaidFailed: false, unit: null, diagramSeq: 0 };
+const state = { progress: {}, notes: {}, bookmarks: new Set(), scrollTo: null, mermaid: null, mermaidFailed: false, unit: null, diagramSeq: 0 };
 
 const CONCEPT_STATUSES = [['not_started', 'Not started', ''], ['read', 'Read', ''], ['lab_done', 'Lab done', ''], ['mastered', 'Mastered', 'ok']];
 const QUESTION_STATUSES = [['known', 'Got it', 'ok'], ['review', 'Review again', 'warn']];
@@ -14,6 +14,23 @@ async function api(path, opts) {
 }
 
 const status = (id) => state.progress[id] || 'not_started';
+const post = (path, body) => api(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+
+function extras(id) {
+  const note = state.notes[id] || '';
+  const on = state.bookmarks.has(id);
+  return '<div class="extras"><button class="star' + (on ? ' on' : '') + '" data-bm="' + esc(id) + '" aria-pressed="' + on + '" title="Bookmark">' + (on ? '★' : '☆') + '</button>' +
+    '<details class="mynote"' + (note ? ' open' : '') + '><summary>My notes' + (note ? ' ✎' : '') + '</summary>' +
+    '<textarea data-note="' + esc(id) + '" rows="3" maxlength="5000" placeholder="Write your own notes…">' + esc(note) + '</textarea>' +
+    '<button class="btn" data-savenote="' + esc(id) + '">Save note</button> <span class="note" data-notemsg="' + esc(id) + '"></span></details></div>';
+}
+
+function openItem(unit, kind, id) {
+  const tab = kind === 'concept' ? 'learn' : 'practice';
+  state.scrollTo = (kind === 'concept' ? 'c-' : 'q-') + id;
+  const target = '#/u/' + unit + '/' + tab;
+  if (location.hash === target) route(); else location.hash = target;
+}
 
 async function loadMermaid() {
   if (state.mermaid || state.mermaidFailed) return state.mermaid;
@@ -58,17 +75,31 @@ function statusButtons(id, options) {
     '<button data-status="' + val + '" class="' + (cur === val ? 'on ' + cls : '') + '">' + esc(label) + '</button>').join('') + '</div>';
 }
 
+const STATUS_NOTE = {
+  partial: ['partly split', 'Some long sections in this note are still one big block (listed below). They are kept verbatim but not yet split into separate concepts.'],
+  light: ['outline only', 'No class notes exist for this session. This unit is built from the session README: topics, key learnings and lab task titles only.'],
+  sparse: ['needs data', 'Very little could be extracted automatically from this note. It needs manual preparation.'],
+};
+
 async function home() {
   const units = await api('/api/units');
-  app.innerHTML = '<h1>Your courses</h1><p class="muted">Pick a unit. Each concept shows the original notes next to a diagram.</p><div class="grid">' +
-    units.map((u) => {
+  const modules = [];
+  units.forEach((u) => {
+    let m = modules.find((x) => x.name === u.module);
+    if (!m) { m = { name: u.module, units: [] }; modules.push(m); }
+    m.units.push(u);
+  });
+  app.innerHTML = '<h1>Your courses</h1><p class="muted">' + units.length + ' units. Each concept shows the original notes next to a diagram where one exists.</p>' +
+    modules.map((m) => '<h2 class="module">' + esc(m.name) + '</h2><div class="grid">' + m.units.map((u) => {
       const done = u.concepts_studied + u.questions_known;
       const total = u.concepts + u.questions;
-      return '<a class="card unit-card" href="#/u/' + esc(u.id) + '/learn"><h2>' + esc(u.title) + '</h2><div class="muted">' + esc(u.subtitle) +
+      const note = STATUS_NOTE[u.status];
+      return '<a class="card unit-card" href="#/u/' + esc(u.id) + '/learn"><h2>' + esc(u.title) +
+        (note ? '<span class="badge warn">' + esc(note[0]) + '</span>' : '') + '</h2><div class="muted">' + esc(u.subtitle) +
         '</div><div class="bar"><span style="width:' + pct(done, total) + '%"></span></div><div class="muted">' +
-        u.concepts_studied + '/' + u.concepts + ' concepts studied · ' + u.questions_known + '/' + u.questions + ' questions known · ' +
+        u.concepts_studied + '/' + u.concepts + ' concepts · ' + u.questions_known + '/' + u.questions + ' questions · ' +
         u.diagrams + ' diagrams</div></a>';
-    }).join('') + '</div>';
+    }).join('') + '</div>').join('');
 }
 
 function summaryHtml(u) {
@@ -79,10 +110,14 @@ function summaryHtml(u) {
 }
 
 function unitShell(u, tab) {
-  return '<h1>' + esc(u.title) + '</h1><div class="muted">' + esc(u.subtitle) + ' · source: ' + esc(u.source_file) + '</div>' +
+  const note = STATUS_NOTE[u.status];
+  const flat = (u.needs_authoring || []).map((f) => '<li>' + esc(f.section) + '</li>').join('');
+  const banner = note ? '<div class="card notice"><strong>' + esc(note[0]) + '.</strong> ' + esc(note[1]) + (flat ? '<ul>' + flat + '</ul>' : '') + '</div>' : '';
+  return '<h1>' + esc(u.title) + '</h1><div class="muted">' + esc(u.subtitle) + ' · source: ' + esc(u.source_file) + '</div>' + banner +
     '<div id="summary">' + summaryHtml(u) + '</div>' +
     '<div class="tabs"><a class="tab ' + (tab === 'learn' ? 'on' : '') + '" href="#/u/' + esc(u.id) + '/learn">Learn</a>' +
-    '<a class="tab ' + (tab === 'practice' ? 'on' : '') + '" href="#/u/' + esc(u.id) + '/practice">Practice questions</a></div>';
+    '<a class="tab ' + (tab === 'practice' ? 'on' : '') + '" href="#/u/' + esc(u.id) + '/practice">Practice questions</a>' +
+    '<a class="tab" href="#/u/' + esc(u.id) + '/print">Cheat sheet</a></div>';
 }
 
 async function learn(unitId) {
@@ -93,7 +128,7 @@ async function learn(unitId) {
       ? '<div class="diagram" id="dg-' + esc(c.id) + '"><span class="muted">Rendering diagram…</span></div><div class="note">Diagram generated by AI from the notes, not yet human-reviewed.</div>'
       : '<div class="diagram"><span class="muted">No diagram for this concept yet.</span></div>';
     return '<section class="card" id="c-' + esc(c.id) + '"><h2>' + esc(c.title) + '<span class="badge">' + esc(KIND_LABEL[c.kind] || c.kind) + '</span></h2>' +
-      '<div class="split"><div>' + render(c.text_md) + '</div><div>' + diagram + '</div></div>' + statusButtons(c.id, CONCEPT_STATUSES) + '</section>';
+      '<div class="split"><div>' + render(c.text_md) + '</div><div>' + diagram + '</div></div>' + statusButtons(c.id, CONCEPT_STATUSES) + extras(c.id) + '</section>';
   }).join('');
   app.innerHTML = unitShell(u, 'learn') + '<div class="layout"><nav class="toc card">' + toc + '</nav><div>' + cards + '</div></div>';
   renderDiagrams(u.concepts);
@@ -104,13 +139,13 @@ function questionCard(q, concepts) {
     const c = concepts.find((x) => x.id === id);
     return c ? '<a href="#/u/' + esc(q.unit) + '/learn" data-goto="' + esc(id) + '">' + esc(c.title) + '</a>' : '';
   }).filter(Boolean).join(', ');
-  return '<section class="card" data-q="' + esc(q.id) + '" data-kind="' + esc(q.kind) + '"><h2><span class="dot s-' + status(q.id) + '" data-dot="' + esc(q.id) + '"></span>' +
+  return '<section class="card" id="q-' + esc(q.id) + '" data-q="' + esc(q.id) + '" data-kind="' + esc(q.kind) + '"><h2><span class="dot s-' + status(q.id) + '" data-dot="' + esc(q.id) + '"></span>' +
     esc(q.title) + '<span class="badge">' + esc(KIND_LABEL[q.kind]) + '</span></h2>' +
     (q.kind === 'scenario' ? '<p>' + esc(q.prompt) + '</p>' : '') +
     '<button class="btn" data-reveal="' + esc(q.id) + '">Show reference answer</button>' +
     '<div class="answer" id="ans-' + esc(q.id) + '" hidden>' + render(q.reference_answer) +
     (links ? '<div class="note">Related concepts: ' + links + '</div>' : '') + '</div>' +
-    statusButtons(q.id, QUESTION_STATUSES) + '</section>';
+    statusButtons(q.id, QUESTION_STATUSES) + extras(q.id) + '</section>';
 }
 
 async function practice(unitId) {
@@ -119,7 +154,36 @@ async function practice(unitId) {
     '<p class="muted">Try to answer out loud first (What → Why → How → Example), then reveal the reference answer. Mock interviews with a local LLM come in a later step.</p>' +
     '<div class="filters"><span class="muted">Show:</span>' +
     ['all', 'interview', 'scenario', 'review'].map((f) => '<button class="btn" data-filter="' + f + '">' + f + '</button>').join('') + '</div>' +
-    '<div id="qlist">' + u.questions.map((q) => questionCard(q, u.concepts)).join('') + '</div>';
+    (u.questions.length ? '<div id="qlist">' + u.questions.map((q) => questionCard(q, u.concepts)).join('') + '</div>'
+      : '<div class="card muted">No questions with answers could be extracted from this unit yet. See DATA_TODO.md.</div>');
+}
+
+async function printView(unitId) {
+  const u = state.unit = await api('/api/units/' + unitId);
+  app.innerHTML = '<div class="noprint"><a href="#/u/' + esc(u.id) + '/learn">← Back to unit</a> ' +
+    '<button class="btn" data-print>Print / Save as PDF</button></div><article class="sheet"><h1>' + esc(u.title) + '</h1><div class="muted">' + esc(u.subtitle) + '</div>' +
+    u.concepts.map((c) => '<section class="sheetitem"><h2>' + esc(c.title) + '</h2>' + render(c.text_md) +
+      (c.diagram_src ? '<div class="diagram" id="dg-' + esc(c.id) + '"></div>' : '') +
+      (state.notes[c.id] ? '<div class="mynoteprint"><strong>My note:</strong> ' + esc(state.notes[c.id]) + '</div>' : '') + '</section>').join('') + '</article>';
+  renderDiagrams(u.concepts);
+}
+
+async function searchView(q) {
+  document.getElementById('q').value = q;
+  const hits = q.trim() ? await api('/api/search?q=' + encodeURIComponent(q)) : [];
+  app.innerHTML = '<h1>Search</h1><p class="muted">' + (q.trim() ? hits.length + ' result' + (hits.length === 1 ? '' : 's') + ' for "' + esc(q) + '"' : 'Type something in the box above.') + '</p>' +
+    hits.map((h) => '<a class="card result" href="#/u/' + esc(h.unit_id) + '/' + (h.kind === 'concept' ? 'learn' : 'practice') + '" data-open="' + esc(h.item_id) + '" data-unit="' + esc(h.unit_id) + '" data-kind="' + esc(h.kind) + '">' +
+      '<h2>' + esc(h.title) + '<span class="badge">' + esc(h.kind) + '</span></h2><div class="muted">' + esc(h.unit_title) + '</div>' +
+      '<div>' + esc(h.snippet).replace(/\[\[/g, '<mark>').replace(/\]\]/g, '</mark>') + '</div></a>').join('');
+}
+
+async function mineView() {
+  const rows = await api('/api/mine');
+  app.innerHTML = '<h1>My notes and bookmarks</h1><p class="muted">' + rows.length + ' item' + (rows.length === 1 ? '' : 's') + '</p>' +
+    (rows.length ? rows.map((r) => '<a class="card result" href="#/u/' + esc(r.unit_id) + '/' + (r.kind === 'concept' ? 'learn' : 'practice') + '" data-open="' + esc(r.item_id) + '" data-unit="' + esc(r.unit_id) + '" data-kind="' + esc(r.kind) + '">' +
+      '<h2>' + (r.bookmarked ? '★ ' : '') + esc(r.title) + '<span class="badge">' + esc(r.kind) + '</span></h2><div class="muted">' + esc(r.unit_title) + '</div>' +
+      (r.note ? '<div class="mynoteprint">' + esc(r.note) + '</div>' : '') + '</a>').join('')
+      : '<div class="card muted">Star a concept or write a note on any card and it will show up here.</div>');
 }
 
 function applyFilter(f) {
@@ -165,21 +229,54 @@ app.addEventListener('click', (e) => {
     document.getElementById('c-' + t.dataset.scroll).scrollIntoView({ behavior: 'smooth' });
   } else if (t.dataset.goto) {
     e.preventDefault();
-    location.hash = '#/u/' + state.unit.id + '/learn';
-    setTimeout(() => { const el = document.getElementById('c-' + t.dataset.goto); if (el) el.scrollIntoView(); }, 300);
+    openItem(state.unit.id, 'concept', t.dataset.goto);
+  } else if (t.dataset.open) {
+    e.preventDefault();
+    openItem(t.dataset.unit, t.dataset.kind, t.dataset.open);
+  } else if (t.dataset.bm) {
+    const id = t.dataset.bm;
+    const on = !state.bookmarks.has(id);
+    post('/api/bookmarks', { item_id: id, on }).then(() => {
+      if (on) state.bookmarks.add(id); else state.bookmarks.delete(id);
+      t.classList.toggle('on', on); t.textContent = on ? '★' : '☆'; t.setAttribute('aria-pressed', String(on));
+    }).catch((err) => alert('Could not save bookmark: ' + err.message));
+  } else if (t.dataset.savenote) {
+    const id = t.dataset.savenote;
+    const box = document.querySelector('textarea[data-note="' + CSS.escape(id) + '"]');
+    const msg = document.querySelector('[data-notemsg="' + CSS.escape(id) + '"]');
+    post('/api/notes', { item_id: id, text: box.value }).then(() => {
+      if (box.value.trim()) state.notes[id] = box.value; else delete state.notes[id];
+      msg.textContent = box.value.trim() ? 'Saved' : 'Note removed';
+    }).catch((err) => { msg.textContent = 'Could not save: ' + err.message; });
+  } else if (t.dataset.print !== undefined) {
+    window.print();
   }
 });
 
 async function route() {
   try {
-    state.progress = await api('/api/progress');
-    const m = location.hash.match(/^#\/u\/([\w-]+)\/(learn|practice)/);
-    if (m) await (m[2] === 'learn' ? learn(m[1]) : practice(m[1]));
+    const [progress, notes, marks] = await Promise.all([api('/api/progress'), api('/api/notes'), api('/api/bookmarks')]);
+    state.progress = progress; state.notes = notes; state.bookmarks = new Set(marks);
+    const [path, query = ''] = location.hash.split('?');
+    const m = path.match(/^#\/u\/([\w-]+)\/(learn|practice|print)$/);
+    if (m) await (m[2] === 'learn' ? learn(m[1]) : m[2] === 'practice' ? practice(m[1]) : printView(m[1]));
+    else if (path === '#/search') await searchView(new URLSearchParams(query).get('q') || '');
+    else if (path === '#/mine') await mineView();
     else await home();
+    if (state.scrollTo) {
+      const el = document.getElementById(state.scrollTo);
+      state.scrollTo = null;
+      if (el) el.scrollIntoView();
+    }
   } catch (err) {
     app.innerHTML = '<div class="card"><h2>Something went wrong</h2><p>' + esc(err.message) + '</p></div>';
   }
 }
+
+document.getElementById('searchform').addEventListener('submit', (e) => {
+  e.preventDefault();
+  location.hash = '#/search?q=' + encodeURIComponent(document.getElementById('q').value);
+});
 
 window.addEventListener('hashchange', route);
 route();

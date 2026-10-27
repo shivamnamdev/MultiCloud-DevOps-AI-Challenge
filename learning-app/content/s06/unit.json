@@ -1,0 +1,719 @@
+{
+  "id": "s06",
+  "title": "Linux VM User Administration · Day 2",
+  "subtitle": "Session 06 · Batch-45 · Public Key vs Private Key",
+  "session": 6,
+  "module": "M2 Linux + GCP",
+  "order": 600,
+  "status": "ready",
+  "source_file": "Session-06-Linux-VM-User-Administration/🚀 Day-2 of Linux for DevOps (Linux 30+ Commands) Batch-45 _ 28th Sep 2026 _ 8_00 AM IST _ Zoom Sess 2026-09-28 07_49(GMT+5_30).md",
+  "needs_authoring": [],
+  "unparsed_qa": [
+    {
+      "section": "Interview Question",
+      "chars": 412
+    }
+  ],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s06-session-context-agenda",
+      "unit": "s06",
+      "kind": "overview",
+      "title": "Session Context & Agenda",
+      "text_md": "- **Batch:** Batch 45, Day 2 of Linux administration\n- **Instructor:** Vikas\n- **Week's Focus:** Linux administration activities — commands, OS fundamentals, and GCP machine setup\n- **Command Target:** Instructor set a minimum target of **30 commands** to be covered in the session; by end of session, participants reported running 30–50 commands\n- **Prior Session Recap:** Day 1 covered OS overview, kernel vs. shell distinction, Linux basics, GCP account creation, and Windows vs. Linux comparison — not repeated in detail",
+      "diagram": null
+    },
+    {
+      "id": "s06-linux-os-fundamentals-recap",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Linux & OS Fundamentals Recap",
+      "text_md": "- **OS Structure:** OS has two major parts — **kernel** (connected to hardware) and **shell** (connected to users/applications); requests flow from user/app → OS/kernel → hardware → output returned\n- **Linux as Kernel:** Linux is technically a kernel — closely connected to hardware, delivering better performance; though commonly called an OS, the more precise term is kernel\n- **Why Linux is Popular — Four Keywords:**\n    - **Free and open source** — source code available on GitHub (`torvalds/linux` repo)\n    - **Customizable** — code can be modified per requirement\n    - **Performance** — better than many alternatives due to low-level design\n    - **Secure** — widely used in IT for security-sensitive workloads\n- **Why Linux is Written in C:** C is a low-level language; conversion of C code to machine language is faster, yielding higher performance for OS operations; Linux has ~19,000 contributors with code maintained on GitHub",
+      "diagram": null
+    },
+    {
+      "id": "s06-gui-method-beginner-path",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "GUI Method (Beginner Path)",
+      "text_md": "- Navigate to `console.cloud.google.com` → **Compute Engine** → **Create Instance**\n- **Default Configuration Used:**\n    - Region: default\n    - Machine type: **2 vCPU, 4 GB RAM** (E2 medium)\n    - OS: Changed from Debian to **Ubuntu 24.04 LTS** (not minimal — full version to ensure all tools/commands are available)\n    - Disk: **10 GB** (sufficient for learning)\n- **Why Ubuntu 24.04 LTS over 26.10:** Interview-ready answer — \"my client has approved 24.04 LTS as the stable version\"; using client-approved language makes fake/non-production experience sound real-time\n- **Networking:** HTTP and HTTPS traffic allowed; firewall rule `0.0.0.0/0` added for internet visibility (learning purpose only)\n- **Minimal vs. Full OS:** Minimal = fewer tools, some networking/firewall/sudo commands may not work; full version recommended for learning",
+      "diagram": null
+    },
+    {
+      "id": "s06-cli-automation-method-experienced-path",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "CLI / Automation Method (Experienced Path)",
+      "text_md": "- After configuring via GUI, click **Equivalent Code** to copy the auto-generated CLI command\n- Open **Cloud Shell** (Activate Cloud Shell button) → paste the command → VM created in ~30–35 seconds\n- **Use case for CLI:** Reusability — save the command, modify parameters (e.g., machine name), and recreate VMs without going through GUI each time; also relevant when companies restrict GUI access and require CLI-only operations\n- **VM Output Fields Explained:**\n    - Machine name, zone (location), machine type (E2 medium), **internal IP** (for same-VPC communication), **external IP** (for internet communication), status: running",
+      "diagram": null
+    },
+    {
+      "id": "s06-connecting-to-vm-via-ssh",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Connecting to VM via SSH",
+      "text_md": "- Click **SSH button** in GCP console → browser authenticates via port 22 using public/private key transfer → user is authorized and landed into the VM\n- If a red security pop-up appears when VM is publicly accessible, it can be safely ignored for learning purposes",
+      "diagram": null
+    },
+    {
+      "id": "s06-key-generation",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Key Generation",
+      "text_md": "- **Command:** `ssh-keygen`\n- Run as root user (`sudo -i` first); press Enter three times (accept default location, skip passphrase twice)\n- **Default location:** `~/.ssh/` (hidden folder)\n- **Output files:**\n    - `id_rsa` → **private key** (no extension)\n    - `id_rsa.pub` → **public key** (`.pub` extension)",
+      "diagram": null
+    },
+    {
+      "id": "s06-key-sharing-workflow",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Key Sharing Workflow",
+      "text_md": "- **Junior Engineer (Day 1 join):** Generate key pair → read public key with `cat id_rsa.pub` → copy output → share via email/message with manager/lead\n- **Manager/Lead Activity:** Receive public key from junior → go to **GCP → Compute Engine → Metadata → SSH Keys → Edit → Add Item** → paste public key → access is granted to that user\n- **Rule:** Never share the private key — private key stays with the individual always; only the public key is shared",
+      "diagram": null
+    },
+    {
+      "id": "s06-how-key-pair-authentication-works",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "How Key Pair Authentication Works",
+      "text_md": "- Private key = half the combination; public key = other half\n- When connecting: `ssh -i <private_key> username@IP_address`\n- System checks: does the private key match the public key already on the server? If yes → access granted\n- **Analogy used:** Lock (public key) and key (private key) — only the correct key opens the correct lock; or: tala (lock) and chaabi (key) — when combined, they open",
+      "diagram": null
+    },
+    {
+      "id": "s06-public-key-vs-private-key",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Public Key vs Private Key",
+      "text_md": "Public Key and Private Key are a pair of keys used in **Asymmetric Cryptography**.\n\nThey are widely used in **SSH, AWS EC2, GitHub, HTTPS/TLS, digital signatures, and secure authentication**.",
+      "diagram": null
+    },
+    {
+      "id": "s06-public-key-vs-private-key-2",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Public Key vs Private Key",
+      "text_md": "| # | Public Key 🔓                                                       | Private Key 🔐                                                               |\n| - | ------------------------------------------------------------------- | ---------------------------------------------------------------------------- |\n| 1 | Can be shared with anyone.                                          | Must always be kept secret.                                                  |\n| 2 | Used to encrypt data or verify a digital signature.                 | Used to decrypt data or create a digital signature.                          |\n| 3 | Stored or shared with the system/server that needs to identify you. | Stored securely on your own computer or secure system.                       |\n| 4 | Knowing the public key does not reveal the private key.             | If the private key is compromised, an attacker may gain unauthorized access. |\n| 5 | In SSH, it is stored on the server.                                 | In SSH, it remains on the client machine.                                    |",
+      "diagram": null
+    },
+    {
+      "id": "s06-real-time-use-case-ssh-authentication",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Real-Time Use Case: SSH Authentication",
+      "text_md": "One of the most common examples for DevOps engineers is **connecting to a Linux server using SSH**.\n\nFor example:\n\n```text\nYour Laptop  ──────────── SSH ────────────>  Linux Server\n```\n\nInstead of entering a password every time, SSH can authenticate you using a **Public Key + Private Key** pair.",
+      "diagram": null
+    },
+    {
+      "id": "s06-step-1-generate-the-key-pair",
+      "unit": "s06",
+      "kind": "practical",
+      "title": "Step 1: Generate the Key Pair",
+      "text_md": "Run this command on your local machine:\n\n```bash\nssh-keygen -t ed25519\n```\n\nThis generates two files:\n\n```text\n~/.ssh/id_ed25519\n        ↓\nPrivate Key\n\n~/.ssh/id_ed25519.pub\n        ↓\nPublic Key\n```",
+      "diagram": null
+    },
+    {
+      "id": "s06-step-2-public-key-goes-to-the-server",
+      "unit": "s06",
+      "kind": "practical",
+      "title": "Step 2: Public Key Goes to the Server",
+      "text_md": "Copy the public key to the Linux server:\n\n```bash\nssh-copy-id user@server-ip\n```\n\nThe public key is stored on the server inside:\n\n```text\n~/.ssh/authorized_keys\n```\n\nSo the setup looks like:\n\n```text\nYOUR LAPTOP                         LINUX SERVER\n-----------                         ------------\n\nPrivate Key                         Public Key\nid_ed25519                          authorized_keys\n    │                                    │\n    │                                    │\n    └────────── SSH Authentication ──────┘\n```",
+      "diagram": null
+    },
+    {
+      "id": "s06-step-3-private-key-stays-with-you",
+      "unit": "s06",
+      "kind": "practical",
+      "title": "Step 3: Private Key Stays With You",
+      "text_md": "Your private key remains on your computer:\n\n```text\n~/.ssh/id_ed25519\n```\n\n**Never share this file.**\n\nDo not:\n\n```text\n❌ Upload it to GitHub\n❌ Send it to another person\n❌ Put it inside source code\n❌ Share it in WhatsApp/Telegram\n❌ Commit it to a Git repository\n```",
+      "diagram": null
+    },
+    {
+      "id": "s06-step-4-connect-to-the-server",
+      "unit": "s06",
+      "kind": "practical",
+      "title": "Step 4: Connect to the Server",
+      "text_md": "Now you can connect using:\n\n```bash\nssh user@server-ip\n```\n\nExample:\n\n```bash\nssh ubuntu@192.168.1.100\n```\n\nSSH verifies that your machine has the **Private Key** corresponding to the **Public Key** stored on the server.\n\nIf authentication succeeds:\n\n```text\nSSH Authentication\n        ↓\n       ✅\n        ↓\nLinux Server Access\n```",
+      "diagram": null
+    },
+    {
+      "id": "s06-real-time-devops-example-aws-ec2",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Real-Time DevOps Example: AWS EC2",
+      "text_md": "Suppose you create an **AWS EC2 Linux instance**.\n\nYou may receive a private key such as:\n\n```text\nmy-server.pem\n```\n\nYou can use it to connect:\n\n```bash\nssh -i my-server.pem ubuntu@<EC2-PUBLIC-IP>\n```\n\nExample:\n\n```bash\nssh -i my-server.pem ubuntu@54.123.45.67\n```",
+      "diagram": null
+    },
+    {
+      "id": "s06-easy-way-to-remember",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Easy Way to Remember",
+      "text_md": "Think of a **public key as a lock** and the **private key as the secret key**.\n\n```text\nPUBLIC KEY 🔓\n     ↓\nCan be shared\n\nPRIVATE KEY 🔐\n     ↓\nMust be protected\n```\n\n### Golden Rule\n\n> **Public Key → Share it**\n>\n> **Private Key → Protect it**",
+      "diagram": null
+    },
+    {
+      "id": "s06-quick-revision",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Quick Revision",
+      "text_md": "| Feature             | Public Key 🔓          | Private Key 🔐   |\n| ------------------- | ---------------------- | ---------------- |\n| Can be shared?      | ✅ Yes                  | ❌ No             |\n| Must remain secret? | ❌ No                   | ✅ Yes            |\n| SSH location        | Server                 | Client           |\n| Encryption          | Encrypt                | Decrypt          |\n| Digital Signature   | Verify                 | Create           |\n| AWS EC2             | Public key on instance | `.pem` on client |\n| GitHub SSH          | Registered public key  | Stored locally   |\n\n---\n\n\n### Interview Questions Covered\n\n- **Can the same key pair be used across companies?**\n    - Yes — key pairs are not machine-specific or company-specific; if the key pair combination matches on any server, access is granted; analogy: buying a new house where the same lock-and-key combination happens to fit\n    - Caveat (Mohd's point): Technically, generating on a specific machine ties the username in the key; if the user doesn't exist on the new server, a new user must be created first — but the key pair itself is transferable\n    - Best practice: Generate key pair using a tool (e.g., PuTTY, MobaXterm) locally before joining any company; carry the same key pair to multiple companies/projects\n- **Why use key pairs instead of passwords?**\n    - Passwords like `Welcome@123`, `admin123` are commonly reused across organizations — insecure\n    - Even if someone obtains your public key, they cannot access the server without your private key\n    - Key pair provides **passwordless authentication** — critical for automation tools like Ansible managing multiple VMs\n- **Public key on GCP metadata — account-level or VM-level?**\n    - Account-level (metadata): one public key grants access to all VMs in that GCP account",
+      "diagram": null
+    },
+    {
+      "id": "s06-system-information",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "System Information",
+      "text_md": "|    Command    |                                  Purpose                                  |\n|---------------|---------------------------------------------------------------------------|\n| `hostname`    | Display machine name                                                      |\n| `hostname -I` | Display private/internal IP address                                       |\n| `uname`       | Show OS type (Linux)                                                      |\n| `uname -a`    | Show all system details — OS version, kernel, architecture, machine name  |\n| `whoami`      | Show current logged-in user                                               |\n| `history`     | Show all previously executed commands                                     |",
+      "diagram": null
+    },
+    {
+      "id": "s06-process-performance-monitoring",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Process & Performance Monitoring",
+      "text_md": "|         Command          |                                           Purpose                                            |\n|--------------------------|----------------------------------------------------------------------------------------------|\n| `ps`                     | Show processes running under current (root) user                                             |\n| `ps -aef`                | Show **all** processes with full details (A=all users, E=every process, F=full format)       |\n| `ps -aef \\| grep <name>` | Filter processes by name — pipe output of `ps` into `grep` for search                        |\n| `top`                    | Real-time task manager — shows CPU, memory, tasks, uptime, users (press `q` to exit)         |\n| `free -h`                | Show memory usage in human-readable format; `-m` for MB, `-g` for GB                         |\n| `df -h`                  | Show disk usage per partition in human-readable format — used for disk full troubleshooting  |",
+      "diagram": null
+    },
+    {
+      "id": "s06-file-reading-filtering",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "File Reading & Filtering",
+      "text_md": "|      Command      |                                      Purpose                                       |\n|-------------------|------------------------------------------------------------------------------------|\n| `head -10 <file>` | Show first 10 lines of a file                                                      |\n| `tail -10 <file>` | Show last 10 lines of a file                                                       |\n| `cat` vs `more`   | `cat` = full file in one shot; `more` = paginated (37% at a time for large files)  |\n\n**Production use case for** **`tail`:** When troubleshooting production issues, engineers read the last 10–100 lines of log files to find where code is breaking — not the entire log",
+      "diagram": null
+    },
+    {
+      "id": "s06-networking-external-tools",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Networking & External Tools",
+      "text_md": "|      Command       |                                      Purpose                                       |\n|--------------------|------------------------------------------------------------------------------------|\n| `curl <URL>`       | Hit a URL from Linux terminal; tool for transferring data from a server using URL  |\n| `curl ifconfig.me` | Get the external/public IP of the machine                                          |\n| `man <command>`    | Open manual page for any command (e.g., `man curl`); press `q` to exit             |",
+      "diagram": null
+    },
+    {
+      "id": "s06-key-security-commands",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Key & Security Commands",
+      "text_md": "|            Command             |              Purpose               |\n|--------------------------------|------------------------------------|\n| `ssh-keygen`                   | Generate public/private key pair   |\n| `ssh -i <private_key> user@IP` | Connect to a VM using private key  |",
+      "diagram": null
+    },
+    {
+      "id": "s06-pipe-and-grep",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Pipe and Grep",
+      "text_md": "- **Pipe (`|`):** Takes output of first command as input to second command\n- **Grep:** Search/filter tool — e.g., `ps -aef | grep java` returns only Java-related processes\n- **Interview framing:** Demonstrates intermediate-level Linux knowledge beyond basic commands",
+      "diagram": null
+    },
+    {
+      "id": "s06-vi-editor-basics",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "VI Editor Basics",
+      "text_md": "- `vi <filename>` opens the editor; if file doesn't exist, opens a blank page\n- Paste content → `Escape` → `:wq` → saves and exits\n- Linux does **not require file extensions** — all files are treated as text by default\n- `cat` and `vi` can both open/read the same file with identical output for small files",
+      "diagram": null
+    },
+    {
+      "id": "s06-disk-resource-troubleshooting-scenario",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Disk & Resource Troubleshooting Scenario",
+      "text_md": "- **Scenario (interview question):** Application becomes slow or stops due to server disk storage fault\n- **Step 1:** Run `df -h` to check which partition is full\n- **Step 2:** Identify full partition → delete/clean up unnecessary files\n- **Analogy:** Like checking phone/laptop storage — identify what's useless vs. useful and remove it",
+      "diagram": null
+    },
+    {
+      "id": "s06-interview-preparation-guidance",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Interview Preparation Guidance",
+      "text_md": "- **Use client-approval language:** Instead of saying \"this is the stable version,\" say \"my client has approved this version\" — makes training experience sound like real-time work experience\n- **Four keywords for Linux popularity:** Free, open source, performance, secure — memorize and use in interviews\n- **`ps -aef`** **vs** **`systemctl`:** Both can reveal running services; `systemctl` is the standard for service management, but `ps -aef | grep <service>` is a valid alternative when `systemctl` utility is unavailable (e.g., minimal container images)\n- **Key pair interview trap:** If asked \"can the same key pair work in another company?\" — answer is yes, as long as the combination matches on the target server; use the lock-and-key analogy\n- **Write down interview questions encountered:** Ankur shared that he was asked about searching/stopping services in a recent interview — instructor encouraged noting and sharing such questions with the group\n- **Sharing opportunities:** If any student finds a Linux/cloud job opening in their company, post it in the WhatsApp group for others to benefit",
+      "diagram": null
+    },
+    {
+      "id": "s06-gcp-cloud-housekeeping",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "GCP & Cloud Housekeeping",
+      "text_md": "- **Billing concern (negative balance):** Negative billing = advance payment made; no issue, credits will be consumed over time; 2-month runway is sufficient for the course\n- **Delete VMs after class:** Running VMs incur billing even when not in use — analogy: booking a 5-star hotel room and not staying still generates a bill; delete resources when not needed\n- **External IP check:** Use `curl ifconfig.me` from Linux terminal OR visit `ifconfig.me` in browser; both return the machine's external IP\n- **Internal IP check:** `hostname -I` returns private IP, verifiable against GCP Console → Compute Engine → VM Instances\n- **Alternative for students without GCP access:** AWS Ubuntu VM is an acceptable substitute for practicing Linux commands\n- **GCP account from mobile:** Some commands may not work on mobile terminal, but basic commands will run; use as fallback only",
+      "diagram": null
+    },
+    {
+      "id": "s06-bandit-game-practice",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Bandit Game & Practice",
+      "text_md": "- Students were assigned the **Bandit wargame** (OverTheWire) for hands-on Linux practice\n- Progress reported: students reached levels 12–23+; one student completed 100+ attempts to reach level 23\n- **Game rules clarified:** Password is not visible when typed (standard Linux security behavior); password from previous level must be carried forward to unlock next level\n- **Target:** Complete as many levels as possible — more hours invested = higher confidence = better job package\n- Instructor emphasized: game is working correctly; issues are user-side (not playing correctly, not copying passwords properly)",
+      "diagram": null
+    },
+    {
+      "id": "s06-commands-to-remember",
+      "unit": "s06",
+      "kind": "concept",
+      "title": "Commands to Remember",
+      "text_md": "| Command | Purpose |\n|---|---|\n| `pwd` | Show current directory |\n| `ls` | List files/directories |\n| `cd` | Change directory |\n| `mkdir` | Create directory |\n| `touch` | Create empty file |\n| `cat` | Display file content |\n| `more` | Read file page by page |\n| `vi` | Edit file |\n| `cp` | Copy file |\n| `mv` | Move/rename file |\n| `rm` | Delete file |\n| `locate` | Search for files |\n| `hostname` | Show machine name |\n| `hostname -I` | Show internal IP |\n| `uname` | Show OS type |\n| `uname -a` | Show detailed system information |\n| `whoami` | Show current user |\n| `history` | Show command history |\n| `ps` | Show processes |\n| `ps -aef` | Show detailed processes |\n| `grep` | Search/filter text |\n| `top` | Real-time process/resource monitoring |\n| `free -h` | Show memory usage |\n| `df -h` | Show disk usage |\n| `head` | Show beginning of file |\n| `tail` | Show end of file |\n| `curl` | Access URLs / transfer data |\n| `man` | Command manual |\n| `ssh-keygen` | Generate SSH key pair |\n| `ssh -i` | SSH using private key |",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is Linux?",
+      "prompt": "What is Linux?",
+      "reference_answer": "Linux is technically a **kernel** that connects the operating system software with the hardware. In common usage, people call complete Linux-based systems an operating system. The kernel handles communication between applications and hardware.",
+      "id": "s06-q01",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-linux-os-fundamentals-recap"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between Kernel and Shell?",
+      "prompt": "What is the difference between Kernel and Shell?",
+      "reference_answer": "The **kernel** communicates with hardware, while the **shell** provides an interface through which users or applications interact with the operating system.\n\nA simple flow is:\n\n`User/Application → Shell → Kernel → Hardware → Output`",
+      "id": "s06-q02",
+      "unit": "s06",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Why is Linux widely used in DevOps?",
+      "prompt": "Why is Linux widely used in DevOps?",
+      "reference_answer": "Linux is popular because it is:\n\n- Free and open source\n- Customizable\n- Performance oriented\n- Widely used for secure and server-side workloads\n\nMost DevOps tools and cloud workloads can be easily operated from Linux systems.",
+      "id": "s06-q03",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-linux-os-fundamentals-recap",
+        "s06-real-time-devops-example-aws-ec2",
+        "s06-real-time-use-case-ssh-authentication"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does the pwd command do?",
+      "prompt": "What does the pwd command do?",
+      "reference_answer": "`pwd` means **Print Working Directory**. It shows the current directory where you are working.\n\n```bash\npwd\n```\n\nExample output:\n\n```text\n/home/ubuntu\n```",
+      "id": "s06-q04",
+      "unit": "s06",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between ls and pwd?",
+      "prompt": "What is the difference between ls and pwd?",
+      "reference_answer": "- `pwd` tells you **where you are**.\n- `ls` tells you **what is inside the current directory**.\n\n```bash\npwd\nls\n```",
+      "id": "s06-q05",
+      "unit": "s06",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the use of cd?",
+      "prompt": "What is the use of cd?",
+      "reference_answer": "`cd` means **Change Directory**. It is used to move from one directory to another.\n\n```bash\ncd /var/log\n```\n\nYou can also use:\n\n```bash\ncd ..\n```\n\nto move to the parent directory.",
+      "id": "s06-q06",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-real-time-use-case-ssh-authentication"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the use of mkdir?",
+      "prompt": "What is the use of mkdir?",
+      "reference_answer": "`mkdir` means **Make Directory**. It creates a new directory.\n\n```bash\nmkdir devops\n```",
+      "id": "s06-q07",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-real-time-use-case-ssh-authentication"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the use of touch?",
+      "prompt": "What is the use of touch?",
+      "reference_answer": "`touch` can create an empty file.\n\n```bash\ntouch test.txt\n```\n\nLinux does not require a file extension. The extension is mainly a naming convention used to identify the type of file.",
+      "id": "s06-q08",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-real-time-use-case-ssh-authentication"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between cp and mv?",
+      "prompt": "What is the difference between cp and mv?",
+      "reference_answer": "`cp` copies a file or directory:\n\n```bash\ncp source.txt backup.txt\n```\n\n`mv` moves or renames a file:\n\n```bash\nmv old.txt new.txt\n```",
+      "id": "s06-q09",
+      "unit": "s06",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the use of rm?",
+      "prompt": "What is the use of rm?",
+      "reference_answer": "`rm` is used to remove/delete files.\n\n```bash\nrm test.txt\n```\n\nYou should be careful because deleted files may not be recoverable through a normal Linux command.",
+      "id": "s06-q10",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-real-time-use-case-ssh-authentication"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between cat and more?",
+      "prompt": "What is the difference between cat and more?",
+      "reference_answer": "- `cat` displays the complete file content at once.\n- `more` displays content page by page, which is useful for larger files.\n\n```bash\ncat application.log\nmore application.log\n```",
+      "id": "s06-q11",
+      "unit": "s06",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the use of head and tail?",
+      "prompt": "What is the use of head and tail?",
+      "reference_answer": "`head` shows the beginning of a file:\n\n```bash\nhead -10 application.log\n```\n\n`tail` shows the end of a file:\n\n```bash\ntail -10 application.log\n```\n\nIn production, `tail` is useful for quickly checking the latest log entries.",
+      "id": "s06-q12",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-real-time-use-case-ssh-authentication"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the use of ps -aef?",
+      "prompt": "What is the use of ps -aef?",
+      "reference_answer": "`ps -aef` displays processes running on the system with detailed information.\n\n```bash\nps -aef\n```\n\nIt is commonly used while troubleshooting running processes.",
+      "id": "s06-q13",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-real-time-use-case-ssh-authentication"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the use of ps -aef | grep java?",
+      "prompt": "What is the use of ps -aef | grep java?",
+      "reference_answer": "It filters the process list and displays entries related to Java.\n\n```bash\nps -aef | grep java\n```\n\nHere:\n\n- `ps -aef` generates process information.\n- `|` sends that output to the next command.\n- `grep java` filters for the word `java`.",
+      "id": "s06-q14",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-pipe-and-grep",
+        "s06-real-time-use-case-ssh-authentication"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a pipe | in Linux?",
+      "prompt": "What is a pipe | in Linux?",
+      "reference_answer": "A pipe sends the output of one command as the input to another command.\n\nExample:\n\n```bash\nps -aef | grep java\n```\n\nThis is very useful for filtering and chaining Linux commands.",
+      "id": "s06-q15",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-linux-os-fundamentals-recap",
+        "s06-pipe-and-grep"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the use of top?",
+      "prompt": "What is the use of top?",
+      "reference_answer": "`top` provides real-time information about running processes and system resources such as CPU, memory, tasks and uptime.\n\n```bash\ntop\n```\n\nPress `q` to exit.",
+      "id": "s06-q16",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-real-time-use-case-ssh-authentication"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the use of free -h?",
+      "prompt": "What is the use of free -h?",
+      "reference_answer": "`free -h` displays memory usage in a human-readable format.\n\n```bash\nfree -h\n```\n\nIt helps check available and used RAM.",
+      "id": "s06-q17",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-real-time-use-case-ssh-authentication"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the use of df -h?",
+      "prompt": "What is the use of df -h?",
+      "reference_answer": "`df -h` displays disk space usage for mounted filesystems in a human-readable format.\n\n```bash\ndf -h\n```\n\nIt is one of the first commands you can use when an application is affected by disk-space issues.",
+      "id": "s06-q18",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-real-time-use-case-ssh-authentication"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is ssh-keygen?",
+      "prompt": "What is ssh-keygen?",
+      "reference_answer": "`ssh-keygen` generates an SSH public/private key pair.\n\n```bash\nssh-keygen\n```\n\nThe default files discussed in the session are:\n\n```text\n~/.ssh/id_rsa\n~/.ssh/id_rsa.pub\n```\n\n`id_rsa` is the private key and `id_rsa.pub` is the public key.",
+      "id": "s06-q19",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-connecting-to-vm-via-ssh",
+        "s06-real-time-use-case-ssh-authentication"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why is a private key never shared?",
+      "prompt": "Why is a private key never shared?",
+      "reference_answer": "The private key must remain with the owner. The public key can be shared and configured on the server.\n\nSSH authentication works using the matching public/private key pair. Sharing the private key can allow someone else to authenticate as the key owner.",
+      "id": "s06-q20",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-public-key-vs-private-key",
+        "s06-public-key-vs-private-key-2",
+        "s06-step-3-private-key-stays-with-you"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Production server disk is full. What will you do?",
+      "prompt": "Production server disk is full. What will you do?",
+      "reference_answer": "First check disk usage:\n\n```bash\ndf -h\n```\n\nIdentify which filesystem is full. Then investigate unnecessary files/logs and clean them according to the organization's process.\n\nA simple interview answer:\n\n> \"I will first use `df -h` to identify the full partition, then investigate and clean unnecessary files safely.\"",
+      "id": "s06-s01",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-disk-resource-troubleshooting-scenario",
+        "s06-step-2-public-key-goes-to-the-server",
+        "s06-step-3-private-key-stays-with-you"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your Java application is running, but you need to verify its process.",
+      "prompt": "Your Java application is running, but you need to verify its process.",
+      "reference_answer": "Use:\n\n```bash\nps -aef | grep java\n```\n\nThis filters the process list and helps confirm whether a Java process is running.",
+      "id": "s06-s02",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-process-performance-monitoring",
+        "s06-step-3-private-key-stays-with-you"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "The server is very slow. Which Linux command will you use first to check resources?",
+      "prompt": "The server is very slow. Which Linux command will you use first to check resources?",
+      "reference_answer": "Use:\n\n```bash\ntop\n```\n\nIt provides real-time information about CPU, memory, processes and system activity.\n\nYou can also check memory separately:\n\n```bash\nfree -h\n```",
+      "id": "s06-s03",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-disk-resource-troubleshooting-scenario",
+        "s06-linux-os-fundamentals-recap",
+        "s06-real-time-use-case-ssh-authentication"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to check available RAM on a Linux VM.",
+      "prompt": "You need to check available RAM on a Linux VM.",
+      "reference_answer": "Run:\n\n```bash\nfree -h\n```\n\nThe `-h` option displays the values in a human-readable format.",
+      "id": "s06-s04",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-linux-os-fundamentals-recap",
+        "s06-step-3-private-key-stays-with-you"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to check the current directory before creating a file.",
+      "prompt": "You need to check the current directory before creating a file.",
+      "reference_answer": "Run:\n\n```bash\npwd\n```\n\nThen list the contents:\n\n```bash\nls\n```\n\nThis confirms where you are working and what already exists.",
+      "id": "s06-s05",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-step-3-private-key-stays-with-you"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to create a directory called project.",
+      "prompt": "You need to create a directory called project.",
+      "reference_answer": "Run:\n\n```bash\nmkdir project\n```\n\nThen verify:\n\n```bash\nls\n```",
+      "id": "s06-s06",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-step-3-private-key-stays-with-you"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to create an empty configuration file.",
+      "prompt": "You need to create an empty configuration file.",
+      "reference_answer": "Use:\n\n```bash\ntouch application.conf\n```\n\nLinux does not require an extension, but an extension can be used as a naming convention.",
+      "id": "s06-s07",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-step-3-private-key-stays-with-you"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to rename old.conf to new.conf.",
+      "prompt": "You need to rename old.conf to new.conf.",
+      "reference_answer": "Use:\n\n```bash\nmv old.conf new.conf\n```\n\n`mv` can be used for both moving and renaming files.",
+      "id": "s06-s08",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-step-3-private-key-stays-with-you"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to make a backup copy of a configuration file.",
+      "prompt": "You need to make a backup copy of a configuration file.",
+      "reference_answer": "Use:\n\n```bash\ncp application.conf application.conf.backup\n```\n\nThis creates a copy while keeping the original file.",
+      "id": "s06-s09",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-step-3-private-key-stays-with-you"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A log file is very large and you only want to see its latest entries.",
+      "prompt": "A log file is very large and you only want to see its latest entries.",
+      "reference_answer": "Use:\n\n```bash\ntail -10 application.log\n```\n\nYou can increase the number if needed:\n\n```bash\ntail -100 application.log\n```\n\nThis is useful during production troubleshooting because the latest log entries often show the most recent failure.",
+      "id": "s06-s10",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-step-3-private-key-stays-with-you"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You only want to see the first 10 lines of a file.",
+      "prompt": "You only want to see the first 10 lines of a file.",
+      "reference_answer": "Use:\n\n```bash\nhead -10 application.log\n```",
+      "id": "s06-s11",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-step-3-private-key-stays-with-you"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to read a large file page by page.",
+      "prompt": "You need to read a large file page by page.",
+      "reference_answer": "Use:\n\n```bash\nmore application.log\n```\n\nThis is more convenient than printing the entire file at once.",
+      "id": "s06-s12",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-step-3-private-key-stays-with-you"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to search for a running Java process.",
+      "prompt": "You need to search for a running Java process.",
+      "reference_answer": "Use:\n\n```bash\nps -aef | grep java\n```\n\nThis demonstrates the use of a Linux pipe and `grep` filtering.",
+      "id": "s06-s13",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-process-performance-monitoring",
+        "s06-step-3-private-key-stays-with-you"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A developer asks for the server's internal/private IP address.",
+      "prompt": "A developer asks for the server's internal/private IP address.",
+      "reference_answer": "Use:\n\n```bash\nhostname -I\n```\n\nThis displays the machine's internal IP address.\n\nIn the GCP VM context, this can be compared with the internal IP shown in the VM details.",
+      "id": "s06-s14",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-public-key-vs-private-key",
+        "s06-public-key-vs-private-key-2",
+        "s06-step-2-public-key-goes-to-the-server"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to find the server's public/external IP from the Linux terminal.",
+      "prompt": "You need to find the server's public/external IP from the Linux terminal.",
+      "reference_answer": "Use:\n\n```bash\ncurl ifconfig.me\n```\n\nThis queries the external service and returns the machine's public IP.",
+      "id": "s06-s15",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-step-2-public-key-goes-to-the-server",
+        "s06-linux-os-fundamentals-recap",
+        "s06-networking-external-tools"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You forgot how a Linux command works.",
+      "prompt": "You forgot how a Linux command works.",
+      "reference_answer": "Use the manual page:\n\n```bash\nman curl\n```\n\nor:\n\n```bash\nman ls\n```\n\nPress `q` to exit the manual page.",
+      "id": "s06-s16",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-how-key-pair-authentication-works",
+        "s06-linux-os-fundamentals-recap",
+        "s06-step-3-private-key-stays-with-you"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A new engineer needs SSH access to a GCP VM. What should they share?",
+      "prompt": "A new engineer needs SSH access to a GCP VM. What should they share?",
+      "reference_answer": "The engineer should generate an SSH key pair:\n\n```bash\nssh-keygen\n```\n\nThen share only the public key:\n\n```bash\ncat ~/.ssh/id_rsa.pub\n```\n\nThe private key should remain with the engineer.\n\nThe manager/admin can add the public key to the appropriate GCP SSH configuration.",
+      "id": "s06-s17",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-connecting-to-vm-via-ssh",
+        "s06-gcp-cloud-housekeeping",
+        "s06-real-time-use-case-ssh-authentication"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "How would you connect to a Linux VM using a private key?",
+      "prompt": "How would you connect to a Linux VM using a private key?",
+      "reference_answer": "Use:\n\n```bash\nssh -i <private_key> username@IP_address\n```\n\nExample:\n\n```bash\nssh -i ~/.ssh/id_rsa ubuntu@192.168.1.10\n```\n\nThe server checks whether the provided private key matches the configured public key.",
+      "id": "s06-s18",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-step-3-private-key-stays-with-you",
+        "s06-how-key-pair-authentication-works",
+        "s06-linux-os-fundamentals-recap"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Why are SSH keys useful for Ansible?",
+      "prompt": "Why are SSH keys useful for Ansible?",
+      "reference_answer": "Ansible commonly connects to multiple servers. SSH key-based authentication allows passwordless authentication, which is much more suitable for automation than manually entering passwords for every server.\n\nExample:\n\n```text\nAnsible Controller\n       |\n       +---- SSH ----> VM1\n       |\n       +---- SSH ----> VM2\n       |\n       +---- SSH ----> VM3\n```\n\nThe public key can be configured on the target servers while the private key remains protected on the controller.",
+      "id": "s06-s19",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-real-time-use-case-ssh-authentication",
+        "s06-connecting-to-vm-via-ssh"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your company does not allow GUI access to create cloud VMs. How can you create a GCP VM?",
+      "prompt": "Your company does not allow GUI access to create cloud VMs. How can you create a GCP VM?",
+      "reference_answer": "Use the GCP CLI from Cloud Shell.\n\nThe session demonstrated creating a VM through the GCP GUI first and then using **Equivalent Code** to obtain the CLI command.\n\nThe CLI approach is useful because the command can be saved, modified and reused to create additional VMs.",
+      "id": "s06-s20",
+      "unit": "s06",
+      "concept_ids": [
+        "s06-gcp-cloud-housekeeping",
+        "s06-gui-method-beginner-path",
+        "s06-how-key-pair-authentication-works"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,446 @@
+{
+  "id": "s44",
+  "title": "Python for DevOps · Day 1",
+  "subtitle": "Session 44 · Batch-44 · Python Automation for DevOps and AWS Automation - Session Summary",
+  "session": 44,
+  "module": "M6 IaC + Automation",
+  "order": 4400,
+  "status": "ready",
+  "source_file": "Session-44-Python-for-DevOps/🚀 Day-1 of Python Automation for Batch-44 | 20th Aug 2026.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s44-high-level-vs-low-level-languages",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "High-Level vs Low-Level Languages",
+      "text_md": "The instructor explained the difference between high-level and low-level programming languages.\n\n#### 🔹 High-level languages:\n* Python\n* Perl\n* Shell\n* JavaScript\n\n> *These are comparatively easier for humans to read and understand.*\n\n#### 🔹 Low-level languages:\n* C\n* C++\n* Machine/binary-level code\n\n> *These are closer to hardware and generally provide faster execution.*\n\nThe discussion also covered why operating systems and hardware-level operations commonly rely on lower-level languages.",
+      "diagram": null
+    },
+    {
+      "id": "s44-python-libraries-and-import",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "Python Libraries and import",
+      "text_md": "A major concept was the use of **ready-made Python libraries/modules** instead of writing every piece of functionality manually.\n\nFor example:\n\n```python\nimport time\n```\n\nThe `import` keyword is used to bring a library/module into a Python program.\n\nThe instructor emphasized this as an important **interview concept**:\n\n> **Question:** How do you call/import a Python library?\n> **Answer:** Using `import`.",
+      "diagram": null
+    },
+    {
+      "id": "s44-python-mini-project-countdown-timer",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "Python Mini Project: Countdown Timer",
+      "text_md": "A countdown timer was demonstrated as a practical Python example.\n\n#### The project covered:\n* Importing the `time` module\n* Defining a function\n* Taking user input\n* Type conversion\n* Using a `while` loop\n* Calling a function\n* Using time-related functionality\n* Displaying the final output\n\nThe program accepted the number of seconds from the user and performed the countdown until completion.\n\n#### Concepts demonstrated:\n* `import`\n* Functions\n* Variables\n* `input()`\n* Integer typecasting\n* `while` loop\n* Function parameters\n* Function calls\n* Output/print statements\n\nThe instructor also asked students to explain the code **line by line**, reinforcing that DevOps engineers should be able to understand and troubleshoot automation scripts even when they did not originally write them.",
+      "diagram": null
+    },
+    {
+      "id": "s44-using-ai-tools-to-understand-python-code",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "Using AI Tools to Understand Python Code",
+      "text_md": "The session demonstrated using tools such as **GitHub Copilot / ChatGPT** to explain existing Python code.\n\nThe approach discussed was essentially:\n\n1. Provide the Python file/code.\n2. Ask the AI tool to read the code.\n3. Request a simple, step-by-step explanation.\n4. Use the explanation to understand the automation.\n\nThe instructor emphasized that engineers do not need to memorize every line of code, but they should understand **what the code is doing and how the automation works**.",
+      "diagram": null
+    },
+    {
+      "id": "s44-virtual-environment",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "Virtual Environment",
+      "text_md": "The session explained why Python projects should use a **virtual environment**.\n\nThe problem discussed was:\n\n> [!NOTE]\n> *An application works on one developer's machine but fails when moved to another machine.*\n\nThe reason may be **missing or incompatible dependencies**, rather than a problem with the application code itself.\n\nA virtual environment helps isolate project-specific dependencies from the global Python installation.",
+      "diagram": null
+    },
+    {
+      "id": "s44-pip-and-python-package-management",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "pip and Python Package Management",
+      "text_md": "`pip` was introduced as the tool used to install Python packages/libraries.\n\nExample discussed:\n\n```bash\npip install boto3\n```\n\nThe instructor also discussed situations where `pip` is not recognized, indicating that Python/pip may not be properly installed or configured in the system environment.\n\nThe session therefore connected:\n\n$$\\text{Python} \\longrightarrow \\text{pip} \\longrightarrow \\text{packages/libraries} \\longrightarrow \\text{project dependencies}$$",
+      "diagram": null
+    },
+    {
+      "id": "s44-requirements-txt",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "requirements.txt",
+      "text_md": "One of the important DevOps concepts covered was **`requirements.txt`**.\n\nIt contains the dependencies required by a Python project.\n\nThe session demonstrated generating dependencies using:\n\n```bash\npip freeze > requirements.txt\n```\n\nThen those dependencies can be installed in another environment using:\n\n```bash\npip install -r requirements.txt\n```\n\n#### Real-world scenario:\n* A developer creates an application on one machine.\n* The application is moved to another machine.\n* The second machine does not have the required Python libraries.\n* Instead of manually identifying every dependency, the team can provide `requirements.txt` and install the required packages.\n\nThis was highlighted as an important **real-time and interview topic**.",
+      "diagram": null
+    },
+    {
+      "id": "s44-git-and-python-projects",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "Git and Python Projects",
+      "text_md": "The instructor demonstrated downloading a Python project from a Git repository using `git clone`.\n\nThe flow included:\n\n```bash\ngit clone <repository-url>\n```\n\nThen navigating into the project directory and executing the Python program.\n\nThe countdown timer project was used as an example of downloading and running an existing Python project.",
+      "diagram": null
+    },
+    {
+      "id": "s44-aws-automation-with-python",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "AWS Automation with Python",
+      "text_md": "The major practical portion of the session focused on **AWS automation using Python**.\n\nThe key technology introduced was **Boto3**.\n\n#### Boto3\n**Boto3** is the AWS SDK for Python. It allows Python programs to interact with AWS services programmatically.\n\nThe conceptual flow discussed was:\n\n$$\\text{Python} \\longrightarrow \\text{Boto3} \\longrightarrow \\text{AWS API} \\longrightarrow \\text{AWS Service}$$\n\nInstead of manually performing operations through the AWS Console, Python code can automate AWS operations.",
+      "diagram": null
+    },
+    {
+      "id": "s44-aws-services-and-boto3",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "AWS Services and Boto3",
+      "text_md": "The instructor explained that Boto3 can be used for automation across AWS services such as:\n\n* IAM\n* EC2\n* S3\n* DynamoDB\n* SQS\n* Other AWS services\n\nAWS provides documentation and examples for these operations.\n\nThe key DevOps concept is that AWS resources can be **created, modified, listed, and managed through automation scripts**.",
+      "diagram": null
+    },
+    {
+      "id": "s44-aws-cli-configuration",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "AWS CLI Configuration",
+      "text_md": "The session also covered configuring the AWS CLI.\n\nThe command discussed was:\n\n```bash\naws configure\n```\n\nThis configuration requires AWS credentials and related configuration information.\n\nThe session demonstrated installing/configuring the AWS CLI on systems such as:\n* Windows\n* Linux\n* macOS\n\nThe importance of correctly configuring AWS access before executing Boto3 automation was also demonstrated.",
+      "diagram": null
+    },
+    {
+      "id": "s44-aws-iam-user-automation",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "AWS IAM User Automation",
+      "text_md": "A major hands-on example was automating **IAM user management using Boto3**.\n\nThe instructor demonstrated the concept of creating an IAM user through Python instead of manually creating the user from the AWS Console.\n\nThe automation flow included:\n\n1. Import Boto3.\n2. Create an AWS client.\n3. Call the relevant IAM function.\n4. Provide the required username.\n5. Execute the function.\n6. Receive the AWS response.\n\nThe session also demonstrated retrieving/listing IAM users.",
+      "diagram": null
+    },
+    {
+      "id": "s44-updating-iam-users",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "Updating IAM Users",
+      "text_md": "The session then demonstrated modifying an existing IAM user.\n\nA practical scenario was used:\n\n> [!NOTE]\n> *An employee/user leaves the organization and another user needs to replace that user.*\n\nThe Python automation could update the IAM username rather than manually performing the operation through the AWS Console.\n\nThe instructor emphasized understanding the overall automation flow:\n\n$$\\text{Import Boto3} \\longrightarrow \\text{Create client} \\longrightarrow \\text{Call AWS function} \\longrightarrow \\text{Pass parameters} \\longrightarrow \\text{Execute} \\longrightarrow \\text{Read response}$$",
+      "diagram": null
+    },
+    {
+      "id": "s44-aws-api-response-and-status-code",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "AWS API Response and Status Code",
+      "text_md": "The session discussed checking the response returned by AWS.\n\nA successful HTTP/API response such as **status code 200** indicates successful execution in the discussed context.\n\nThe returned information can contain details such as:\n* User information\n* User ID\n* ARN\n* Creation information\n* Other AWS response data\n\nThis is important when writing automation because the script should not blindly assume that an operation succeeded.",
+      "diagram": null
+    },
+    {
+      "id": "s44-aws-access-keys-and-security",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "AWS Access Keys and Security",
+      "text_md": "The practical AWS setup also covered creating an access key for CLI/programmatic access.\n\nThe workflow demonstrated:\n* IAM user\n* Security credentials\n* Create access key\n* Select CLI/programmatic usage\n* Obtain access key and secret access key\n\nThe credentials are required for authenticated AWS operations.\n\n> [!WARNING]\n> **Important practical lesson:** AWS access keys and secret keys should be handled securely and should never be hardcoded into source code or shared publicly.",
+      "diagram": null
+    },
+    {
+      "id": "s44-aws-automation-use-cases",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "AWS Automation Use Cases",
+      "text_md": "The instructor explained that the same Boto3 approach can be used to automate many AWS tasks.\n\nExamples discussed included:\n* Creating IAM users\n* Listing IAM users\n* Updating users\n* Creating EC2 resources\n* Starting/stopping resources\n* Managing S3\n* Working with DynamoDB\n* Working with SQS\n* Automating other AWS services\n\nThe broader idea was:\n\n> *If an AWS operation can be performed through an API, it can potentially be automated using Boto3.*",
+      "diagram": null
+    },
+    {
+      "id": "s44-mini-projects-and-practice",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "Mini Projects and Practice",
+      "text_md": "Students were encouraged to practice small Python automation projects rather than only watching demonstrations.\n\nExamples mentioned included:\n* Countdown timer\n* Stopwatch\n* Calculator\n* Leap-year program\n* Password-related programs\n* File/ZIP-related automation\n* CSV-related automation\n* Email automation\n* AWS automation\n\nThe purpose is to develop the ability to **read, modify, execute, and troubleshoot Python automation scripts**.",
+      "diagram": null
+    },
+    {
+      "id": "s44-important-devops-workflow-learned",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "Important DevOps Workflow Learned",
+      "text_md": "The session effectively connected several technologies into one practical workflow:\n\n```text\nPython\n   ↓\nVirtual Environment\n   ↓\npip\n   ↓\nPython Libraries\n   ↓\nrequirements.txt\n   ↓\nGit Repository\n   ↓\nPython Automation Script\n   ↓\nBoto3\n   ↓\nAWS APIs\n   ↓\nAWS Resources\n```\n\nThis is the important real-world takeaway from the session.",
+      "diagram": null
+    },
+    {
+      "id": "s44-important-commands-covered",
+      "unit": "s44",
+      "kind": "concept",
+      "title": "Important Commands Covered",
+      "text_md": "```bash\npython --version\n```\n\n```bash\npip install <package>\n```\n\n```bash\npip freeze > requirements.txt\n```\n\n```bash\npip install -r requirements.txt\n```\n\n```bash\ngit clone <repository-url>\n```\n\n```bash\naws configure\n```\n\n```bash\npip install boto3\n```\n\nPython execution was also demonstrated using the general pattern:\n\n```bash\npython main.py\n```",
+      "diagram": null
+    },
+    {
+      "id": "s44-key-interview-takeaways",
+      "unit": "s44",
+      "kind": "overview",
+      "title": "Key Interview Takeaways",
+      "text_md": "1. **Why is Python popular in DevOps?**\n   Because it is easy to use and has extensive libraries for scripting, automation, cloud services, and infrastructure operations.\n\n2. **How do you import a Python library?**\n   Using the `import` keyword.\n\n3. **What is Boto3?**\n   AWS SDK for Python that allows Python applications to interact with AWS services.\n\n4. **Why use a virtual environment?**\n   To isolate project dependencies and avoid conflicts with other Python projects.\n\n5. **What is `requirements.txt`?**\n   A file containing the Python dependencies required by a project.\n\n6. **How do you generate `requirements.txt`?**\n   ```bash\n   pip freeze > requirements.txt\n   ```\n\n7. **How do you install dependencies from it?**\n   ```bash\n   pip install -r requirements.txt\n   ```\n\n8. **How do you configure AWS CLI?**\n   ```bash\n   aws configure\n   ```\n\n9. **How can Python automate AWS?**\n   Through Boto3 and AWS APIs.\n\n10. **Why should DevOps engineers understand Python code even if they aren't Python developers?**\n    Because automation scripts are frequently used for cloud operations, deployment tasks, infrastructure management, monitoring, and repetitive operational work.",
+      "diagram": null
+    },
+    {
+      "id": "s44-final-session-takeaway",
+      "unit": "s44",
+      "kind": "overview",
+      "title": "Final Session Takeaway",
+      "text_md": "The core message of the session was that **DevOps engineers do not need to become advanced Python developers to benefit from Python**. They need enough Python knowledge to understand scripts, use libraries, automate repetitive tasks, manage dependencies, troubleshoot execution issues, and interact with cloud APIs.\n\nThe practical focus moved from **basic Python → mini-project → dependency management → Git → AWS CLI → Boto3 → IAM automation**, giving students a realistic introduction to how Python fits into day-to-day Cloud and DevOps work.",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "Why Python for DevOps?",
+      "prompt": "Why Python for DevOps?",
+      "reference_answer": "* Python is widely used for **automation, scripting, cloud operations, AI, and machine learning**.\n* DevOps engineers use Python to reduce repetitive manual tasks.\n* **Key advantages of Python:**\n  * Easy to read\n  * Easy to write\n  * Easy to maintain\n  * Supported by a large number of libraries\n  * Useful for cloud automation\n* The session specifically emphasized **Python automation for DevOps**, not becoming a full-time Python developer.",
+      "id": "s44-q01",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-aws-automation-with-python",
+        "s44-git-and-python-projects",
+        "s44-important-devops-workflow-learned"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why is Python commonly used in DevOps?",
+      "prompt": "Why is Python commonly used in DevOps?",
+      "reference_answer": "Python is widely used in DevOps because it is easy to read, has many libraries, and is well suited for automation and scripting. DevOps engineers can use Python to automate repetitive tasks, interact with cloud APIs, manage infrastructure, and build operational tools.",
+      "id": "s44-q02",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-aws-automation-use-cases",
+        "s44-aws-automation-with-python",
+        "s44-git-and-python-projects"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the purpose of the import statement in Python?",
+      "prompt": "What is the purpose of the import statement in Python?",
+      "reference_answer": "The `import` statement is used to include a Python module or library in a program so that its functions and features can be used.\n\n**Example:**\n```python\nimport time\n```\nHere, the `time` module is imported into the program.",
+      "id": "s44-q03",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-python-libraries-and-import",
+        "s44-aws-automation-with-python",
+        "s44-git-and-python-projects"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is pip?",
+      "prompt": "What is pip?",
+      "reference_answer": "`pip` is Python's package management tool. It is used to install and manage external Python libraries.\n\n**Example:**\n```bash\npip install boto3\n```\nThis installs the Boto3 library required for AWS automation.",
+      "id": "s44-q04",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-pip-and-python-package-management"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a Python virtual environment?",
+      "prompt": "What is a Python virtual environment?",
+      "reference_answer": "A virtual environment creates an isolated Python environment for a project. It allows a project to have its own dependencies and package versions without affecting other Python projects or the system-wide Python installation.",
+      "id": "s44-q05",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-virtual-environment",
+        "s44-aws-automation-with-python",
+        "s44-git-and-python-projects"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is requirements.txt?",
+      "prompt": "What is requirements.txt?",
+      "reference_answer": "`requirements.txt` contains the Python packages and dependencies required by a project.\n\nWe can generate it using:\n```bash\npip freeze > requirements.txt\n```\n\nAnother machine can install those dependencies using:\n```bash\npip install -r requirements.txt\n```",
+      "id": "s44-q06",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-requirements-txt"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Boto3?",
+      "prompt": "What is Boto3?",
+      "reference_answer": "Boto3 is the AWS SDK for Python. It allows Python programs to communicate with AWS services through AWS APIs.\n\nFor example, Boto3 can be used to automate:\n* IAM\n* EC2\n* S3\n* DynamoDB\n* SQS",
+      "id": "s44-q07",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-aws-services-and-boto3"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you configure AWS CLI credentials?",
+      "prompt": "How do you configure AWS CLI credentials?",
+      "reference_answer": "The AWS CLI can be configured using:\n```bash\naws configure\n```\n\nIt asks for information such as:\n* AWS Access Key ID\n* AWS Secret Access Key\n* Default region\n* Output format\n\nThese credentials allow authenticated AWS CLI and programmatic operations.",
+      "id": "s44-q08",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-aws-cli-configuration"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How can Python be used to automate AWS?",
+      "prompt": "How can Python be used to automate AWS?",
+      "reference_answer": "Python can use Boto3 to communicate with AWS APIs. For example, a Python script can create an IAM user, list users, update resources, or manage EC2 and S3 resources.\n\nThe general flow is:\n\n$$\\text{Python} \\longrightarrow \\text{Boto3} \\longrightarrow \\text{AWS API} \\longrightarrow \\text{AWS Resource}$$",
+      "id": "s44-q09",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-aws-automation-use-cases",
+        "s44-aws-automation-with-python",
+        "s44-git-and-python-projects"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why is requirements.txt useful in a DevOps environment?",
+      "prompt": "Why is requirements.txt useful in a DevOps environment?",
+      "reference_answer": "It makes dependency installation consistent across environments. When a Python application is moved from a developer's machine to a server or CI/CD environment, the required packages can be installed from the same dependency file.",
+      "id": "s44-q10",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-requirements-txt",
+        "s44-aws-automation-use-cases",
+        "s44-important-devops-workflow-learned"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why should a DevOps engineer know Python even if they are not a Python developer?",
+      "prompt": "Why should a DevOps engineer know Python even if they are not a Python developer?",
+      "reference_answer": "DevOps engineers frequently work with automation scripts. They should be able to read, understand, modify, execute, and troubleshoot Python scripts used for cloud automation, deployments, infrastructure management, and repetitive operational tasks.",
+      "id": "s44-q11",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-aws-automation-with-python",
+        "s44-git-and-python-projects",
+        "s44-important-devops-workflow-learned"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Python script works on your laptop but fails on another server. What would you check?",
+      "prompt": "Python script works on your laptop but fails on another server. What would you check?",
+      "reference_answer": "I would first check the Python version and installed dependencies on both systems.\n\nI would compare the dependencies using `requirements.txt`. If the required packages are missing, I would run:\n```bash\npip install -r requirements.txt\n```\n\nI would also consider using a virtual environment to ensure the project has an isolated and consistent dependency environment.",
+      "id": "s44-s01",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-aws-automation-with-python",
+        "s44-git-and-python-projects",
+        "s44-pip-and-python-package-management"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your Python AWS automation script gives an error saying No module named boto3. What would you do?",
+      "prompt": "Your Python AWS automation script gives an error saying No module named boto3. What would you do?",
+      "reference_answer": "The Boto3 package is probably not installed in the current Python environment.\n\nI would install it using:\n```bash\npip install boto3\n```\n\nThen I would verify the installation and rerun the script.\n\nIf a virtual environment is being used, I would make sure I am installing Boto3 inside the correct environment.",
+      "id": "s44-s02",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-aws-automation-with-python",
+        "s44-aws-automation-use-cases",
+        "s44-aws-iam-user-automation"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to run the same Python automation on 10 servers. How would you manage dependencies?",
+      "prompt": "You need to run the same Python automation on 10 servers. How would you manage dependencies?",
+      "reference_answer": "I would create a `requirements.txt` file containing the project's dependencies.\n\nOn each server, I would create a virtual environment and install the dependencies using:\n```bash\npip install -r requirements.txt\n```\n\nThis provides a consistent environment across the servers.",
+      "id": "s44-s03",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-aws-automation-with-python",
+        "s44-aws-automation-use-cases",
+        "s44-aws-iam-user-automation"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your team manually creates IAM users every time a new employee joins. How would you automate this?",
+      "prompt": "Your team manually creates IAM users every time a new employee joins. How would you automate this?",
+      "reference_answer": "I would create a Python script using Boto3.\n\nThe script could accept the username as input and call the appropriate IAM API through Boto3 to create the user.\n\nThe workflow would be:\n\n$$\\text{Input username} \\longrightarrow \\text{Python} \\longrightarrow \\text{Boto3} \\longrightarrow \\text{IAM API} \\longrightarrow \\text{IAM user created}$$\n\nThis would eliminate repetitive manual AWS Console operations.",
+      "id": "s44-s04",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-updating-iam-users",
+        "s44-aws-automation-use-cases",
+        "s44-aws-iam-user-automation"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to list all IAM users automatically every morning. What would you implement?",
+      "prompt": "You need to list all IAM users automatically every morning. What would you implement?",
+      "reference_answer": "I would create a Python script using Boto3 to call the IAM API and retrieve the users.\n\nThe script could then be scheduled using an appropriate scheduling mechanism such as cron on Linux.\n\nThe resulting workflow would be:\n\n$$\\text{Scheduler} \\longrightarrow \\text{Python script} \\longrightarrow \\text{Boto3} \\longrightarrow \\text{IAM} \\longrightarrow \\text{User list}$$",
+      "id": "s44-s05",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-updating-iam-users",
+        "s44-aws-automation-use-cases",
+        "s44-aws-iam-user-automation"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your Python script successfully calls AWS, but you don't know whether the operation actually succeeded. What would you check?",
+      "prompt": "Your Python script successfully calls AWS, but you don't know whether the operation actually succeeded. What would you check?",
+      "reference_answer": "I would inspect the response returned by the AWS API and check the relevant response information, including the HTTP/status information and returned resource details.\n\nFor example, a successful request may return a **200 status code**.\n\nI would also add proper exception handling and logging so failures are clearly reported.",
+      "id": "s44-s06",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-aws-automation-with-python",
+        "s44-git-and-python-projects",
+        "s44-pip-and-python-package-management"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "An employee leaves the company and their IAM username needs to be changed or managed automatically. How could Python help?",
+      "prompt": "An employee leaves the company and their IAM username needs to be changed or managed automatically. How could Python help?",
+      "reference_answer": "I could use Boto3 to interact with IAM programmatically. The script could identify the relevant user and perform the supported IAM operation rather than requiring an administrator to manually perform repetitive operations through the AWS Console.\n\nThe exact API operation would depend on the required IAM change.",
+      "id": "s44-s07",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-updating-iam-users",
+        "s44-aws-automation-use-cases",
+        "s44-aws-automation-with-python"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A Python project has 15 dependencies, and another developer needs to run it. How would you make setup easier?",
+      "prompt": "A Python project has 15 dependencies, and another developer needs to run it. How would you make setup easier?",
+      "reference_answer": "I would maintain a `requirements.txt` file.\n\nThe developer could clone the Git repository, create a virtual environment, and run:\n```bash\npip install -r requirements.txt\n```\n\nThis installs the project's required dependencies without manually installing each package.",
+      "id": "s44-s08",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-git-and-python-projects",
+        "s44-python-mini-project-countdown-timer",
+        "s44-aws-automation-with-python"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You cloned a Python automation project from Git, but the script doesn't run. What would you troubleshoot?",
+      "prompt": "You cloned a Python automation project from Git, but the script doesn't run. What would you troubleshoot?",
+      "reference_answer": "I would troubleshoot systematically:\n1. Check the Python version.\n2. Check whether the required packages are installed.\n3. Look for `requirements.txt`.\n4. Install dependencies.\n5. Check whether a virtual environment is required.\n6. Check AWS CLI configuration if the script interacts with AWS.\n7. Verify AWS credentials and permissions.\n8. Read the actual Python error message.\n9. Run the script again after correcting the issue.",
+      "id": "s44-s09",
+      "unit": "s44",
+      "concept_ids": [
+        "s44-git-and-python-projects",
+        "s44-aws-automation-with-python",
+        "s44-python-mini-project-countdown-timer"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your company wants to automate multiple AWS operations instead of performing them manually through the AWS Console. What approach would you recommend?",
+      "prompt": "Your company wants to automate multiple AWS operations instead of performing them manually through the AWS Console. What approach would you recommend?",
+      "reference_answer": "I would create Python automation using Boto3.\n\nFor example, separate automation modules could handle:\n* IAM user management\n* EC2 operations\n* S3 operations\n* DynamoDB operations\n* SQS operations\n\nI would store the project dependencies in `requirements.txt`, manage the Python environment using a virtual environment, store the code in Git, and securely manage AWS credentials.\n\nThe overall architecture would be:\n\n$$\\text{Git Repository} \\longrightarrow \\text{Python Automation} \\longrightarrow \\text{Boto3} \\longrightarrow \\text{AWS APIs} \\longrightarrow \\text{AWS Services}$$\n\nThis approach makes repetitive cloud operations faster, repeatable, and easier to integrate into DevOps workflows.",
+      "id": "s44-s10",
+      "unit": "s44",
+      "concept_ids": []
+    }
+  ]
+}

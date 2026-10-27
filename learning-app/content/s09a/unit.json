@@ -1,0 +1,628 @@
+{
+  "id": "s09a",
+  "title": "Linux RealWorld Scenarios · Day 5",
+  "subtitle": "Session 09 · Batch-45 · Linux Day-5 — 40 Interview Questions & Answers",
+  "session": 9,
+  "module": "M2 Linux + GCP",
+  "order": 900,
+  "status": "ready",
+  "source_file": "Session-09-Linux-RealWorld-Scenarios/🚀 Day-5 of Linux for DevOps Realtime Interview Batch-45 _ 1st Oct 2026 _ 8_00 AM IST _ Zoom Session 2026-10-01 07_48(GMT+5_30).md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s09a-session-setup-environment",
+      "unit": "s09a",
+      "kind": "practical",
+      "title": "Session Setup & Environment",
+      "text_md": "- Session is **Day 5 of the Linux module** in the CloudDevOpsHub training program.\n- All students instructed to create a fresh **GCP VM** at `console.cloud.google.com` using:\n    - **OS:** Ubuntu 24.04 LTS\n    - **Disk:** 10 GB\n    - **Network:** HTTP and HTTPS traffic enabled (ports 80/443 allowed)\n- Instructor emphasized that enabling HTTP/HTTPS checkboxes during VM creation directly allows internet access on port 80 — a point raised because some students faced connectivity issues the previous day.\n- Students logged in via **SSH through the browser window** (GCP console → VM instance → \"Open in browser window\"), which triggers key transfer and authenticates on port 22.\n- Working directory for the session: `/tmp/day5`",
+      "diagram": null
+    },
+    {
+      "id": "s09a-checking-permissions",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Checking Permissions",
+      "text_md": "- Command to **check** file permissions: `ls -l` (not `chmod`, which is for changing).\n- `ls -l` provides detailed output including permission bits, owner, group, size, and timestamp.\n- `ls` alone lists files; `ls -l` gives \"wider details\" and reports `total 0` for an empty directory.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-understanding-permission-output",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Understanding Permission Output",
+      "text_md": "- First character of `ls -l` output indicates file type:\n    - **`-`** = regular file\n    - **`d`** = directory (folder)\n    - **`l`** = symbolic link; other types include pipe, socket (relevant for networking)\n- Permission string is divided into three groups: **owner**, **group**, **others (public)**.\n- Default directory permissions include extra bits compared to files — interviewers may ask about default permissions.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-changing-permissions-with-chmod",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Changing Permissions with chmod",
+      "text_md": "- **`chmod`** = \"change mode\"; used to modify read (`r`=4), write (`w`=2), execute (`x`=1) permissions.\n- **Symbolic method:** `chmod +x <filename>` grants executable permission to **everyone** (owner, group, others).\n    - Use case: L3/DevOps engineers may need to grant execute-only access to L1 staff who need to run scripts but must not modify them.\n- **Numeric method:** permissions calculated by summing values per group.\n    - Example given: owner=write(2), group=write(2), others=read(4) → `chmod 224 <file>`\n    - `chmod 444` = read-only for all; `chmod 222` = write-only for all\n- Live demo: created file `asasi` and folder `123/folder` in `/tmp/day5`, then demonstrated `chmod +x` and observed the output change in `ls -l`.\n- Interactive exercise: student Sandeep specified permissions (owner=write, group=write, others=read), and instructor derived the numeric value live.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-sticky-bit-q-a-addition",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Sticky Bit (Q&A Addition)",
+      "text_md": "- **Sticky bit** restricts deletion: when set on a directory, only the **file owner** can delete or modify their own files, even if others have write access.\n- Applied with `chmod +t <directory>`; removed with `chmod -t <directory>`.\n- Interview-relevant concept; discussed during Q&A at student Mithun's request.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-concept",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Concept",
+      "text_md": "- **Ownership** = whoever created the file is the owner; files created as `root` have `root` as owner.\n- Ownership is analogous to a property registry — the name on the registry is the owner.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-changing-ownership-with-chown",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Changing Ownership with chown",
+      "text_md": "- **`chown`** = \"change owner\"; syntax: `chown <new_owner>:<group> <filename>`\n- Live demo steps:\n    1. Created a new user: `adduser vinod` (password: `12345`)\n    2. Created file `file2` as root in `/tmp/day5`\n    3. Ran `chown vinod:root file2` (or `chown vinod <file>`)\n    4. Verified with `ls -l` — owner column changed from `root` to `vinod`\n- If no output appears after running `chown`, it means the command succeeded.\n- **Key interview point:** to change file ownership → use `chown`; to change permissions → use `chmod`.\n- Ownership change does **not** rename the file; only the owner metadata changes.\n- Students asked to independently: create a user, create a file, and change ownership — then share screenshots.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-ssh-key-management-recap-context",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "SSH Key Management (Recap & Context)",
+      "text_md": "- Public/private key pairs are generated using a key-generation command; two key types are produced simultaneously.\n- **Public key:** can and should be shared; placed on the remote server.\n- **Private key:** never shared; stays on the local machine; functions as a password.\n- Encryption/decryption: public key encrypts, private key decrypts; both must match for SSH authentication.\n- Keys are generated using cryptographic algorithms (e.g., **SHA-256**); algorithm choice affects security level.\n- AWS-specific SSH key behavior noted as slightly different from GCP — to be covered in the AWS module.\n- Interview Q raised: if unable to connect via SSH, possible reasons include SSH service being down, firewall/port 22 blocked, incorrect key, or no network access.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-overview",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Overview",
+      "text_md": "- **Package managers** handle installation, removal, update, and search of software packages on Linux.\n- Two primary Linux package managers:\n    - **`yum`** (Yellowdog Updater Modified / \"Yellow Dog\") — used on **Red Hat family** (CentOS, Fedora, AWS Linux)\n    - **`apt`** (Advanced Package Tool) — used on **Debian/Ubuntu family**\n- Current training uses Ubuntu → `apt` is the relevant package manager.\n- Package manager comparison across OSes:\n    - **Mac OS:** Homebrew (`brew`)\n    - **Windows:** Chocolatey (also MSI installer)\n    - **Linux RPM-based:** `yum` / `dnf`",
+      "diagram": null
+    },
+    {
+      "id": "s09a-using-apt",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Using apt",
+      "text_md": "- Best practice workflow:\n    1. `sudo apt-get update` — refresh package index (always run first; mention in interviews)\n    2. `sudo apt install <package>` — install software\n    3. `sudo apt remove <package>` — remove software\n    4. Upgrade a specific package with the upgrade command\n- Configuration file location: `/etc/apt/apt.config`\n- **Source list** (`/etc/apt/sources.list`): tells `apt` where to download packages from.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-jenkins-installation-demo-live",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Jenkins Installation Demo (Live)",
+      "text_md": "- **Problem demonstrated:** running `sudo apt install jenkins` fails because Ubuntu does not know what Jenkins is by default — package not in default sources.\n- **Solution:** manually add Jenkins repository info to the source list.\n    - Steps from Jenkins official documentation:\n        1. Install Java dependency first: `sudo apt install openjdk-21-jre` (Java Runtime Environment required before Jenkins)\n        2. Add Jenkins GPG key and repository URL to sources list (three commands copied from Jenkins website)\n        3. Run `sudo apt-get update` to refresh\n        4. Run `sudo apt install jenkins` — now succeeds because the source is known\n- **Interview answer:** \"If a package is not available directly, manually add the source repository URL to the source list, then update and install.\"\n- Post-install verification: accessed Jenkins on the browser to confirm it was running.\n- Dependency concept: Jenkins requires Java; Java must be installed first — this is a **dependency**.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-process-overview-interview-critical",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Process Overview (Interview-Critical)",
+      "text_md": "Ordered sequence from power-on to login screen:\n\n1. **Power On**\n2. **BIOS** (Basic Input/Output System) — detects all hardware (RAM, CPU, storage, peripherals); instructor's laptop BIOS took ~8.4 seconds\n3. **MBR / GPT** — Master Boot Record or GUID Partition Table; hardware configuration loaded\n4. **Bootloader (GRUB)** — Grand Unified Bootloader; loads kernel configuration from boot device\n5. **Kernel** — heart of the OS; starts the operating system; reads hardware soft/hard limits\n6. **Init** — initialization of software applications and startup scripts; run-level scripts execute\n7. **Login Screen / User Interface** — user-related services and wallpaper load",
+      "diagram": null
+    },
+    {
+      "id": "s09a-run-levels-raised-by-student-shankar",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Run Levels (Raised by Student Shankar)",
+      "text_md": "- Linux has **7 run levels** (0–6):\n    - **`init 0`** — shutdown and power off\n    - **`init 1`** — single-user mode (maintenance/admin tasks only)\n    - **`init 6`** — reboot\n- Running `init 0` on GCP was noted as equivalent to stopping the VM from the cloud console.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-inspecting-boot-hardware",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Inspecting Boot & Hardware",
+      "text_md": "- **`dmesg`** — displays all kernel ring buffer messages from boot; shows every process executed during startup.\n- **`dmesg | wc -l`** — pipes output to word count; instructor's GCP machine showed **585 lines** (585 boot processes); varies per machine depending on installed software.\n- **`lsblk`** — lists block devices (storage blocks/partitions).\n    - Interview distinction: **block** = raw storage unit; **partition** = logical division of a block/disk (e.g., C: and D: drives in Windows)\n- **`cat /proc/cpuinfo`** — CPU hardware information\n- **`free -h`** — memory information\n- **`df -h`** — disk space information\n- **`lshw`** — lists all hardware on the machine\n- Windows equivalent: **Device Manager** or `msinfo32` (System Information)\n- Cloud engineers don't run these commands often in real-time but must know them for interviews.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-status-code-categories",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Status Code Categories",
+      "text_md": "Four categories, each with a distinct meaning:\n\n|  Range  |      Meaning      |                       Notes                       |\n|---------|-------------------|---------------------------------------------------|\n| **1xx** | Informational     | No problem; just information                      |\n| **2xx** | Success           | 200 OK, 204 No Content, 206 Partial Content       |\n| **3xx** | Redirection       | 301 Permanent, 302 Temporary redirect             |\n| **4xx** | Client-side error | 400 Bad Request, 404 Not Found, 403 Forbidden     |\n| **5xx** | Server-side error | Service down, gateway timeout, no internet access |",
+      "diagram": null
+    },
+    {
+      "id": "s09a-key-points",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Key Points",
+      "text_md": "- **302 Redirection** is not an error — it is intentional and beneficial; e.g., clicking a YouTube video embedded on the CloudDevOpsHub website redirects to YouTube, reducing storage and traffic load on the host site.\n- **404 live demo:** instructor changed a GitHub repo from public to private; students received 404 (or 403) when trying to access it — confirming \"not found / not authorized.\"\n- **500 errors** indicate server-side issues: service down, gateway down, longer response times, or no internet.\n- **403** = no write access / not authorized to the project (demonstrated in GCP context).",
+      "diagram": null
+    },
+    {
+      "id": "s09a-troubleshooting-website-slowness",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Troubleshooting Website Slowness",
+      "text_md": "- Use **Chrome DevTools** (`Ctrl+Shift+I`) → Network tab → refresh the page to observe all requests.\n- Instructor's site took **1.04 seconds** to load; individual events took up to **681 milliseconds**.\n- Items taking **>300ms** are candidates for optimization — the developer (frontend/backend) is responsible for fixing these.\n- For a broken government/high-traffic site (e.g., IRCTC), many requests show as `fail` — HTML, JavaScript, popup agents all failing — causing overall slowness.\n- DevOps/engineer role: **identify and report** the problem (status codes, slow events); **developer** fixes it.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-daily-tasks-interview-prep-structure",
+      "unit": "s09a",
+      "kind": "practical",
+      "title": "Daily Tasks & Interview Prep Structure",
+      "text_md": "- Course GitHub repository at `clouddevopsup.com` → Roadmap → Daily Slavers (daily tasks).\n- Each session file contains keywords, task lists, and **20 interview questions + 20 scenario questions** per day.\n- **Challenge goal:** complete 100 tasks, 40 practicals, 10 projects over the course duration.\n- Students can post LinkedIn updates for each completed task (e.g., \"Session 5 completed — GCP account created, screenshot attached\").\n- Repository valid for **1,000 days**; students encouraged not to be fully dependent on it but to self-practice.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-linkedin-badge-system",
+      "unit": "s09a",
+      "kind": "practical",
+      "title": "LinkedIn & Badge System",
+      "text_md": "- Students with **5+ LinkedIn posts** on a module topic qualify for a **module expert badge**.\n- Badge assignment is AI-checked weekly (sync happens once per week); posting and immediately expecting a badge will not work — wait up to one week after posting.\n- Tags must be correct; emojis alone are not sufficient for AI quality checks.\n- Instructor reviewed student Gopal's LinkedIn post live and confirmed it had been submitted.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-interview-preparation-advice",
+      "unit": "s09a",
+      "kind": "practical",
+      "title": "Interview Preparation Advice",
+      "text_md": "- Know **5 commands from each category**: networking, monitoring, day-to-day, troubleshooting, hardware.\n- Rejection in interviews is helpful — it signals what to study next.\n- For experienced candidates: align answers to resume; if the interviewer asks end-to-end access flow, walk through IAM → compute → network → authentication (Active Directory / key-based).\n- Mock interview recordings are not shared publicly due to privacy (breakout room format); students can observe from the main room.",
+      "diagram": null
+    },
+    {
+      "id": "s09a-quick-revision-day-5-commands",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Quick Revision — Day-5 Commands",
+      "text_md": "```bash\nls -l\nchmod +x script.sh\nchmod 444 file.txt\nchmod 222 file.txt\nchmod 224 file.txt\nchmod +t /shared\nchmod -t /shared\n\nchown vinod file2\nchown vinod:root file2\n\nsudo apt-get update\nsudo apt install <package>\nsudo apt remove <package>\n\ndmesg\ndmesg | wc -l\nlsblk\ncat /proc/cpuinfo\nfree -h\ndf -h\nlshw\n```",
+      "diagram": null
+    },
+    {
+      "id": "s09a-day-5-interview-focus",
+      "unit": "s09a",
+      "kind": "concept",
+      "title": "Day-5 Interview Focus",
+      "text_md": "Focus especially on:\n\n- `chmod` numeric and symbolic permissions\n- Owner vs group vs others\n- Sticky bit\n- `chown` vs `chmod`\n- `apt` vs `yum`\n- `/etc/apt/sources.list`\n- Jenkins repository and Java dependency\n- Linux boot sequence\n- `dmesg`, `lsblk`, `free -h`, `df -h`, and `lshw`\n- HTTP 2xx, 3xx, 4xx, and 5xx status codes\n- SSH troubleshooting\n- Website slowness troubleshooting",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is the purpose of ls -l?",
+      "prompt": "What is the purpose of ls -l?",
+      "reference_answer": "`ls -l` displays detailed file information such as file type, permissions, owner, group, size, and timestamp.",
+      "id": "s09a-q01",
+      "unit": "s09a",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What does the first character in ls -l output represent?",
+      "prompt": "What does the first character in ls -l output represent?",
+      "reference_answer": "It represents the file type. `-` means regular file, `d` means directory, and `l` means symbolic link.",
+      "id": "s09a-q02",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-understanding-permission-output"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What are the three permission groups in Linux?",
+      "prompt": "What are the three permission groups in Linux?",
+      "reference_answer": "The three groups are **owner**, **group**, and **others**.",
+      "id": "s09a-q03",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-changing-permissions-with-chmod",
+        "s09a-checking-permissions",
+        "s09a-understanding-permission-output"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is chmod?",
+      "prompt": "What is chmod?",
+      "reference_answer": "`chmod` means change mode. It is used to change read, write, and execute permissions on files and directories.",
+      "id": "s09a-q04",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-changing-permissions-with-chmod"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What do r, w, and x represent?",
+      "prompt": "What do r, w, and x represent?",
+      "reference_answer": "`r` means read, `w` means write, and `x` means execute. Their numeric values are 4, 2, and 1 respectively.",
+      "id": "s09a-q05",
+      "unit": "s09a",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What does chmod 444 file.txt do?",
+      "prompt": "What does chmod 444 file.txt do?",
+      "reference_answer": "It gives read-only permission to the owner, group, and others.",
+      "id": "s09a-q06",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-changing-permissions-with-chmod"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does chmod 222 file.txt do?",
+      "prompt": "What does chmod 222 file.txt do?",
+      "reference_answer": "It gives write-only permission to the owner, group, and others.",
+      "id": "s09a-q07",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-changing-permissions-with-chmod"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does chmod +x script.sh do?",
+      "prompt": "What does chmod +x script.sh do?",
+      "reference_answer": "It adds execute permission to the file for owner, group, and others.",
+      "id": "s09a-q08",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-changing-permissions-with-chmod"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the sticky bit?",
+      "prompt": "What is the sticky bit?",
+      "reference_answer": "The sticky bit restricts deletion in a directory so that users can delete or modify their own files even when others have write access to the directory. It can be set using `chmod +t <directory>`.",
+      "id": "s09a-q09",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-sticky-bit-q-a-addition"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is chown used for?",
+      "prompt": "What is chown used for?",
+      "reference_answer": "`chown` is used to change file or directory ownership.",
+      "id": "s09a-q10",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-changing-ownership-with-chown"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between chmod and chown?",
+      "prompt": "What is the difference between chmod and chown?",
+      "reference_answer": "`chmod` changes permissions, while `chown` changes ownership.",
+      "id": "s09a-q11",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-changing-ownership-with-chown",
+        "s09a-changing-permissions-with-chmod"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the syntax for changing owner and group?",
+      "prompt": "What is the syntax for changing owner and group?",
+      "reference_answer": "A common syntax is `chown <new_owner>:<group> <filename>`.",
+      "id": "s09a-q12",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-changing-ownership-with-chown",
+        "s09a-changing-permissions-with-chmod"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What are Linux package managers?",
+      "prompt": "What are Linux package managers?",
+      "reference_answer": "Package managers install, remove, update, and search software packages. The session covered `apt` for Debian/Ubuntu systems and `yum` for Red Hat-family systems.",
+      "id": "s09a-q13",
+      "unit": "s09a",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between apt and yum?",
+      "prompt": "What is the difference between apt and yum?",
+      "reference_answer": "`apt` is commonly used on Debian/Ubuntu systems, while `yum` is used with Red Hat-family and RPM-based systems such as CentOS and AWS Linux.",
+      "id": "s09a-q14",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-using-apt"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why do we run sudo apt-get update before installing packages?",
+      "prompt": "Why do we run sudo apt-get update before installing packages?",
+      "reference_answer": "It refreshes the package index so the system knows about the latest available packages from configured repositories.",
+      "id": "s09a-q15",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-run-levels-raised-by-student-shankar",
+        "s09a-using-apt"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is /etc/apt/sources.list?",
+      "prompt": "What is /etc/apt/sources.list?",
+      "reference_answer": "It contains repository information that tells `apt` where it can download packages.",
+      "id": "s09a-q16",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-using-apt"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why did sudo apt install jenkins initially fail in the session?",
+      "prompt": "Why did sudo apt install jenkins initially fail in the session?",
+      "reference_answer": "Jenkins was not available in the default configured Ubuntu package sources. The Jenkins repository had to be added, followed by `apt-get update`.",
+      "id": "s09a-q17",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-jenkins-installation-demo-live",
+        "s09a-session-setup-environment",
+        "s09a-using-apt"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why is Java installed before Jenkins?",
+      "prompt": "Why is Java installed before Jenkins?",
+      "reference_answer": "Jenkins requires Java to run. Java is therefore a dependency for Jenkins.",
+      "id": "s09a-q18",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-jenkins-installation-demo-live"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the Linux boot process?",
+      "prompt": "What is the Linux boot process?",
+      "reference_answer": "The session described the sequence as Power On → BIOS → MBR/GPT → Bootloader/GRUB → Kernel → Init → Login/User Interface.",
+      "id": "s09a-q19",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-inspecting-boot-hardware",
+        "s09a-process-overview-interview-critical"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the purpose of dmesg?",
+      "prompt": "What is the purpose of dmesg?",
+      "reference_answer": "`dmesg` displays kernel ring-buffer messages, including messages generated during system boot and hardware/kernel initialization.",
+      "id": "s09a-q20",
+      "unit": "s09a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A script gives \"Permission denied\" when you try to execute it. What will you check?",
+      "prompt": "A script gives \"Permission denied\" when you try to execute it. What will you check?",
+      "reference_answer": "First check the permissions using `ls -l script.sh`. If execute permission is missing, use `chmod +x script.sh` or apply the required numeric permissions.",
+      "id": "s09a-s01",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-changing-permissions-with-chmod",
+        "s09a-checking-permissions",
+        "s09a-understanding-permission-output"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A developer should only be able to read a file. What permission can you use?",
+      "prompt": "A developer should only be able to read a file. What permission can you use?",
+      "reference_answer": "If everyone should have read-only access, `chmod 444 file.txt` can be used. If only a specific owner/group/others combination is required, calculate the permission value accordingly.",
+      "id": "s09a-s02",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-changing-permissions-with-chmod",
+        "s09a-checking-permissions",
+        "s09a-understanding-permission-output"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need owner=write, group=write, and others=read. What chmod value will you use?",
+      "prompt": "You need owner=write, group=write, and others=read. What chmod value will you use?",
+      "reference_answer": "Write is 2 and read is 4, so the permission is `224`. Use `chmod 224 <file>`.",
+      "id": "s09a-s03",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-changing-permissions-with-chmod"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Multiple users have write access to a shared directory, but users should not delete each other's files. What will you use?",
+      "prompt": "Multiple users have write access to a shared directory, but users should not delete each other's files. What will you use?",
+      "reference_answer": "Set the sticky bit on the directory using `chmod +t <directory>`.",
+      "id": "s09a-s04",
+      "unit": "s09a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A file was created by root but must now belong to user vinod. What will you do?",
+      "prompt": "A file was created by root but must now belong to user vinod. What will you do?",
+      "reference_answer": "Use `chown`, for example `chown vinod file2`, and verify the result with `ls -l`.",
+      "id": "s09a-s05",
+      "unit": "s09a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "You changed the owner of a file, but its filename did not change. Is that expected?",
+      "prompt": "You changed the owner of a file, but its filename did not change. Is that expected?",
+      "reference_answer": "Yes. `chown` changes ownership metadata; it does not rename the file.",
+      "id": "s09a-s06",
+      "unit": "s09a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Jenkins is not found when installing it with apt. What is your troubleshooting approach?",
+      "prompt": "Jenkins is not found when installing it with apt. What is your troubleshooting approach?",
+      "reference_answer": "Check whether the Jenkins repository is configured. Add the Jenkins repository and its GPG key according to the official Jenkins installation instructions, run `sudo apt-get update`, and then install Jenkins.",
+      "id": "s09a-s07",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-jenkins-installation-demo-live",
+        "s09a-troubleshooting-website-slowness",
+        "s09a-using-apt"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Jenkins installation fails because Java is missing. What should you do?",
+      "prompt": "Jenkins installation fails because Java is missing. What should you do?",
+      "reference_answer": "Install the required Java runtime first, such as `sudo apt install openjdk-21-jre`, then continue with Jenkins installation.",
+      "id": "s09a-s08",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-jenkins-installation-demo-live"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You added a new repository but apt still cannot find the package. What should you check?",
+      "prompt": "You added a new repository but apt still cannot find the package. What should you check?",
+      "reference_answer": "Run `sudo apt-get update` after adding the repository and verify that the repository entry is correctly configured.",
+      "id": "s09a-s09",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-using-apt"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "An Ubuntu server is starting and you want to understand what happened during boot. Which command can help?",
+      "prompt": "An Ubuntu server is starting and you want to understand what happened during boot. Which command can help?",
+      "reference_answer": "Use `dmesg` to inspect kernel and boot-related messages.",
+      "id": "s09a-s10",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-inspecting-boot-hardware"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You want to count the number of lines in the kernel boot messages. What command can you use?",
+      "prompt": "You want to count the number of lines in the kernel boot messages. What command can you use?",
+      "reference_answer": "Use `dmesg | wc -l`. The exact number varies between machines.",
+      "id": "s09a-s11",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-inspecting-boot-hardware"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You want to inspect storage devices and partitions on a Linux VM. Which command will you use?",
+      "prompt": "You want to inspect storage devices and partitions on a Linux VM. Which command will you use?",
+      "reference_answer": "Use `lsblk` to list block devices and their partition structure.",
+      "id": "s09a-s12",
+      "unit": "s09a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to check CPU information from Linux. Which command was covered?",
+      "prompt": "You need to check CPU information from Linux. Which command was covered?",
+      "reference_answer": "Use `cat /proc/cpuinfo`.",
+      "id": "s09a-s13",
+      "unit": "s09a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A server is running out of memory. Which command can quickly show memory usage?",
+      "prompt": "A server is running out of memory. Which command can quickly show memory usage?",
+      "reference_answer": "Use `free -h` for human-readable memory information.",
+      "id": "s09a-s14",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-quick-revision-day-5-commands",
+        "s09a-run-levels-raised-by-student-shankar"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You suspect a disk-space problem on a Linux server. Which command will you use?",
+      "prompt": "You suspect a disk-space problem on a Linux server. Which command will you use?",
+      "reference_answer": "Use `df -h` to check filesystem disk usage in a human-readable format.",
+      "id": "s09a-s15",
+      "unit": "s09a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A website returns HTTP 404. What does it generally indicate?",
+      "prompt": "A website returns HTTP 404. What does it generally indicate?",
+      "reference_answer": "A 404 indicates that the requested resource was not found. The session demonstrated this with a GitHub repository whose access/state had changed.",
+      "id": "s09a-s16",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-troubleshooting-website-slowness"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A website returns HTTP 403. What does it indicate?",
+      "prompt": "A website returns HTTP 403. What does it indicate?",
+      "reference_answer": "It indicates that access is forbidden or the user is not authorized to access the requested resource.",
+      "id": "s09a-s17",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-troubleshooting-website-slowness"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A website returns HTTP 500. Where would you investigate first?",
+      "prompt": "A website returns HTTP 500. Where would you investigate first?",
+      "reference_answer": "Investigate the server-side application/service, gateway, or backend because 5xx responses indicate server-side problems.",
+      "id": "s09a-s18",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-troubleshooting-website-slowness"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A website is loading slowly. How can a DevOps engineer identify which requests are slow?",
+      "prompt": "A website is loading slowly. How can a DevOps engineer identify which requests are slow?",
+      "reference_answer": "Open Chrome DevTools using `Ctrl+Shift+I`, go to the Network tab, refresh the page, and inspect request timings and failed requests. The session emphasized identifying/reporting the issue while the relevant developer fixes application-level problems.",
+      "id": "s09a-s19",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-troubleshooting-website-slowness"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You cannot connect to a Linux VM through SSH. What common causes should you check?",
+      "prompt": "You cannot connect to a Linux VM through SSH. What common causes should you check?",
+      "reference_answer": "Check whether the SSH service is running, port 22 is allowed through the firewall/security rules, the correct key is being used, and the VM has network connectivity.",
+      "id": "s09a-s20",
+      "unit": "s09a",
+      "concept_ids": [
+        "s09a-ssh-key-management-recap-context"
+      ]
+    }
+  ]
+}

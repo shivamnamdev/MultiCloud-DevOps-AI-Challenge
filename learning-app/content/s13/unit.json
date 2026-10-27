@@ -1,0 +1,490 @@
+{
+  "id": "s13",
+  "title": "EC2 Configuration Storage · Day 4",
+  "subtitle": "Session 13 · Batch-45 · AWS Day 4 - Session Summary: EC2 Ecosystem & Advanced Operations",
+  "session": 13,
+  "module": "M3 AWS",
+  "order": 1300,
+  "status": "ready",
+  "source_file": "Session-13-EC2-Configuration-Storage/🚀 Day-4 of AWS with Batch-45 | 08th Oct 2026 .md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s13-mindset-shift-ec2-is-an-ecosystem-not-just-a-vm",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Mindset Shift: EC2 is an Ecosystem, Not Just a VM",
+      "text_md": "A major interview and practical takeaway from this session is redefining how we describe Amazon EC2:\n\n- **Common Student Mistake**: Describing EC2 merely as \"a virtual machine in the cloud.\"\n- **Production / Interview Reality**: EC2 is an entire **cloud ecosystem** comprising:\n  - **Compute**: Instances, instance types, dedicated hosts, spot instances, savings plans.\n  - **Images**: Amazon Machine Images (AMIs), catalog, AWS Marketplace.\n  - **Storage**: Elastic Block Store (EBS) volumes, snapshots, Data Lifecycle Manager.\n  - **Networking & Interfaces**: Elastic Network Interfaces (ENI), Elastic IP addresses (EIP).\n  - **Security**: Security Groups (firewalls at the instance level), key pairs.\n  - **Load Distribution**: Elastic Load Balancers (ALB, NLB, GWLB, CLB) and Target Groups.\n  - **Elasticity & High Availability**: Auto Scaling Groups (ASG) and Launch Templates.",
+      "diagram": null
+    },
+    {
+      "id": "s13-ec2-dashboard",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "EC2 Dashboard",
+      "text_md": "- Central management console showing real-time operational status of all EC2 resources in the currently selected region.\n- Displays counts of running instances, dedicated hosts, volumes, snapshots, load balancers, security groups, and placement groups.",
+      "diagram": null
+    },
+    {
+      "id": "s13-aws-global-view",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "AWS Global View",
+      "text_md": "- A centralized, global view across all AWS regions.\n- Instead of manually switching regions (e.g., from Mumbai `ap-south-1` to N. Virginia `us-east-1` or Frankfurt `eu-central-1`), Global View aggregates resources across every region in a single table.\n- **Resource Billing Distinction**:\n  - **Free Resources (No hourly charge)**: VPCs, Subnets, Security Groups, Route Tables. You do not need to delete these to avoid bills.\n  - **Chargeable Resources**: Running EC2 instances, provisioned EBS volumes, unattached/idle Elastic IPs, and active Load Balancers.",
+      "diagram": null
+    },
+    {
+      "id": "s13-events-tab",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Events Tab",
+      "text_md": "- Displays AWS-initiated activities scheduled for your infrastructure.\n- Includes scheduled maintenance, underlying hardware retirement, host reboots, regional upgrades, and failover notices.",
+      "diagram": null
+    },
+    {
+      "id": "s13-instance-lifecycle-states",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Instance Lifecycle States",
+      "text_md": "- **Running**: Active, compute charges apply.\n- **Stopped**: Compute charges stop; EBS storage volume charges continue.\n- **Terminated**: Instance is deleted; it remains visible in the AWS console for approximately **15 to 20 minutes** before disappearing automatically.",
+      "diagram": null
+    },
+    {
+      "id": "s13-key-ami-concepts",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Key AMI Concepts",
+      "text_md": "- **AMI ID**: A unique identifier (e.g., `ami-0abcdef1234567890`) assigned to each AMI within a region. It serves as the primary reference when automating infrastructure deployments (via scripts, Terraform, or CloudFormation).\n- **Architecture**: Modern workloads almost exclusively run on **64-bit (x86)** or **64-bit (Arm / AWS Graviton)** architectures. 32-bit is deprecated in production.\n- **Selection Criteria**:\n  - Client and application requirements.\n  - OS distribution (Amazon Linux 2023, Ubuntu, RHEL, Windows Server).\n  - Always prefer **Verified / Official AMIs** from AWS or trusted Marketplace vendors for production security.",
+      "diagram": null
+    },
+    {
+      "id": "s13-ami-catalog-aws-marketplace",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "AMI Catalog & AWS Marketplace",
+      "text_md": "- **AMI Catalog**: A pre-organized directory within AWS featuring Quick Start AMIs, Community AMIs, and private AMIs.\n- **AWS Marketplace**: A commercial repository with over 5,000+ pre-built AMIs provided by third-party vendors (e.g., CIS hardened benchmarks, pre-installed security agents, ready-to-run enterprise tools).",
+      "diagram": null
+    },
+    {
+      "id": "s13-step-by-step-hands-on-creating-a-custom-ami",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Step-by-Step Hands-On: Creating a Custom AMI",
+      "text_md": "1. Select an existing running EC2 instance.\n2. Click **Actions** > **Image and templates** > **Create image**.\n3. **Configure Image Parameters**:\n   - **Image name**: Enter a descriptive name (e.g., `Production-Web-AMI`).\n   - **Image description**: Detail the installed packages (e.g., `Amazon Linux 2023 with NGINX pre-configured`).\n   - **No reboot checkbox**:\n     - *Checked*: The instance will NOT reboot during creation. Faster, but risks data inconsistency if applications are writing data during the snapshot process.\n     - *Unchecked (Default & Recommended)*: The instance reboots briefly to flush file system buffers and ensure snapshot consistency.\n   - **Storage volume settings**: Review or expand the root volume size if required.\n4. Click **Create image**.\n5. Navigate to **AMIs** in the left menu. Status will transition from `Pending` to `Available`.",
+      "diagram": null
+    },
+    {
+      "id": "s13-real-world-production-use-case-the-golden-ami",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Real-World Production Use Case: The \"Golden AMI\"",
+      "text_md": "- **Scenario**: A company onboarded 100 developers or needs to spin up 100 application servers.\n- **Bad Approach**: Launch 100 raw base Linux instances and manually install software (Git, Docker, NGINX, security agents) on every single server.\n- **Best Practice (Golden AMI)**:\n  1. Configure one base instance with all enterprise-required packages, security tools, and configurations.\n  2. Create a custom AMI (Golden AMI).\n  3. Launch all 100 instances from this custom AMI in minutes with zero manual setup.",
+      "diagram": null
+    },
+    {
+      "id": "s13-ami-vs-launch-template",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "AMI vs. Launch Template",
+      "text_md": "- **AMI**: The packaged disk image containing the operating system, file system, installed packages, and application code.\n- **Launch Template**: A configuration blueprint specifying *how* an instance should launch (instance type, AMI ID, key pair, security groups, subnet, tags, user data script, storage mappings).",
+      "diagram": null
+    },
+    {
+      "id": "s13-ec2-instance-purchasing-pricing-models",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "EC2 Instance Purchasing & Pricing Models",
+      "text_md": "AWS offers multiple purchasing options to optimize operational costs:\n\n| Model | How It Works | Cost Savings | Primary Use Case |\n| :--- | :--- | :--- | :--- |\n| **On-Demand** | Pay strictly per second/hour for active compute with no long-term commitment. | Baseline pricing (0% discount) | Unpredictable, short-term workloads, development, testing. |\n| **Spot Instances** | Bid on spare, unused AWS datacenter capacity. AWS can reclaim instances with a 2-minute notice if on-demand demand spikes. | Up to 70% – 90% discount | Batch processing, background worker jobs, stateless architectures, non-critical rendering. |\n| **Savings Plans** | Flexible discount model committing to a consistent dollar spend per hour (e.g., $10/hour) for a 1 or 3-year term across compute services. | Up to 66% – 72% discount | Dynamic, evolving workloads across EC2, AWS Lambda, and AWS Fargate. |\n| **Reserved Instances (RI)** | Commit to specific instance configurations (family, region) for a 1-year or 3-year period. Payment options: All Upfront, Partial Upfront, or No Upfront (monthly installments). | Up to 60% – 72% discount | Steady-state, 24/7 predictable production workloads (core databases, main web tiers). |\n| **Dedicated Hosts** | Physical server dedicated completely for a single organization's use. | High fixed server cost | Strict regulatory compliance, hardware isolation, or Bring-Your-Own-License (BYOL) software (Windows, Oracle). |\n| **Capacity Reservations** | Reserve compute capacity in a specific Availability Zone ahead of time for any duration without commitment discounts unless paired with Savings Plans. | Standard On-Demand rates unless combined with RI/Savings Plans | High-traffic seasonal events (e.g., Big Billion Days, Diwali sales, major product launches) ensuring servers can definitely launch. |\n\n### Real-World Production Sizing Baseline\nIn corporate production environments, standard baseline compute instances often start around:\n- **RAM**: 16 GB+\n- **CPU**: 4 to 16 vCPU Cores\n- **Storage**: 512 GB+ EBS GP3 volume",
+      "diagram": null
+    },
+    {
+      "id": "s13-elastic-block-store-ebs-volumes",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Elastic Block Store (EBS) Volumes",
+      "text_md": "- A persistent, block-level storage volume directly attached to an EC2 instance.\n- Operates like a virtual hard disk (e.g., `C:` drive or `/dev/xvda`).\n- **Availability Zone Restriction**: An EBS volume can only be attached to an EC2 instance residing in the **exact same Availability Zone** (e.g., a volume created in `ap-south-1a` cannot attach directly to an instance in `ap-south-1b`).",
+      "diagram": null
+    },
+    {
+      "id": "s13-snapshots",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Snapshots",
+      "text_md": "- Point-in-time backups of EBS volumes stored incrementally in Amazon S3.\n- Only blocks that have changed since the previous snapshot are saved, reducing storage consumption.",
+      "diagram": null
+    },
+    {
+      "id": "s13-the-5-core-rules-of-volumes-snapshots-and-amis",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "The 5 Core Rules of Volumes, Snapshots, and AMIs",
+      "text_md": "Vikas highlighted the core lifecycle relationships that frequently appear in technical interviews:\n\n1. **From an EC2 instance**: You create an **AMI** (captures OS, installed software, configuration, and root drive).\n2. **From an EBS volume**: You create a **Snapshot** (captures data block-by-block).\n3. **From an EBS snapshot**: You can restore/create a new **EBS Volume**.\n4. **From an EBS snapshot**: You can also register and create an **AMI**.\n5. **Deciding between Volume vs. AMI from Snapshot**:\n   - If you only need data or an extra storage disk to attach to an existing VM, convert the snapshot to an **EBS Volume**.\n   - If you need a bootable operating system to launch new instances, convert the snapshot to an **AMI**.",
+      "diagram": null
+    },
+    {
+      "id": "s13-step-by-step-hands-on-snapshot-creation-volume-recovery-and-attachment",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Step-by-Step Hands-On: Snapshot Creation, Volume Recovery, and Attachment",
+      "text_md": "1. **Take Snapshot**:\n   - Navigate to **Volumes** > Select the attached EBS volume.\n   - Click **Actions** > **Create snapshot**.\n   - Name: `backup-snapshot-1` > Click **Create snapshot**.\n   - Under **Snapshots**, status changes from `Pending` to `Completed`.\n2. **Restore Volume from Snapshot**:\n   - Select the completed snapshot.\n   - Click **Actions** > **Create volume from snapshot**.\n   - Specify the target **Availability Zone** (must match your target EC2 instance's AZ).\n   - Click **Create volume**.\n3. **Attach Volume to EC2**:\n   - Go to **Volumes** > Select the restored volume (status: `Available`).\n   - Click **Actions** > **Attach volume**.\n   - Select the target running instance ID and assign the device name (e.g., `/dev/sdf`).\n   - Click **Attach volume**. Status changes to `In-use`.",
+      "diagram": null
+    },
+    {
+      "id": "s13-amazon-data-lifecycle-manager-dlm",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Amazon Data Lifecycle Manager (DLM)",
+      "text_md": "- Built-in AWS service that automates the creation, retention, and deletion of EBS volume snapshots.\n- **Configuration Workflow**:\n  - Define target resource tags (e.g., `Environment = Production`).\n  - Set schedule (e.g., take snapshot daily at 02:00 UTC).\n  - Set retention policy (e.g., retain for 30 days, then delete automatically).\n  - Prevents snapshot accumulation and unexpected storage bills.",
+      "diagram": null
+    },
+    {
+      "id": "s13-fundamentals",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Fundamentals",
+      "text_md": "- A virtual, stateful firewall operating at the EC2 instance level.\n- Controls inbound (ingress) and outbound (egress) network traffic.",
+      "diagram": null
+    },
+    {
+      "id": "s13-inbound-vs-outbound-rules",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Inbound vs. Outbound Rules",
+      "text_md": "- **Inbound Rules**: Must explicitly specify allowed protocol, port range, and source IP/CIDR:\n  - SSH: Port 22\n  - HTTP: Port 80\n  - HTTPS: Port 443\n  - Custom Applications (e.g., Jenkins on Port 8080)\n- **Outbound Rules**: By default, AWS allows all outbound traffic (`0.0.0.0/0`).",
+      "diagram": null
+    },
+    {
+      "id": "s13-stateful-behavior",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Stateful Behavior",
+      "text_md": "- Security groups are **stateful**: If an inbound request is permitted on a port, the return outbound response traffic is automatically allowed, regardless of outbound rules.",
+      "diagram": null
+    },
+    {
+      "id": "s13-security-group-vs-network-acl-nacl",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Security Group vs. Network ACL (NACL)",
+      "text_md": "| Feature | Security Group (SG) | Network ACL (NACL) |\n| :--- | :--- | :--- |\n| **Level** | Instance level (Virtual NIC) | Subnet level |\n| **Rule Types** | **ALLOW only** (implicit deny for anything not listed) | **ALLOW and DENY** rules supported |\n| **State** | **Stateful** (return traffic automatically permitted) | **Stateless** (return traffic must be explicitly permitted) |\n| **Blacklisting IPs** | Cannot explicitly block a single IP address | Can explicitly **DENY** specific malicious IPs via rule ordering |",
+      "diagram": null
+    },
+    {
+      "id": "s13-the-dynamic-ip-problem",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "The Dynamic IP Problem",
+      "text_md": "- Standard EC2 public IPv4 addresses are dynamic and ephemeral.\n- If you stop and restart an EC2 instance, AWS releases the old public IP and assigns a completely new public IP.\n- This breaks hardcoded client configurations, DNS entries, and external whitelists.\n- Associating an Elastic IP ensures the server maintains the exact same public IP throughout its lifecycle.",
+      "diagram": null
+    },
+    {
+      "id": "s13-step-by-step-hands-on-allocating-associating-and-releasing-eip",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Step-by-Step Hands-On: Allocating, Associating, and Releasing EIP",
+      "text_md": "1. In the EC2 console left menu, navigate to **Network & Security** > **Elastic IPs**.\n2. Click **Allocate Elastic IP address** > Confirm allocation.\n3. Select the allocated Elastic IP > **Actions** > **Associate Elastic IP address**.\n4. Choose **Instance** > Select the target EC2 instance > Click **Associate**.\n5. The instance public IP and public DNS now reflect the static Elastic IP.\n6. **Critical Cleanup Step**:\n   - Click **Actions** > **Disassociate Elastic IP address**.\n   - Click **Actions** > **Release Elastic IP address**.",
+      "diagram": null
+    },
+    {
+      "id": "s13-the-billing-trap-of-elastic-ips",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "The Billing Trap of Elastic IPs",
+      "text_md": "- AWS charges for public IPv4 addresses (~$0.005 per hour / ~$3.60 per month).\n- **Idle Elastic IP Charge**: If you allocate an Elastic IP and leave it unattached (or attached to a stopped instance), AWS charges you for wasting IPv4 address space.\n- Always **Release** Elastic IPs immediately after practice.",
+      "diagram": null
+    },
+    {
+      "id": "s13-production-use-cases",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Production Use Cases",
+      "text_md": "- Fixed VPN endpoints where client software connects to a constant IP.\n- Third-party partner whitelists that only accept requests from a verified, static IP.\n- NAT Gateways in custom VPCs.",
+      "diagram": null
+    },
+    {
+      "id": "s13-the-four-types-of-elastic-load-balancers",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "The Four Types of Elastic Load Balancers",
+      "text_md": "```\n+--------------------------------------------------------------------------+\n|                       ELASTIC LOAD BALANCING (ELB)                       |\n+--------------------------------------------------------------------------+\n| 1. Application Load Balancer (ALB)  - Layer 7 (HTTP/HTTPS)               |\n| 2. Network Load Balancer (NLB)      - Layer 4 (TCP/UDP/TLS)              |\n| 3. Gateway Load Balancer (GWLB)     - Layer 3/4 (Firewall / IDS / IPS)   |\n| 4. Classic Load Balancer (CLB)      - Layer 4 & 7 (Legacy Architecture)  |\n+--------------------------------------------------------------------------+\n```\n\n1. **Application Load Balancer (ALB) - Layer 7 (Application)**:\n   - Evaluates HTTP and HTTPS application layer protocols.\n   - Supports **Path-based routing** (e.g., `/products` routed to one server group, `/orders` to another).\n   - Supports **Host-based routing**, container routing, and WebSocket traffic.\n2. **Network Load Balancer (NLB) - Layer 4 (Transport)**:\n   - Operates on raw TCP, UDP, and TLS connections.\n   - Ultra-high throughput and ultra-low latency (millisecond response times).\n   - Supports assigning static Elastic IPs directly to the load balancer endpoints.\n3. **Gateway Load Balancer (GWLB) - Layer 3/4**:\n   - Deploys, scales, and manages fleets of third-party virtual security appliances (e.g., enterprise firewalls, Intrusion Detection/Prevention Systems).\n4. **Classic Load Balancer (CLB) - Legacy (Layer 4 / Layer 7)**:\n   - Previous generation load balancer supporting both Layer 4 and Layer 7 protocols.\n   - Common in legacy architectures, but modern AWS deployments use ALB or NLB.",
+      "diagram": null
+    },
+    {
+      "id": "s13-path-based-routing-vs-port-based-routing",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Path-Based Routing vs. Port-Based Routing",
+      "text_md": "- **Path-Based Routing (ALB Feature)**: Routes traffic based on the URL path requested by the client:\n  - `example.com/products` -> Routed to Product Microservice Target Group.\n  - `example.com/courses` -> Routed to Course Platform Target Group.\n  - `example.com/orders` -> Routed to Order Processing Target Group.\n- **Port-Based Routing**: Routes traffic based on the incoming destination port (e.g., Port 80, Port 443, Port 8080).",
+      "diagram": null
+    },
+    {
+      "id": "s13-target-groups",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Target Groups",
+      "text_md": "- A logical grouping of backend targets (EC2 instances, IP addresses, or Lambda functions) registered to receive traffic forwarded by load balancer listener rules.\n- Manages **health checks** independently for that specific tier (e.g., Web Server Target Group vs. App Server Target Group).",
+      "diagram": null
+    },
+    {
+      "id": "s13-trust-store",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Trust Store",
+      "text_md": "- A feature in Application Load Balancer listener configurations used to store trusted Certificate Authority (CA) certificates.\n- Enables **mutual TLS (mTLS)** authentication to verify client certificates before routing requests.",
+      "diagram": null
+    },
+    {
+      "id": "s13-core-capacity-settings",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Core Capacity Settings",
+      "text_md": "- **Minimum Capacity**: The lowest number of instances that must always be running (e.g., `2`).\n- **Desired Capacity**: The normal baseline number of instances needed for standard operational traffic.\n- **Maximum Capacity**: The upper ceiling limit of instances that can be launched during peak traffic spikes (e.g., `10`).",
+      "diagram": null
+    },
+    {
+      "id": "s13-horizontal-scaling-vs-vertical-scaling",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Horizontal Scaling vs. Vertical Scaling",
+      "text_md": "- **Horizontal Scaling (Scale Out / Scale In)**: Adding or removing instances (e.g., going from 2 servers to 6 servers during a sale). This is what Auto Scaling does.\n- **Vertical Scaling (Scale Up / Scale Down)**: Resizing the instance compute capacity (e.g., stopping an instance to upgrade from `t2.micro` to `m5.large`). Requires downtime.",
+      "diagram": null
+    },
+    {
+      "id": "s13-auto-scaling-group-vs-load-balancer",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "Auto Scaling Group vs. Load Balancer",
+      "text_md": "| Dimension | Load Balancer (ELB) | Auto Scaling Group (ASG) |\n| :--- | :--- | :--- |\n| **Primary Job** | **Distributes** incoming traffic across healthy target servers. | **Manages capacity** by adding/removing servers based on load. |\n| **Health Checks** | Marks unhealthy targets `OutOfService` and redirects traffic elsewhere. | Terminates unhealthy instances and launches healthy replacements. |\n| **Integration** | Routes traffic to targets registered in the **Target Group**. | Automatically **registers** newly scaled instances into the Target Group. |",
+      "diagram": null
+    },
+    {
+      "id": "s13-problem-1-elb-displays-outofservice-backend-returns-502-504",
+      "unit": "s13",
+      "kind": "practical",
+      "title": "Problem 1: ELB Displays \"OutOfService\" / Backend Returns 502/504",
+      "text_md": "- **Diagnosed Causes**:\n  1. **Availability Zone Mismatch**: The Load Balancer was configured in subnets for `ap-south-1a`, while the EC2 instances were deployed in `ap-south-1b`. Load balancers must have subnets enabled across all AZs where target instances reside.\n  2. **Security Group Isolation**: The EC2 instance security group blocked incoming traffic on port 80 from the load balancer. The EC2 security group must allow port 80 from the load balancer security group (or `0.0.0.0/0`).\n  3. **Case Sensitivity in URLs**: Linux file paths and HTTP requests are case-sensitive. Requesting `/index.html` when the file was named with capital letters fails the health check.",
+      "diagram": null
+    },
+    {
+      "id": "s13-problem-2-ssh-connection-timeout-connection-refused",
+      "unit": "s13",
+      "kind": "practical",
+      "title": "Problem 2: SSH Connection Timeout / Connection Refused",
+      "text_md": "- **Diagnosed Causes**:\n  1. The EC2 instance security group was missing an inbound rule for **SSH (Port 22)** from the client IP (or `0.0.0.0/0`).\n  2. Selecting \"Custom\" source IP without providing an address instead of selecting \"Anywhere IPv4\" (`0.0.0.0/0`).\n  3. The subnet route table lacked an active route to an Internet Gateway (`0.0.0.0/0` -> `igw-xxxx`).",
+      "diagram": null
+    },
+    {
+      "id": "s13-web-server-vs-application-server",
+      "unit": "s13",
+      "kind": "practical",
+      "title": "Web Server vs. Application Server",
+      "text_md": "- **Web Server (e.g., NGINX, Apache, IIS)**: Front-facing web server handling static assets (HTML, CSS, JS, images), SSL/TLS offloading, compression, and reverse proxy routing.\n- **Application Server (e.g., Tomcat, Node.js, Gunicorn, ASP.NET Core)**: Backend server executing dynamic business logic, processing application transactions, and connecting directly to databases.",
+      "diagram": null
+    },
+    {
+      "id": "s13-end-of-session-resource-cleanup-checklist",
+      "unit": "s13",
+      "kind": "concept",
+      "title": "End-of-Session Resource Cleanup Checklist",
+      "text_md": "To prevent recurring charges on personal or free-tier AWS accounts, perform the following cleanup steps:\n\n1. **EC2 Instances**: Select instances > **Instance state** > **Terminate instance**.\n2. **AMIs**: Go to **AMIs** > Select custom AMI > **Actions** > **Deregister AMI**.\n3. **Snapshots**: Go to **Snapshots** > Select snapshot > **Actions** > **Delete snapshot**.\n4. **Volumes**: Go to **Volumes** > Ensure detached volumes are deleted.\n5. **Elastic IPs**: Go to **Elastic IPs** > Select IP > **Actions** > **Disassociate** > **Actions** > **Release Elastic IP**.\n6. **Load Balancers**: Select Load Balancer > **Actions** > **Delete load balancer**.\n7. **Target Groups**: Select Target Group > **Actions** > **Delete**.\n8. *Note*: VPCs, Subnets, Security Groups, and Route Tables are free and do not incur ongoing costs.",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "1 What is an AMI?",
+      "prompt": "1 What is an AMI?",
+      "reference_answer": "An **Amazon Machine Image (AMI)** is a pre-configured operating system image packaged with necessary customizations, installed software, dependencies, and configuration settings required to launch virtual instances.",
+      "id": "s13-q01",
+      "unit": "s13",
+      "concept_ids": [
+        "s13-ami-catalog-aws-marketplace",
+        "s13-ami-vs-launch-template",
+        "s13-key-ami-concepts"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "1 What is an Elastic IP?",
+      "prompt": "1 What is an Elastic IP?",
+      "reference_answer": "An **Elastic IP address** is a static, fixed public IPv4 address allocated to your AWS account that does not change when an EC2 instance is stopped and started.",
+      "id": "s13-q02",
+      "unit": "s13",
+      "concept_ids": [
+        "s13-elastic-block-store-ebs-volumes",
+        "s13-the-billing-trap-of-elastic-ips",
+        "s13-the-four-types-of-elastic-load-balancers"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Key Pairs Management & Lost Key Scenarios",
+      "prompt": "Key Pairs Management & Lost Key Scenarios",
+      "reference_answer": "### 8.1 Key Pair Basics\n- Public-private key cryptography for authenticating SSH sessions to EC2 instances.\n- Formats:\n  - `.pem`: OpenSSH format for Linux, macOS, and native Windows PowerShell.\n  - `.ppk`: PuTTY / MobaXterm format.\n- **One-Time Download**: The private key is only downloadable once when created. AWS never stores your private key and cannot re-generate it for you.\n- Key pairs themselves are free of cost.\n\n### 8.2 Scenario: \"What if you lose your private SSH key?\"\nSince AWS cannot regenerate the key, use one of the following recovery procedures:\n\n1. **AWS Systems Manager (SSM) Session Manager**:\n   - If the EC2 instance has an IAM Role with `AmazonSSMManagedInstanceCore` attached and the SSM Agent is running, connect directly via the AWS console with zero SSH keys needed.\n2. **EC2 Instance Connect**:\n   - Connect directly through the browser console using short-lived keys if supported by the AMI and security group.\n3. **EBS Volume Swap Recovery Method**:\n   - Stop the original instance (Instance A).\n   - Detach its root EBS volume.\n   - Attach the volume to a healthy helper instance (Instance B) as a secondary drive.\n   - Mount the drive on Instance B and edit the `~/.ssh/authorized_keys` file to inject a new public key.\n   - Unmount, detach, and re-attach the volume back to Instance A as the root volume (`/dev/xvda`).\n   - Start Instance A and connect using the new private key.\n4. **AMI Recreation Method**:\n   - Stop the instance > Create an AMI from it.\n   - Launch a new instance from that AMI, selecting a brand-new Key Pair during launch.",
+      "id": "s13-q03",
+      "unit": "s13",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "1 What is Auto Scaling?",
+      "prompt": "1 What is Auto Scaling?",
+      "reference_answer": "An **Auto Scaling Group (ASG)** automatically adjusts the number of EC2 instances up or down to match application load, ensuring high availability, fault tolerance, and cost optimization.",
+      "id": "s13-q04",
+      "unit": "s13",
+      "concept_ids": [
+        "s13-auto-scaling-group-vs-load-balancer",
+        "s13-horizontal-scaling-vs-vertical-scaling"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "5 Interview Scenario: ASG Instance Flapping / Thrashing",
+      "prompt": "5 Interview Scenario: ASG Instance Flapping / Thrashing",
+      "reference_answer": "- **Problem**: Auto Scaling Group continuously launches an instance, waits a few minutes, terminates it, and launches another one in an endless loop.\n- **Root Causes & Solutions**:\n  1. **Health Check Grace Period**: The grace period is too short (e.g., set to 60 seconds while the web server or application startup script takes 180 seconds to boot). Fix: Increase the Health Check Grace Period to 300+ seconds.\n  2. **Health Check Path Mismatch**: Health check looks for `/index.html`, but the application serves on `/` or returns a 404.\n  3. **Metric Thresholds**: Scale policies should be configured using **5-minute rolling averages** rather than instant spikes to prevent reacting to momentary nanosecond CPU spikes.",
+      "id": "s13-s01",
+      "unit": "s13",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Why should EC2 be described as an \"ecosystem\" rather than merely a virtual machine?",
+      "prompt": "Why should EC2 be described as an \"ecosystem\" rather than merely a virtual machine?",
+      "reference_answer": "In modern enterprise environments, calling EC2 just a virtual machine demonstrates entry-level thinking. EC2 is a complete cloud computing ecosystem composed of tightly coupled subsystems:\n- **Compute**: Sizing families (General Purpose, Compute/Memory/Storage Optimized), purchasing options (On-Demand, Spot, Reserved, Dedicated Hosts).\n- **Images (AMI)**: Bootable OS templates customized with dependencies and security baselines.\n- **Block Storage (EBS)**: Detachable, persistent, high-IOPS virtual disks and point-in-time S3 snapshots.\n- **Networking & Interfaces (ENI / EIP)**: Virtual network interface controllers and persistent static public IPv4 addresses.\n- **Security**: Stateful virtual firewalls (Security Groups) and asymmetric key pairs.\n- **Traffic Routing & Elasticity**: Elastic Load Balancers (ALB, NLB, GWLB), Target Groups, and Auto Scaling Groups (ASG) for dynamic horizontal elasticity.",
+      "id": "s13-q05",
+      "unit": "s13",
+      "concept_ids": [
+        "s13-mindset-shift-ec2-is-an-ecosystem-not-just-a-vm",
+        "s13-ec2-dashboard",
+        "s13-ec2-instance-purchasing-pricing-models"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is an Amazon Machine Image (AMI), and how does a \"Golden AMI\" benefit enterprise operations?",
+      "prompt": "What is an Amazon Machine Image (AMI), and how does a \"Golden AMI\" benefit enterprise operations?",
+      "reference_answer": "AMI (Amazon Machine Image)**: A pre-configured template containing the operating system, storage volume mappings, architecture specifications (x86 or ARM64), and pre-installed software required to instantiate an EC2 server.\n- **The \"Golden AMI\" Strategy**:\n  - Rather than provisioning vanilla OS instances and sequentially running slow package installation scripts (`yum update`, Docker, NGINX, monitoring agents) across 50–100 new servers, DevOps engineers build and validate one standardized, hardened \"Golden AMI\".\n  - All new production instances and auto-scaling groups launch from this Golden AMI, ensuring 100% configuration consistency, faster launch times (<60 seconds), and zero external repository dependency during scale-out.",
+      "id": "s13-q06",
+      "unit": "s13",
+      "concept_ids": [
+        "s13-real-world-production-use-case-the-golden-ami",
+        "s13-amazon-data-lifecycle-manager-dlm",
+        "s13-ami-catalog-aws-marketplace"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What are the differences between Spot Instances, Reserved Instances (RI), and Savings Plans?",
+      "prompt": "What are the differences between Spot Instances, Reserved Instances (RI), and Savings Plans?",
+      "reference_answer": "Spot Instances**: Spare compute capacity offered at up to 70%–90% discounts. AWS can terminate or reclaim the instance with a 2-minute warning when on-demand capacity is required. Best for fault-tolerant, stateless batch jobs, CI/CD runners, and background rendering.\n- **Reserved Instances (RI)**: A 1-year or 3-year contractual commitment to a specific instance family in a specific region. Offers up to 60%–72% discount. Payment options include All Upfront, Partial Upfront, or No Upfront (monthly installments). Best for steady-state 24/7 databases and core servers.\n- **Savings Plans**: A commitment to a consistent dollar spend per hour (e.g., $10/hour) for 1 or 3 years. Provides up to 66%–72% discount with greater flexibility—automatically applying savings across instance families, operating systems, AWS Fargate, and AWS Lambda regardless of region.",
+      "id": "s13-q07",
+      "unit": "s13",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Explain the 5 core lifecycle rules connecting EC2 Instances, EBS Volumes, Snapshots, and AMIs.",
+      "prompt": "Explain the 5 core lifecycle rules connecting EC2 Instances, EBS Volumes, Snapshots, and AMIs.",
+      "reference_answer": "1. **EC2 Instance -> AMI**: Creating an image from an EC2 instance captures the root operating system, installed applications, configuration, and data volumes.\n2. **EBS Volume -> Snapshot**: Taking a snapshot of an EBS volume generates a point-in-time, incremental backup stored durably in Amazon S3.\n3. **Snapshot -> EBS Volume**: An EBS snapshot can be restored directly into a new, independent EBS volume in any Availability Zone within the region.\n4. **Snapshot -> AMI**: A root EBS snapshot can be registered as an AMI to launch brand-new EC2 instances.\n5. **Deciding between Volume vs. AMI Restoration**:\n   - Restore as an **EBS Volume** when you need a raw secondary data disk to attach to an existing running server.\n   - Restore as an **AMI** when you need a bootable drive to launch new virtual instances.",
+      "id": "s13-q08",
+      "unit": "s13",
+      "concept_ids": [
+        "s13-the-5-core-rules-of-volumes-snapshots-and-amis",
+        "s13-elastic-block-store-ebs-volumes",
+        "s13-step-by-step-hands-on-snapshot-creation-volume-recovery-and-attachment"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do Security Groups differ from Network Access Control Lists (NACLs)? Why can't you blacklist an IP in a Security Group?",
+      "prompt": "How do Security Groups differ from Network Access Control Lists (NACLs)? Why can't you blacklist an IP in a Security Group?",
+      "reference_answer": "Security Groups (SG)**:\n  - Operate at the **instance/NIC level**.\n  - **Stateful**: If inbound traffic is allowed, outbound return traffic is automatically permitted regardless of outbound rules.\n  - Support **ALLOW rules only**. There is an implicit \"Deny All\" for any traffic not explicitly permitted. Because you cannot write an explicit DENY rule, you cannot selectively blacklist an IP address in a Security Group.\n- **Network ACLs (NACL)**:\n  - Operate at the **subnet boundary**.\n  - **Stateless**: Inbound and outbound traffic must be evaluated and permitted independently.\n  - Support both **ALLOW and DENY rules** evaluated in numerical rule order. To blacklist a malicious IP address, you place an explicit DENY rule with a low rule number (e.g., Rule 50: DENY `203.0.113.50/32`) in the subnet's NACL.",
+      "id": "s13-q09",
+      "unit": "s13",
+      "concept_ids": [
+        "s13-security-group-vs-network-acl-nacl",
+        "s13-auto-scaling-group-vs-load-balancer",
+        "s13-target-groups"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is an Elastic IP address, and why does AWS charge for idle or unattached Elastic IPs?",
+      "prompt": "What is an Elastic IP address, and why does AWS charge for idle or unattached Elastic IPs?",
+      "reference_answer": "- An **Elastic IP (EIP)** is a static, persistent public IPv4 address allocated to an AWS account that remains unchanged even when an EC2 instance is stopped and restarted.\n- **Why it is needed**: Standard public IPs assigned to EC2 instances are dynamic and released when an instance stops. An Elastic IP prevents DNS configuration breakage and connection failure.\n- **The Idle EIP Charge**: Public IPv4 address space is globally scarce. AWS charges approximately $0.005 per hour for Elastic IPs that are allocated but not associated with a running instance (or attached to a stopped instance) to discourage address hoarding. Engineers must disassociate and **release** unused Elastic IPs back to the AWS pool.",
+      "id": "s13-q10",
+      "unit": "s13",
+      "concept_ids": [
+        "s13-the-billing-trap-of-elastic-ips",
+        "s13-elastic-block-store-ebs-volumes",
+        "s13-the-four-types-of-elastic-load-balancers"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "If you lose the private SSH key (.pem / .ppk) for an EC2 instance, can AWS regenerate it? How do you recover access?",
+      "prompt": "If you lose the private SSH key (.pem / .ppk) for an EC2 instance, can AWS regenerate it? How do you recover access?",
+      "reference_answer": "Can AWS regenerate it?**: **No.** AWS never stores the private key on its servers; it only holds the corresponding public key. Once lost, the private key cannot be retrieved or downloaded again from the AWS console.\n- **Recovery Methods**:\n  1. **AWS Systems Manager (SSM) Session Manager**: Connect directly via browser/CLI with zero SSH keys required (if the instance has the `AmazonSSMManagedInstanceCore` IAM policy attached and the SSM agent running).\n  2. **EBS Volume Swap Recovery**: Stop the locked instance (A), detach its root volume, attach it as a secondary data disk to a temporary helper instance (B), mount the drive, append a newly generated SSH public key into `~/.ssh/authorized_keys`, unmount and detach the volume, reattach it back to instance A as `/dev/xvda`, and boot instance A.\n  3. **AMI Recreation**: Stop instance A, create an AMI from it, and launch a replacement instance while specifying a new, freshly downloaded Key Pair.",
+      "id": "s13-q11",
+      "unit": "s13",
+      "concept_ids": [
+        "s13-ec2-dashboard",
+        "s13-ec2-instance-purchasing-pricing-models",
+        "s13-mindset-shift-ec2-is-an-ecosystem-not-just-a-vm"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Compare the four types of Elastic Load Balancers (ALB, NLB, GWLB, CLB).",
+      "prompt": "Compare the four types of Elastic Load Balancers (ALB, NLB, GWLB, CLB).",
+      "reference_answer": "Application Load Balancer (ALB)**: Layer 7 (HTTP/HTTPS). Inspects application-layer data to support path-based routing (`/products`, `/users`), host-based routing, redirect rules, and WebSocket connections. Ideal for web apps and microservices.\n- **Network Load Balancer (NLB)**: Layer 4 (TCP/UDP/TLS). Capable of handling millions of requests per second with ultra-low latency. Supports assigning static/Elastic IPs to load balancer endpoints. Ideal for gaming, streaming, financial exchanges, and non-HTTP protocols.\n- **Gateway Load Balancer (GWLB)**: Layer 3/4. Designed to deploy, scale, and manage fleets of third-party virtual security appliances (firewalls, Intrusion Detection/Prevention Systems).\n- **Classic Load Balancer (CLB)**: Legacy, previous-generation load balancer operating across Layer 4 and Layer 7. Supports basic HTTP/HTTPS/TCP load balancing but lacks advanced routing rules and target group flexibility.",
+      "id": "s13-q12",
+      "unit": "s13",
+      "concept_ids": [
+        "s13-the-four-types-of-elastic-load-balancers",
+        "s13-auto-scaling-group-vs-load-balancer",
+        "s13-elastic-block-store-ebs-volumes"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Path-Based Routing on an Application Load Balancer, and how do Target Groups enable it?",
+      "prompt": "What is Path-Based Routing on an Application Load Balancer, and how do Target Groups enable it?",
+      "reference_answer": "Path-Based Routing**: An ALB feature where incoming HTTP requests are forwarded to different backend target pools based on the URL path requested by the client.\n  - `https://example.com/api/*` -> Forwarded to Backend API Target Group.\n  - `https://example.com/images/*` -> Forwarded to Static Media Target Group.\n  - `https://example.com/*` -> Forwarded to Main Web Frontend Target Group.\n- **Target Groups**: Logical groups of backend servers, private IPs, or Lambda functions registered to receive traffic from load balancer rules. Each Target Group executes its own independent health checks, allowing different microservice clusters to scale and monitor health autonomously behind a single load balancer.",
+      "id": "s13-q13",
+      "unit": "s13",
+      "concept_ids": [
+        "s13-path-based-routing-vs-port-based-routing",
+        "s13-auto-scaling-group-vs-load-balancer",
+        "s13-target-groups"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the architectural difference between an Elastic Load Balancer (ELB) and an Auto Scaling Group (ASG)?",
+      "prompt": "What is the architectural difference between an Elastic Load Balancer (ELB) and an Auto Scaling Group (ASG)?",
+      "reference_answer": "Elastic Load Balancer (ELB)**:\n  - Role: **Traffic Distributor**.\n  - Distributes incoming user requests evenly across an existing pool of backend servers.\n  - Performs health checks and temporarily stops forwarding traffic to instances marked `OutOfService`.\n- **Auto Scaling Group (ASG)**:\n  - Role: **Capacity & Fleet Manager**.\n  - Dynamically adds (scales out) or terminates (scales in) EC2 instances to maintain desired operational capacity based on metrics (CPU, network, queue depth).\n  - Automatically replaces failed or terminated instances with fresh ones.\n- **Collaboration**: ASG integrates directly with ELB Target Groups. When ASG scales out, newly launched instances are automatically registered into the ELB Target Group; when ASG scales in, it deregisters instances smoothly using connection draining before terminating them.",
+      "id": "s13-q14",
+      "unit": "s13",
+      "concept_ids": [
+        "s13-auto-scaling-group-vs-load-balancer",
+        "s13-the-four-types-of-elastic-load-balancers",
+        "s13-horizontal-scaling-vs-vertical-scaling"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "10 Scenario-Based Interview Questions with Answers",
+      "prompt": "10 Scenario-Based Interview Questions with Answers",
+      "reference_answer": "1. **Root Cause**: An Elastic Load Balancer cannot forward traffic to backend target instances located in an Availability Zone where the load balancer has no enabled subnets.\n  2. **Resolution**:\n     - Navigate to **EC2** > **Load Balancers** > Select the load balancer.\n     - Go to the **Network Mapping** / **Subnets** configuration tab.\n     - Click **Edit subnets** and add the subnet corresponding to `ap-south-1b` (where the instances reside).\n     - Alternatively, ensure instances are distributed across both `ap-south-1a` and `ap-south-1b` for high availability.\n     - Once the load balancer has active nodes in `ap-south-1b`, health check probes succeed and targets transition to `InService`.\n\n---\n\n### Scenario 2: Auto Scaling Group Instance Flapping in an Endless Launch-Terminate Loop\n- **Scenario**: A newly deployed Auto Scaling Group launches an EC2 instance, waits approximately 90 seconds, marks it unhealthy, terminates it, launches a replacement, and repeats this cycle indefinitely. Your web application requires 3 minutes to download dependencies and boot NGINX. What is this issue called, and how do you resolve it?\n- **Answer**:\n  - **Issue**: **ASG Instance Flapping / Thrashing**.\n  - **Root Cause**: The **Health Check Grace Period** is set too short (e.g., the default or customized 60–120 seconds). The load balancer begins health checks before the application startup script completes booting, marks the instance `Unhealthy`, and the ASG immediately terminates it.\n  - **Resolution**:\n    1. **Increase Health Check Grace Period**: Open the Auto Scaling Group settings and extend the grace period to 300–600 seconds, allowing ample time for package installation and service startup.\n    2. **Pre-bake Dependencies into a Golden AMI**: Instead of running extensive startup scripts on boot, build an AMI with NGINX and application runtimes pre-installed. The instance will boot in under 30 seconds and pass health checks immediately.\n\n---\n\n### Scenario 3: Investigating Unexplained Charges on an Inactive AWS Account\n- **Scenario**: A junior engineer created a test EC2 instance, attached an Elastic IP, took two manual snapshots, and terminated the EC2 instance at the end of the day. At the end of the month, the finance team flags ongoing charges for this account. What caused these charges despite the instance being terminated?\n- **Answer**:\n  1. **Idle Elastic IP Charges**: When the EC2 instance was terminated, the Elastic IP became unassociated and remained idle in the account. AWS charges ~$0.005/hour for unattached Elastic IPs.\n     - *Fix*: Navigate to **Elastic IPs** > Select the IP > Click **Actions** > **Release Elastic IP address**.\n  2. **EBS Snapshots Storage**: Terminating an EC2 instance does NOT delete standalone snapshots created from its volumes. Snapshots continue to incur standard S3 per-GB storage fees each month.\n     - *Fix*: Navigate to **Snapshots** > Select the old snapshots > Click **Actions** > **Delete snapshot**.\n  3. **Best Practice**: Use **Amazon Data Lifecycle Manager (DLM)** with auto-expiry retention policies to automatically clean up orphaned snapshots.\n\n---\n\n### Scenario 4: Urgent Configuration Recovery on a Production Server with Lost SSH Key\n- **Scenario**: A critical production EC2 instance running an internal API service requires an emergency configuration fix. The DevOps engineer who created the instance has left the company, and the private key (`.pem`) is lost. You cannot afford extended service downtime. How do you regain administrative shell access safely?\n- **Answer**:\n  - **Preferred Zero-Downtime Approach (AWS Systems Manager)**:\n    - If the EC2 instance has an IAM instance profile with `AmazonSSMManagedInstanceCore` and outbound internet connectivity, open the EC2 console, select the instance, and click **Connect** > **Session Manager** to open an interactive bash shell with zero downtime and no SSH keys.\n  - **Alternative Volume Swap Approach (Requires Brief Scheduled Downtime)**:\n    1. Stop the production instance (Instance A).\n    2. Detach its root volume (`/dev/xvda`).\n    3. Attach the volume to a running rescue instance (Instance B) as `/dev/xvdf`.\n    4. SSH into Instance B, mount the partition (`mount /dev/xvdf1 /mnt`), and append a new, authorized public SSH key into `/mnt/home/ec2-user/.ssh/authorized_keys`.\n    5. Unmount (`umount /mnt`), detach the volume from Instance B, and reattach it to Instance A as the root volume (`/dev/xvda`).\n    6. Start Instance A and log in using the newly matched private key.\n\n---\n\n### Scenario 5: Eliminating Massive Scale-Out Latency Using a Golden AMI\n- **Scenario**: During flash-sale traffic spikes, your Auto Scaling Group takes 12 minutes to scale out from 4 to 20 instances because each new instance executes a 50-line User Data bash script running `yum update`, installing Python, compiling dependencies, and configuring NGINX. During these 12 minutes, existing servers experience 100% CPU utilization and drop user requests. How do you re-architect this?\n- **Answer**:\n  1. **Adopt the Golden AMI Pattern**:\n     - Launch a temporary staging instance and execute the User Data script once to install and verify all system packages, Python runtimes, and NGINX configurations.\n     - Create a custom AMI (Golden AMI) from this staging instance and test that services auto-start on boot via `systemctl enable nginx`.\n  2. **Update ASG Launch Template**:\n     - Create a new version of the ASG Launch Template referencing the newly created Golden AMI.\n     - Strip the heavy installation steps from User Data, leaving only environment variable exports or secret fetches.\n  3. **Result**: Newly launched scale-out instances boot up and pass load balancer health checks in under 45 seconds, absorbing traffic surges before existing nodes saturate.\n\n---\n\n### Scenario 6: Consolidating Multiple Web Services Behind a Single Load Balancer\n- **Scenario**: Your engineering organization runs two distinct applications: a marketing website served by static NGINX servers, and a student portal application served by Node.js app servers. To save costs and simplify domain management, management wants both services accessible under `portal.example.com` (`/` routes to NGINX, `/courses/*` routes to Node.js) using a single load balancer. How do you design this?\n- **Answer**:\n  1. **Deploy an Application Load Balancer (ALB)** (Layer 7).\n  2. **Create Two Target Groups**:\n     - `TG-Nginx-Web`: Registers the static NGINX EC2 instances (Health check path: `/index.html`).\n     - `TG-Node-App`: Registers the Node.js application EC2 instances (Health check path: `/courses/healthz`).\n  3. **Configure ALB Listener Rules**:\n     - **Rule 1 (Path-Based Routing)**: IF `Path is /courses*` -> THEN `Forward to TG-Node-App`.\n     - **Default Rule**: IF no other rules match (`/*`) -> THEN `Forward to TG-Nginx-Web`.\n  4. Both application fleets run securely in private subnets, while the ALB handles SSL termination and URL path routing through a single public DNS endpoint.\n\n---\n\n### Scenario 7: Blocking a Malicious Brute-Force Attacker on a Public Web Server\n- **Scenario**: Your production web server has a Security Group allowing inbound HTTP (Port 80) and HTTPS (Port 443) from `0.0.0.0/0`. Monitoring logs reveal a single IP address (`198.51.100.25`) sending 5,000 automated brute-force requests per minute. You need to immediately block this specific IP address while keeping the web service available to all other legitimate global users. How do you achieve this?\n- **Answer**:\n  1. **Limitation of Security Groups**: Security Groups only support **ALLOW** rules with implicit deny. You cannot create a rule to deny a specific IP address in a Security Group.\n  2. **Resolution via Network ACL (NACL)**:\n     - Identify the subnet hosting the EC2 instance and open its attached **Network ACL**.\n     - Add an inbound rule with a low rule number (evaluated first):\n       - **Rule Number**: `50`\n       - **Type**: `All Traffic` (or `HTTP/HTTPS`)\n       - **Source**: `198.51.100.25/32`\n       - **Action**: **DENY**\n     - Ensure the default catch-all rule (`Rule 100`: `ALLOW 0.0.0.0/0`) remains in place below it.\n  3. The subnet router drops all packets originating from `198.51.100.25` at the network boundary before they ever reach the EC2 instance.\n\n---\n\n### Scenario 8: Cross-Zone EBS Database Recovery Following a Datacenter Failure\n- **Scenario**: A standalone MySQL database runs on an EC2 instance in Availability Zone `ap-south-1a` with an attached EBS data volume. A localized transformer fire shuts down datacenter `ap-south-1a`. Management directs you to bring the database back online in `ap-south-1b` immediately using the latest hourly snapshot. Why can't you directly attach the EBS volume to an instance in `ap-south-1b`, and what are the exact recovery steps?\n- **Answer**:\n  1. **EBS AZ Boundary Constraint**: EBS volumes are physically bound to the specific Availability Zone in which they are provisioned. A volume created in `ap-south-1a` cannot attach directly to an EC2 instance in `ap-south-1b`.\n  2. **Recovery Steps via Snapshot**:\n     - Open the EC2 Console > **Snapshots**.\n     - Locate the latest automated snapshot of the database volume.\n     - Click **Actions** > **Create volume from snapshot**.\n     - In the configuration modal, set the **Availability Zone** to `ap-south-1b`.\n     - Click **Create volume**.\n     - Launch a replacement EC2 instance in `ap-south-1b` (or select an existing standby instance).\n     - Attach the newly restored volume as a block device (e.g., `/dev/xvdf`) and mount it to restore database operations.\n\n---\n\n### Scenario 9: Diagnosing \"Connection Timed Out\" on a Running NGINX Web Server\n- **Scenario**: A student launches an Amazon Linux 2023 EC2 instance, SSHes in, installs NGINX, and verifies it is running using `systemctl status nginx`. Running `curl http://localhost` from inside the terminal returns the NGINX welcome page. However, entering `http://<EC2_Public_IP>` in a laptop web browser results in `ERR_CONNECTION_TIMED_OUT`. How do you systematically diagnose this?\n- **Answer**:\n  1. **Inspect Security Group Inbound Rules**:\n     - Check the instance's Security Group. Confirm there is an explicit inbound rule for **HTTP (Port 80)** with source `0.0.0.0/0`. If only SSH (Port 22) is open, web traffic will time out.\n  2. **Inspect Subnet Route Table**:\n     - Navigate to the subnet's Route Table. Ensure there is an active route for `0.0.0.0/0` pointing to an **Internet Gateway (IGW)** (`igw-xxxx`). Without an IGW, public internet packets cannot route into the subnet.\n  3. **Verify Browser Protocol**:\n     - Ensure the browser is requesting `http://` (Port 80) and not auto-redirecting to `https://` (Port 443), unless SSL certificates and Port 443 are configured.\n  4. **Check Network ACLs (NACL)**:\n     - Verify that the subnet NACL allows inbound traffic on port 80 and outbound traffic on ephemeral ports (`1024–65535`).\n\n---\n\n### Scenario 10: Preventing Auto Scaling Flapping Caused by Momentary Metric Spikes\n- **Scenario**: An Auto Scaling Group is configured to add 2 EC2 instances whenever CPU utilization exceeds 70%. During peak operational hours, periodic background cron jobs create sudden 10-second CPU spikes to 85%, triggering ASG to scale out. Five minutes later, CPU drops back to 30%, triggering scale-in. This cycle repeats hourly, causing unnecessary instance turnover and billing waste. How do you stabilize this?\n- **Answer**:\n  1. **Implement CloudWatch Metric Averaging**:\n     - Configure the CloudWatch Alarm to evaluate the **Average** CPU utilization over a **5-minute evaluation period** (or require 3 consecutive evaluation periods of 1 minute) before triggering a scaling alarm, rather than reacting to a single instantaneous spike.\n  2. **Configure ASG Cooldown Periods**:\n     - Set a **Default Cooldown Period** (e.g., 300 seconds). After a scaling action completes, the cooldown prevents the ASG from launching or terminating additional instances until metrics have stabilized.\n  3. **Utilize Target Tracking Scaling**:\n     - Replace simple step scaling policies with **Target Tracking Scaling Policies** (e.g., maintain average CPU at 60%). Target tracking uses proportional control algorithms to smooth out capacity changes and avoid flapping.",
+      "id": "s13-s02",
+      "unit": "s13",
+      "concept_ids": [
+        "s13-path-based-routing-vs-port-based-routing"
+      ]
+    }
+  ]
+}

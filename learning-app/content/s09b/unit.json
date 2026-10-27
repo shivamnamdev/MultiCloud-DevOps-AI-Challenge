@@ -1,0 +1,685 @@
+{
+  "id": "s09b",
+  "title": "Linux RealWorld Scenarios · Day 6",
+  "subtitle": "Session 09 · Batch-45 · Linux Troubleshooting — 30 Interview Questions & Answers + 20 Scenario-Based Q&A",
+  "session": 9,
+  "module": "M2 Linux + GCP",
+  "order": 901,
+  "status": "ready",
+  "source_file": "Session-09-Linux-RealWorld-Scenarios/🚀 Day-6 with Troubleshooting Batch-45 _ 2nd Oct 2026 _ 8_00 AM IST _ Zoom Session 2026-10-02 07_46(GMT+5_30).md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s09b-concept",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Concept",
+      "text_md": "- **Linux Troubleshooting** is the systematic process of identifying, diagnosing, and resolving issues on Linux servers in real-time production environments, covering logs, performance, disk, services, permissions, hardware, and network problems.\n- A **DevOps engineer** must be capable of independent troubleshooting — even when L1/L2 support is unavailable — because unresolved issues escalate to senior engineers who are expected to fix them.\n- **System logs** are the primary source of truth when any issue occurs; the thumb rule is: *if something goes wrong, check the logs first*.\n- **Shell scripting** allows repetitive diagnostic commands to be automated into a single executable file, reducing manual effort and enabling scheduled execution via **cron jobs**.\n- **Service management** in Linux is handled via `systemctl`, which controls the lifecycle (start, stop, restart, status) of any installed service such as NGINX, SSH, Docker, Kubernetes, Ansible, etc.\n- **Graceful vs. Forceful process termination**: `kill -15` (SIGTERM) waits for the process to finish cleanly before stopping; `kill -9` (SIGKILL) forces immediate termination regardless of state.\n- **Swap memory** is virtual memory allocated from disk space, used when RAM is insufficient or to offload inactive memory pages — analogous to Windows' page file / hibernate feature.",
+      "diagram": null
+    },
+    {
+      "id": "s09b-google-cloud-vm-creation-and-configuration",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Google Cloud VM Creation and Configuration",
+      "text_md": "- The session was conducted live on YouTube and used **Google Cloud (GCP)** as the hands-on environment; students were instructed to navigate to `console.cloud.google.com` and bookmark it as their cloud homepage.\n- A new VM named **\"Day 6\"** was created using the **Create Instance** workflow in Compute Engine > VM Instances.\n- **Real-time production server configuration** discussed: up to **16 cores, 16 GB RAM, 512 GB SSD** — though for critical workloads with thousands of users, 32 GB RAM is appropriate; large-scale storage is offloaded to third-party object storage rather than stored on VMs.\n- **Operating system choice**: Ubuntu **24.04 LTS** was selected over 26.04 because production servers predominantly still run on 22.04 or 24.04; a planned upgrade to 26.04 is a valid interview answer (\"upgrade planned in next 3 months, discussion ongoing with client\").\n- **Auto-deletion feature**: Under Machine Configuration > VM Provisioning, a time limit can be set so the VM is automatically deleted or stopped after a defined period — useful for learning environments to avoid unexpected billing.\n- **CLI VM creation**: The `gcloud compute instances create` command was demonstrated in **Cloud Shell**, with parameters for name, zone, machine type, and project. Remembering four key lines of this command is sufficient for interview purposes.\n- **Equivalent instance type names across clouds** for 16 core / 16 GB RAM:\n    - **AWS**: `C6i.4xlarge` (C-series)\n    - **GCP**: `N2-standard-16`\n    - **Azure**: `Standard_F16s_v2`\n- **IP types on a VM**: Internal IP = private IP used within the same VPC; External IP = public IP accessible over the internet.\n- **SSH connectivity options** in GCP: browser-based SSH, custom port, SSH key (public/private), Cloud Shell command, or third-party SSH client — all use port 22.",
+      "diagram": null
+    },
+    {
+      "id": "s09b-log-checking-scenario-1",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Log Checking — Scenario 1",
+      "text_md": "- All system logs are stored under **`/var/log/`**; navigate there with `cd /var/log` and list contents with `ls`.\n- Key log files and their purposes:\n    - **auth.log** — authentication-related events (login attempts, sudo usage)\n    - **kern.log** — kernel/OS-level messages, hardware-OS interface events\n    - **dpkg.log** — package installation and removal history (package manager)\n    - **dmesg** — boot-time messages, hardware detection during startup\n    - **syslog / messages** — general system messages\n    - **secure** — secure access logs\n    - **fail.log** — failed login attempts\n- **Commands for reading logs**:\n    - `more <filename>` — reads file page by page (slow, sequential)\n    - `tail -10 <filename>` — shows last 10 lines only\n    - `tail -f <filename>` — **follows** the file in real-time as new logs are written (`-f` = follow); used when a developer is running something and you need to monitor live output\n    - `cat <filename> | grep error` — filters for specific keywords like `error`, `warning`, `failed`, `closed`, `exception`\n- Application logs (e.g., Jenkins, NGINX) may also appear under `/var/log/<appname>/` — same commands apply, same concept.\n- **Logging tools** used in real-time environments: **Splunk** (most common), **Kibana**, **Dynatrace**, **Datadog** — these provide centralized, searchable log dashboards without manual CLI access.",
+      "diagram": null
+    },
+    {
+      "id": "s09b-performance-troubleshooting-scenario-2",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Performance Troubleshooting — Scenario 2",
+      "text_md": "- **Key commands for performance analysis**:\n    - `top` — real-time view of CPU usage, memory usage, load average, running tasks\n    - `htop` — enhanced GUI-style version of top (must be installed: `apt install htop`); shows color-coded CPU/memory bars\n    - `free -h` — memory usage in human-readable format\n    - `df -h` — disk space usage per partition in human-readable format\n    - `du` — disk usage of specific directories\n    - `ps -ef` or `ps -aux` — list all running processes with details\n    - `uptime` — system uptime and load average\n    - `who` / `w` — who is currently logged in, how many users\n- **Monitoring Shell Script** was built live, combining these commands:\n    - Created with `vi` editor; started with `#!/bin/bash` (shebang line)\n    - Used `echo` statements as section headers for readability\n    - Commands included: `free -h`, `df -h`, `du`, `uptime`\n    - Saved and given execute permission with `chmod +x <filename>` (by default Linux does NOT grant execute permission for security reasons)\n    - Executed with `./scriptname.sh`\n- **Production-level script enhancements** (generated with ChatGPT prompt):\n    - Added hostname and date/time for context\n    - Colorized output — e.g., if disk usage exceeds **80% threshold**, display warning in red\n    - Conditional logic: `if disk_usage > threshold → show warning`\n    - Could be extended to **send email alerts** via SMTP configuration\n- **Scheduling with cron jobs**: The monitoring script can be scheduled to run at regular intervals using `crontab`, enabling automated recurring health checks.\n- **Historical performance data**: For trend analysis (CPU/memory over weeks or months), data must be fed into a **continuous monitoring system** (e.g., Grafana, Datadog) rather than relying on real-time commands alone.",
+      "diagram": null
+    },
+    {
+      "id": "s09b-disk-troubleshooting-scenario-3",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Disk Troubleshooting — Scenario 3",
+      "text_md": "- **Windows disk tools**: Disk Defragmentation (built-in), `chkdsk` (Check Disk for errors), Disk Management (`compmgmt.msc`) for viewing partitions.\n- **Linux disk commands**:\n    - `df -h` — view partition sizes, used/free space; the root (`/`) partition is equivalent to Windows' C: drive\n    - `lsblk` — list block devices; identify unconnected or unattempted disks\n    - `smartctl` — tool from the `smartmontools` package; checks SSD/HDD health, temperature, error counts, and persistent device data\n- **Disk fragmentation** in Linux: Linux filesystems (ext4, etc.) handle fragmentation differently from Windows; Windows defragmentation compresses and reorders blocks; Linux rarely needs manual defragmentation.\n- **Block vs. Disk**: A disk contains blocks; blocks are the smallest units where data is physically stored; file systems manage how blocks are allocated.\n- **Partitions**: A single physical disk can be divided into multiple partitions (e.g., EFI, recovery, main OS partition); each partition appears as a separate mountpoint in Linux.",
+      "diagram": null
+    },
+    {
+      "id": "s09b-service-troubleshooting-scenario-4-nginx-example",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Service Troubleshooting — Scenario 4 (NGINX Example)",
+      "text_md": "- **NGINX** was installed live: `apt-get update` → `apt install nginx`\n- Verified it was running by accessing the VM's external IP in a browser — default NGINX welcome page confirmed the service was active.\n- **Service management commands** (applicable to any service — NGINX, SSH, Docker, Kubernetes, Ansible, Tomcat, Apache, Java apps):\n    - `systemctl status nginx` — check if service is running, stopped, or failed; also shows the log path\n    - `systemctl start nginx` — start the service\n    - `systemctl stop nginx` — stop the service\n    - `systemctl restart nginx` — restart\n    - `systemctl enable nginx` — enable service to start on boot\n    - `journalctl -u <service>` — view all logs for a specific service unit\n- **Finding application logs**: When you run `systemctl status <service>`, the output shows the binary path and log location — this is the \"smart answer\" for finding service-specific logs in an interview.\n- **NGINX log location**: `/var/log/nginx/` — contains `access.log` and `error.log`; monitored in real-time with `tail -f access.log`.\n- **HTTP status codes** briefly discussed:\n    - `409` — Conflict (single server overloaded with too many requests)\n    - `404` — Service/resource not found\n    - `Connection refused` — service may have been killed (OOM kill, manual kill, crash)\n- **Scaling solutions for overloaded servers**: Horizontal scaling (add more VMs) + **load balancing** (distribute traffic across VMs using AWS Elastic Load Balancer, GCP Load Balancer, or NGINX configured as a load balancer) + **High Availability (HA)** setup.",
+      "diagram": null
+    },
+    {
+      "id": "s09b-permission-issues-scenario-5",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Permission Issues — Scenario 5",
+      "text_md": "- **File permissions** in Linux are not automatically granted — by default, even the file owner cannot execute a newly created file (security design).\n- **CHMOD** (Change Mode) to grant permissions:\n    - `chmod +x <file>` — add execute permission\n    - `chmod 744 <file>` — owner has full permissions (rwx), group and others have read-only\n    - `chmod 777 <file>` — full permissions for everyone (use with caution)\n- **CHOWN** (Change Ownership) — used to change file/directory ownership when permission issues relate to the wrong owner.\n- Checking permissions: `ls -l` — shows permission string, owner, group; executable files appear highlighted in green in many terminals.",
+      "diagram": null
+    },
+    {
+      "id": "s09b-process-killing-scenario-6",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Process Killing — Scenario 6",
+      "text_md": "- Use `ps -ef` or `top` to find the **PID (Process ID)** of the problematic process.\n- **Kill signals**:\n    - `kill -15 <PID>` or plain `kill <PID>` — **graceful termination** (SIGTERM): waits for the process to complete its current task before stopping; preferred in production\n    - `kill -9 <PID>` — **forceful termination** (SIGKILL): immediately kills the process regardless of state; use only when graceful kill fails or when the process is consuming resources abnormally without justification\n    - `kill -11` — also mentioned as a signal option\n- **Interview language tip**: Use the word **\"graceful\"** (not just \"normal\") when describing `kill -15` to sound professional.\n- **Thread dumps**: For Java-based applications consuming high CPU/memory, take a thread dump and hand it to the developer for analysis — DevOps engineers typically cannot fix application-level thread issues directly.\n- **When NOT to kill**: In production, never kill a process without approval or analysis; first check logs, analyze historical data, determine if the high usage is expected (e.g., end-of-day batch reports, monthly data extraction jobs).",
+      "diagram": null
+    },
+    {
+      "id": "s09b-hardware-troubleshooting-scenario-7",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Hardware Troubleshooting — Scenario 7",
+      "text_md": "- **Common hardware issues in Linux**:\n    - **Kernel panic** — most common hardware-related error; often caused by OS/firmware mismatch after an update, or running an incompatible OS on old hardware\n    - Disconnected cables or failed disk mounts\n    - Fan issues, temperature problems\n    - Driver/firmware mismatch (common in legacy systems)\n- **Diagnostic commands**:\n    - `dmesg` — kernel ring buffer; shows hardware detection messages, boot errors, device connection/disconnection events\n    - `lsblk` — list block devices; identifies unconnected or failed disks\n    - `lscpu` — CPU information; can reveal multi-CPU configuration issues\n    - `smartctl` — disk health and temperature (requires `smartmontools`)\n- **Key principle**: Even in cloud environments, understanding hardware troubleshooting is essential for interviews — cloud abstracts hardware but interviewers still ask about it.",
+      "diagram": null
+    },
+    {
+      "id": "s09b-network-troubleshooting-brief-coverage",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Network Troubleshooting — Brief Coverage",
+      "text_md": "- **Telnet**: Used to verify port connectivity — `telnet <hostname> <port>` checks if a specific port on a destination is open and reachable.\n- **SSH service**: If SSH is not running, remote connections fail; check with `systemctl status sshd`; SSH configuration (allow/disallow users, keys) is managed in `/etc/ssh/sshd_config`.\n- **Wireshark / tcpdump**: Network packet capture tools — `tcpdump` captures packets via CLI, Wireshark analyzes them visually; used to diagnose network latency, packet drops, and timeout issues.\n- **SSH disconnection causes**: Most commonly network latency or packet drops (timeout); unlike Zoom which auto-reconnects, SSH shell sessions break and must be manually reconnected.\n- **Swap memory** (network context): Not network-related, but swap is virtual memory from disk — analogous to Windows hibernate/page file; useful when RAM is insufficient for active application data.",
+      "diagram": null
+    },
+    {
+      "id": "s09b-weekend-challenge-interview-prep",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Weekend Challenge & Interview Prep",
+      "text_md": "- **Bandit Game** (OverTheWire): A Linux command-line game with ~33–34 levels; students were challenged to complete as many levels as possible over the weekend and explain their solutions to the class.\n    - Level 0: SSH into the server using provided credentials (`bandit0` user, `bandit0` password) — login command was provided in Zoom chat\n    - Completing and explaining levels builds real troubleshooting muscle memory\n- **Resume points derived from this session**:\n    - Linux server configuration and troubleshooting in real-time with DevOps best practices\n    - Installed and configured Ubuntu Server 24.04 on Google Cloud (console and CLI)\n    - Performed user management, group permissions, secure access (public/private key, CHMOD)\n    - Managed services: NGINX, SSH, and others\n    - Built health check scripts (CPU, memory, disk, network, hardware monitoring)\n    - Performed process analysis and termination; troubleshot disk and service issues\n- **AI Ops preview**: A future class will automate all manual troubleshooting steps using AI Ops tools — the manual approach taught today is the foundation.",
+      "diagram": null
+    },
+    {
+      "id": "s09b-what-i-didn-t-fully-get",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "What I Didn't Fully Get",
+      "text_md": "- **`journalctl -u <service>`** was mentioned briefly but not deeply demonstrated — this command streams the full log history of a specific systemd service and is extremely useful for debugging service failures. You can add `-f` to follow it live, or `--since \"1 hour ago\"` to filter by time.\n- **`kill -11`** **(SIGSEGV)** was mentioned but not explained clearly — this is a segmentation fault signal, typically sent when a process accesses invalid memory. It is not commonly used to manually kill processes; it usually appears as an error signal from the OS itself.\n- **OpenTelemetry** was briefly discussed at the end in the context of an SRE interview question — it is an observability framework that combines **metrics, logs, and traces** into a unified standard. Tools like Grafana, Prometheus, and Jaeger can consume OpenTelemetry data. It is particularly relevant for SRE/production support roles.\n- **VPC connectivity between two VMs** was raised as a question but deferred to Day 19 — the concept is that two VMs in different VPCs need **VPC peering** or a shared network configuration to communicate; this will be covered practically later.\n- **Horizontal vs. Vertical scaling use cases** were touched on but not fully resolved — vertical scaling (increasing CPU/RAM on the same VM) requires stopping the VM in GCP/AWS; VMware supports **hot-plugging** (adding RAM without stopping), but GCP/AWS use cold-plug only.\n- **`systemctl`** **vs.** **`journalctl`**: `systemctl` manages service state (start/stop/enable); `journalctl` reads logs from the systemd journal. Both are part of the `systemd` ecosystem and complement each other.\n- **Disk fragmentation in Linux** was glossed over — Linux filesystems like ext4 are designed to minimize fragmentation; tools like `e4defrag` exist but are rarely needed. The `smartctl` tool is more relevant for disk health monitoring.",
+      "diagram": null
+    },
+    {
+      "id": "s09b-might-show-up-on-the-exam",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Might Show Up on the Exam",
+      "text_md": "- **Log file location**: `/var/log/` is the standard directory for all system and application logs on Linux\n- **`tail -f`** **vs** **`tail -n`**: `-f` follows live updates; `-n` (or `-<number>`) shows last N lines — know the difference\n- **`chmod +x`** **is required** before executing any shell script — Linux does not grant execute permission by default\n- **Shebang line**: Every shell script must start with `#!/bin/bash` to specify the interpreter\n- **`systemctl status <service>`** reveals both service state AND the log path — useful in troubleshooting interviews\n- **`kill -9`** **= forceful (SIGKILL),** **`kill -15`** **= graceful (SIGTERM)** — use \"graceful\" terminology in interviews\n- **Swap memory** = virtual memory from disk; used when RAM is full or to offload cold pages — equivalent to Windows page file\n- **Instance type naming conventions** across clouds: AWS uses `C6i.4xlarge` style; GCP uses `N2-standard-16`; Azure uses `Standard_F16s_v2`\n- **`df -h`** = disk space by partition; **`free -h`** = RAM/swap usage; **`top`/`htop`** = live CPU/process view — all standard performance commands\n- **Telnet** checks port connectivity (`telnet <host> <port>`); SSH is for secure login — they serve different purposes\n- **Auto-delete VM setting** in GCP: Machine Configuration > VM Provisioning > Set time limit — VM must be stopped before this setting can be edited\n- **Single project rule**: Always create VMs within one GCP project; creating multiple projects leads to billing confusion and resource fragmentation\n- **NGINX** can act as: web server, load balancer, reverse proxy, streaming server, or messaging server — know which role it plays in your use case\n- **80% disk threshold** is the standard warning threshold for production monitoring scripts; alerts should trigger at or above this level",
+      "diagram": null
+    },
+    {
+      "id": "s09b-important-commands",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Important Commands",
+      "text_md": "```bash\n# Logs\ncd /var/log\ntail -f /var/log/syslog\ntail -n 20 /var/log/syslog\ngrep error /var/log/syslog\n\n# Performance\ntop\nhtop\nfree -h\ndf -h\ndu\nps -ef\nuptime\nwho\nw\n\n# Services\nsystemctl status nginx\nsystemctl start nginx\nsystemctl stop nginx\nsystemctl restart nginx\nsystemctl enable nginx\njournalctl -u nginx\njournalctl -u nginx -f\n\n# Permissions\nls -l\nchmod +x script.sh\nchmod 744 script.sh\nchown <user>:<group> <file>\n\n# Processes\nps -ef\nkill -15 <PID>\nkill -9 <PID>\n\n# Hardware / Disk\nlsblk\ndmesg\nlscpu\nsmartctl\n\n# Network\ntelnet <host> <port>\ntcpdump\n```",
+      "diagram": null
+    },
+    {
+      "id": "s09b-interview-thumb-rules",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Interview Thumb Rules",
+      "text_md": "1. **Issue → Check logs first.**\n2. **Slow server → `top`, `free -h`, `df -h`, `uptime`, `ps -ef`.**\n3. **Disk full → `df -h`, then `du`.**\n4. **Service problem → `systemctl status`, then `journalctl`.**\n5. **Live log monitoring → `tail -f`.**\n6. **Script execution permission → `chmod +x`.**\n7. **Graceful process termination → `kill -15`.**\n8. **Forceful termination → `kill -9`.**\n9. **Disk/device issue → `lsblk`, `dmesg`, `smartctl`.**\n10. **Port connectivity → `telnet <host> <port>`.**\n11. **Network packet troubleshooting → `tcpdump` / Wireshark.**\n12. **Repeated health checks → Shell script + cron.**\n13. **Historical monitoring → continuous monitoring tools such as Grafana/Datadog.**\n14. **Overloaded server → consider horizontal scaling + load balancing.**",
+      "diagram": null
+    },
+    {
+      "id": "s09b-source-coverage-note",
+      "unit": "s09b",
+      "kind": "concept",
+      "title": "Source Coverage Note",
+      "text_md": "This question bank is based on the uploaded Linux Troubleshooting session notes, covering logs, performance, disk troubleshooting, services, permissions, processes, hardware, networking, shell scripting, GCP VM configuration, and production troubleshooting practices.",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is Linux troubleshooting?",
+      "prompt": "What is Linux troubleshooting?",
+      "reference_answer": "Linux troubleshooting is the systematic process of identifying, diagnosing, and resolving issues on Linux servers. It commonly includes checking logs, CPU and memory performance, disk usage, services, permissions, processes, hardware, and network connectivity.\n\n**Explanation:**\nIn a production environment, a DevOps engineer should be able to investigate an issue independently instead of immediately depending on L1/L2 support.",
+      "id": "s09b-q01",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-disk-troubleshooting-scenario-3",
+        "s09b-hardware-troubleshooting-scenario-7",
+        "s09b-network-troubleshooting-brief-coverage"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the first thing you should check when a Linux server has an issue?",
+      "prompt": "What is the first thing you should check when a Linux server has an issue?",
+      "reference_answer": "Check the system logs first.\n\n**Explanation:**\nLogs are one of the primary sources of truth when something goes wrong. The standard Linux log directory is:\n\n```bash\n/var/log/\n```\n\nYou can inspect logs using commands such as `tail`, `cat`, `grep`, and `journalctl`.",
+      "id": "s09b-q02",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-permission-issues-scenario-5",
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Where are Linux system logs stored?",
+      "prompt": "Where are Linux system logs stored?",
+      "reference_answer": "```bash\n/var/log/\n```\n\n**Explanation:**\nCommon logs include:\n\n- `auth.log` — authentication and sudo-related events\n- `kern.log` — kernel-level messages\n- `dpkg.log` — package installation/removal history\n- `syslog` — general system messages\n- `dmesg` — kernel and boot-time hardware messages\n- NGINX logs — commonly under `/var/log/nginx/`",
+      "id": "s09b-q03",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-log-checking-scenario-1"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between tail -f and tail -n?",
+      "prompt": "What is the difference between tail -f and tail -n?",
+      "reference_answer": "`tail -f` continuously follows a log file as new lines are written. `tail -n` displays a specific number of last lines.\n\nExample:\n\n```bash\ntail -f /var/log/syslog\ntail -n 20 /var/log/syslog\n```\n\n**Explanation:**\nUse `tail -f` when monitoring a live application or service. Use `tail -n` when you only need recent log entries.",
+      "id": "s09b-q04",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you search for errors inside a log file?",
+      "prompt": "How do you search for errors inside a log file?",
+      "reference_answer": "```bash\ncat /var/log/syslog | grep error\n```\n\nYou can also search for terms such as:\n\n```bash\ngrep failed /var/log/auth.log\ngrep warning /var/log/syslog\ngrep exception application.log\n```\n\n**Explanation:**\nFiltering logs helps reduce a large amount of output and focus on a specific problem.",
+      "id": "s09b-q05",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-log-checking-scenario-1"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is top used for?",
+      "prompt": "What is top used for?",
+      "reference_answer": "`top` provides a real-time view of CPU usage, memory usage, running processes, tasks, and load average.\n\n```bash\ntop\n```\n\n**Explanation:**\nIt is one of the first commands to use when a server appears slow or overloaded.",
+      "id": "s09b-q06",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between top and htop?",
+      "prompt": "What is the difference between top and htop?",
+      "reference_answer": "Both are used for real-time performance monitoring. `htop` provides a more interactive and user-friendly view.\n\n```bash\nhtop\n```\n\nIf it is not installed:\n\n```bash\napt install htop\n```\n\n**Explanation:**\n`top` is commonly available by default, while `htop` may need to be installed.",
+      "id": "s09b-q07",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does free -h show?",
+      "prompt": "What does free -h show?",
+      "reference_answer": "```bash\nfree -h\n```\n\nIt shows RAM and swap memory usage in human-readable format.\n\n**Explanation:**\nUse it when investigating memory-related issues, such as high memory utilization or insufficient RAM.",
+      "id": "s09b-q08",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-might-show-up-on-the-exam",
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does df -h show?",
+      "prompt": "What does df -h show?",
+      "reference_answer": "```bash\ndf -h\n```\n\nIt shows disk space usage by filesystem or partition in human-readable format.\n\n**Explanation:**\nIf an application is failing because the filesystem is full, `df -h` is one of the first commands to run.",
+      "id": "s09b-q09",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-might-show-up-on-the-exam",
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between df and du?",
+      "prompt": "What is the difference between df and du?",
+      "reference_answer": "`df -h` shows filesystem/partition-level disk usage. `du` helps identify disk usage by directories or files.\n\nExamples:\n\n```bash\ndf -h\ndu\ndu -sh /var/log\n```\n\n**Explanation:**\nA useful troubleshooting flow is: use `df` to identify which filesystem is full, then use `du` to identify which directory is consuming the space.",
+      "id": "s09b-q10",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does ps -ef do?",
+      "prompt": "What does ps -ef do?",
+      "reference_answer": "```bash\nps -ef\n```\n\nIt lists running processes with detailed information, including process IDs.\n\n**Explanation:**\nThe PID is important when you need to investigate or terminate a problematic process.",
+      "id": "s09b-q11",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is uptime used for?",
+      "prompt": "What is uptime used for?",
+      "reference_answer": "```bash\nuptime\n```\n\nIt shows how long the server has been running and provides load-average information.\n\n**Explanation:**\nIt is a quick way to check server uptime and get an initial indication of system load.",
+      "id": "s09b-q12",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is swap memory?",
+      "prompt": "What is swap memory?",
+      "reference_answer": "Swap is virtual memory allocated from disk space. It can be used when RAM is insufficient or for inactive memory pages.\n\n**Explanation:**\nIt is similar conceptually to the Windows page file. Swap is slower than RAM because it uses disk storage.",
+      "id": "s09b-q13",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a shell script and why is it useful in DevOps?",
+      "prompt": "What is a shell script and why is it useful in DevOps?",
+      "reference_answer": "A shell script is an executable file containing shell commands. It allows repetitive commands to be automated.\n\nExample:\n\n```bash\n#!/bin/bash\n\nfree -h\ndf -h\nuptime\n```\n\n**Explanation:**\nInstead of manually running several health-check commands, a DevOps engineer can run one script. The script can also be scheduled using cron.",
+      "id": "s09b-q14",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the shebang line?",
+      "prompt": "What is the shebang line?",
+      "reference_answer": "The shebang specifies which interpreter should execute the script.\n\nExample:\n\n```bash\n#!/bin/bash\n```\n\n**Explanation:**\nFor Bash scripts, `#!/bin/bash` tells Linux to use Bash as the interpreter.",
+      "id": "s09b-q15",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why do we use chmod +x on a shell script?",
+      "prompt": "Why do we use chmod +x on a shell script?",
+      "reference_answer": "```bash\nchmod +x script.sh\n```\n\nIt grants execute permission to the script.\n\nThen it can be executed using:\n\n```bash\n./script.sh\n```\n\n**Explanation:**\nLinux does not automatically grant execute permission to a newly created file.",
+      "id": "s09b-q16",
+      "unit": "s09b",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is systemctl used for?",
+      "prompt": "What is systemctl used for?",
+      "reference_answer": "`systemctl` manages services controlled by systemd.\n\nExamples:\n\n```bash\nsystemctl status nginx\nsystemctl start nginx\nsystemctl stop nginx\nsystemctl restart nginx\nsystemctl enable nginx\n```\n\n**Explanation:**\nThe same concept applies to services such as NGINX, SSH, Docker, and other installed services.",
+      "id": "s09b-q17",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between systemctl and journalctl?",
+      "prompt": "What is the difference between systemctl and journalctl?",
+      "reference_answer": "`systemctl` manages service state, while `journalctl` reads systemd journal logs.\n\nExamples:\n\n```bash\nsystemctl status nginx\njournalctl -u nginx\n```\n\n**Explanation:**\nUse `systemctl` to understand whether a service is running or failed. Use `journalctl` to investigate the service's logs.",
+      "id": "s09b-q18",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you check logs for a specific systemd service?",
+      "prompt": "How do you check logs for a specific systemd service?",
+      "reference_answer": "```bash\njournalctl -u nginx\n```\n\nTo follow logs:\n\n```bash\njournalctl -u nginx -f\n```\n\nTo check recent history:\n\n```bash\njournalctl -u nginx --since \"1 hour ago\"\n```\n\n**Explanation:**\nThis is useful when a service starts and then fails, or when you need the exact error generated by systemd.",
+      "id": "s09b-q19",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-log-checking-scenario-1",
+        "s09b-service-troubleshooting-scenario-4-nginx-example"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Where are NGINX logs stored?",
+      "prompt": "Where are NGINX logs stored?",
+      "reference_answer": "```bash\n/var/log/nginx/\n```\n\nCommon files include:\n\n```bash\naccess.log\nerror.log\n```\n\nTo monitor an error log live:\n\n```bash\ntail -f /var/log/nginx/error.log\n```\n\n**Explanation:**\nThe access log shows requests, while the error log is especially useful for troubleshooting NGINX problems.",
+      "id": "s09b-q20",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-log-checking-scenario-1",
+        "s09b-service-troubleshooting-scenario-4-nginx-example"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between kill -15 and kill -9?",
+      "prompt": "What is the difference between kill -15 and kill -9?",
+      "reference_answer": "```bash\nkill -15 <PID>\nkill -9 <PID>\n```\n\n`kill -15` sends SIGTERM and requests graceful termination. `kill -9` sends SIGKILL and forcefully terminates the process.\n\n**Explanation:**\nIn production, prefer graceful termination first. Use SIGKILL only when the process does not terminate properly or requires immediate forceful termination.",
+      "id": "s09b-q21",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you find the PID of a problematic process?",
+      "prompt": "How do you find the PID of a problematic process?",
+      "reference_answer": "Use commands such as:\n\n```bash\nps -ef\ntop\n```\n\n**Explanation:**\nOnce the PID is identified, you can investigate the process and, if appropriate, terminate it with `kill`.",
+      "id": "s09b-q22",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-process-killing-scenario-6"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is lsblk used for?",
+      "prompt": "What is lsblk used for?",
+      "reference_answer": "```bash\nlsblk\n```\n\nIt lists block devices and helps identify disks and partitions.\n\n**Explanation:**\nIt is useful during disk troubleshooting when you need to understand which disks and partitions are attached to the system.",
+      "id": "s09b-q23",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is smartctl used for?",
+      "prompt": "What is smartctl used for?",
+      "reference_answer": "`smartctl` is used to check disk health and SMART information for supported HDDs/SSDs.\n\nIt is provided by the `smartmontools` package.\n\n**Explanation:**\nIt can help identify disk health problems, temperature information, and device error data.",
+      "id": "s09b-q24",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is dmesg used for?",
+      "prompt": "What is dmesg used for?",
+      "reference_answer": "```bash\ndmesg\n```\n\nIt displays messages from the Linux kernel ring buffer.\n\n**Explanation:**\nIt is useful for investigating hardware detection, device connection/disconnection events, boot messages, and kernel-level errors.",
+      "id": "s09b-q25",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is lscpu used for?",
+      "prompt": "What is lscpu used for?",
+      "reference_answer": "```bash\nlscpu\n```\n\nIt displays CPU architecture and CPU configuration information.\n\n**Explanation:**\nIt can help investigate CPU-related configuration problems, especially when working with physical or virtual systems.",
+      "id": "s09b-q26",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you check network port connectivity from Linux?",
+      "prompt": "How do you check network port connectivity from Linux?",
+      "reference_answer": "```bash\ntelnet <hostname> <port>\n```\n\n**Explanation:**\nTelnet can be used as a simple connectivity test to determine whether a destination port is reachable.\n\nFor example:\n\n```bash\ntelnet example.com 80\n```",
+      "id": "s09b-q27",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-network-troubleshooting-brief-coverage"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is tcpdump used for?",
+      "prompt": "What is tcpdump used for?",
+      "reference_answer": "`tcpdump` captures network packets from the command line.\n\n**Explanation:**\nIt is useful for diagnosing network latency, packet drops, connectivity problems, and timeout issues. Wireshark provides a graphical way to analyze packet captures.",
+      "id": "s09b-q28",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between internal and external IP addresses on a cloud VM?",
+      "prompt": "What is the difference between internal and external IP addresses on a cloud VM?",
+      "reference_answer": "An internal IP is a private address used for communication inside the VPC/network. An external IP is a public address that can be reachable over the internet, depending on firewall and network configuration.\n\n**Explanation:**\nFor cloud troubleshooting, knowing whether traffic is internal or internet-facing is important.",
+      "id": "s09b-q29",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-google-cloud-vm-creation-and-configuration",
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is horizontal scaling vs vertical scaling?",
+      "prompt": "What is horizontal scaling vs vertical scaling?",
+      "reference_answer": "Vertical scaling means increasing resources on the same VM, such as CPU or RAM. Horizontal scaling means adding more VMs/instances.\n\n**Explanation:**\nFor an overloaded production application, horizontal scaling combined with load balancing can distribute traffic across multiple servers. Vertical scaling increases the capacity of an existing server.",
+      "id": "s09b-q30",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-what-i-didn-t-fully-get"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— Linux Server Is Very Slow",
+      "prompt": "— Linux Server Is Very Slow",
+      "reference_answer": "### Question\nA production Linux server is very slow. What will you check first?\n\n### Answer\nStart with performance commands:\n\n```bash\nuptime\ntop\nfree -h\ndf -h\nps -ef\n```\n\n### Explanation\nFirst identify whether the issue is CPU, memory, disk, load, or a particular process. Do not immediately restart or kill processes without analysis.",
+      "id": "s09b-s01",
+      "unit": "s09b",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "— CPU Usage Is Very High",
+      "prompt": "— CPU Usage Is Very High",
+      "reference_answer": "### Question\nCPU usage suddenly reaches 95–100%. How will you troubleshoot it?\n\n### Answer\n\n```bash\ntop\nps -ef\n```\n\nIdentify which process is consuming CPU. Check its behavior and application logs before deciding whether action is required.\n\n### Explanation\nHigh CPU can be expected during batch jobs or heavy processing. In production, first determine whether the usage is legitimate before killing anything.",
+      "id": "s09b-s02",
+      "unit": "s09b",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "— Memory Is Almost Full",
+      "prompt": "— Memory Is Almost Full",
+      "reference_answer": "### Question\nA server has very little free RAM. What will you check?\n\n### Answer\n\n```bash\nfree -h\ntop\n```\n\nCheck memory-consuming processes and also inspect swap usage.\n\n### Explanation\nSwap can provide virtual memory when RAM is insufficient, but it uses disk and is slower than RAM. The goal is to understand why memory consumption increased.",
+      "id": "s09b-s03",
+      "unit": "s09b",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "— Disk Is 95% Full",
+      "prompt": "— Disk Is 95% Full",
+      "reference_answer": "### Question\nYour monitoring shows that `/` is 95% full. What will you do?\n\n### Answer\n\nFirst check:\n\n```bash\ndf -h\n```\n\nThen identify large directories:\n\n```bash\ndu -sh /*\ndu -sh /var/*\n```\n\n### Explanation\n`df` tells you which filesystem is full. `du` helps locate the directories consuming the space. Logs are one area worth investigating because application and system logs can grow over time.",
+      "id": "s09b-s04",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-disk-troubleshooting-scenario-3"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— Application Cannot Write to Disk",
+      "prompt": "— Application Cannot Write to Disk",
+      "reference_answer": "### Question\nAn application says it cannot write files. What will you check?\n\n### Answer\n\nCheck filesystem space:\n\n```bash\ndf -h\n```\n\nThen inspect the relevant directory:\n\n```bash\ndu -sh <directory>\n```\n\nAlso check permissions:\n\n```bash\nls -l <directory>\n```\n\n### Explanation\nThe problem could be disk exhaustion or incorrect permissions. Check both instead of assuming only one cause.",
+      "id": "s09b-s05",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-disk-troubleshooting-scenario-3"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— NGINX Is Not Working",
+      "prompt": "— NGINX Is Not Working",
+      "reference_answer": "### Question\nUsers report that the NGINX application is unavailable. What commands will you run?\n\n### Answer\n\n```bash\nsystemctl status nginx\n```\n\nIf required:\n\n```bash\njournalctl -u nginx\n```\n\nThen check NGINX logs:\n\n```bash\ntail -f /var/log/nginx/error.log\n```\n\n### Explanation\nStart with service state, then inspect systemd and application logs. This provides evidence about why the service is unavailable.",
+      "id": "s09b-s06",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-service-troubleshooting-scenario-4-nginx-example"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— NGINX Service Is Failed",
+      "prompt": "— NGINX Service Is Failed",
+      "reference_answer": "### Question\n`systemctl status nginx` shows that NGINX has failed. What is your next step?\n\n### Answer\n\nRun:\n\n```bash\njournalctl -u nginx\n```\n\nand inspect:\n\n```bash\ntail -f /var/log/nginx/error.log\n```\n\n### Explanation\nDo not blindly restart repeatedly. First identify the error. The logs may indicate configuration, resource, or startup problems.",
+      "id": "s09b-s07",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-service-troubleshooting-scenario-4-nginx-example"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— Shell Script Says Permission Denied",
+      "prompt": "— Shell Script Says Permission Denied",
+      "reference_answer": "### Question\nYou created `monitor.sh`, but `./monitor.sh` returns permission denied. What will you do?\n\n### Answer\n\n```bash\nchmod +x monitor.sh\n./monitor.sh\n```\n\n### Explanation\nA new file does not automatically receive execute permission. `chmod +x` adds execute permission.",
+      "id": "s09b-s08",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-permission-issues-scenario-5"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— Service Does Not Start After Reboot",
+      "prompt": "— Service Does Not Start After Reboot",
+      "reference_answer": "### Question\nNGINX works now, but after reboot it does not start automatically. What will you check?\n\n### Answer\n\n```bash\nsystemctl status nginx\nsystemctl enable nginx\n```\n\n### Explanation\n`enable` configures the service to start during boot. `start` only starts it for the current runtime.",
+      "id": "s09b-s09",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-service-troubleshooting-scenario-4-nginx-example"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— Process Is Consuming Too Many Resources",
+      "prompt": "— Process Is Consuming Too Many Resources",
+      "reference_answer": "### Question\nA process is consuming abnormal CPU and memory. How will you handle it in production?\n\n### Answer\n\nFirst identify the process:\n\n```bash\ntop\nps -ef\n```\n\nCheck its logs and determine whether the workload is expected. If termination is approved, try:\n\n```bash\nkill -15 <PID>\n```\n\nIf graceful termination fails:\n\n```bash\nkill -9 <PID>\n```\n\n### Explanation\nUse graceful termination first. Never kill a production process without analysis or appropriate approval.",
+      "id": "s09b-s10",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-process-killing-scenario-6"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— Java Application Has High CPU",
+      "prompt": "— Java Application Has High CPU",
+      "reference_answer": "### Question\nA Java application is consuming high CPU. What can a DevOps engineer do?\n\n### Answer\nIdentify the process and collect relevant evidence. For a Java application, a thread dump can be provided to the developer for application-level analysis.\n\n### Explanation\nA DevOps engineer can identify the resource issue and collect diagnostic information, while the developer may need to investigate the application thread behavior.",
+      "id": "s09b-s11",
+      "unit": "s09b",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "— SSH Is Not Working",
+      "prompt": "— SSH Is Not Working",
+      "reference_answer": "### Question\nYou cannot SSH into a Linux VM. What will you check?\n\n### Answer\nCheck whether the SSH service is running:\n\n```bash\nsystemctl status sshd\n```\n\nAlso verify network connectivity, port 22 reachability, and SSH configuration such as:\n\n```bash\n/etc/ssh/sshd_config\n```\n\n### Explanation\nSSH failures can come from the service, network path, configuration, keys, or access rules.",
+      "id": "s09b-s12",
+      "unit": "s09b",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "— SSH Session Keeps Disconnecting",
+      "prompt": "— SSH Session Keeps Disconnecting",
+      "reference_answer": "### Question\nYour SSH session repeatedly disconnects. What is a possible cause?\n\n### Answer\nNetwork latency or packet drops can cause SSH sessions to break.\n\n### Explanation\nUse network troubleshooting tools such as `tcpdump` for packet-level investigation. Unlike applications that automatically reconnect, a broken SSH shell generally needs to be reconnected.",
+      "id": "s09b-s13",
+      "unit": "s09b",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "— Disk Is Detected as Unhealthy",
+      "prompt": "— Disk Is Detected as Unhealthy",
+      "reference_answer": "### Question\nHow would you investigate a possible disk hardware problem?\n\n### Answer\n\nUse:\n\n```bash\nlsblk\ndmesg\nsmartctl\n```\n\n### Explanation\n`lsblk` shows block devices, `dmesg` can show kernel/device errors, and `smartctl` can provide disk health information.",
+      "id": "s09b-s14",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-disk-troubleshooting-scenario-3"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— Hardware Device Suddenly Disappears",
+      "prompt": "— Hardware Device Suddenly Disappears",
+      "reference_answer": "### Question\nA disk was available earlier but is now missing. What would you check?\n\n### Answer\n\n```bash\nlsblk\ndmesg\n```\n\n### Explanation\n`lsblk` confirms whether the device is visible to the OS. `dmesg` can reveal device disconnects, driver issues, or kernel-level hardware messages.",
+      "id": "s09b-s15",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-hardware-troubleshooting-scenario-7"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— Production Server Shows Kernel Panic",
+      "prompt": "— Production Server Shows Kernel Panic",
+      "reference_answer": "### Question\nA production server reports a kernel panic. What area would you investigate?\n\n### Answer\nInvestigate kernel, hardware, OS, firmware, and compatibility information.\n\nUseful command:\n\n```bash\ndmesg\n```\n\n### Explanation\nThe session notes identify kernel panic as an important hardware/OS-related issue and mention OS/firmware mismatch and compatibility problems as possible areas to investigate.",
+      "id": "s09b-s16",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-might-show-up-on-the-exam"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— Need to Monitor Logs While Developer Tests",
+      "prompt": "— Need to Monitor Logs While Developer Tests",
+      "reference_answer": "### Question\nA developer is reproducing an issue and you need to watch logs live. What command will you use?\n\n### Answer\n\n```bash\ntail -f <logfile>\n```\n\nFor a systemd service:\n\n```bash\njournalctl -u <service> -f\n```\n\n### Explanation\nBoth commands allow real-time observation as new log entries are generated.",
+      "id": "s09b-s17",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-log-checking-scenario-1"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— Need a Daily Health Check",
+      "prompt": "— Need a Daily Health Check",
+      "reference_answer": "### Question\nYou manually run `free -h`, `df -h`, and `uptime every day`. How would you automate it?\n\n### Answer\nCreate a Bash script:\n\n```bash\n#!/bin/bash\n\necho \"Memory\"\nfree -h\n\necho \"Disk\"\ndf -h\n\necho \"Uptime\"\nuptime\n```\n\nThen make it executable:\n\n```bash\nchmod +x monitor.sh\n```\n\nSchedule it using cron.\n\n### Explanation\nShell scripting reduces repetitive manual work, and cron can execute the health-check script automatically.",
+      "id": "s09b-s18",
+      "unit": "s09b",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "— Disk Usage Crosses 80%",
+      "prompt": "— Disk Usage Crosses 80%",
+      "reference_answer": "### Question\nYou are creating a production monitoring script. What should happen when disk usage reaches the warning threshold?\n\n### Answer\nThe script can check the disk percentage and display a warning when usage reaches or exceeds the configured threshold, such as 80%.\n\n### Explanation\nThe session used 80% as a standard warning threshold example. The script can later be extended to send email alerts or integrate with monitoring systems.",
+      "id": "s09b-s19",
+      "unit": "s09b",
+      "concept_ids": [
+        "s09b-disk-troubleshooting-scenario-3"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "— Production Server Is Overloaded",
+      "prompt": "— Production Server Is Overloaded",
+      "reference_answer": "### Question\nOne production VM is receiving too much traffic. What architecture-level solution can you consider?\n\n### Answer\nConsider horizontal scaling with multiple VMs and a load balancer.\n\nExample architecture:\n\n```text\nUsers\n  |\nLoad Balancer\n  |\n  +---- VM 1\n  |\n  +---- VM 2\n  |\n  +---- VM 3\n```\n\n### Explanation\nA load balancer distributes traffic across multiple servers. This can improve capacity and support a highly available architecture.",
+      "id": "s09b-s20",
+      "unit": "s09b",
+      "concept_ids": []
+    }
+  ]
+}

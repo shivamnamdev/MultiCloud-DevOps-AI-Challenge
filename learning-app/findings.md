@@ -30,3 +30,10 @@
 - Mermaid in browser: `securityLevel: 'strict'` recommended for untrusted text; use `mermaid.run()` (`mermaid.init` deprecated). CDN ESM `https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs`. Exact current version not confirmed — pin the major (11) or vendor the file. Docs: https://mermaid.js.org/config/usage
 - No single open-source project found that combines Markdown notes + Mermaid + SRS quizzes + Ollama interviews. Closest, for ideas only (not verified): odosui/mt (notes + Mermaid + spaced repetition), gamosoft/notediscovery (Markdown + Mermaid + Ollama compose), Memoet (self-hosted SM-2 SRS), Interview Prep Buddy (local Ollama question generation, AI + rule-based scoring — matches our hybrid scoring idea).
 - Conclusion: build our own small app; reuse ideas, not code. SM-2 is the standard spaced-repetition algorithm and is simple to implement deterministically.
+
+## Corpus structure (2026-10-26)
+- 63 class-note files, 878 distinct `##` headings: structure varies. Content lives at `##` or `###` depending on file; some use a noise `##` ("Key Outcomes") as a wrapper around real `###` content; Q&A heading formats vary (`## N. ...?`, `### N. ...`, `### ❓ Qn:`, `### 📌 N. Scenario:`, `### 📌 Scenario N`) and answer markers vary (`**Answer:**`, `**💡 Answer:**`).
+- Many notes contain real Q&A with answers; Interview-QnA.md (templated) is not needed for those.
+- Some notes list scenario questions without answers (s23, s25): need answers written from the notes.
+- Raw transcript-style notes with one heading (s27 "Part 1") cannot be split by rules.
+- Sessions with only templated READMEs (light units): s00, s14, s40, s45, s46, s48, s49, s51, s58.

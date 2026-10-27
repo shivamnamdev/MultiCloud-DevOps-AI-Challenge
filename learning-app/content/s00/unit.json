@@ -1,0 +1,32 @@
+{
+  "id": "s00",
+  "title": "Session 00 — Accept the HIGH PACKAGE Challenge!",
+  "subtitle": "Session 00",
+  "session": 0,
+  "module": "M1 Foundation: DevOps, Cloud, AI",
+  "order": 0,
+  "status": "light",
+  "source_file": "Session-00-Program-Kickoff/README.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s00-task-001",
+      "unit": "s00",
+      "kind": "practical",
+      "title": "Task 001",
+      "text_md": "**Lab task 001:** Post the \"I Accept the Challenge\" LinkedIn Post\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    },
+    {
+      "id": "s00-task-002",
+      "unit": "s00",
+      "kind": "practical",
+      "title": "Task 002",
+      "text_md": "**Lab task 002:** Complete Your Pre-Program Setup Checklist\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

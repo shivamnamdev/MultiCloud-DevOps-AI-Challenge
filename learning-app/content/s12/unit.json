@@ -1,0 +1,447 @@
+{
+  "id": "s12",
+  "title": "AWS IAM Identity Access Management · Day 3",
+  "subtitle": "Session 12 · Batch-45 · AWS Day-3 – 20 Interview Questions and Answers + 20 Basic Scenarios",
+  "session": 12,
+  "module": "M3 AWS",
+  "order": 1200,
+  "status": "ready",
+  "source_file": "Session-12-AWS-IAM-Identity-Access-Management/🚀 Day-3 of AWS with Batch-45 | 07th Oct 2026 .md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s12-timeline-of-key-aws-milestones",
+      "unit": "s12",
+      "kind": "overview",
+      "title": "Timeline of Key AWS Milestones",
+      "text_md": "- **2002:** AWS console launched ([console.aws.amazon.com](https://console.aws.amazon.com)).\n- **2004:** First AWS service — **SQS (Simple Queue Service)** — introduced for queue-based processing (FIFO/LIFO).\n- **2006:** **EC2 (Elastic Compute Cloud)** launched, enabling virtual machine access over the internet via virtualization.\n- **2009:** **VPC (Virtual Private Cloud)** introduced after three years of development, addressing security concerns about isolated network environments.\n- **2012:** Notable customer events milestone.\n- **2016:** AWS reached **$10 billion revenue**, establishing itself as the leading cloud provider.\n- **2017+:** AWS reached **200+ services**.",
+      "diagram": null
+    },
+    {
+      "id": "s12-why-200-services-exist",
+      "unit": "s12",
+      "kind": "overview",
+      "title": "Why 200+ Services Exist",
+      "text_md": "- Each service was built to solve a specific real-world problem or fulfill a small, distinct requirement.\n- Services mirror and replace on-premises components: physical storage (HDD/SSD) → EBS/EFS/S3; server rooms → cloud compute; security guards → IAM; physical networking switches → VPC.\n- Evolution analogy used: floppy → CD → DVD → pen drive → cloud storage mirrors DST/SAN/NAS → EBS/S3.",
+      "diagram": null
+    },
+    {
+      "id": "s12-core-aws-services-quick-reference",
+      "unit": "s12",
+      "kind": "concept",
+      "title": "Core AWS Services — Quick Reference",
+      "text_md": "|   Category    |    Service     |                        Purpose                        |\n|---------------|----------------|-------------------------------------------------------|\n| Compute       | EC2            | Rented virtual machines                               |\n| Storage       | S3             | Infinite object storage (logs, backups, static sites) |\n| Storage       | EBS            | High-performance block storage (OS, databases)        |\n| Storage       | EFS            | Shared file storage                                   |\n| Database      | RDS            | Managed relational SQL database                       |\n| Database      | DynamoDB       | NoSQL key-value store for unstructured data           |\n| Networking    | VPC            | Private isolated network                              |\n| Identity      | IAM            | User/role/policy management                           |\n| Serverless    | Lambda         | Run code without managing infrastructure              |\n| API           | API Gateway    | Front door for all APIs                               |\n| CDN           | CloudFront     | Content delivery network via edge locations           |\n| Messaging     | SQS            | Queue service for distributed processing              |\n| Notifications | SNS            | Pub/sub notification (email, SMS, Slack, Telegram)    |\n| Monitoring    | CloudWatch     | Metrics, logs, and alerting in one place              |\n| Auditing      | CloudTrail     | Tracks who did what in the AWS account                |\n| IaC           | CloudFormation | AWS infrastructure-as-code (equivalent to Terraform)  |\n| Containers    | EKS            | Managed Kubernetes service                            |",
+      "diagram": null
+    },
+    {
+      "id": "s12-quick-revision-table",
+      "unit": "s12",
+      "kind": "concept",
+      "title": "Quick Revision Table",
+      "text_md": "| Service / Concept | Main purpose |\n|---|---|\n| EC2 | Virtual servers |\n| S3 | Object storage; files, backups, static content |\n| EBS | Block storage for EC2 |\n| EFS | Shared file storage |\n| RDS | Managed relational database |\n| DynamoDB | Managed NoSQL database |\n| VPC | Isolated virtual network |\n| IAM | Identities and permissions |\n| Lambda | Run code in response to events |\n| API Gateway | Create and manage APIs |\n| CloudFront | CDN and edge content delivery |\n| SQS | Queue-based asynchronous messaging |\n| SNS | Publish/subscribe notifications |\n| CloudWatch | Metrics, logs, alarms |\n| CloudTrail | AWS account/API activity history |\n| CloudFormation | AWS infrastructure as code |\n| EKS | Managed Kubernetes |\n| Elastic Load Balancing | Distributes traffic across targets |\n| NGINX | Web server used in the practical |\n| MobaXterm | SSH client and session manager used in the practical |",
+      "diagram": null
+    },
+    {
+      "id": "s12-hands-on-revision-checklist",
+      "unit": "s12",
+      "kind": "practical",
+      "title": "Hands-on Revision Checklist",
+      "text_md": "- [ ] Launch a Linux EC2 instance.\n- [ ] Connect to it using MobaXterm and the appropriate private-key format.\n- [ ] Install and start NGINX.\n- [ ] Repeat the NGINX setup on a second EC2 instance.\n- [ ] Configure a load balancer with both instances as targets.\n- [ ] Verify that both targets are healthy and observe responses from the two servers.\n- [ ] Review the difference between S3, EBS, and EFS.\n- [ ] Clean up lab resources that are no longer needed and review possible ongoing charges.\n\n> **Note:** Questions are grounded in the uploaded Day-3 session notes. Where the notes give only a service name or short purpose, the answer provides a brief practical explanation to make the questions useful for interview preparation.",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is AWS?",
+      "prompt": "What is AWS?",
+      "reference_answer": "Amazon Web Services (AWS) is a cloud platform that provides services such as compute, storage, databases, networking, identity management, monitoring, and messaging. Teams can use these services without building and maintaining all the physical infrastructure themselves.",
+      "id": "s12-q01",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Amazon EC2?",
+      "prompt": "What is Amazon EC2?",
+      "reference_answer": "Amazon Elastic Compute Cloud (EC2) provides virtual servers in the cloud. You can choose an instance type, configure storage and networking, and install software such as NGINX or Jenkins.",
+      "id": "s12-q02",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Amazon S3 used for?",
+      "prompt": "What is Amazon S3 used for?",
+      "reference_answer": "Amazon Simple Storage Service (S3) is object storage. Common uses include storing backups, logs, files, and static website assets such as HTML, CSS, JavaScript, and images.",
+      "id": "s12-q03",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between S3 and EBS?",
+      "prompt": "What is the difference between S3 and EBS?",
+      "reference_answer": "S3 stores objects in buckets and is commonly used for files, backups, logs, and static content. EBS provides block storage volumes that can be attached to EC2 instances, for example as an operating-system or application data disk.",
+      "id": "s12-q04",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Amazon EFS?",
+      "prompt": "What is Amazon EFS?",
+      "reference_answer": "Amazon Elastic File System (EFS) is a managed file storage service that can be shared by multiple supported compute instances. It is useful when multiple servers need access to the same file system.",
+      "id": "s12-q05",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Amazon VPC?",
+      "prompt": "What is Amazon VPC?",
+      "reference_answer": "Amazon Virtual Private Cloud (VPC) provides a logically isolated network for AWS resources. Within a VPC, you configure networking components such as subnets, route tables, and security controls.",
+      "id": "s12-q06",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is IAM used for in AWS?",
+      "prompt": "What is IAM used for in AWS?",
+      "reference_answer": "Identity and Access Management (IAM) manages identities and permissions. It helps control who or what can access AWS services and which actions they can perform.",
+      "id": "s12-q07",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Amazon RDS?",
+      "prompt": "What is Amazon RDS?",
+      "reference_answer": "Amazon Relational Database Service (RDS) is a managed service for relational databases. It helps reduce the operational work of managing database infrastructure.",
+      "id": "s12-q08",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Amazon DynamoDB?",
+      "prompt": "What is Amazon DynamoDB?",
+      "reference_answer": "DynamoDB is a managed NoSQL database service. It is commonly used for key-value and document data models rather than traditional relational SQL schemas.",
+      "id": "s12-q09",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is AWS Lambda?",
+      "prompt": "What is AWS Lambda?",
+      "reference_answer": "AWS Lambda runs code in response to configured events without requiring you to manage the underlying servers directly. It is commonly used for event-driven and serverless workloads.",
+      "id": "s12-q10",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Amazon API Gateway?",
+      "prompt": "What is Amazon API Gateway?",
+      "reference_answer": "API Gateway is a managed service for creating, publishing, securing, monitoring, and managing APIs. It can act as an entry point for applications that call backend services or Lambda functions.",
+      "id": "s12-q11",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Amazon CloudFront?",
+      "prompt": "What is Amazon CloudFront?",
+      "reference_answer": "CloudFront is a content delivery network (CDN) that delivers content through a global network of edge locations. It can reduce latency for users accessing static or cacheable content.",
+      "id": "s12-q12",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between Amazon SQS and Amazon SNS?",
+      "prompt": "What is the difference between Amazon SQS and Amazon SNS?",
+      "reference_answer": "SQS is a message queue that helps decouple application components by allowing messages to be processed asynchronously. SNS is a publish/subscribe notification service that distributes messages to subscribed endpoints or services.",
+      "id": "s12-q13",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between Amazon CloudWatch and AWS CloudTrail?",
+      "prompt": "What is the difference between Amazon CloudWatch and AWS CloudTrail?",
+      "reference_answer": "CloudWatch is used for monitoring metrics, logs, alarms, and operational health. CloudTrail records AWS account activity and API events, helping answer who performed an action and when.",
+      "id": "s12-q14",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is AWS CloudFormation?",
+      "prompt": "What is AWS CloudFormation?",
+      "reference_answer": "CloudFormation is an infrastructure-as-code service for defining and managing AWS resources through templates. It serves a similar broad purpose to Terraform, although the tools have different workflows and provider support.",
+      "id": "s12-q15",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Amazon EKS?",
+      "prompt": "What is Amazon EKS?",
+      "reference_answer": "Amazon Elastic Kubernetes Service (EKS) is a managed Kubernetes service used to run Kubernetes workloads on AWS.",
+      "id": "s12-q16",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Elastic Load Balancing?",
+      "prompt": "What is Elastic Load Balancing?",
+      "reference_answer": "Elastic Load Balancing distributes incoming traffic across configured targets, such as EC2 instances. It helps spread requests across servers and can route traffic away from unhealthy targets when health checks are configured.",
+      "id": "s12-q17",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is a Classic Load Balancer?",
+      "prompt": "What is a Classic Load Balancer?",
+      "reference_answer": "Classic Load Balancer (CLB) is an earlier Elastic Load Balancing option that distributes traffic at basic transport and application layers. It was used in the session to demonstrate load-balancing fundamentals before covering Application Load Balancers and Network Load Balancers. For new designs, evaluate the newer load balancer types against the workload requirements.",
+      "id": "s12-q18",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is round-robin load distribution?",
+      "prompt": "What is round-robin load distribution?",
+      "reference_answer": "Round-robin is a simple distribution approach in which successive requests are assigned across available servers in turn. In a real load-balancer setup, the observed result can depend on connections, health checks, client behavior, and the selected balancing algorithm.",
+      "id": "s12-q19",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "How did the session demonstrate a working load balancer?",
+      "prompt": "How did the session demonstrate a working load balancer?",
+      "reference_answer": "NGINX was installed on two separate Linux EC2 instances. Students connected to the instances using MobaXterm, configured a Classic Load Balancer with both servers as targets, and observed requests being distributed between the servers.",
+      "id": "s12-q20",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Your team needs a virtual Linux server to host a test application. Which AWS service would you use?",
+      "prompt": "Your team needs a virtual Linux server to host a test application. Which AWS service would you use?",
+      "reference_answer": "Use Amazon EC2. Choose an appropriate instance type, configure networking and security, select storage, and install the required software.",
+      "id": "s12-s01",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to store website images, downloadable files, and backup archives. Which service fits this need?",
+      "prompt": "You need to store website images, downloadable files, and backup archives. Which service fits this need?",
+      "reference_answer": "Amazon S3 is a suitable choice for object storage. Organize the files in buckets and configure access permissions carefully.",
+      "id": "s12-s02",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "An EC2 instance needs a separate disk for application data. Which storage service should you consider?",
+      "prompt": "An EC2 instance needs a separate disk for application data. Which storage service should you consider?",
+      "reference_answer": "Consider an EBS volume and attach it to the EC2 instance, subject to the instance and volume configuration. Format and mount the volume before using it as a file system.",
+      "id": "s12-s03",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Two application servers must read and write the same shared files. Which service from the session could help?",
+      "prompt": "Two application servers must read and write the same shared files. Which service from the session could help?",
+      "reference_answer": "Amazon EFS may be appropriate because it provides shared file storage for supported compute instances. Confirm the application’s file-locking, performance, and access requirements.",
+      "id": "s12-s04",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A company wants its AWS resources inside an isolated virtual network. Which service should it start with?",
+      "prompt": "A company wants its AWS resources inside an isolated virtual network. Which service should it start with?",
+      "reference_answer": "Create or use an Amazon VPC, then plan subnets, routing, and security controls according to which resources need private or public connectivity.",
+      "id": "s12-s05",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A developer can sign in to AWS but should only be allowed to manage specific resources. What should the administrator configure?",
+      "prompt": "A developer can sign in to AWS but should only be allowed to manage specific resources. What should the administrator configure?",
+      "reference_answer": "Use IAM identities and policies with least-privilege permissions. Avoid giving broad administrative access when the developer only needs a limited set of actions.",
+      "id": "s12-s06",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Your application requires a managed relational SQL database. Which service from the notes is relevant?",
+      "prompt": "Your application requires a managed relational SQL database. Which service from the notes is relevant?",
+      "reference_answer": "Amazon RDS is a good starting point. Select a supported database engine and plan connectivity, credentials, backups, and availability requirements.",
+      "id": "s12-s07",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A new application stores user session information as key-value data and does not need a relational schema. Which service might fit?",
+      "prompt": "A new application stores user session information as key-value data and does not need a relational schema. Which service might fit?",
+      "reference_answer": "Amazon DynamoDB may be suitable. Model the partition and sort keys around the application’s access patterns.",
+      "id": "s12-s08",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A small function should run when a configured event occurs, without managing a virtual server. Which service should you consider?",
+      "prompt": "A small function should run when a configured event occurs, without managing a virtual server. Which service should you consider?",
+      "reference_answer": "AWS Lambda. Configure the event source, execution role, code, and monitoring needed for the function.",
+      "id": "s12-s09",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A team wants to expose backend functionality through managed HTTP APIs. Which service could act as the API front door?",
+      "prompt": "A team wants to expose backend functionality through managed HTTP APIs. Which service could act as the API front door?",
+      "reference_answer": "Amazon API Gateway. Configure the routes, authorization, integrations, and throttling appropriate for the API.",
+      "id": "s12-s10",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Users in different countries report slow downloads of static website assets. What AWS service could improve content delivery?",
+      "prompt": "Users in different countries report slow downloads of static website assets. What AWS service could improve content delivery?",
+      "reference_answer": "Amazon CloudFront can cache and deliver suitable content through edge locations closer to users. Configure the origin and caching behavior appropriately.",
+      "id": "s12-s11",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "One application component needs to send work to another component for processing later. Should it use SQS or SNS?",
+      "prompt": "One application component needs to send work to another component for processing later. Should it use SQS or SNS?",
+      "reference_answer": "Amazon SQS is a natural fit for queue-based asynchronous processing. The producer sends messages to a queue, and consumers process them independently.",
+      "id": "s12-s12",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A system needs to publish an alert to several subscribers, such as email endpoints or other services. Which service is relevant?",
+      "prompt": "A system needs to publish an alert to several subscribers, such as email endpoints or other services. Which service is relevant?",
+      "reference_answer": "Amazon SNS supports publish/subscribe messaging and can distribute notifications to configured subscribers.",
+      "id": "s12-s13",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "An administrator wants to see application metrics and create an alarm when CPU usage is high. Which service should be checked?",
+      "prompt": "An administrator wants to see application metrics and create an alarm when CPU usage is high. Which service should be checked?",
+      "reference_answer": "Amazon CloudWatch. Configure the relevant metrics, alarm threshold, evaluation period, and notification action.",
+      "id": "s12-s14",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A security auditor asks who made an API call that changed an AWS resource. Which service should be checked?",
+      "prompt": "A security auditor asks who made an API call that changed an AWS resource. Which service should be checked?",
+      "reference_answer": "AWS CloudTrail records account activity and API events. Search the relevant event history or trail data for the action, identity, and timestamp.",
+      "id": "s12-s15",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A team wants to recreate AWS infrastructure consistently from a template. Which service from the session can help?",
+      "prompt": "A team wants to recreate AWS infrastructure consistently from a template. Which service from the session can help?",
+      "reference_answer": "AWS CloudFormation can define AWS resources as infrastructure as code. Store templates in version control and review changes before applying them.",
+      "id": "s12-s16",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "An organization wants to run Kubernetes workloads on AWS without managing its own Kubernetes control plane. Which service should it consider?",
+      "prompt": "An organization wants to run Kubernetes workloads on AWS without managing its own Kubernetes control plane. Which service should it consider?",
+      "reference_answer": "Amazon EKS is a managed Kubernetes service. The team still needs to plan worker compute, networking, permissions, and cluster operations.",
+      "id": "s12-s17",
+      "unit": "s12",
+      "concept_ids": [
+        "s12-core-aws-services-quick-reference"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You have two EC2 instances running NGINX, but users must access one common endpoint. What should you configure?",
+      "prompt": "You have two EC2 instances running NGINX, but users must access one common endpoint. What should you configure?",
+      "reference_answer": "Configure an Elastic Load Balancer, register both instances as targets, configure a listener and suitable health checks, and ensure security groups allow the required traffic.",
+      "id": "s12-s18",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "The load balancer sends traffic to a server where NGINX has stopped. What should you check?",
+      "prompt": "The load balancer sends traffic to a server where NGINX has stopped. What should you check?",
+      "reference_answer": "Check the target’s health status and health-check configuration, confirm NGINX is running and listening on the expected port, and verify the instance security group and network path. The load balancer should avoid routing to targets marked unhealthy once health checks detect the failure.",
+      "id": "s12-s19",
+      "unit": "s12",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "You want to host a simple portfolio site containing HTML, CSS, JavaScript, and images. What option was discussed in the session?",
+      "prompt": "You want to host a simple portfolio site containing HTML, CSS, JavaScript, and images. What option was discussed in the session?",
+      "reference_answer": "Amazon S3 static website hosting was identified as a valid use case. Configure the site files and access appropriately. For HTTPS and a production-style setup, consider CloudFront in front of S3 and follow the recommended origin-access pattern.",
+      "id": "s12-s20",
+      "unit": "s12",
+      "concept_ids": []
+    }
+  ]
+}

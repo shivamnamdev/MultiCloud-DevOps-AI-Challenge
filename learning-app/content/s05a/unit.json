@@ -1,0 +1,622 @@
+{
+  "id": "s05a",
+  "title": "Linux Overview GCP Setup · Day 1",
+  "subtitle": "Session 05 · Batch-45 · Batch-45 Day-1 — Linux Interview Q&A + GCP/Linux Scenarios",
+  "session": 5,
+  "module": "M2 Linux + GCP",
+  "order": 500,
+  "status": "ready",
+  "source_file": "Session-05-Linux-Overview-GCP-Setup/Batch-45_Day-1_Linux_20_Basic_QA_20_GCP_Linux_Scenarios.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s05a-session-plan-and-structure",
+      "unit": "s05a",
+      "kind": "concept",
+      "title": "Session Plan and Structure",
+      "text_md": "- **Five-day Linux curriculum** designed to take participants from non-technical to technically proficient in Linux administration for cloud and DevOps engineering.\n- **Day 1 (Friday):** Basics — OS concepts, kernel/shell, Linux history, distributions, environment setup, and introductory commands.\n- **Day 2 (Monday):** Intermediate Linux.\n- **Day 3 (Tuesday):** Advanced Linux.\n- **Day 4:** Advanced real-time troubleshooting.\n- **Day 5:** Interview-perspective activities and Q&A.\n- Friday start was intentional: students get a head start over the weekend; a **free Linux course** was promised to be shared at session end to support slow and fast learners alike — slow learners can re-watch recordings; fast learners can explore further.\n- Sessions are **live and interactive**: camera on, mute by default, raise hand to speak, and take notes.",
+      "diagram": null
+    },
+    {
+      "id": "s05a-operating-system-fundamentals",
+      "unit": "s05a",
+      "kind": "concept",
+      "title": "Operating System Fundamentals",
+      "text_md": "- **Operating system defined:** An interface between hardware and applications — system software that manages CPU, memory, disk, and other resources, and provides common services for programs.\n- A student correctly summarized it as \"an interface between computer user and computer hardware,\" which the instructor confirmed as the perfect answer.\n- Applications consume hardware resources (CPU, memory) through the operating system; without the OS, applications cannot access hardware.\n- **Examples of operating systems** cited: macOS (Apple), Windows (Microsoft), Ubuntu, Linux, DOS.\n\n### Kernel vs. Shell\n\n- **Trap interview question:** \"Is Linux an operating system?\" — officially yes, but at the interview level the technically precise answer is that Linux is a **kernel**, not just an OS.\n- **Kernel:** The innermost layer of the OS, closely and directly connected to hardware; responsible for performance and resource management.\n- **Shell:** The outer layer of the OS; users and applications connect through the shell, which in turn communicates with the kernel, which talks to hardware.\n- **Flow:** Application → Shell → Kernel → Hardware → CPU/Memory returned to application.\n- **Restaurant analogy** offered by a student: The restaurant = OS; the user = customer; the waiter = shell; the chef = kernel. Users interact with the waiter (shell), never seeing the chef (kernel) directly, yet the chef produces the output.\n- **Shell used in Linux:** Bash (Bourne Again Shell) — same in Linux and Unix environments.",
+      "diagram": null
+    },
+    {
+      "id": "s05a-what-linux-is",
+      "unit": "s05a",
+      "kind": "concept",
+      "title": "What Linux Is",
+      "text_md": "- Linux is an **open-source, community-developed kernel** (and operating system) for computers, servers, mainframes, mobile phones, embedded systems, and supercomputers.\n- **Open source** means the source code is publicly available on the internet (e.g., GitHub); anyone can view, fork, modify, and redistribute it.\n- The Linux kernel repository on GitHub is written **98% in C language**, with small percentages in Assembly (~6%), Rust (~4%), and Python (~0.03%).\n- **Why C?** C is a low-level language that connects closely to hardware, enabling better performance — the primary reason operating systems are written in C.\n- **Community developed:** The Linux kernel has **19,234 contributors** actively involved in writing and maintaining the code.\n- Code changes are tracked via GitHub; individual commits show exactly what lines were added or removed, enabling full traceability across thousands of contributors.",
+      "diagram": null
+    },
+    {
+      "id": "s05a-history-unix-linux",
+      "unit": "s05a",
+      "kind": "concept",
+      "title": "History: Unix → Linux",
+      "text_md": "- **Unix came first;** Linux was developed from the idea and design principles of Unix.\n- From Unix's architecture, many operating systems were later created; Linux became one of the most popular.\n- Linux was developed by **Linus Torvalds in 1991**, approximately 30+ years ago.\n- Linux is designed to be very similar to Unix in structure and behavior.",
+      "diagram": null
+    },
+    {
+      "id": "s05a-why-linux-is-popular-student-discussion",
+      "unit": "s05a",
+      "kind": "concept",
+      "title": "Why Linux Is Popular (Student Discussion)",
+      "text_md": "- **Free and open source:** No license cost unlike Windows; this lowered the barrier to adoption and drove widespread use.\n- **Lightweight:** Requires significantly less memory and disk space than Windows.\n- **Highly secure:** Does not support `.exe` or `.msi` files (common virus delivery formats); viruses cannot execute natively; no antivirus installation required.\n- **No GUI overhead:** Linux is used without a graphical user interface (GUI) in server environments, freeing up significant memory (the instructor's Windows machine was consuming ~18 GB RAM, with ~10 GB attributed to Windows GUI processes alone).\n- **Performance and scalability:** More efficient than Windows for running servers and cloud workloads; GUI-less operation reduces CPU and memory consumption dramatically.\n- **Stability:** Can run for years without a single reboot.\n- **Cloud-native:** Runs on cloud infrastructure, containers, Kubernetes nodes, and databases.\n- **Developer-friendly ecosystem.**\n- **Permissions and user management:** Granular control over users, groups, and file permissions.",
+      "diagram": null
+    },
+    {
+      "id": "s05a-linux-vs-windows-comparison",
+      "unit": "s05a",
+      "kind": "concept",
+      "title": "Linux vs. Windows Comparison",
+      "text_md": "|   Dimension    |                   Linux                   |                            Windows                            |\n|----------------|-------------------------------------------|---------------------------------------------------------------|\n| Cost           | Free, open source                         | Requires a license (pirated copies are common but unofficial) |\n| Source         | Open source                               | Closed source                                                 |\n| Security       | Highly secure, no antivirus needed        | Less secure, antivirus typically required                     |\n| Performance    | More efficient, lightweight               | Less efficient due to GUI overhead                            |\n| Path separator | Forward slash `/`                         | Backslash `\\`                                                 |\n| GUI            | Available (GNOME) but not used in servers | GUI is default and resource-intensive                         |\n| Use case       | Servers, cloud, DevOps, containers        | Developer workstations, end-user desktops                     |\n| Ease of use    | Requires training; CLI-based              | Usable by anyone with basic English skills                    |\n\n- Windows runs on DOS (Disk Operating System) at its base; DOS is pre-installed on hard disks/SSDs to make storage readable during OS installation.\n- Linux GUI (GNOME) exists but is intentionally avoided in server/cloud contexts to preserve performance and memory.",
+      "diagram": null
+    },
+    {
+      "id": "s05a-linux-distributions",
+      "unit": "s05a",
+      "kind": "concept",
+      "title": "Linux Distributions",
+      "text_md": "- Linux has **four main distribution families:**\n    1. **Red Hat** — parent organization providing enterprise-grade, supported, commercial Linux; used when enterprise support is required.\n    2. **Fedora** — Red Hat-sponsored community version.\n    3. **Debian** — family of open-source operating systems; Ubuntu belongs to this family.\n    4. **Others** — OpenSUSE, Mint Linux, Arch Linux, etc.\n- **When to use Ubuntu vs. Red Hat:**\n    - Ubuntu: free, open-source use cases, learning, personal projects.\n    - Red Hat: enterprise environments requiring vendor support and SLAs.\n- **Most commonly used in real-time company environments** (per student responses): **Ubuntu**, particularly **Ubuntu 24.04 LTS (64-bit)**.\n- Other distributions mentioned in real-time use: Amazon Linux (AWS), CentOS.",
+      "diagram": null
+    },
+    {
+      "id": "s05a-unix-vs-linux",
+      "unit": "s05a",
+      "kind": "concept",
+      "title": "Unix vs. Linux",
+      "text_md": "- **Unix:** Licensed, proprietary operating system developed at AT&T Labs; used in enterprise workstations and servers where support contracts are needed.\n- **Linux:** Open source, free, developed from Unix's ideas; used across desktops, mobiles, mainframes, and cloud.\n- Both use **Bash shell** and **GNOME** as a GUI option.\n- Key difference: Linux is open source; Unix is not — Unix is tied to a company/organization providing licensed support.\n- Examples of Unix: Sun Solaris, HP-UX.\n- Examples of Linux: Ubuntu, Debian, GNU, Arch Linux.\n- Linux initially developed for **32-bit architecture**; all modern systems are now **64-bit**.",
+      "diagram": null
+    },
+    {
+      "id": "s05a-git-installation-and-linux-kernel-clone",
+      "unit": "s05a",
+      "kind": "practical",
+      "title": "Git Installation and Linux Kernel Clone",
+      "text_md": "- Students instructed to download and install **Git for Windows (64-bit, ~62 MB)**.\n- Mac users: no Git download needed — run `brew install git` from the terminal.\n- After installation, right-click in any working directory → **Open Git Bash** → black terminal opens.\n- Command demonstrated to download the Linux kernel source code:\n\n```plaintext\ngit clone <Linux kernel GitHub repo URL>\n```\n\n- **`git clone`** = downloads code from a remote repository to the local machine.\n- Once downloaded, the code can be opened in VS Code, customized, made more secure using AI, or even redistributed under a license.\n- Instructor noted the full kernel repo is very large; students were advised not to run the clone unless they have sufficient internet and storage.",
+      "diagram": null
+    },
+    {
+      "id": "s05a-mobaxterm-installation-windows-ssh-terminal",
+      "unit": "s05a",
+      "kind": "practical",
+      "title": "MobaXterm Installation (Windows SSH Terminal)",
+      "text_md": "- **MobaXterm** is a terminal application used to connect to remote servers via SSH; widely used in real-time corporate environments.\n- Download: search \"MobaXterm Download for Windows\" → download the portable edition (~free).\n- **Mac users do not need MobaXterm** — Mac already has a Unix-based terminal built in; Linux users similarly need nothing extra.\n- Installation: extract the downloaded zip → double-click the executable → select dark/black theme → click **Start Local Terminal**.\n- Students who cannot install software on office laptops: MobaXterm is portable (no installation required — just extract and run).\n- Alternative for restricted office laptops: use Windows CMD, PowerShell, or WSL (Windows Subsystem for Linux) for practice — though the instructor noted that interview environments typically reflect real Linux terminals.",
+      "diagram": null
+    },
+    {
+      "id": "s05a-bandit-game-ssh-practice-challenge",
+      "unit": "s05a",
+      "kind": "practical",
+      "title": "Bandit Game (SSH Practice Challenge)",
+      "text_md": "- **Bandit** (OverTheWire) introduced as a weekend challenge — a game with **34 stages** that teaches Linux command-line skills progressively.\n- SSH connection command demonstrated:\n\n```plaintext\nssh bandit0@bandit.labs.overthewire.org -p 2220\n```\n\n- **Command breakdown:**\n    - `ssh` = Secure Shell — used to securely connect to remote servers.\n    - `bandit0` = username.\n    - `@` = separator between username and hostname/endpoint.\n    - `bandit.labs.overthewire.org` = hostname (endpoint/domain URL — preferred term over \"IP address\" in interview contexts).\n    - `-p 2220` = port number.\n    - Password for Level 0: `bandit0`.\n- Students successfully connected to the server; Linux terminal environment confirmed working.\n- Instructor advised: complete the 34 stages over the week alongside training; completing the game signals strong Linux proficiency.\n- Note: office laptops may block outbound SSH connections on port 2220; personal laptops recommended for this exercise.",
+      "diagram": null
+    },
+    {
+      "id": "s05a-google-cloud-platform-gcp-account-creation",
+      "unit": "s05a",
+      "kind": "practical",
+      "title": "Google Cloud Platform (GCP) Account Creation",
+      "text_md": "- Students guided to create GCP accounts at `cloud.google.com/free`.\n- **Free tier:** **$300 credit for 90 days** provided upon account creation.\n- **Key steps:**\n    1. Use a **genuine personal email** (not a numbered or incomplete-name email); Google performs background verification.\n    2. Select **Individual** account type; uncheck the \"Organization\" checkbox.\n    3. Enter accurate contact details (mobile number and state must be correct).\n    4. Add a payment method with **international transactions enabled** (credit card, debit card, or UPI).\n    5. If using UPI: a **₹15,000 autopay mandate** will appear — this must be **allowed/enabled** but **no money is actually deducted**; the autopay can be disabled afterward.\n    6. A **₹2 verification charge** may be deducted from credit cards — this is **fully refundable**.\n    7. Some accounts may be asked for a **₹1,000 prepayment** due to Google's trust verification process — this is **100% refundable** and gets added to the account as credit.\n    8. Upon successful setup, students received credit confirmations of approximately **₹28,000–₹28,664** in their accounts.\n- **Post-setup actions:**\n    - Enable **Compute Engine API** (takes ~30–60 seconds; required before creating any VM).\n    - Create a VM: Compute Engine → VM Instances → Create Instance → name it → select **Ubuntu 24.04 LTS, 64-bit, 10 GB disk** → allow network → click Create.\n    - Connect to VM via SSH: click the SSH button in the console — Google Cloud auto-handles key exchange, username, external IP, and port 22.\n    - **Delete the VM after use** — it consumes credits even when idle; three-dot menu → Delete.\n    - **Do not upgrade the account** to a paid tier.\n- **Budget Alarm Setup** (strongly recommended):\n    - Navigate to Billing → Budgets & Alerts → Create Budget.\n    - Set budget name (e.g., \"Batch 45 Budget\"), scope to all projects, amount = **₹100** as a safe threshold.\n    - Configure alerts at **50%, 90%, and 100%** of budget; add email alerts to project owner.\n    - A blog post on the instructor's website covers this step-by-step for GCP (and Azure).\n    - If account shows \"billing disabled\" on a secondary project, use only the primary billing-enabled project.",
+      "diagram": null
+    },
+    {
+      "id": "s05a-root-directory-and-home-directory",
+      "unit": "s05a",
+      "kind": "concept",
+      "title": "Root Directory and Home Directory",
+      "text_md": "- **Root directory (`/`):** The top-level directory of the Linux file system — equivalent to the C: drive in Windows; contains all OS files and folders.\n- **Root user:** A separate concept — root is also a superuser account with full system permissions; distinct from the root directory location.\n- **Home directory (`~`):** The tilde `~` symbol represents the current user's home directory (e.g., `/home/vikas`).\n- Different users have separate home directories, desktops, and downloads — same concept as Windows multi-user setups.\n- Command `sudo -i` switches to the root user's home location.",
+      "diagram": null
+    },
+    {
+      "id": "s05a-key-directories-explored",
+      "unit": "s05a",
+      "kind": "concept",
+      "title": "Key Directories Explored",
+      "text_md": "- **`/usr`** — User-related data; contains user management information.\n- **`/dev`** — Hardware-related device information.\n- **`/bin`** — Binary (executable) files; applications that can be run directly without installation (e.g., MobaXterm portable edition is a binary).",
+      "diagram": null
+    },
+    {
+      "id": "s05a-commands-demonstrated",
+      "unit": "s05a",
+      "kind": "concept",
+      "title": "Commands Demonstrated",
+      "text_md": "|     Command      |                  Purpose                   |\n|------------------|--------------------------------------------|\n| `ls`             | List contents of the current directory     |\n| `cd <directory>` | Change directory                           |\n| `cd ..`          | Go back one directory level                |\n| `pwd`            | Print working directory (current location) |\n| `whoami`         | Display the current logged-in user         |\n| `uname`          | Display the machine/OS name                |\n| `mkdir <name>`   | Create a new directory                     |\n\n- Commands are **case-sensitive** in Linux — `LS` will not work; must be lowercase `ls`.\n- Students ran five commands in sequence during the session: `whoami`, `uname`, `pwd`, `mkdir`, `ls`, and `cd`.",
+      "diagram": null
+    },
+    {
+      "id": "s05a-quick-revision-commands",
+      "unit": "s05a",
+      "kind": "concept",
+      "title": "Quick Revision: Commands",
+      "text_md": "| Command | Purpose |\n|---|---|\n| `pwd` | Show current working directory |\n| `ls` | List files and directories |\n| `cd <dir>` | Change directory |\n| `cd ..` | Move one level up |\n| `cd ~` | Go to current user's home directory |\n| `whoami` | Show current logged-in user |\n| `uname` | Show system/kernel information |\n| `mkdir <name>` | Create a directory |\n| `ssh user@host` | Connect to a remote server using SSH |\n| `git clone <url>` | Clone a remote Git repository |",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is Linux?",
+      "prompt": "What is Linux?",
+      "reference_answer": "Linux is an open-source, community-developed kernel and operating system used widely on servers, cloud platforms, containers, desktops, and other systems.",
+      "id": "s05a-q01",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is",
+        "s05a-git-installation-and-linux-kernel-clone",
+        "s05a-history-unix-linux"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Is Linux an operating system or a kernel?",
+      "prompt": "Is Linux an operating system or a kernel?",
+      "reference_answer": "In interview terms, Linux is technically a **kernel**. Linux-based operating systems combine the Linux kernel with other components such as utilities and shells.",
+      "id": "s05a-q02",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-git-installation-and-linux-kernel-clone",
+        "s05a-operating-system-fundamentals",
+        "s05a-history-unix-linux"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is an operating system?",
+      "prompt": "What is an operating system?",
+      "reference_answer": "An operating system is system software that acts as an interface between applications/users and hardware. It manages CPU, memory, disk, and other resources.",
+      "id": "s05a-q03",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-operating-system-fundamentals",
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a kernel?",
+      "prompt": "What is a kernel?",
+      "reference_answer": "The kernel is the core part of the operating system. It manages system resources and communicates closely with hardware.",
+      "id": "s05a-q04",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-git-installation-and-linux-kernel-clone",
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a shell?",
+      "prompt": "What is a shell?",
+      "reference_answer": "A shell provides an interface through which users interact with the operating system. In Linux, **Bash** is a commonly used shell.",
+      "id": "s05a-q05",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Bash?",
+      "prompt": "What is Bash?",
+      "reference_answer": "Bash stands for **Bourne Again Shell**. It is a command-line shell commonly used in Linux and Unix environments.",
+      "id": "s05a-q06",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is open source?",
+      "prompt": "What is open source?",
+      "reference_answer": "Open source means the source code is publicly available so people can inspect, modify, fork, and redistribute it according to its license.",
+      "id": "s05a-q07",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Who developed Linux?",
+      "prompt": "Who developed Linux?",
+      "reference_answer": "Linux was developed by **Linus Torvalds in 1991**.",
+      "id": "s05a-q08",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-git-installation-and-linux-kernel-clone",
+        "s05a-history-unix-linux",
+        "s05a-linux-distributions"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a Linux distribution?",
+      "prompt": "What is a Linux distribution?",
+      "reference_answer": "A Linux distribution is a complete operating system built around the Linux kernel along with packages, tools, libraries, and a package-management system.",
+      "id": "s05a-q09",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-linux-distributions",
+        "s05a-what-linux-is",
+        "s05a-git-installation-and-linux-kernel-clone"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Ubuntu?",
+      "prompt": "What is Ubuntu?",
+      "reference_answer": "Ubuntu is a Linux distribution that belongs to the Debian family. It is widely used for learning, servers, cloud workloads, and DevOps.",
+      "id": "s05a-q10",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the root directory in Linux?",
+      "prompt": "What is the root directory in Linux?",
+      "reference_answer": "The root directory is represented by `/`. It is the top-level directory of the Linux filesystem.",
+      "id": "s05a-q11",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-root-directory-and-home-directory",
+        "s05a-what-linux-is",
+        "s05a-git-installation-and-linux-kernel-clone"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between / and ~?",
+      "prompt": "What is the difference between / and ~?",
+      "reference_answer": "`/` is the root of the filesystem, while `~` represents the current user's home directory.",
+      "id": "s05a-q12",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does pwd do?",
+      "prompt": "What does pwd do?",
+      "reference_answer": "`pwd` means **Print Working Directory**. It displays the current directory path.",
+      "id": "s05a-q13",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does ls do?",
+      "prompt": "What does ls do?",
+      "reference_answer": "`ls` lists the files and directories in the current directory.",
+      "id": "s05a-q14",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does cd do?",
+      "prompt": "What does cd do?",
+      "reference_answer": "`cd` means **Change Directory**. It is used to move from one directory to another.",
+      "id": "s05a-q15",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does cd .. do?",
+      "prompt": "What does cd .. do?",
+      "reference_answer": "It moves one level up from the current directory.",
+      "id": "s05a-q16",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does whoami do?",
+      "prompt": "What does whoami do?",
+      "reference_answer": "`whoami` displays the username of the currently logged-in user.",
+      "id": "s05a-q17",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does uname do?",
+      "prompt": "What does uname do?",
+      "reference_answer": "`uname` displays system or kernel-related information about the machine.",
+      "id": "s05a-q18",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does mkdir do?",
+      "prompt": "What does mkdir do?",
+      "reference_answer": "`mkdir` creates a new directory. Example: `mkdir project`.",
+      "id": "s05a-q19",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Is Linux case-sensitive?",
+      "prompt": "Is Linux case-sensitive?",
+      "reference_answer": "Yes. Linux commands, file names, and paths are case-sensitive. For example, `ls` and `LS` are different.",
+      "id": "s05a-q20",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-git-installation-and-linux-kernel-clone",
+        "s05a-history-unix-linux",
+        "s05a-linux-distributions"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You created a GCP VM but cannot find a Linux terminal. What can you do?",
+      "prompt": "You created a GCP VM but cannot find a Linux terminal. What can you do?",
+      "reference_answer": "Open **Compute Engine → VM Instances** and use the **SSH** button for the VM. GCP can handle the SSH connection from the console.",
+      "id": "s05a-s01",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is",
+        "s05a-git-installation-and-linux-kernel-clone",
+        "s05a-google-cloud-platform-gcp-account-creation"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need a Linux VM for the Batch-45 practice labs. Which OS was used in the session?",
+      "prompt": "You need a Linux VM for the Batch-45 practice labs. Which OS was used in the session?",
+      "reference_answer": "Ubuntu 24.04 LTS, 64-bit** was used for the GCP VM setup.",
+      "id": "s05a-s02",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-bandit-game-ssh-practice-challenge",
+        "s05a-git-installation-and-linux-kernel-clone",
+        "s05a-history-unix-linux"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your GCP VM is running but you want to know your current Linux user.",
+      "prompt": "Your GCP VM is running but you want to know your current Linux user.",
+      "reference_answer": "Run:\n```bash\nwhoami\n```",
+      "id": "s05a-s03",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-git-installation-and-linux-kernel-clone",
+        "s05a-google-cloud-platform-gcp-account-creation",
+        "s05a-history-unix-linux"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You logged into the VM and want to know where you are.",
+      "prompt": "You logged into the VM and want to know where you are.",
+      "reference_answer": "Run:\n```bash\npwd\n```\nThis shows the current working directory.",
+      "id": "s05a-s04",
+      "unit": "s05a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "You want to see files in your current GCP Linux VM directory.",
+      "prompt": "You want to see files in your current GCP Linux VM directory.",
+      "reference_answer": "Run:\n```bash\nls\n```",
+      "id": "s05a-s05",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-root-directory-and-home-directory",
+        "s05a-git-installation-and-linux-kernel-clone",
+        "s05a-google-cloud-platform-gcp-account-creation"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You want to move into a directory called project.",
+      "prompt": "You want to move into a directory called project.",
+      "reference_answer": "Run:\n```bash\ncd project\n```",
+      "id": "s05a-s06",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-root-directory-and-home-directory"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You want to move one directory level back.",
+      "prompt": "You want to move one directory level back.",
+      "reference_answer": "Run:\n```bash\ncd ..\n```",
+      "id": "s05a-s07",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-root-directory-and-home-directory"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You want to create a directory called devops.",
+      "prompt": "You want to create a directory called devops.",
+      "reference_answer": "Run:\n```bash\nmkdir devops\n```",
+      "id": "s05a-s08",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-root-directory-and-home-directory"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You are confused between the Linux root directory and the root user. What is the difference?",
+      "prompt": "You are confused between the Linux root directory and the root user. What is the difference?",
+      "reference_answer": "`/` is the **root directory** of the filesystem. The **root user** is a superuser account with extensive system permissions. They are different concepts.",
+      "id": "s05a-s09",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-root-directory-and-home-directory",
+        "s05a-what-linux-is",
+        "s05a-git-installation-and-linux-kernel-clone"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You want to go to your current user's home directory.",
+      "prompt": "You want to go to your current user's home directory.",
+      "reference_answer": "Run:\n```bash\ncd ~\n```\nThe `~` symbol represents the current user's home directory.",
+      "id": "s05a-s10",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-root-directory-and-home-directory"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You are connected to a GCP Ubuntu VM and want to check the machine/kernel information.",
+      "prompt": "You are connected to a GCP Ubuntu VM and want to check the machine/kernel information.",
+      "reference_answer": "Run:\n```bash\nuname\n```\nYou can use `uname` to display system/kernel information.",
+      "id": "s05a-s11",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-git-installation-and-linux-kernel-clone",
+        "s05a-google-cloud-platform-gcp-account-creation"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your application needs a remote Linux server. Which protocol can you use for secure command-line access?",
+      "prompt": "Your application needs a remote Linux server. Which protocol can you use for secure command-line access?",
+      "reference_answer": "Use **SSH (Secure Shell)**. The session demonstrated SSH using:\n```bash\nssh username@hostname -p 2220\n```\nFor a normal Linux SSH server, port **22** is commonly used. GCP's browser-based SSH connection handles the connection details for you.",
+      "id": "s05a-s12",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-git-installation-and-linux-kernel-clone",
+        "s05a-history-unix-linux",
+        "s05a-linux-distributions"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to practice Linux commands without creating your own server. What challenge was recommended?",
+      "prompt": "You need to practice Linux commands without creating your own server. What challenge was recommended?",
+      "reference_answer": "The session recommended the **Bandit game from OverTheWire**, which progressively teaches Linux command-line skills through SSH.",
+      "id": "s05a-s13",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-bandit-game-ssh-practice-challenge",
+        "s05a-what-linux-is",
+        "s05a-git-installation-and-linux-kernel-clone"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your GCP VM is no longer needed. What should you do?",
+      "prompt": "Your GCP VM is no longer needed. What should you do?",
+      "reference_answer": "Delete the VM** after completing the lab. The session specifically advised deleting unused VMs because they can consume GCP credits even while idle.",
+      "id": "s05a-s14",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-google-cloud-platform-gcp-account-creation",
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You created a GCP VM but Compute Engine is not allowing you to create one. What should you check first?",
+      "prompt": "You created a GCP VM but Compute Engine is not allowing you to create one. What should you check first?",
+      "reference_answer": "Check whether the **Compute Engine API** is enabled for the project. The session instructed students to enable it before creating the VM.",
+      "id": "s05a-s15",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-google-cloud-platform-gcp-account-creation",
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You want to protect your GCP credits from unexpected usage. What should you configure?",
+      "prompt": "You want to protect your GCP credits from unexpected usage. What should you configure?",
+      "reference_answer": "Create a **Budget & Alert** under **Billing → Budgets & Alerts** and configure alert thresholds such as **50%, 90%, and 100%**.",
+      "id": "s05a-s16",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-google-cloud-platform-gcp-account-creation",
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You want to create a low-cost practice Linux VM in GCP. What configuration was demonstrated?",
+      "prompt": "You want to create a low-cost practice Linux VM in GCP. What configuration was demonstrated?",
+      "reference_answer": "The session demonstrated an **Ubuntu 24.04 LTS 64-bit** VM with a **10 GB disk** and network access enabled.",
+      "id": "s05a-s17",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is",
+        "s05a-bandit-game-ssh-practice-challenge",
+        "s05a-commands-demonstrated"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You are using Windows and need a terminal application to connect to Linux servers. What tool was introduced?",
+      "prompt": "You are using Windows and need a terminal application to connect to Linux servers. What tool was introduced?",
+      "reference_answer": "MobaXterm** was introduced as a Windows terminal application commonly used for SSH connections to remote servers.",
+      "id": "s05a-s18",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-what-linux-is",
+        "s05a-git-installation-and-linux-kernel-clone",
+        "s05a-history-unix-linux"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your office laptop does not allow MobaXterm installation. What alternatives were discussed?",
+      "prompt": "Your office laptop does not allow MobaXterm installation. What alternatives were discussed?",
+      "reference_answer": "The session mentioned **Windows CMD, PowerShell, or WSL** as alternatives for practice. A personal laptop may also be needed where corporate restrictions block SSH or external access.",
+      "id": "s05a-s19",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-mobaxterm-installation-windows-ssh-terminal",
+        "s05a-what-linux-is"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You want to download a Linux project/repository to your local machine before working with it.",
+      "prompt": "You want to download a Linux project/repository to your local machine before working with it.",
+      "reference_answer": "Use Git's `clone` command:\n```bash\ngit clone <repository-url>\n```\nThe session used cloning the Linux kernel repository as an example.",
+      "id": "s05a-s20",
+      "unit": "s05a",
+      "concept_ids": [
+        "s05a-git-installation-and-linux-kernel-clone",
+        "s05a-history-unix-linux",
+        "s05a-linux-distributions"
+      ]
+    }
+  ]
+}

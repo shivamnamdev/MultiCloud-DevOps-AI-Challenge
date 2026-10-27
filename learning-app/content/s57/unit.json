@@ -1,0 +1,376 @@
+{
+  "id": "s57",
+  "title": "Project 8 AI OPS Automations",
+  "subtitle": "Session 57 · Batch-44 · Project 8: MLOps — Building, Containerizing & Deploying an End-to-End Machine Le",
+  "session": 57,
+  "module": "M9 Live projects",
+  "order": 5700,
+  "status": "ready",
+  "source_file": "Session-57-Project-8-AI-OPS-Automations/🚀 Project-8 on MLOps Batch-44 | 10th Sep 2026 .md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s57-project-overview-core-objective",
+      "unit": "s57",
+      "kind": "overview",
+      "title": "Project Overview & Core Objective",
+      "text_md": "In traditional DevOps, continuous delivery pipelines focus on packaging, testing, and deploying static application code. In contrast, **MLOps (Machine Learning Operations)** bridges the gap between Data Science, Machine Learning, and DevOps Engineering by operationalizing machine learning models into reliable, auto-scaling, production-grade cloud environments.\n\nThis capstone project implements an **end-to-end MLOps pipeline** deploying an intelligent IT career salary & upskilling prediction model on **AWS Elastic Kubernetes Service (EKS)**.\n\n### Cross-Functional Roles Executed:\n* **Data Engineer / Data Scientist:** Designs feature sets (experience, current compensation, skill breadth, certifications, coding expertise), trains a classification/prediction model using `scikit-learn`, and serializes the trained model weights with `joblib`.\n* **Backend / API Engineer:** Wraps the trained ML model with a lightweight, high-performance `FastAPI` service with interactive Swagger documentation (`/docs`) for real-time inference.\n* **DevOps / Platform Engineer:** Provisions an Ubuntu EC2 bastion workstation, containerizes the Python ML runtime using Docker, provisions a managed AWS EKS cluster (`eksctl`), deploys Kubernetes Pods with declarative manifests, and exposes the service globally via an AWS Classic/Network Load Balancer.",
+      "diagram": null
+    },
+    {
+      "id": "s57-technology-stack-system-requirements",
+      "unit": "s57",
+      "kind": "concept",
+      "title": "Technology Stack & System Requirements",
+      "text_md": "| Component | Technology / Tool | Purpose |\n| :--- | :--- | :--- |\n| **Cloud Host / Bastion** | AWS EC2 (Ubuntu 24.04 LTS) | Workstation for Docker builds, CLI management, and EKS orchestration |\n| **Kubernetes Engine** | AWS EKS (`eksctl`) | Managed Kubernetes control plane orchestrating worker node EC2 instances |\n| **Networking** | AWS Classic Load Balancer / VPC | External internet routing to Kubernetes service pods on port `80` |\n| **Machine Learning Engine** | Python `scikit-learn` (`sklearn`) | Model training, decision trees/random forest algorithms, and feature fitting |\n| **Model Persistence** | `joblib` | High-efficiency disk serialization and loading of trained Python ML models |\n| **REST API Framework** | `FastAPI` & `Pydantic` | Lightweight, high-concurrency API server with automated data validation |\n| **ASGI Web Server** | `Uvicorn` | Production ASGI web server running FastAPI on port `8000` |\n| **Container Engine** | `Docker CE` | Packaging the ML runtime, Python dependencies, and model binaries |\n| **Container Registry** | Docker Hub | Public/private image repository storing the versioned container image |\n| **Cluster Orchestrator** | `kubectl` | Kubernetes command-line tool for deploying manifests and verifying pods |\n| **Cluster Automation** | `eksctl` | Official AWS CLI utility to provision CloudFormation-backed EKS clusters |\n| **Cloud CLI** | AWS CLI v2 (`aws`) | Managing IAM authentication and AWS resource interactions |",
+      "diagram": null
+    },
+    {
+      "id": "s57-project-directory-file-structure",
+      "unit": "s57",
+      "kind": "concept",
+      "title": "Project Directory & File Structure",
+      "text_md": "```text\nmlops-career-prediction/\n├── train.py                     # ML training script: prepares dataset & exports model.joblib\n├── main.py                      # FastAPI inference server loading model.joblib\n├── model.joblib                 # Serialized scikit-learn model artifact\n├── requirements.txt             # Python libraries (fastapi, uvicorn, scikit-learn, joblib)\n├── Dockerfile                   # Docker container definition for ML runtime\n├── kubernetes-deploy.yaml       # Kubernetes Deployment (2 replicas) & LoadBalancer Service\n└── venv/                        # Isolated Python virtual environment\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-step-1-aws-ec2-ubuntu-bastion-instance-provisioning-security-group-setup",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Step 1: AWS EC2 Ubuntu Bastion Instance Provisioning & Security Group Setup",
+      "text_md": "The EC2 instance acts as our DevOps workstation / bastion host to build Docker images, configure AWS credentials, and manage the EKS cluster.",
+      "diagram": null
+    },
+    {
+      "id": "s57-launch-the-bastion-instance",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Launch the Bastion Instance",
+      "text_md": "1. Open the **AWS Management Console** and navigate to **EC2** in your desired region (`ap-south-1` Mumbai recommended).\n2. Click **Launch Instances** and set:\n   * **Name:** `MLOps-Bastion-Host`\n   * **AMI:** `Ubuntu Server 24.04 LTS` (64-bit x86)\n   * **Instance Type:** `t3.medium` or `t2.medium` (2 vCPU, 4 GiB RAM; minimum recommended to build Docker ML images smoothly).\n   * **Key Pair:** Create a new key pair or select an existing one (`.pem` format).\n   * **Storage:** `30 GiB` gp3 root volume.",
+      "diagram": null
+    },
+    {
+      "id": "s57-configure-security-group-ports-22-8000",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Configure Security Group (Ports 22 & 8000)",
+      "text_md": "1. Under **Network Settings**, click **Edit**.\n2. Keep SSH: Port `22` (Source: `My IP` or `0.0.0.0/0`).\n3. Add a new **Inbound Rule**:\n   * **Type:** `Custom TCP`\n   * **Port Range:** `8000`\n   * **Source:** `0.0.0.0/0` (Anywhere IPv4)\n   * **Description:** `FastAPI Uvicorn Local Dev Server`\n4. Click **Launch Instance**.",
+      "diagram": null
+    },
+    {
+      "id": "s57-connect-and-elevate-privileges",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Connect and Elevate Privileges",
+      "text_md": "Connect using EC2 Instance Connect or SSH:\n```bash\nssh -i \"your-key.pem\" ubuntu@<EC2-PUBLIC-IP>\nsudo -i\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-update-system-repositories",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Update System Repositories",
+      "text_md": "```bash\napt update -y && apt upgrade -y\napt install -y python3 python3-pip python3-venv git curl unzip\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-verify-system-tooling",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Verify System Tooling",
+      "text_md": "```bash\npython3 --version\npip3 --version\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-create-project-working-directory",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Create Project Working Directory",
+      "text_md": "```bash\nmkdir -p /root/mlops-career-prediction\ncd /root/mlops-career-prediction\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-create-and-activate-python-virtual-environment",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Create and Activate Python Virtual Environment",
+      "text_md": "```bash\npython3 -m venv venv\nsource venv/bin/activate\n```\n\n> The terminal prompt will now reflect the active virtual environment: `(venv) root@ip-...:~/mlops-career-prediction#`.",
+      "diagram": null
+    },
+    {
+      "id": "s57-create-requirements-txt",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Create requirements.txt",
+      "text_md": "```bash\ncat << 'EOF' > requirements.txt\nfastapi\nuvicorn\nscikit-learn\npandas\nnumpy\njoblib\npydantic\nEOF\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-install-dependencies-inside-virtual-environment",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Install Dependencies inside Virtual Environment",
+      "text_md": "```bash\npip install --upgrade pip\npip install -r requirements.txt\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-step-4-machine-learning-model-training-serialization-train-py",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Step 4: Machine Learning Model Training & Serialization (train.py)",
+      "text_md": "In this step, we act as the **Data Scientist / ML Engineer**. We define an enterprise career progression dataset combining 5 critical candidate features:\n1. `experience_years`: Total years of IT experience.\n2. `current_package_lpa`: Current annual CTC in Lakhs Per Annum.\n3. `skills_count`: Number of verified technical skills (Linux, Docker, K8s, AWS, CI/CD, Python, Terraform).\n4. `certifications_count`: Recognized cloud/Kubernetes certifications held.\n5. `coding_level`: Technical assessment score on a scale from 1 to 10.\n\nThe target output predicts whether upskilling is needed (`0` = Highly Aligned / Promotion Ready, `1` = Upskilling Recommended to unlock 10+ LPA package).\n\n```bash\ncat << 'EOF' > train.py\nimport joblib\nimport numpy as np\nimport pandas as pd\nfrom sklearn.ensemble import RandomForestClassifier\nfrom sklearn.model_selection import train_test_split\n\ndef train_and_save_model():\n    print(\"[*] Generating training dataset for IT Career Progression...\")\n\n    # Synthetic dataset representing industry career progression patterns\n    # Features: [experience_years, current_package_lpa, skills_count, certifications, coding_level]\n    # Label: 0 = Optimal/High-Trajectory (Promotion Ready), 1 = Upskilling Required (<10 LPA barrier)\n    data = [\n        [1.0, 3.5, 3, 0, 4, 1],\n        [2.0, 4.0, 4, 0, 5, 1],\n        [3.0, 4.5, 4, 1, 5, 1],\n        [3.0, 7.5, 8, 2, 7, 1],\n        [4.0, 6.0, 5, 1, 6, 1],\n        [5.0, 8.0, 6, 1, 6, 1],\n        [2.0, 9.0, 8, 2, 8, 0],\n        [3.0, 11.0, 9, 2, 8, 0],\n        [4.0, 14.0, 10, 3, 8, 0],\n        [5.0, 18.0, 11, 3, 9, 0],\n        [6.0, 22.0, 12, 4, 9, 0],\n        [7.0, 26.0, 14, 4, 9, 0],\n        [8.0, 30.0, 15, 5, 10, 0]\n    ]\n\n    columns = ['experience_years', 'current_package_lpa', 'skills_count', 'certifications', 'coding_level', 'upskill_required']\n    df = pd.DataFrame(data, columns=columns)\n\n    X = df[['experience_years', 'current_package_lpa', 'skills_count', 'certifications', 'coding_level']]\n    y = df['upskill_required']\n\n    print(f\"[*] Training dataset size: {len(df)} records\")\n\n    # Fit Random Forest Classifier\n    model = RandomForestClassifier(n_estimators=50, random_state=42)\n    model.fit(X, y)\n\n    # Save model artifact to disk\n    model_filename = 'model.joblib'\n    joblib.dump(model, model_filename)\n    print(f\"[+] Model successfully trained and serialized to: {model_filename}\")\n\nif __name__ == \"__main__\":\n    train_and_save_model()\nEOF\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-step-5-fastapi-rest-service-implementation-main-py",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Step 5: FastAPI REST Service Implementation (main.py)",
+      "text_md": "In this step, we implement the **FastAPI REST API** server that loads `model.joblib` and handles real-time inference via HTTP POST requests, while also providing OpenAPI Swagger documentation.\n\n```bash\ncat << 'EOF' > main.py\nimport joblib\nimport numpy as np\nfrom fastapi import FastAPI, HTTPException\nfrom pydantic import BaseModel, Field\n\n# Initialize FastAPI application\napp = FastAPI(\n    title=\"MLOps Career Progression & Salary Predictor\",\n    description=\"End-to-end Machine Learning inference API deployed on AWS EKS Kubernetes\",\n    version=\"1.0.0\"\n)\n\n# Load the trained machine learning model\nMODEL_PATH = \"model.joblib\"\ntry:\n    model = joblib.load(MODEL_PATH)\nexcept Exception as e:\n    raise RuntimeError(f\"Failed to load model from {MODEL_PATH}: {e}\")\n\n# Define input schema with Pydantic\nclass CandidateProfile(BaseModel):\n    experience_years: float = Field(..., ge=0.0, le=40.0, description=\"Total IT experience in years\", example=3.0)\n    current_package_lpa: float = Field(..., ge=1.0, le=150.0, description=\"Current annual CTC in Lakhs (LPA)\", example=7.5)\n    skills_count: int = Field(..., ge=1, le=50, description=\"Number of proven technical DevOps/Cloud skills\", example=8)\n    certifications: int = Field(..., ge=0, le=20, description=\"Number of active cloud certifications\", example=2)\n    coding_level: int = Field(..., ge=1, le=10, description=\"Self-assessed scripting/coding proficiency (1-10)\", example=7)\n\n@app.get(\"/\")\ndef read_root():\n    return {\n        \"status\": \"online\",\n        \"service\": \"MLOps Career & Package Prediction API\",\n        \"version\": \"1.0.0\",\n        \"docs_url\": \"/docs\"\n    }\n\n@app.get(\"/healthz\")\ndef health_check():\n    return {\"status\": \"healthy\"}\n\n@app.post(\"/predict\")\ndef predict_career_path(profile: CandidateProfile):\n    try:\n        # Prepare feature vector matching training schema\n        features = np.array([[\n            profile.experience_years,\n            profile.current_package_lpa,\n            profile.skills_count,\n            profile.certifications,\n            profile.coding_level\n        ]])\n\n        # Execute inference\n        prediction = model.predict(features)[0]\n\n        if prediction == 1:\n            recommendation = (\n                \"Upskilling Recommended: Master Advanced Cloud Architecture, Kubernetes, \"\n                \"Terraform, and AIOps to break the 10+ LPA ceiling.\"\n            )\n            career_status = \"Growth Opportunity Available\"\n        else:\n            recommendation = (\n                \"Top Tier Alignment: Candidate possesses strong compensation-to-skill alignment. \"\n                \"Focus on System Design, Principal Architect roles, and Engineering Leadership.\"\n            )\n            career_status = \"Optimal Trajectory\"\n\n        return {\n            \"prediction_code\": int(prediction),\n            \"career_status\": career_status,\n            \"actionable_recommendation\": recommendation,\n            \"evaluated_input\": profile.dict()\n        }\n    except Exception as err:\n        raise HTTPException(status_code=500, detail=f\"Inference error: {err}\")\nEOF\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-start-uvicorn-server",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Start Uvicorn Server",
+      "text_md": "```bash\nuvicorn main:app --host 0.0.0.0 --port 8000\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-expected-terminal-output",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Expected Terminal Output",
+      "text_md": "```text\nINFO:     Started server process [12345]\nINFO:     Waiting for application startup.\nINFO:     Application startup complete.\nINFO:     Uvicorn running on http://0.0.0.0:8000 (Press CTRL+C to quit)\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-browser-testing",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Browser Testing",
+      "text_md": "Open a web browser and navigate to:\n```text\nhttp://<AWS-EC2-PUBLIC-IP>:8000/docs\n```\n\n* Expand `POST /predict`.\n* Click **Try it out**.\n* Provide input JSON:\n```json\n{\n  \"experience_years\": 3.0,\n  \"current_package_lpa\": 7.5,\n  \"skills_count\": 8,\n  \"certifications\": 2,\n  \"coding_level\": 7\n}\n```\n* Click **Execute** and confirm the HTTP `200` response.\n\nPress `CTRL + C` in the terminal to stop the local test server.",
+      "diagram": null
+    },
+    {
+      "id": "s57-install-and-start-docker-engine",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Install and Start Docker Engine",
+      "text_md": "```bash\napt install -y docker.io\nsystemctl start docker\nsystemctl enable docker\nusermod -aG docker ubuntu\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-create-dockerfile",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Create Dockerfile",
+      "text_md": "```bash\ncat << 'EOF' > Dockerfile\nFROM python:3.10-slim\n\nWORKDIR /app\n\n# Install system dependencies\nRUN apt-get update && apt-get install -y --no-install-recommends \\\n    build-essential \\\n    && rm -rf /var/lib/apt/lists/*\n\n# Copy dependencies and install\nCOPY requirements.txt .\nRUN pip install --no-cache-dir -r requirements.txt\n\n# Copy application code and pre-trained model artifact\nCOPY main.py .\nCOPY model.joblib .\n\nEXPOSE 8000\n\nCMD [\"uvicorn\", \"main:app\", \"--host\", \"0.0.0.0\", \"--port\", \"8000\"]\nEOF\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-build-the-docker-image",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Build the Docker Image",
+      "text_md": "```bash\ndocker build -t it-career-api:latest .\n```\n\nVerify image creation:\n```bash\ndocker images\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-authenticate-with-docker-hub",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Authenticate with Docker Hub",
+      "text_md": "Log in to Docker Hub:\n```bash\ndocker login\n```\n> Enter your Docker Hub username and password/access token.",
+      "diagram": null
+    },
+    {
+      "id": "s57-tag-and-push-image-to-docker-hub",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Tag and Push Image to Docker Hub",
+      "text_md": "Replace `<YOUR_DOCKERHUB_USERNAME>` with your actual Docker Hub username:\n```bash\nexport DOCKER_USER=\"<YOUR_DOCKERHUB_USERNAME>\"\n\ndocker tag it-career-api:latest ${DOCKER_USER}/it-career-api:latest\ndocker push ${DOCKER_USER}/it-career-api:latest\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-install-kubectl-kubernetes-control-utility",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Install kubectl (Kubernetes Control Utility)",
+      "text_md": "```bash\ncurl -LO \"https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl\"\nchmod +x kubectl\nmv kubectl /usr/local/bin/\nkubectl version --client\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-install-aws-cli-v2",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Install AWS CLI v2",
+      "text_md": "```bash\ncurl \"https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip\" -o \"awscliv2.zip\"\nunzip -q awscliv2.zip\n./aws/install --update\naws --version\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-install-eksctl-amazon-eks-cli",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Install eksctl (Amazon EKS CLI)",
+      "text_md": "```bash\ncurl --silent --location \"https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz\" | tar xz -C /tmp\nmv /tmp/eksctl /usr/local/bin\neksctl version\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-step-9-aws-iam-credentials-configuration-aws-configure",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Step 9: AWS IAM Credentials Configuration (aws configure)",
+      "text_md": "`eksctl` requires programmatic administrator access to create VPCs, subnets, NAT Gateways, Internet Gateways, IAM roles, and EKS clusters via AWS CloudFormation.",
+      "diagram": null
+    },
+    {
+      "id": "s57-create-iam-user-aws-console",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Create IAM User (AWS Console)",
+      "text_md": "1. Go to **AWS Console** → **IAM** → **Users** → **Create User**.\n2. Name: `mlops-admin-user`.\n3. Attach Policy directly: `AdministratorAccess`.\n4. Create user → Open user → **Security credentials** tab.\n5. Under **Access keys**, click **Create access key** → Select **CLI** → Accept terms → Download `.csv`.",
+      "diagram": null
+    },
+    {
+      "id": "s57-configure-aws-cli-on-bastion-host",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Configure AWS CLI on Bastion Host",
+      "text_md": "```bash\naws configure\n```\n\nProvide the requested inputs:\n* **AWS Access Key ID:** `Paste your Access Key`\n* **AWS Secret Access Key:** `Paste your Secret Key`\n* **Default region name:** `ap-south-1` (Mumbai or your preferred region)\n* **Default output format:** `json`\n\nVerify authentication:\n```bash\naws sts get-caller-identity\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-execute-cluster-creation-command",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Execute Cluster Creation Command",
+      "text_md": "```bash\neksctl create cluster \\\n  --name mlops-cluster \\\n  --region ap-south-1 \\\n  --nodegroup-name mlops-nodes \\\n  --node-type t3.medium \\\n  --nodes 2 \\\n  --nodes-min 2 \\\n  --nodes-max 3 \\\n  --managed\n```\n\n> **Note:** EKS cluster provisioning creates CloudFormation stacks, dedicated VPCs, security groups, and EC2 instances. This process takes approximately **12 to 15 minutes**.",
+      "diagram": null
+    },
+    {
+      "id": "s57-verify-cluster-connectivity",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Verify Cluster Connectivity",
+      "text_md": "Once `eksctl` completes, verify that `kubectl` can communicate with the Kubernetes API server:\n```bash\nkubectl get nodes -o wide\n```\n\nExpected output showing 2 Ready worker nodes:\n```text\nNAME                                            STATUS   ROLES    AGE     VERSION\nip-192-168-xx-xx.ap-south-1.compute.internal   Ready    <none>   2m30s   v1.30.x\nip-192-168-yy-yy.ap-south-1.compute.internal   Ready    <none>   2m30s   v1.30.x\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-step-11-deploying-ml-service-to-kubernetes-kubernetes-deploy-yaml",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Step 11: Deploying ML Service to Kubernetes (kubernetes-deploy.yaml)",
+      "text_md": "Create the declarative Kubernetes manifest containing:\n1. **Deployment:** Manages 2 load-balanced pod replicas running our containerized ML API.\n2. **Service:** Exposes the pods to the outside world via an AWS Classic Load Balancer on port `80`.",
+      "diagram": null
+    },
+    {
+      "id": "s57-create-manifest",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Create Manifest",
+      "text_md": "Replace `<YOUR_DOCKERHUB_USERNAME>` with your Docker Hub handle:\n\n```bash\ncat << 'EOF' > kubernetes-deploy.yaml\napiVersion: apps/v1\nkind: Deployment\nmetadata:\n  name: it-career-api\n  labels:\n    app: it-career-api\nspec:\n  replicas: 2\n  selector:\n    matchLabels:\n      app: it-career-api\n  template:\n    metadata:\n      labels:\n        app: it-career-api\n    spec:\n      containers:\n      - name: it-career-api\n        image: <YOUR_DOCKERHUB_USERNAME>/it-career-api:latest\n        imagePullPolicy: Always\n        ports:\n        - containerPort: 8000\n        resources:\n          limits:\n            cpu: \"500m\"\n            memory: \"512Mi\"\n          requests:\n            cpu: \"250m\"\n            memory: \"256Mi\"\n---\napiVersion: v1\nkind: Service\nmetadata:\n  name: it-career-service\n  labels:\n    app: it-career-api\nspec:\n  type: LoadBalancer\n  ports:\n  - port: 80\n    targetPort: 8000\n    protocol: TCP\n  selector:\n    app: it-career-api\nEOF\n```\n\nUpdate the image placeholder:\n```bash\nsed -i \"s/<YOUR_DOCKERHUB_USERNAME>/${DOCKER_USER}/g\" kubernetes-deploy.yaml\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-apply-the-manifest-to-eks",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Apply the Manifest to EKS",
+      "text_md": "```bash\nkubectl apply -f kubernetes-deploy.yaml\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-monitor-deployment-pods",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Monitor Deployment & Pods",
+      "text_md": "```bash\nkubectl get deployments\nkubectl get pods -l app=it-career-api -w\n```\n\nExpected output:\n```text\nNAME                             READY   STATUS    RESTARTS   AGE\nit-career-api-7b89f5d6cb-abc12   1/1     Running   0          45s\nit-career-api-7b89f5d6cb-xyz34   1/1     Running   0          45s\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-retrieve-the-external-load-balancer-hostname",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Retrieve the External Load Balancer Hostname",
+      "text_md": "```bash\nkubectl get svc it-career-service\n```\n\nExpected output:\n```text\nNAME                TYPE           CLUSTER-IP       EXTERNAL-IP                                                              PORT(S)        AGE\nit-career-service   LoadBalancer   10.100.200.50    a1b2c3d4e5f6-123456789.ap-south-1.elb.amazonaws.com                     80:31234/TCP   2m\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-access-swagger-ui-in-browser",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Access Swagger UI in Browser",
+      "text_md": "Copy the `EXTERNAL-IP` URL (allow 1–2 minutes for AWS ELB DNS propagation):\n```text\nhttp://<EXTERNAL-LOADBALANCER-DNS>/docs\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-execute-live-inference-test",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Execute Live Inference Test",
+      "text_md": "1. Click **POST /predict** → Click **Try it out**.\n2. Enter Candidate Profile:\n```json\n{\n  \"experience_years\": 4.0,\n  \"current_package_lpa\": 6.5,\n  \"skills_count\": 6,\n  \"certifications\": 1,\n  \"coding_level\": 6\n}\n```\n3. Click **Execute**.\n4. Observe the live JSON response returning real-time ML inference:\n```json\n{\n  \"prediction_code\": 1,\n  \"career_status\": \"Growth Opportunity Available\",\n  \"actionable_recommendation\": \"Upskilling Recommended: Master Advanced Cloud Architecture, Kubernetes, Terraform, and AIOps to break the 10+ LPA ceiling.\",\n  \"evaluated_input\": {\n    \"experience_years\": 4.0,\n    \"current_package_lpa\": 6.5,\n    \"skills_count\": 6,\n    \"certifications\": 1,\n    \"coding_level\": 6\n  }\n}\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-step-13-real-world-troubleshooting-error-resolution-matrix",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Step 13: Real-World Troubleshooting & Error Resolution Matrix",
+      "text_md": "| Symptom / Error | Root Cause | Exact Solution |\n| :--- | :--- | :--- |\n| **`ImagePullBackOff` or `ErrImagePull`** | Docker image name in `kubernetes-deploy.yaml` is misspelled or the repository is private on Docker Hub. | Ensure the Docker Hub repo is public or create a Kubernetes `imagePullSecret`. Verify image tag with `docker pull <username>/it-career-api:latest`. |\n| **`Pending` status on LoadBalancer `EXTERNAL-IP`** | AWS Classic Load Balancer is provisioning security groups and health checks. | Wait 60–120 seconds. If stuck, ensure EKS subnets have the tag `kubernetes.io/role/elb: 1`. |\n| **`FastAPI 500 Internal Server Error`** | Input payload fields fail Pydantic validation or types do not match training schema. | Ensure all 5 numeric features (`experience_years`, `current_package_lpa`, `skills_count`, `certifications`, `coding_level`) are provided. |\n| **`eksctl: command not found`** | Binary was extracted to `/tmp` but not moved to system `$PATH`. | Run `mv /tmp/eksctl /usr/local/bin/` and check `which eksctl`. |\n| **`AccessDeniedException` during `eksctl create cluster`** | IAM credentials configured via `aws configure` lack permissions for CloudFormation or VPC. | Attach `AdministratorAccess` or appropriate EKS/VPC/CloudFormation policies to the IAM user. |\n| **`CrashLoopBackOff` on Pods** | `model.joblib` was missing from the Docker image build directory. | Ensure `COPY model.joblib .` is present in `Dockerfile` and rebuild image after running `python3 train.py`. |",
+      "diagram": null
+    },
+    {
+      "id": "s57-step-14-infrastructure-cleanup-resource-teardown",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Step 14: Infrastructure Cleanup & Resource Teardown",
+      "text_md": "EKS clusters, EC2 worker nodes, and Load Balancers incur continuous AWS charges. Delete all resources immediately after completing the project.",
+      "diagram": null
+    },
+    {
+      "id": "s57-delete-kubernetes-service-destroys-aws-load-balancer",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Delete Kubernetes Service (Destroys AWS Load Balancer)",
+      "text_md": "```bash\nkubectl delete -f kubernetes-deploy.yaml\n```",
+      "diagram": null
+    },
+    {
+      "id": "s57-delete-eks-cluster-associated-cloudformation-stacks",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Delete EKS Cluster & Associated CloudFormation Stacks",
+      "text_md": "```bash\neksctl delete cluster --name mlops-cluster --region ap-south-1\n```\n\n> `eksctl` will automatically drain the worker nodes, terminate the EC2 instances, delete the Auto Scaling Group, detach the VPC CNI, and tear down the CloudFormation stack (~5–8 minutes).",
+      "diagram": null
+    },
+    {
+      "id": "s57-terminate-bastion-ec2-instance",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Terminate Bastion EC2 Instance",
+      "text_md": "1. In the **AWS EC2 Console** → **Instances**.\n2. Select `MLOps-Bastion-Host` → **Instance State** → **Terminate Instance**.",
+      "diagram": null
+    },
+    {
+      "id": "s57-remove-iam-access-keys",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Remove IAM Access Keys",
+      "text_md": "Go to **AWS IAM** → **Users** → `mlops-admin-user` → **Security credentials** → Delete active Access Keys.",
+      "diagram": null
+    },
+    {
+      "id": "s57-step-15-professional-resume-points-interview-highlights",
+      "unit": "s57",
+      "kind": "practical",
+      "title": "Step 15: Professional Resume Points & Interview Highlights",
+      "text_md": "Add these bullet points to your resume to showcase production MLOps and Kubernetes orchestration capabilities:\n\n* **End-to-End MLOps Architecture:** Engineered an automated, production-grade Machine Learning inference pipeline deploying a containerized `scikit-learn` predictive model on AWS Elastic Kubernetes Service (EKS).\n* **High-Concurrency API Design:** Developed an asynchronous REST inference engine using `FastAPI` and `Uvicorn` with automated Pydantic schema validation, OpenAPI Swagger documentation, and sub-15ms response latency.\n* **Kubernetes Orchestration & Scalability:** Designed declarative Kubernetes Deployment manifests with 2 auto-scaling replicas, CPU/memory resource limits, zero-downtime rolling update strategies, and AWS Elastic Load Balancing.\n* **Infrastructure as Code with `eksctl`:** Provisioned multi-node AWS EKS clusters across multi-AZ subnets using `eksctl` and CloudFormation, standardizing network interfaces (VPC CNI) and IAM least-privilege role policies.\n\n---\n> [🏠 Back to Master Index](README.md)",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

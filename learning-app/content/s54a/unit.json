@@ -1,0 +1,560 @@
+{
+  "id": "s54a",
+  "title": "Project 5 Azure DevOps CICD Implementation (s54a)",
+  "subtitle": "Session 54 · Azure DevOps / Platform Engineering – Interview Preparation",
+  "session": 54,
+  "module": "M9 Live projects",
+  "order": 5400,
+  "status": "ready",
+  "source_file": "Session-54-Project-5-Azure-DevOps-CICD-Implementation/Azure_DevOps_Platform_Interview_Preparation.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [
+    "2. Must-Prepare Real-World Scenarios"
+  ],
+  "concepts": [
+    {
+      "id": "s54a-target-role",
+      "unit": "s54a",
+      "kind": "concept",
+      "title": "Target Role",
+      "text_md": "**Azure Platform | CI/CD | Deployments | Automation | Monitoring | Production Readiness | Operational Support**\n\nThis preparation is based on the given Job Description (JD). The interview is likely to focus heavily on **real-world troubleshooting, enterprise Azure architecture, CI/CD, AKS, security, networking, monitoring, and production support**.",
+      "diagram": null
+    },
+    {
+      "id": "s54a-what-the-interviewer-is-looking-for",
+      "unit": "s54a",
+      "kind": "concept",
+      "title": "What the Interviewer Is Looking For",
+      "text_md": "You should be able to explain not only **what a service does**, but also **how you used it in a production environment**.\n\nFocus on these areas:\n\n- Microsoft Azure and Azure DevOps\n- CI/CD pipeline design and troubleshooting\n- Deployment strategies and environment promotion\n- Docker and Kubernetes / AKS\n- Azure Container Registry\n- Azure Key Vault\n- Azure VNet, networking and private connectivity\n- Managed Identity and Service Principals\n- Microsoft Entra ID, SSO and RBAC\n- Azure Monitor, Log Analytics, Application Insights and alerts\n- Infrastructure as Code using Terraform/Bicep/ARM\n- PostgreSQL and cloud databases\n- APIs and microservices\n- Azure Databricks / Data Lake integration\n- Production readiness and go-live support\n- Application + infrastructure troubleshooting\n- Working with external development teams/partners",
+      "diagram": null
+    },
+    {
+      "id": "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on",
+      "unit": "s54a",
+      "kind": "concept",
+      "title": "Explain the Azure architecture of an enterprise application you have worked on.",
+      "text_md": "Be ready to explain:\n\n```text\nUsers\n ↓\nApplication Gateway / Load Balancer\n ↓\nAKS\n ↓\nMicroservices\n ↓\nPostgreSQL / Storage\n ↓\nKey Vault\n ↓\nMonitoring\n```",
+      "diagram": null
+    },
+    {
+      "id": "s54a-explain-kubernetes-deployment-service-and-ingress",
+      "unit": "s54a",
+      "kind": "concept",
+      "title": "Explain Kubernetes Deployment, Service and Ingress.",
+      "text_md": "**Deployment:** Manages application pods and replicas.\n\n**Service:** Provides stable networking to pods.\n\n**Ingress:** Manages external HTTP/HTTPS routing.",
+      "diagram": null
+    },
+    {
+      "id": "s54a-explain-microsoft-entra-id-sso-and-rbac",
+      "unit": "s54a",
+      "kind": "concept",
+      "title": "Explain Microsoft Entra ID, SSO and RBAC.",
+      "text_md": "Be ready to explain:\n\n- User authentication\n- Application authentication\n- SSO\n- Groups\n- Roles\n- RBAC\n- Conditional Access at a high level",
+      "diagram": null
+    },
+    {
+      "id": "s54a-explain-azure-vnet-subnet-nsg-and-private-endpoint",
+      "unit": "s54a",
+      "kind": "concept",
+      "title": "Explain Azure VNet, subnet, NSG and private endpoint.",
+      "text_md": "Prepare a simple architecture:\n\n```text\nVNet\n ├── AKS Subnet\n ├── Application Subnet\n └── Database / Private Endpoint Subnet\n```\n\nExplain how traffic is controlled and how private connectivity works.",
+      "diagram": null
+    },
+    {
+      "id": "s54a-production-support-troubleshooting",
+      "unit": "s54a",
+      "kind": "concept",
+      "title": "Production Support / Troubleshooting",
+      "text_md": "### 30. Tell me about a major production incident you handled.\n\nUse this structure:\n\n**Situation → Impact → Investigation → Root Cause → Fix → Prevention**\n\nExample:\n\n> A production API started returning 5xx errors after a deployment. I first checked the monitoring alerts and application logs, then compared the deployment version with the previous working version. The AKS pods were healthy, but the application could not connect to PostgreSQL because of a configuration/network issue. We restored service using the rollback procedure, fixed the configuration, validated the connection in UAT, and redeployed. After the incident, we added deployment validation and better alerts to prevent recurrence.",
+      "diagram": null
+    },
+    {
+      "id": "s54a-rapid-fire-topics-to-revise",
+      "unit": "s54a",
+      "kind": "concept",
+      "title": "Rapid-Fire Topics to Revise",
+      "text_md": "Before the interview, make sure you can explain these without searching:\n\n```text\nAzure VNet\nSubnet\nNSG\nRoute Table\nPrivate Endpoint\nPrivate DNS\nAzure Load Balancer\nApplication Gateway\nAKS\nKubernetes Deployment\nService\nIngress\nConfigMap\nSecret\nHPA\nCluster Autoscaler\nLiveness Probe\nReadiness Probe\nACR\nKey Vault\nManaged Identity\nService Principal\nEntra ID\nRBAC\nAzure Monitor\nLog Analytics\nApplication Insights\nAzure DevOps\nYAML Pipeline\nService Connection\nVariable Group\nApprovals\nTerraform\nTerraform State\nTerraform Drift\nDocker\nPostgreSQL\nMicroservices\nAPI Gateway\nBlue-Green Deployment\nCanary Deployment\nRolling Deployment\nRollback\nProduction Readiness\nIncident Management\n```",
+      "diagram": null
+    },
+    {
+      "id": "s54a-interview-answer-formula",
+      "unit": "s54a",
+      "kind": "concept",
+      "title": "Interview Answer Formula",
+      "text_md": "For almost every technical question, use this pattern:\n\n### 1. What is it?\n\nGive a simple definition.\n\n### 2. Why did you use it?\n\nExplain the business/technical reason.\n\n### 3. How did you implement it?\n\nGive the architecture or process.\n\n### 4. What problem did you face?\n\nTalk about a real production-type challenge.\n\n### 5. How did you troubleshoot it?\n\nExplain your investigation steps.\n\n### 6. What was the result?\n\nMention reliability, security, automation, performance or operational improvement.",
+      "diagram": null
+    },
+    {
+      "id": "s54a-final-preparation-challenge",
+      "unit": "s54a",
+      "kind": "concept",
+      "title": "Final Preparation Challenge 🔥",
+      "text_md": "If you really want to crack this role, don't prepare only definitions.\n\nYou should be able to answer questions like:\n\n> \"Your pipeline is green, but production is down. What do you check?\"\n\n> \"AKS pods are running, but users are getting 502 errors. Troubleshoot it.\"\n\n> \"AKS cannot pull an image from ACR. What could be wrong?\"\n\n> \"Your application cannot access Key Vault. How will you troubleshoot it?\"\n\n> \"Production PostgreSQL is unreachable from AKS. Walk me through the investigation.\"\n\n> \"A developer manually changed a production resource. Terraform now shows drift. What will you do?\"\n\n> \"How would you design DEV → QA → UAT → PROD promotion?\"\n\n> \"How do you make a production deployment zero downtime?\"\n\n> \"How do you prepare an application for go-live?\"\n\n> \"Tell me about a production incident you personally handled.\"\n\nThese are the questions where **hands-on experience matters more than memorized definitions**.",
+      "diagram": null
+    },
+    {
+      "id": "s54a-screening-interview-focus",
+      "unit": "s54a",
+      "kind": "concept",
+      "title": "Screening Interview Focus",
+      "text_md": "For the first screening round, be ready with:\n\n1. **2-minute self introduction**\n2. **One complete Azure project explanation**\n3. **One CI/CD pipeline explanation**\n4. **One AKS troubleshooting scenario**\n5. **One production incident**\n6. **One Terraform/IaC example**\n7. **One Azure networking issue**\n8. **One security/Key Vault/Identity example**\n9. **One monitoring/alerting example**\n10. **One deployment/rollback example**\n\nMost importantly, do not claim experience with a technology you cannot explain technically.\n\n**The goal is not to know every Azure service. The goal is to show that you can design, deploy, troubleshoot and operate an enterprise application on Azure.**",
+      "diagram": null
+    },
+    {
+      "id": "s54a-interview-preparation-message",
+      "unit": "s54a",
+      "kind": "concept",
+      "title": "Interview Preparation Message",
+      "text_md": "**🔥 Azure DevOps / Platform Engineering – Screening Interview**\n\nRead the complete interview preparation document carefully and prepare the scenarios + 30 questions before the screening.\n\nThe JD is focused on **Azure, Azure DevOps, CI/CD, AKS, Docker, ACR, Key Vault, Networking, Entra ID, RBAC, Monitoring, Terraform, Production Support and Troubleshooting.**\n\n**Read the message completely and reply to confirm that you are ready.**\n\nI am planning the **first Screening Interview today, 3rd Sep at 9 PM**.\n\nLet's see who can actually crack this Job! 🔥\n\n**Come prepared with real project examples, troubleshooting scenarios and production-level answers.**",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "scenario",
+      "title": "CI/CD Pipeline Design",
+      "prompt": "CI/CD Pipeline Design",
+      "reference_answer": "**Question:** Design a CI/CD pipeline for a microservices application running on AKS.\n\n### Expected approach\n\nExplain the flow:\n\n```text\nDeveloper\n   ↓\nGit Repository\n   ↓\nAzure DevOps Pipeline\n   ↓\nBuild + Unit Tests\n   ↓\nDocker Build\n   ↓\nSecurity / Vulnerability Scan\n   ↓\nPush Image → Azure Container Registry\n   ↓\nDeploy to DEV\n   ↓\nTesting\n   ↓\nQA / UAT Approval\n   ↓\nProduction Approval\n   ↓\nDeploy to AKS\n   ↓\nMonitoring + Alerts\n```\n\nMention:\n\n- Branching strategy\n- YAML pipelines\n- Service connections\n- Variable groups / Key Vault\n- Artifact or container image versioning\n- Approval gates\n- Rollback strategy\n- Environment-specific configuration",
+      "id": "s54a-s01",
+      "unit": "s54a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Production Deployment Failure",
+      "prompt": "Production Deployment Failure",
+      "reference_answer": "**Situation:** A deployment succeeds in Azure DevOps but the application is not working in production.\n\n### Troubleshooting approach\n\nStart from the application layer and move downward:\n\n1. Check pipeline logs.\n2. Verify deployed image/version.\n3. Check AKS pods.\n4. Check pod events.\n5. Check container logs.\n6. Check Kubernetes deployment/service.\n7. Check ingress/load balancer.\n8. Check DNS.\n9. Check NSG/VNet/private endpoint connectivity.\n10. Check Key Vault/secrets.\n11. Check database connectivity.\n12. Check Application Insights and Azure Monitor.\n\nUseful commands:\n\n```bash\nkubectl get pods -n <namespace>\nkubectl get deployment -n <namespace>\nkubectl get svc -n <namespace>\nkubectl get ingress -n <namespace>\nkubectl describe pod <pod-name> -n <namespace>\nkubectl logs <pod-name> -n <namespace>\n```",
+      "id": "s54a-s02",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-kubernetes-deployment-service-and-ingress",
+        "s54a-production-support-troubleshooting"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "AKS Pod Is in CrashLoopBackOff",
+      "prompt": "AKS Pod Is in CrashLoopBackOff",
+      "reference_answer": "Possible reasons:\n\n- Application startup failure\n- Wrong environment variable\n- Missing secret\n- Database connection failure\n- Incorrect image\n- Application configuration issue\n- Resource limits\n- Liveness/readiness probe failure\n\nTroubleshooting:\n\n```bash\nkubectl get pods\nkubectl describe pod <pod-name>\nkubectl logs <pod-name>\nkubectl logs <pod-name> --previous\n```\n\nThen verify:\n\n- ConfigMaps\n- Secrets\n- Key Vault integration\n- Managed Identity\n- Database/network connectivity\n- CPU/memory limits",
+      "id": "s54a-s03",
+      "unit": "s54a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Image Cannot Be Pulled from ACR",
+      "prompt": "Image Cannot Be Pulled from ACR",
+      "reference_answer": "If AKS shows:\n\n```text\nImagePullBackOff\n```\n\nCheck:\n\n- Image name\n- Image tag\n- Image exists in ACR\n- AKS has permission to pull from ACR\n- Managed Identity / Service Principal permissions\n- Network connectivity\n- Private endpoint configuration\n- DNS resolution\n\nTypical permission:\n\n```text\nAcrPull\n```",
+      "id": "s54a-s04",
+      "unit": "s54a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Secret Management",
+      "prompt": "Secret Management",
+      "reference_answer": "**Question:** How would you securely manage database passwords and API keys?\n\nDo not hardcode secrets in:\n\n- Git\n- Dockerfile\n- YAML pipeline\n- Kubernetes manifests\n\nPreferred architecture:\n\n```text\nApplication\n    ↓\nManaged Identity\n    ↓\nAzure Key Vault\n    ↓\nSecrets\n```\n\nExplain that Managed Identity can reduce the need to store credentials for Azure resource access.",
+      "id": "s54a-s05",
+      "unit": "s54a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Managed Identity vs Service Principal",
+      "prompt": "Managed Identity vs Service Principal",
+      "reference_answer": "### Managed Identity\n\nUsed when an Azure resource/application needs to authenticate to another Azure service without manually managing credentials.\n\nExample:\n\n```text\nAKS / VM / App Service\n       ↓\nManaged Identity\n       ↓\nKey Vault / Storage / Azure Resources\n```\n\n### Service Principal\n\nAn application identity used for authentication to Azure.\n\nCommonly used for automation and CI/CD, although modern Azure implementations should prefer workload identity / federated identity where appropriate to reduce long-lived secrets.",
+      "id": "s54a-s06",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-kubernetes-deployment-service-and-ingress"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Azure Networking Issue",
+      "prompt": "Azure Networking Issue",
+      "reference_answer": "**Situation:** Application in AKS cannot connect to PostgreSQL.\n\nCheck:\n\n```text\nAKS\n ↓\nVNet\n ↓\nSubnet\n ↓\nNSG / Route\n ↓\nPrivate Endpoint / Database\n ↓\nDNS\n```\n\nInvestigate:\n\n- NSG rules\n- Route tables\n- Private Endpoint\n- Private DNS Zone\n- Firewall rules\n- Port 5432\n- VNet peering\n- Network policies\n- DNS resolution",
+      "id": "s54a-s07",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-azure-vnet-subnet-nsg-and-private-endpoint",
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Zero-Downtime Deployment",
+      "prompt": "Zero-Downtime Deployment",
+      "reference_answer": "Be prepared to explain:\n\n### Rolling Deployment\n\nGradually replaces old pods with new pods.\n\n### Blue-Green Deployment\n\n```text\nBlue = Current Production\nGreen = New Version\n\nTraffic → Blue\n\nTest Green\n\nTraffic → Green\n```\n\n### Canary Deployment\n\nRelease the new version to a small percentage of users first.\n\nExample:\n\n```text\n95% → Version 1\n5%  → Version 2\n```\n\nIf healthy, gradually increase Version 2 traffic.",
+      "id": "s54a-s08",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-kubernetes-deployment-service-and-ingress"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Production Monitoring",
+      "prompt": "Production Monitoring",
+      "reference_answer": "A good monitoring architecture could include:\n\n```text\nApplication\n    ↓\nApplication Insights\n    ↓\nAzure Monitor\n    ↓\nLog Analytics Workspace\n    ↓\nDashboards + Alerts\n    ↓\nIncident / Operations Team\n```\n\nMonitor:\n\n- CPU\n- Memory\n- Pod restarts\n- HTTP 4xx/5xx\n- Response time\n- Availability\n- Database performance\n- Application exceptions\n- AKS node health\n- Disk usage\n- Deployment failures",
+      "id": "s54a-s09",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-production-support-troubleshooting"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Production Readiness Checklist",
+      "prompt": "Production Readiness Checklist",
+      "reference_answer": "Before production go-live, verify:\n\n### Application\n\n- Health checks\n- Logging\n- Error handling\n- Configuration\n- Dependency checks\n\n### Infrastructure\n\n- Capacity\n- Scaling\n- Availability\n- Backup\n- Disaster recovery\n\n### Security\n\n- RBAC\n- Managed Identity\n- Key Vault\n- Network security\n- Least privilege\n\n### CI/CD\n\n- Approval process\n- Rollback\n- Versioning\n- Deployment validation\n\n### Monitoring\n\n- Dashboards\n- Alerts\n- Application logs\n- Infrastructure logs\n\n### Operations\n\n- Runbook\n- On-call support\n- Incident process\n- Rollback procedure",
+      "id": "s54a-s10",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-production-support-troubleshooting"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Terraform Drift",
+      "prompt": "Terraform Drift",
+      "reference_answer": "**Situation:** Someone manually changes an Azure resource from the portal.\n\nTerraform state no longer matches the real infrastructure.\n\nExplain:\n\n```bash\nterraform plan\n```\n\nTerraform detects the difference.\n\nPossible approaches:\n\n- Revert the manual change\n- Update Terraform code and apply\n- Import resources if required\n- Establish process preventing unmanaged production changes",
+      "id": "s54a-s11",
+      "unit": "s54a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Environment Promotion",
+      "prompt": "Environment Promotion",
+      "reference_answer": "Explain a controlled promotion model:\n\n```text\nDEV\n ↓\nAutomated Tests\n ↓\nQA\n ↓\nUAT\n ↓\nApproval\n ↓\nPRODUCTION\n```\n\nImportant points:\n\n- Same artifact should ideally be promoted between environments.\n- Configuration should be environment-specific.\n- Production deployment should have approval and rollback.\n- Do not rebuild different application artifacts for each environment unless there is a strong reason.",
+      "id": "s54a-s12",
+      "unit": "s54a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "External Development Partner",
+      "prompt": "External Development Partner",
+      "reference_answer": "The interviewer may ask how you work with external teams.\n\nGood answer structure:\n\n1. Define deployment standards.\n2. Provide branching and PR guidelines.\n3. Define CI/CD requirements.\n4. Establish environment ownership.\n5. Define security and access boundaries.\n6. Set logging/monitoring requirements.\n7. Review production readiness.\n8. Coordinate UAT and go-live.\n9. Maintain rollback and incident procedures.",
+      "id": "s54a-s13",
+      "unit": "s54a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Database Connection Failure",
+      "prompt": "Database Connection Failure",
+      "reference_answer": "Application reports:\n\n```text\nConnection refused / timeout\n```\n\nCheck:\n\n```text\nApplication\n   ↓\nDNS\n   ↓\nNetwork\n   ↓\nFirewall / NSG\n   ↓\nDatabase endpoint\n   ↓\nAuthentication\n   ↓\nDatabase availability\n```\n\nFor PostgreSQL, remember:\n\n```text\nDefault Port = 5432\n```\n\nCheck connection string, credentials, DNS, firewall/private endpoint and database availability.",
+      "id": "s54a-s14",
+      "unit": "s54a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "High CPU in Production",
+      "prompt": "High CPU in Production",
+      "reference_answer": "Your approach:\n\n1. Confirm whether the issue is application or infrastructure.\n2. Check Azure Monitor metrics.\n3. Check AKS pod CPU.\n4. Check request traffic.\n5. Check application logs.\n6. Check recent deployment.\n7. Check database dependency.\n8. Scale if required.\n9. Investigate root cause.\n10. Document the incident.\n\nDo not simply say:\n\n> \"I will increase CPU.\"\n\nThe interviewer wants to see **root-cause analysis**.",
+      "id": "s54a-s15",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-production-support-troubleshooting"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What Azure services have you worked with in production?",
+      "prompt": "What Azure services have you worked with in production?",
+      "reference_answer": "Mention only services you can actually explain.\n\nFor every service, prepare:\n\n- Why it was used\n- Architecture\n- Security\n- Troubleshooting\n- Cost/scaling considerations",
+      "id": "s54a-q01",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on",
+        "s54a-explain-azure-vnet-subnet-nsg-and-private-endpoint",
+        "s54a-explain-kubernetes-deployment-service-and-ingress"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How would you design a highly available application on Azure?",
+      "prompt": "How would you design a highly available application on Azure?",
+      "reference_answer": "Discuss:\n\n- Availability Zones\n- Load balancing\n- AKS/node pools\n- Horizontal scaling\n- Database HA\n- Backup\n- Disaster recovery\n- Monitoring",
+      "id": "s54a-q02",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on",
+        "s54a-explain-azure-vnet-subnet-nsg-and-private-endpoint"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How would you design a CI/CD pipeline for an application deployed to AKS?",
+      "prompt": "How would you design a CI/CD pipeline for an application deployed to AKS?",
+      "reference_answer": "Explain:\n\n```text\nGit → Build → Test → Docker → Scan → ACR\n→ DEV → QA → UAT → Approval → PROD\n```",
+      "id": "s54a-q03",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on",
+        "s54a-what-the-interviewer-is-looking-for"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you manage secrets in Azure DevOps pipelines?",
+      "prompt": "How do you manage secrets in Azure DevOps pipelines?",
+      "reference_answer": "Discuss:\n\n- Azure Key Vault\n- Variable groups\n- Secret variables\n- Managed Identity\n- Workload identity/federated authentication\n- Avoiding secrets in source code",
+      "id": "s54a-q04",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on",
+        "s54a-explain-azure-vnet-subnet-nsg-and-private-endpoint"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between CI and CD?",
+      "prompt": "What is the difference between CI and CD?",
+      "reference_answer": "**CI:** Build and validate code frequently.\n\n**CD:** Automatically or through controlled approvals deliver the application to target environments.",
+      "id": "s54a-q05",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-what-the-interviewer-is-looking-for"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you implement rollback in CI/CD?",
+      "prompt": "How do you implement rollback in CI/CD?",
+      "reference_answer": "Possible methods:\n\n- Previous container image\n- Kubernetes rollout undo\n- Blue-green deployment\n- Canary deployment\n- Previous application artifact\n\nExample:\n\n```bash\nkubectl rollout undo deployment/<deployment-name>\n```",
+      "id": "s54a-q06",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you promote an application from DEV to QA/UAT and Production?",
+      "prompt": "How do you promote an application from DEV to QA/UAT and Production?",
+      "reference_answer": "Discuss:\n\n- Environment stages\n- Approvals\n- Testing\n- Artifact promotion\n- Environment variables\n- Production gates\n- Rollback",
+      "id": "s54a-q07",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on",
+        "s54a-production-support-troubleshooting"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between Docker image and container?",
+      "prompt": "What is the difference between Docker image and container?",
+      "reference_answer": "An **image** is the packaged application template.\n\nA **container** is a running instance of that image.",
+      "id": "s54a-q08",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-what-the-interviewer-is-looking-for"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What happens when an AKS pod goes into CrashLoopBackOff?",
+      "prompt": "What happens when an AKS pod goes into CrashLoopBackOff?",
+      "reference_answer": "Explain:\n\n```text\nkubectl get pods\n→ kubectl describe pod\n→ kubectl logs\n→ kubectl logs --previous\n→ Check configuration/secrets\n→ Check dependencies\n→ Check resources/probes\n```",
+      "id": "s54a-q09",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-what-the-interviewer-is-looking-for"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you troubleshoot ImagePullBackOff?",
+      "prompt": "How do you troubleshoot ImagePullBackOff?",
+      "reference_answer": "Check:\n\n- Image name\n- Tag\n- ACR image\n- Authentication\n- AcrPull permission\n- Managed Identity\n- Network/DNS",
+      "id": "s54a-q10",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you achieve high availability in AKS?",
+      "prompt": "How do you achieve high availability in AKS?",
+      "reference_answer": "Discuss:\n\n- Multiple nodes\n- Availability Zones\n- Multiple replicas\n- Pod anti-affinity/topology spread\n- Horizontal Pod Autoscaler\n- Cluster Autoscaler\n- Readiness/liveness probes\n- PodDisruptionBudget",
+      "id": "s54a-q11",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between readiness and liveness probes?",
+      "prompt": "What is the difference between readiness and liveness probes?",
+      "reference_answer": "**Readiness:** Should this pod receive traffic?\n\n**Liveness:** Is the container healthy enough to keep running?",
+      "id": "s54a-q12",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-what-the-interviewer-is-looking-for"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How does AKS securely pull images from Azure Container Registry?",
+      "prompt": "How does AKS securely pull images from Azure Container Registry?",
+      "reference_answer": "Explain authentication/authorization using Azure identity and appropriate **AcrPull** permissions.",
+      "id": "s54a-q13",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-azure-vnet-subnet-nsg-and-private-endpoint",
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How would you integrate Azure Key Vault with AKS?",
+      "prompt": "How would you integrate Azure Key Vault with AKS?",
+      "reference_answer": "Possible architecture:\n\n```text\nAKS Workload\n   ↓\nManaged Identity / Workload Identity\n   ↓\nKey Vault\n   ↓\nSecret\n```\n\nDiscuss the Secrets Store CSI Driver where applicable.",
+      "id": "s54a-q14",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on",
+        "s54a-explain-azure-vnet-subnet-nsg-and-private-endpoint"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Azure RBAC and how do you apply least privilege?",
+      "prompt": "What is Azure RBAC and how do you apply least privilege?",
+      "reference_answer": "Explain:\n\n```text\nWho?\n ↓\nWhat permission?\n ↓\nOn which resource?\n```\n\nExample:\n\n```text\nAKS Identity\n ↓\nAcrPull\n ↓\nSpecific ACR\n```",
+      "id": "s54a-q15",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on",
+        "s54a-explain-azure-vnet-subnet-nsg-and-private-endpoint",
+        "s54a-explain-microsoft-entra-id-sso-and-rbac"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "An application cannot connect to PostgreSQL. How do you troubleshoot it?",
+      "prompt": "An application cannot connect to PostgreSQL. How do you troubleshoot it?",
+      "reference_answer": "Check:\n\n- DNS\n- Port 5432\n- NSG\n- Firewall\n- Private Endpoint\n- Private DNS\n- Route\n- Credentials\n- Database availability\n- Application configuration",
+      "id": "s54a-q16",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What Azure monitoring tools have you used?",
+      "prompt": "What Azure monitoring tools have you used?",
+      "reference_answer": "Be prepared to explain:\n\n- Azure Monitor\n- Log Analytics\n- Application Insights\n- Alerts\n- Dashboards\n- AKS monitoring\n- Metrics vs logs",
+      "id": "s54a-q17",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on",
+        "s54a-explain-azure-vnet-subnet-nsg-and-private-endpoint",
+        "s54a-what-the-interviewer-is-looking-for"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How would you monitor an AKS production environment?",
+      "prompt": "How would you monitor an AKS production environment?",
+      "reference_answer": "Monitor:\n\n```text\nCluster\nNodes\nPods\nContainers\nApplication\nNetwork\nDatabase\n```\n\nImportant signals:\n\n- CPU/memory\n- Pod restarts\n- Error rate\n- Latency\n- Availability\n- HTTP 5xx\n- Node health",
+      "id": "s54a-q18",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on",
+        "s54a-production-support-troubleshooting"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Production API response time suddenly increases. What will you do?",
+      "prompt": "Production API response time suddenly increases. What will you do?",
+      "reference_answer": "A strong troubleshooting flow:\n\n```text\nAlert\n ↓\nCheck recent deployment\n ↓\nCheck Application Insights\n ↓\nCheck API latency\n ↓\nCheck AKS CPU/memory\n ↓\nCheck database latency\n ↓\nCheck network\n ↓\nIdentify bottleneck\n ↓\nMitigate\n ↓\nRoot cause\n```",
+      "id": "s54a-q19",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on",
+        "s54a-production-support-troubleshooting",
+        "s54a-what-the-interviewer-is-looking-for"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How do you design alerts without creating too many false alarms?",
+      "prompt": "How do you design alerts without creating too many false alarms?",
+      "reference_answer": "Discuss:\n\n- Meaningful thresholds\n- Dynamic thresholds where appropriate\n- Error-rate based alerts\n- Availability alerts\n- Alert severity\n- Action groups\n- Alert suppression/deduplication\n- Regular tuning",
+      "id": "s54a-q20",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How have you used Terraform for Azure infrastructure?",
+      "prompt": "How have you used Terraform for Azure infrastructure?",
+      "reference_answer": "Explain:\n\n- Providers\n- Modules\n- Variables\n- State\n- Remote backend\n- Plan/apply\n- CI/CD integration\n- Environment separation\n- State locking",
+      "id": "s54a-q21",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on",
+        "s54a-explain-azure-vnet-subnet-nsg-and-private-endpoint",
+        "s54a-what-the-interviewer-is-looking-for"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Terraform state and why is it important?",
+      "prompt": "What is Terraform state and why is it important?",
+      "reference_answer": "Terraform state maps the Terraform configuration to real infrastructure.\n\nFor teams, use a secure remote backend with appropriate locking/concurrency controls.",
+      "id": "s54a-q22",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-what-the-interviewer-is-looking-for"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Terraform drift and how do you handle it?",
+      "prompt": "What is Terraform drift and how do you handle it?",
+      "reference_answer": "Use:\n\n```bash\nterraform plan\n```\n\nThen decide whether to:\n\n- Revert manual changes\n- Update Terraform code\n- Import resources where appropriate",
+      "id": "s54a-q23",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on",
+        "s54a-what-the-interviewer-is-looking-for"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How would you deploy and expose microservices on AKS?",
+      "prompt": "How would you deploy and expose microservices on AKS?",
+      "reference_answer": "Discuss:\n\n```text\nDocker\n ↓\nACR\n ↓\nAKS Deployment\n ↓\nService\n ↓\nIngress / Application Gateway\n ↓\nAPI / Users\n```\n\nAlso discuss:\n\n- Configuration\n- Secrets\n- Service discovery\n- Scaling\n- Monitoring\n- Health probes",
+      "id": "s54a-q24",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How would you integrate an Azure application with Data Lake / Databricks?",
+      "prompt": "How would you integrate an Azure application with Data Lake / Databricks?",
+      "reference_answer": "At a high level:\n\n```text\nApplication / APIs\n       ↓\nAzure Data Lake Storage\n       ↓\nDatabricks\n       ↓\nData Processing\n       ↓\nAnalytics / Downstream Systems\n```\n\nBe ready to discuss:\n\n- Identity\n- Storage access\n- RBAC\n- Data ingestion\n- Networking\n- Monitoring\n\nThis is a preferred skill in the JD, so even exposure-level knowledge can help.",
+      "id": "s54a-q25",
+      "unit": "s54a",
+      "concept_ids": [
+        "s54a-explain-the-azure-architecture-of-an-enterprise-application-you-have-worked-on",
+        "s54a-explain-azure-vnet-subnet-nsg-and-private-endpoint"
+      ]
+    }
+  ]
+}

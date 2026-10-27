@@ -1,0 +1,73 @@
+{
+  "id": "s31",
+  "title": "Docker Installation Basics · Day 2",
+  "subtitle": "Session 31 · Batch-44 · Day-2 of Docker Batch-44: Docker Architecture & Core Container Commands",
+  "session": 31,
+  "module": "M5 Docker, Kubernetes, Monitoring",
+  "order": 3100,
+  "status": "ready",
+  "source_file": "Session-31-Docker-Installation-Basics/🚀 Day-2 of Docker Batch-44 | 4th Aug 2026 .md",
+  "needs_authoring": [],
+  "unparsed_qa": [
+    {
+      "section": "10 Technical Interview Questions & Answers (Overview)",
+      "chars": 1734
+    },
+    {
+      "section": "20 Scenario-Based Questions & Answers (Overview)",
+      "chars": 2559
+    }
+  ],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s31-docker-architecture-core-concepts",
+      "unit": "s31",
+      "kind": "overview",
+      "title": "Docker Architecture & Core Concepts",
+      "text_md": "* **Node Definition:** Clarified that a *Node* is any underlying physical server or Virtual Machine (such as a GCP Compute Engine instance) running a software runtime like Docker.\n* **Blueprint vs. Runtime Instance:**\n* **Docker Image:** Read-only template / snapshot / blueprint containing application code, runtime dependencies, system binaries, and configuration settings.\n* **Docker Container:** Lightweight, isolated, running process instantiated from a Docker Image.\n* **Platform Independence:** Explained how packaging runtime libraries inside container images ensures consistent execution across different Linux distributions (Ubuntu, RHEL, CentOS) or Cloud Providers.",
+      "diagram": null
+    },
+    {
+      "id": "s31-cloud-provisioning-scripted-docker-installation",
+      "unit": "s31",
+      "kind": "overview",
+      "title": "Cloud Provisioning & Scripted Docker Installation",
+      "text_md": "* **GCP Cloud Setup:** Provisioned an Ubuntu VM on Google Cloud Platform (GCP) via Cloud Shell and SSH.\n* **Automated Script Installation:** Used `curl -fsSL https://get.docker.com -o get-docker.sh` to download the official cross-distribution shell script.\n* **Production Best Practice (`--dry-run`):** Highlighted the critical real-world practice of running `sh get-docker.sh --dry-run` before executing installation scripts in production to validate dependencies, detect pre-existing Docker installations, and prevent accidental system degradation.",
+      "diagram": null
+    },
+    {
+      "id": "s31-container-lifecycle-management-execution-modes",
+      "unit": "s31",
+      "kind": "overview",
+      "title": "Container Lifecycle Management & Execution Modes",
+      "text_md": "* **Foreground Execution:** Demonstrates `docker run -p 8080:80 nginx` where logs attach to stdout. Exiting with `Ctrl + C` sends `SIGINT`, putting the container into an `Exited` status.\n* **Detached Execution (`-d`):** Demonstrates `docker run -d -p 8080:80 --name my-web nginx` to run containers asynchronously in the background.\n* **Inspection & Maintenance:**\n* `docker ps`: Lists active, running containers.\n* `docker ps -a`: Lists all containers (active + stopped/exited).\n* `docker start <container>` vs `docker run <image>`: Re-executing an existing stopped container vs creating a brand-new container instance.\n* `docker rm -f`: Force removing containers.",
+      "diagram": null
+    },
+    {
+      "id": "s31-networking-port-mapping-p-gcp-firewall-security",
+      "unit": "s31",
+      "kind": "overview",
+      "title": "Networking, Port Mapping (-p), & GCP Firewall Security",
+      "text_md": "* **Port Mapping (`-p host_port:container_port`):** Forwards host VM interface traffic to the internal isolated container bridge network (`172.x.x.x`).\n* **Cloud VPC Firewall Rules:** Addressed why containers running on port 80/8080 are unreachable via external browser until GCP Ingress Firewall rules allowing TCP traffic from `0.0.0.0/0` are configured.",
+      "diagram": null
+    },
+    {
+      "id": "s31-custom-web-applications-volume-binding-v-ai-integration",
+      "unit": "s31",
+      "kind": "overview",
+      "title": "Custom Web Applications, Volume Binding (-v), & AI Integration",
+      "text_md": "* **ChatGPT Integration:** Demonstrated generating customized HTML/CSS code using ChatGPT and saving it to an `index.html` file on the host VM.\n* **Volume Mounting (`-v`):** Used `-v /host/path:/usr/share/nginx/html` to link host folders with container web roots, enabling **real-time website updates** on file save without needing container restarts or image rebuilds.",
+      "diagram": null
+    },
+    {
+      "id": "s31-real-world-troubleshooting",
+      "unit": "s31",
+      "kind": "overview",
+      "title": "Real-World Troubleshooting",
+      "text_md": "* Solved the classic *\"It works on my machine\"* developer conflict.\n* Diagnosed port allocation conflicts (`bind: address already in use`).\n* Addressed `403 Forbidden` errors stemming from missing `index.html` files or incorrect target mount directories.\n* Handled VM disk space exhaustion (`No space left on device`) using system pruning.\n\n- --",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

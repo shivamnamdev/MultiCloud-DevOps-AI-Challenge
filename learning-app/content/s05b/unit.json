@@ -1,0 +1,650 @@
+{
+  "id": "s05b",
+  "title": "Linux Overview GCP Setup · Day 5",
+  "subtitle": "Session 05 · Batch-45 · Batch-45 Day-5 Revision",
+  "session": 5,
+  "module": "M2 Linux + GCP",
+  "order": 501,
+  "status": "ready",
+  "source_file": "Session-05-Linux-Overview-GCP-Setup/🚀 Day-5 of Batch-45 Quick Revision + Remaining Missing concept's _ 24th Sep 2026 _ 8_00 AM IST _ Zo 2026-09-24 07_48(GMT+5_30).md",
+  "needs_authoring": [],
+  "unparsed_qa": [
+    {
+      "section": "Mock Interview Questions & Answers",
+      "chars": 2642
+    }
+  ],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s05b-session-structure-ground-rules",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "Session Structure & Ground Rules",
+      "text_md": "- **Thumb rule enforced throughout:** All participants to remain on mute; press spacebar to unmute when speaking; raise hand to be called upon.\n- **Camera requirement:** All attendees requested to be on camera — rationale given that interviews are conducted on camera, so practice being visible builds confidence.\n- **Question discipline:** Participants instructed not to throw questions at the start of the session; type name in chat box to signal readiness; Q&A slots allocated every 10–15 minutes.\n- **Recording policy:** Session recording belongs to participants; may be revisited after 3, 6, or 12 months; background noise degrades recording quality, hence the mute rule.\n- **Recording access:** Same LMS link used for live class becomes the recording link approximately 90 minutes after session completion.\n- **Note-taking encouraged:** Re-watching recordings costs an additional hour; taking notes during the session is more efficient; all definitions already provided in written form on the platform.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-what-aws-is",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "What AWS Is",
+      "text_md": "- **AWS (Amazon Web Services)** is a subsidiary of Amazon (the parent organization); provides cloud computing resources, virtualization resources, and data center services accessible via `aws.amazon.com`.\n- Core value proposition: provides servers, services, and resources on the cloud — accessible **on demand**, scalable very easily based on need.\n- AWS is described as no longer merely a cloud platform — it is the **foundational infrastructure** behind streaming apps, banking systems, AI products, e-commerce applications, and startups; billions of people depend on it daily.\n- Example: Recordings on the instructor's LMS are served from **S3**; if AWS S3 goes down, recordings become inaccessible — illustrating AWS as a basic necessity.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-aws-history-evolution",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "AWS History & Evolution",
+      "text_md": "- Platform launched in **2002** at `aws.amazon.com/console`.\n- Early services included **SQS, EC2, VPC**; initial adoption was slow due to security concerns.\n- Timeline of key milestones:\n    - **2006:** EC2 machine available; security questions raised by market\n    - **2007:** Security validation period\n    - **2009:** VPC rolled out — users could create private networks and place resources securely within them\n    - **2012:** Major customer event\n    - **2016:** $10 billion revenue generated\n    - **2017:** ~100 services launched; yearly releases accelerating\n- Currently AWS offers **200+ services**; learning all of them is neither practical nor necessary.\n- **Recommended focus:** ~10 core services covering compute, networking, storage, database, and application/administrator activities — sufficient for real-world project use across 2–4 years of experience.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-market-share-cloud-landscape",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "Market Share & Cloud Landscape",
+      "text_md": "- AWS holds approximately **40% market share**; Azure approximately **30%**; GCP approximately **30%** (instructor noted data may be from ~2022).\n- **Google Cloud** consumption rate is increasing rapidly (~26% growth rate); may challenge top position within 2–5 years, driven by Kubernetes and AI services.\n- **Key insight:** All major cloud platforms (AWS, Azure, GCP) offer equivalent services — only the names differ; knowing one cloud deeply enables working across all.  Confirmed by participant Kishor who migrated from AWS to Oracle Cloud (OCI) and found concepts identical.\n- Instructor committed to one dedicated session comparing **top 10 services across AWS, Azure, and GCP**.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-traditional-infrastructure-vs-cloud",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "Traditional Infrastructure vs. Cloud",
+      "text_md": "- Historical evolution used as context: floppy disks (1.2 MB) → CDs/DVDs → pen drives → Google Drive (cloud storage) → **EBS/EFS** (AWS equivalents).\n- On-premises data center rooms (with SAN/storage area networks using FTP protocol) have been replaced by cloud services like EC2 and AMIs.\n- Physical networking (LAN cables, routers) is being replaced by air fiber and soon **satellite networks** (Starlink/SpaceX already operational on ships and cruise lines).\n- Physical access control (fingerprint systems) replaced by **IAM** (Identity and Access Management) in the cloud.\n- Conclusion: Traditional infrastructure components have cloud equivalents; the underlying logic and service categories remain the same, just delivered remotely.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-service-models-iaas-paas-saas",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "Service Models (IaaS / PaaS / SaaS)",
+      "text_md": "Explained using a pizza/kitchen/flat analogy:\n\n- **SaaS (Software as a Service):** Ready-to-eat pizza — user manages nothing; application, data, runtime, middleware all managed by the cloud provider; examples: Gmail, Google Drive.  User just consumes the service.\n- **PaaS (Platform as a Service):** Kitchen provided — platform (runtime, middleware, Docker) is provided; user brings their own application and data; example: Canva provides the platform, user brings their own presentation content.\n- **IaaS (Infrastructure as a Service):** Empty flat/room — network, storage, servers, virtualization, and OS provided; user installs everything else (middleware, runtime, application); example: taking an EC2 instance and building on top of it.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-cloud-deployment-types",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "Cloud Deployment Types",
+      "text_md": "- **Public Cloud, Private Cloud, Hybrid Cloud** — mentioned as the three deployment models.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-serverless-computing",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "Serverless Computing",
+      "text_md": "- Defined as **\"five-star service\"** — user brings only code; no need to manage web servers, databases, networking, or security; billing is based on execution (pay-as-you-go).\n- AWS serverless service: **Lambda**.\n- **Lambda use cases discussed:**\n    - Weekly scheduled activity (e.g., backups) — no need to run a 24/7 VM for a once-a-week task.\n    - Email shooting via **SQS queue trigger**: emails placed in SQS → Lambda triggered on each entry → processes SMTP and sends email to user (real example shared by participant Pravin).\n    - File format conversion: if resumes are submitted in CSV or Word format, Lambda converts them to PDF automatically, triggered once per week.\n- **Event-driven nature:** Lambda runs based on events or need — not continuously; this is the core distinction from always-on compute.\n- **Cost consideration:** Serverless is comparatively expensive (like a five-star hotel) — best suited for infrequent, event-based tasks rather than continuous workloads.\n- **Continuous vs. event-based guidance:** For regular, continuous database usage → use **RDS** (PaaS); for once-a-week or event-based processing → use **Lambda** (serverless).",
+      "diagram": null
+    },
+    {
+      "id": "s05b-extended-service-model-taxonomy",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "Extended Service Model Taxonomy",
+      "text_md": "Beyond IaaS/PaaS/SaaS, additional categories discussed for senior-level understanding:\n\n- **FaaS (Function as a Service):** Lambda; event-driven, short-duration functions\n- **CaaS (Container as a Service):** Docker and Kubernetes-related activities — recommended for those targeting higher salary packages\n- **DaaS (Database as a Service):** Managed database services\n- **STaaS (Storage as a Service):** Managed storage\n- **CaaS (Compute as a Service):** Compute resources as a service\n- Instructor note: IaaS/PaaS/SaaS sufficient for up to ~10 LPA packages; CaaS and FaaS knowledge needed for higher compensation targets.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-what-devops-is",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "What DevOps Is",
+      "text_md": "- DevOps automates the build, compilation, testing, and deployment pipeline so that software can be delivered continuously and with high quality.\n- Compared to **Waterfall model** (rigid sequential phases: design → code → test → deploy over 6 months, no ability to go back) — Waterfall has largely failed in modern software delivery.\n- **Agile model:** Iterative and incremental; deployments every 2 weeks; same 6-month duration produces ~9 versions vs. Waterfall's 1.\n- **DevOps with Continuous Deployment:** Designing, coding, and testing happen with automation; deployments occur daily; product quality significantly higher than other models.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-the-6-cs-of-devops",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "The 6 Cs of DevOps",
+      "text_md": "Explained as a continuous loop where **tools may change but the process remains constant**:\n\n1. **Continuous Business Planning** — ongoing feature and roadmap discussions between business stakeholders\n2. **Continuous Integration (CI)** — developers write code locally → push to Git/Bitbucket via pull request → Jenkins picks up code via trigger → compiles and builds → feedback sent to developer automatically\n3. **Continuous Testing** — test scripts (e.g., Selenium) scheduled in Jenkins to run multiple times per day; continuous execution of test cases\n4. **Continuous Delivery** — code deployed to environments after **manual approval** (e.g., a button click or pipeline-level approval gate before production); used by ~95% of companies\n5. **Continuous Deployment** — fully automated deployment with no human approval step; used by ~5% of companies (instructor advised not to claim this in interviews unless accurate)\n6. **Continuous Monitoring** — monitoring set up across all environments; alerts and logs fed back into the cycle\n- **Delivery vs. Deployment distinction (critical for interviews):** Delivery requires a manual approval before production deployment; deployment is fully automated with no human gate.\n- **DevSecOps extension:** Security can be added as **Continuous Security** within the 6C framework, covering both cloud security and infrastructure (e.g., firewall configuration).",
+      "diagram": null
+    },
+    {
+      "id": "s05b-devops-pipeline-flow-participant-explained",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "DevOps Pipeline Flow (Participant-Explained)",
+      "text_md": "Participant Pankaj walked through a real pipeline:\n\n- Developer writes code in local IDE → raises **Pull Request** → approved and merged into Git/Bitbucket\n- **Jenkins** picks up code via webhook or SCM trigger → builds → runs testing (Selenium)\n- Jenkins triggers build/test cycle → **Docker image** created → **manifest file** generated\n- Deployed to **Kubernetes**\n- **Terraform** used to provision full infrastructure for Kubernetes environments\n- Logging, errors, and feedback loop back to developers automatically",
+      "diagram": null
+    },
+    {
+      "id": "s05b-devops-job-roles",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "DevOps Job Roles",
+      "text_md": "Multiple profiles discussed as valid career targets within the DevOps ecosystem:\n\n- DevOps Engineer\n- Site Reliability Engineer (SRE)\n- Cloud Operations Engineer\n- Cloud Engineer\n- Infrastructure Engineer\n- Platform Engineer\n- DevSecOps Engineer (requires security knowledge)\n- Release Engineer / Build Engineer\n- AIOps\n- System Administrator (foundational to all above roles)",
+      "diagram": null
+    },
+    {
+      "id": "s05b-skills-required-for-devops-engineers",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "Skills Required for DevOps Engineers",
+      "text_md": "- **System administration excellence** is mandatory — must be proficient in Linux and Windows server management, performance tuning, and environment handling.\n- **Networking and storage knowledge** required.\n- **Coding/scripting:** Full coding not required, but at least basic understanding and prompt engineering capability; automation via Python and Shell scripting.\n- **Effective communication:** Must be able to explain issues to operations teams, developers, and management; must be \"explainable.\"\n- **Cloud management and orchestration:** Docker and Kubernetes knowledge opens senior profiles.\n- **Real-world system thinking example:** If a production server's CPU/memory hits 90% (like Zoom consuming resources in the session), you cannot simply kill the process — you must increase compute, optimize the application, or work with developers to reduce resource consumption; same logic applies to laptops and servers.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-tools-technology-discussed",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "Tools & Technology Discussed",
+      "text_md": "- **Jenkins:** Primary CI tool; used for integration, build automation, scheduling test scripts, and deployment pipelines; can also handle deployment but may be paired with other tools like Octopus for specific deployment features.\n- **Octopus Deploy:** Used alongside Jenkins in some organizations for deployment; instructor explained that each tool has limitations and teams may prefer specialized tools for specific stages.\n- **Terraform:** Used for full infrastructure provisioning, especially in Kubernetes environments.\n- **Docker & Kubernetes:** Core to CaaS; Kubernetes handles automatic rollback; GKE is Google's managed Kubernetes service.\n- **SonarQube:** Mentioned in context of integrating code quality checks into Jenkins pipelines (DevSecOps project reference).\n- **GitHub / Bitbucket / GitLab:** Source control platforms; Jenkins integrates via webhook or SCM trigger.\n- **AWS Lambda:** Serverless compute; configured by cloud engineers; has a dedicated full session planned.\n- **AWS SQS:** Queue service; used as event trigger for Lambda (email processing use case).\n- **AWS EC2:** Virtual machine service; front-end and middleware hosting for web applications.\n- **AWS RDS:** Managed relational database service; recommended for continuous database needs.\n- **AWS S3:** Object storage; used for resume/file storage and media delivery.\n- **AWS VPC:** Private network for securing EC2 and other resources.\n- **AWS IAM:** Identity and Access Management; replaced physical access control systems.\n- **Multiple monitoring tools:** Organizations often run more than one monitoring tool simultaneously because no single tool satisfies all requirements.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-job-market-career-guidance",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "Job Market & Career Guidance",
+      "text_md": "- **Job openings:** Approximately **20,000–25,000 DevOps/Cloud openings** available on job platforms at any given time; Naukri is one source but many other platforms have more listings.\n- **Platform resource:** Instructor's website (`clouddevops.website`) aggregates **35+ job platforms** with pre-configured search filters for DevOps roles; includes remote job boards ([Remote.co](https://remote.co), WeWork Remote, OKFlex, Himalayas, Tuning, Ark) and startup/tech-company-specific boards.\n- **Bookmark recommended:** The aggregated job links page is private (not on public website homepage) but shared directly via chat; participants advised to bookmark it.\n- **Filters available:** Can be adjusted for QA, cloud, DevOps, remote, startup, or premium platforms based on individual preference.\n- **Resume advice:**\n    - Participants instructed to revise and update resumes progressively — add 5 lines every Friday/Saturday as new topics are completed.\n    - Introductions in interviews should not exceed 90 seconds and must focus on current role/company, not college.\n    - Developer learning DevOps is a strong profile — can handle both development and operations activities, justifying a higher salary ask.\n- **Interview coaching note:** Participant Ravi attended a first interview; instructor advised to observe how top candidates introduce themselves and model that approach; confidence is built through repetition.\n- **On-site/abroad jobs:** No commitment made, but instructor indicated international job portal links will be added to the platform soon.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-linkedin-community-engagement",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "LinkedIn & Community Engagement",
+      "text_md": "- Participants instructed to start posting on LinkedIn after completing each module (Linux complete → post; AWS complete → post; etc.).\n- Posts should be written personally (with AI assistance for drafting, but customized in own words — not fully AI-generated).\n- Tag instructor and community in posts; instructor will review posts in upcoming sessions.\n- **AI Companion** for LinkedIn post generation is currently unavailable due to high cost; instructor will generate and provide posts separately.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-program-roadmap-next-steps",
+      "unit": "s05b",
+      "kind": "practical",
+      "title": "Program Roadmap & Next Steps",
+      "text_md": "- **Current position:** Days 1–4 revision complete; all marked green on roadmap.\n- **Upcoming curriculum sequence:**\n    - Next full week: **Linux** (complete revision)\n    - Following two weeks: **AWS** (complete coverage)\n    - After AWS: **DevOps** tools and practices\n    - After DevOps: **Docker**\n    - Throughout: **Shell Scripting**\n    - Later modules (7–8): **Platform Engineering / SRE**\n    - Module 9+: **Senior Architect** level content\n    - Advanced (75 days out): **AI Agents on Kubernetes, MCP Server**\n- **AWS account setup:** Participants instructed to create AWS accounts; watch the previously shared setup video; create budget alarms immediately to avoid unexpected charges; free tier available for 30 days.\n- **Budget alarm setup:** Navigate to billing → budget alarms → set threshold (e.g., ₹10–₹20); prevents accidental spend.\n- **Virtualization:** All participants must enable virtualization in BIOS on their laptops; if disabled, search YouTube/ChatGPT with laptop model name for specific BIOS steps.\n- **Krunal's project presentation:** Scheduled for a future Friday session — last 15 minutes allocated for Krunal to explain his AI PDF-to-audio product built with 11 Labs.\n- **Questions submission:** Participants to fill the question form (same LMS link); can be filled anytime including late at night; technical questions only — not HR/rangoli-related queries.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-explain-a-complete-devops-pipeline-for-a-real-project",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "Explain a complete DevOps pipeline for a real project.",
+      "text_md": "**Answer:**\nA typical flow is:\n\n**Developer → Git/PR → Jenkins → Build → Testing → Docker Image → Kubernetes → Monitoring → Feedback**\n\nTerraform can be used to provision the infrastructure required for the Kubernetes environment.",
+      "diagram": null
+    },
+    {
+      "id": "s05b-quick-interview-tip",
+      "unit": "s05b",
+      "kind": "concept",
+      "title": "Quick Interview Tip",
+      "text_md": "For scenario questions, don't just name a tool. Explain:\n\n**Problem → Investigation → Tool → Action → Expected Result**\n\nExample:\n\n> \"First I will identify the issue from logs and monitoring. Then I will check the relevant configuration and connectivity. After finding the root cause, I will fix it and validate the application again.\"\n\nThis approach makes the answer more practical and interview-friendly.",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is AWS?",
+      "prompt": "What is AWS?",
+      "reference_answer": "AWS is Amazon's cloud platform that provides on-demand services like compute, storage, networking, databases, and serverless services.",
+      "id": "s05b-q01",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What are the main benefits of cloud computing?",
+      "prompt": "What are the main benefits of cloud computing?",
+      "reference_answer": "On-demand resources, scalability, pay-as-you-go pricing, reduced infrastructure management, and faster provisioning.",
+      "id": "s05b-q02",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-cloud-deployment-types",
+        "s05b-market-share-cloud-landscape",
+        "s05b-serverless-computing"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is IaaS?",
+      "prompt": "What is IaaS?",
+      "reference_answer": "Infrastructure as a Service provides infrastructure such as servers, networking, storage, and virtualization. Example: **AWS EC2**.",
+      "id": "s05b-q03",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-service-models-iaas-paas-saas",
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is PaaS?",
+      "prompt": "What is PaaS?",
+      "reference_answer": "Platform as a Service provides the underlying infrastructure and platform so developers can focus mainly on their application.",
+      "id": "s05b-q04",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-service-models-iaas-paas-saas",
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is SaaS?",
+      "prompt": "What is SaaS?",
+      "reference_answer": "Software as a Service is a ready-to-use application managed by the provider. Examples include Gmail and Google Drive.",
+      "id": "s05b-q05",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-service-models-iaas-paas-saas",
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is serverless computing?",
+      "prompt": "What is serverless computing?",
+      "reference_answer": "Serverless allows us to run code without managing servers. AWS Lambda is a common example.",
+      "id": "s05b-q06",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-serverless-computing",
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is AWS EC2?",
+      "prompt": "What is AWS EC2?",
+      "reference_answer": "EC2 is a virtual machine service used to run applications and workloads in AWS.",
+      "id": "s05b-q07",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is AWS S3?",
+      "prompt": "What is AWS S3?",
+      "reference_answer": "S3 is an object storage service used to store files, images, backups, resumes, videos, and other objects.",
+      "id": "s05b-q08",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is AWS RDS?",
+      "prompt": "What is AWS RDS?",
+      "reference_answer": "RDS is a managed relational database service. AWS manages many database administration tasks for us.",
+      "id": "s05b-q09",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is AWS VPC?",
+      "prompt": "What is AWS VPC?",
+      "reference_answer": "VPC is a logically isolated network in AWS where we deploy and secure resources such as EC2 instances.",
+      "id": "s05b-q10",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is AWS IAM?",
+      "prompt": "What is AWS IAM?",
+      "reference_answer": "IAM is used to manage users, roles, permissions, and access to AWS resources.",
+      "id": "s05b-q11",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is AWS Lambda?",
+      "prompt": "What is AWS Lambda?",
+      "reference_answer": "Lambda is a serverless compute service that executes code in response to events without requiring us to manage servers.",
+      "id": "s05b-q12",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is DevOps?",
+      "prompt": "What is DevOps?",
+      "reference_answer": "DevOps is a combination of practices, culture, and automation that helps development and operations teams deliver software faster and more reliably.",
+      "id": "s05b-q13",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-devops-is",
+        "s05b-devops-job-roles",
+        "s05b-devops-pipeline-flow-participant-explained"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Continuous Integration?",
+      "prompt": "What is Continuous Integration?",
+      "reference_answer": "CI automatically builds and tests code whenever developers integrate changes into the source-code repository.",
+      "id": "s05b-q14",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Continuous Delivery?",
+      "prompt": "What is Continuous Delivery?",
+      "reference_answer": "Continuous Delivery automatically prepares code for deployment, but production deployment normally requires manual approval.",
+      "id": "s05b-q15",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Continuous Deployment?",
+      "prompt": "What is Continuous Deployment?",
+      "reference_answer": "Continuous Deployment automatically deploys validated code to production without a manual approval step.",
+      "id": "s05b-q16",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-cloud-deployment-types",
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Jenkins?",
+      "prompt": "What is Jenkins?",
+      "reference_answer": "Jenkins is an automation server commonly used to build, test, and automate CI/CD pipelines.",
+      "id": "s05b-q17",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Terraform?",
+      "prompt": "What is Terraform?",
+      "reference_answer": "Terraform is an Infrastructure as Code tool used to provision and manage infrastructure using configuration files.",
+      "id": "s05b-q18",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Docker?",
+      "prompt": "What is Docker?",
+      "reference_answer": "Docker packages an application and its dependencies into a container so it can run consistently across environments.",
+      "id": "s05b-q19",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Kubernetes?",
+      "prompt": "What is Kubernetes?",
+      "reference_answer": "Kubernetes is a container orchestration platform used to deploy, manage, scale, and recover containerized applications.",
+      "id": "s05b-q20",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Developer pushed code to GitHub, but Jenkins didn't start. What will you check?",
+      "prompt": "Developer pushed code to GitHub, but Jenkins didn't start. What will you check?",
+      "reference_answer": "- GitHub-Jenkins authentication\n- Webhook configuration\n- Jenkins job trigger configuration\n- Required Jenkins plugins\n- Jenkins logs\n- Repository permissions",
+      "id": "s05b-q21",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Your production deployment failed. How will you roll back?",
+      "prompt": "Your production deployment failed. How will you roll back?",
+      "reference_answer": "Use versioned builds. If V4 failed, redeploy the last stable V3 build through the pipeline. In Kubernetes, use the deployment rollback mechanism.",
+      "id": "s05b-q22",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-cloud-deployment-types"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Linux server is running out of disk space. What will you do?",
+      "prompt": "Linux server is running out of disk space. What will you do?",
+      "reference_answer": "First check disk usage:\n```bash\ndf -h\ndu -sh *\n```\nThen identify large files/directories, check `/var/log`, clean unnecessary data, or increase storage/partition if required.",
+      "id": "s05b-q23",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "You need to build a job portal on AWS. Which services would you use?",
+      "prompt": "You need to build a job portal on AWS. Which services would you use?",
+      "reference_answer": "- EC2 → application/frontend\n- RDS → relational database\n- S3 → resumes/files\n- VPC → networking and security",
+      "id": "s05b-q24",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-devops-job-roles",
+        "s05b-extended-service-model-taxonomy",
+        "s05b-job-market-career-guidance"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "You need to process an email whenever a message enters a queue. What would you use?",
+      "prompt": "You need to process an email whenever a message enters a queue. What would you use?",
+      "reference_answer": "Use **SQS + Lambda**. SQS receives the message and Lambda is triggered to process it.",
+      "id": "s05b-q25",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "You have a task that runs only once every week. Would you use EC2 24/7?",
+      "prompt": "You have a task that runs only once every week. Would you use EC2 24/7?",
+      "reference_answer": "Not necessarily. Consider **Lambda with a scheduled trigger** because an always-running EC2 instance may not be required for an occasional task.",
+      "id": "s05b-q26",
+      "unit": "s05b",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Users upload files in different formats and you need to convert them to PDF automatically. What would you use?",
+      "prompt": "Users upload files in different formats and you need to convert them to PDF automatically. What would you use?",
+      "reference_answer": "Store the uploaded files in **S3** and trigger **Lambda** to perform the conversion when the required event occurs.",
+      "id": "s05b-q27",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-explain-a-complete-devops-pipeline-for-a-real-project",
+        "s05b-skills-required-for-devops-engineers",
+        "s05b-what-aws-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Your application needs a database that is continuously used by users. Lambda or RDS?",
+      "prompt": "Your application needs a database that is continuously used by users. Lambda or RDS?",
+      "reference_answer": "For a continuously used relational database, choose **RDS**. Lambda is better suited to event-driven or short-duration processing.",
+      "id": "s05b-q28",
+      "unit": "s05b",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Your application CPU reaches 90% in production. What will you do?",
+      "prompt": "Your application CPU reaches 90% in production. What will you do?",
+      "reference_answer": "Identify the reason using monitoring and system-level investigation. Depending on the root cause, scale infrastructure, optimize the application, or work with developers to reduce resource consumption.",
+      "id": "s05b-q29",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Your Jenkins pipeline builds successfully but the application is not deployed. What will you check?",
+      "prompt": "Your Jenkins pipeline builds successfully but the application is not deployed. What will you check?",
+      "reference_answer": "- Deployment stage logs\n- Target server/Kubernetes connectivity\n- Credentials\n- Deployment configuration\n- Environment variables\n- Docker image availability\n- Deployment permissions",
+      "id": "s05b-q30",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-devops-pipeline-flow-participant-explained",
+        "s05b-explain-a-complete-devops-pipeline-for-a-real-project",
+        "s05b-what-aws-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Your Docker image works locally but fails in another environment. What will you investigate?",
+      "prompt": "Your Docker image works locally but fails in another environment. What will you investigate?",
+      "reference_answer": "Check whether the image contains all required dependencies, environment variables, configuration files, exposed ports, and correct application versions. Compare the runtime environments.",
+      "id": "s05b-q31",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Your Kubernetes application is running but users cannot access it. What would you check?",
+      "prompt": "Your Kubernetes application is running but users cannot access it. What would you check?",
+      "reference_answer": "1. Pod status\n2. Service\n3. Service endpoints\n4. Ingress configuration\n5. Application logs\n6. Network/security rules\n7. Container port vs service port",
+      "id": "s05b-q32",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Terraform creates the infrastructure but the application cannot connect to the database. What will you check?",
+      "prompt": "Terraform creates the infrastructure but the application cannot connect to the database. What will you check?",
+      "reference_answer": "Check VPC/network configuration, security rules, database endpoint, ports, credentials, subnet placement, and whether the application is using the correct database endpoint.",
+      "id": "s05b-q33",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-traditional-infrastructure-vs-cloud",
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Your AWS application needs to store resumes uploaded by users. Which service would you choose?",
+      "prompt": "Your AWS application needs to store resumes uploaded by users. Which service would you choose?",
+      "reference_answer": "Use **S3** because it is designed for object/file storage. Store the object reference in the database if required.",
+      "id": "s05b-q34",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-extended-service-model-taxonomy",
+        "s05b-service-models-iaas-paas-saas"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "You need to control which users can access an S3 bucket. What would you use?",
+      "prompt": "You need to control which users can access an S3 bucket. What would you use?",
+      "reference_answer": "Use **IAM permissions and roles**, along with appropriate S3 bucket policies, to control access.",
+      "id": "s05b-q35",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Your company wants developers to receive automatic feedback whenever they push code. How would you implement it?",
+      "prompt": "Your company wants developers to receive automatic feedback whenever they push code. How would you implement it?",
+      "reference_answer": "Configure a CI pipeline where GitHub triggers Jenkins. Jenkins builds the application, runs tests, and sends the build/test result back to the team.",
+      "id": "s05b-q36",
+      "unit": "s05b",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Your production deployment should require manager approval before deployment. Which approach would you use?",
+      "prompt": "Your production deployment should require manager approval before deployment. Which approach would you use?",
+      "reference_answer": "Implement **Continuous Delivery** with a manual approval gate before production deployment.",
+      "id": "s05b-q37",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-cloud-deployment-types"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Management wants every successful code change deployed automatically to production. What approach is this?",
+      "prompt": "Management wants every successful code change deployed automatically to production. What approach is this?",
+      "reference_answer": "This is **Continuous Deployment**, where deployment happens automatically after the required build and testing stages without a manual approval step.",
+      "id": "s05b-q38",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Your AWS bill suddenly increases. What will you check first?",
+      "prompt": "Your AWS bill suddenly increases. What will you check first?",
+      "reference_answer": "Check active resources and their usage, identify unexpected resources or workloads, review billing details, and configure a **budget alarm** to receive alerts when spending crosses the defined threshold.",
+      "id": "s05b-q39",
+      "unit": "s05b",
+      "concept_ids": [
+        "s05b-what-aws-is",
+        "s05b-what-devops-is"
+      ]
+    }
+  ]
+}

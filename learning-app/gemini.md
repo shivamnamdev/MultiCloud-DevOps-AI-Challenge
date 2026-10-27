@@ -22,7 +22,7 @@ A personal, self-study app built from this repo's course notes. Each concept is 
 - Scoring is hybrid: a deterministic concept-coverage check (code) sets the base score; the LLM writes feedback and adjusts within a bounded range. Small local models must not be the sole judge.
 - Models: users run Ollama locally. Defaults `llama3.2:latest` (interviewer/grader) and `codellama:latest` (command/code questions). Model names are configurable. The app must work when Ollama is absent (study, diagrams, MCQ quizzes still work).
 - Each user runs the app locally with their own local progress store (SQLite). No accounts, no cloud.
-- Build order: FREE Workshop's (Terraform) first, then Session-00, then course order.
+- Build order: FREE Workshop's (Terraform) first, then Session-00, then course order. (2026-10-26: all sessions ingested by the generic parser; diagrams only exist for fw1 so far.)
 - Diagram format: Mermaid (`.mmd`) text files, produced using the submodule skills `mermaid-expert` and `diagram-generator` as references, and human-reviewed before marked `reviewed: true`.
 - Content from `agentic-awesome-skills/` is third-party: read for reference only, never execute its scripts without approval.
 
@@ -39,6 +39,21 @@ A personal, self-study app built from this repo's course notes. Each concept is 
   "diagram": { "type": "mermaid", "path": "content/fw1/diagrams/fw1-provider.mmd", "reviewed": false }
 }
 ```
+
+### Unit (content/<unit-id>/unit.json) — added 2026-10-26
+```json
+{
+  "id": "s30", "title": "...", "subtitle": "Session 30 · Docker Introduction · Batch-44",
+  "session": 30, "module": "M5 Docker, Kubernetes, Monitoring", "order": 3000,
+  "status": "ready | partial | sparse | light",
+  "source_file": "path relative to repo root",
+  "needs_authoring": [{"section": "...", "chars": 5439}],
+  "unparsed_qa": [{"section": "...", "chars": 1500}],
+  "unanswered_questions": ["Q1: ..."],
+  "concepts": [], "questions": []
+}
+```
+Unit ids: `fw1` (workshop), `sNN` / `sNNa`.. (sessions), `extra-kafka`. `light` units come from READMEs; they have no diagrams or questions. `DATA_TODO.md` is generated from these fields.
 
 ### Question (from Interview-QnA.md or generated quiz)
 ```json
@@ -97,3 +112,5 @@ A personal, self-study app built from this repo's course notes. Each concept is 
 - 2026-10-23: Protocol 0 initialised.
 - 2026-10-23: Discovery answers recorded (models, interviewer toggles, scoring /10, build order, Mermaid, submodule skills).
 - 2026-10-23: Web app architecture added (architecture/webapp.md); schema ids switched to slug ids with a unit field.
+- 2026-10-26: Unit record schema added; all sessions ingested (74 units).
+- 2026-10-26: Phase 1 added tables `notes(item_id, text, updated_at)` and `bookmarks(item_id, created_at)` to data/progress.sqlite; unit titles now `<session topic> · Day N`.

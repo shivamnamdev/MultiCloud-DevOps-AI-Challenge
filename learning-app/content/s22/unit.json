@@ -1,0 +1,433 @@
+{
+  "id": "s22",
+  "title": "Git GitHub Learning · Day 1",
+  "subtitle": "Session 22 · Batch-44 · DevOps Batch-44 | Day-1 Summary",
+  "session": 22,
+  "module": "M4 CI/CD: Git, GitHub, Jenkins",
+  "order": 2200,
+  "status": "ready",
+  "source_file": "Session-22-Git-GitHub-Learning/🚀 Day-1 of DevOps i.e GIT & GITHUB Batch-44  20th July 2026  800 AM IST  Live Session.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s22-git-github-fundamentals",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "Git & GitHub Fundamentals",
+      "text_md": "> 📅 **20th July 2026**\n> 🕗 **8:00 AM IST**\n> 🎯 **Module:** Git & GitHub Fundamentals",
+      "diagram": null
+    },
+    {
+      "id": "s22-what-was-covered-in-the-session",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "What Was Covered in the Session",
+      "text_md": "The session included a complete beginner-friendly hands-on workflow:\n\n1. Install Git\n2. Configure Git for the first time\n3. Create a GitHub account\n4. Create a GitHub repository\n5. Clone a repository\n6. Create and modify files\n7. Check changes using `git status`\n8. Stage changes using `git add`\n9. Save changes using `git commit`\n10. Push changes to GitHub using `git push`\n11. View commit history using `git log`\n12. Understand how `git revert` can be used to undo changes safely\n\nThe session also discussed the importance of a **GitHub profile** for:\n\n- 💼 Job interviews\n- 🌐 Open-source contributions\n- 📂 Project portfolios\n- 🤝 Collaboration\n- 📈 Demonstrating practical development experience\n\nSecurity and collaboration topics included:\n\n- 🔐 Public vs Private repositories\n- 🛡️ Multi-Factor Authentication (MFA)\n- 🔒 Branch protection\n- 👥 Repository access and collaboration\n- 🌍 Open-source contribution\n\nThe session concluded with a brief introduction to **AWS, Azure, and GCP**, explaining where cloud platforms fit into the DevOps lifecycle and how Git can integrate with CI/CD tools.",
+      "diagram": null
+    },
+    {
+      "id": "s22-key-concepts-covered",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "Key Concepts Covered",
+      "text_md": "- 🚀 Introduction to DevOps\n- 🔄 Version Control\n- 💡 Importance of Version Control\n- 🐙 Git vs GitHub\n- 🌐 Distributed Version Control System (DVCS)\n- 💻 Local Repository vs Remote Repository\n- ⚙️ Git Installation\n- 🔧 Git Configuration\n- 👤 GitHub Account Creation\n- 📁 Repository Creation\n- 📥 `git clone`\n- 🆕 `git init`\n- 🔍 `git status`\n- ➕ `git add`\n- 💾 `git commit`\n- ☁️ `git push`\n- 📜 `git log`\n- ↩️ `git revert`\n- 📝 `README.md`\n- 🖥️ Visual Studio Code Integration\n- 🔓 Public vs Private Repository\n- 🔐 GitHub Security\n- 👤 GitHub Profile\n- 🌱 Open-Source Contributions\n- 🌿 Basic Branch Concepts",
+      "diagram": null
+    },
+    {
+      "id": "s22-git-workflow",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "Git Workflow",
+      "text_md": "The basic workflow demonstrated in the session:\n\n```text\n        Install Git\n            │\n            ▼\n   Create GitHub Account\n            │\n            ▼\n    Create Repository\n            │\n            ▼\n      Clone Repository\n            │\n            ▼\n        Create Files\n            │\n            ▼\n       git status\n            │\n            ▼\n         git add\n            │\n            ▼\n        git commit\n            │\n            ▼\n         git push\n            │\n            ▼\n   Code Available on GitHub\n```\n\n### 🧩 Git's Basic Working Model\n\n```text\nWorking Directory\n       │\n       │ git add\n       ▼\nStaging Area\n       │\n       │ git commit\n       ▼\nLocal Repository\n       │\n       │ git push\n       ▼\nRemote Repository\n     (GitHub)\n```",
+      "diagram": null
+    },
+    {
+      "id": "s22-check-git-version",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "Check Git Version",
+      "text_md": "```bash\ngit --version\n```\n\nUsed to verify that Git is installed and available from the command line.",
+      "diagram": null
+    },
+    {
+      "id": "s22-configure-git-username",
+      "unit": "s22",
+      "kind": "practical",
+      "title": "Configure Git Username",
+      "text_md": "```bash\ngit config --global user.name \"Your Name\"\n```",
+      "diagram": null
+    },
+    {
+      "id": "s22-configure-git-email",
+      "unit": "s22",
+      "kind": "practical",
+      "title": "Configure Git Email",
+      "text_md": "```bash\ngit config --global user.email \"your-email@example.com\"\n```\n\nThese settings identify the author of commits created from the configured Git environment.",
+      "diagram": null
+    },
+    {
+      "id": "s22-initialize-a-repository",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "Initialize a Repository",
+      "text_md": "```bash\ngit init\n```\n\nCreates a new Git repository in the current project directory.",
+      "diagram": null
+    },
+    {
+      "id": "s22-clone-a-repository",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "Clone a Repository",
+      "text_md": "```bash\ngit clone <repository-url>\n```\n\nCreates a local copy of an existing remote repository.",
+      "diagram": null
+    },
+    {
+      "id": "s22-check-repository-status",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "Check Repository Status",
+      "text_md": "```bash\ngit status\n```\n\nShows the current state of files in the working directory and staging area.",
+      "diagram": null
+    },
+    {
+      "id": "s22-stage-changes",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "Stage Changes",
+      "text_md": "```bash\ngit add .\n```\n\nStages the changes so they can be included in the next commit.",
+      "diagram": null
+    },
+    {
+      "id": "s22-create-a-commit",
+      "unit": "s22",
+      "kind": "practical",
+      "title": "Create a Commit",
+      "text_md": "```bash\ngit commit -m \"First Commit\"\n```\n\nCreates a commit containing the staged changes.\n\n> 💡 **Best Practice:** Use meaningful commit messages so other developers can understand what changed.",
+      "diagram": null
+    },
+    {
+      "id": "s22-push-changes",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "Push Changes",
+      "text_md": "```bash\ngit push\n```\n\nUploads committed local changes to the remote repository.",
+      "diagram": null
+    },
+    {
+      "id": "s22-view-commit-history",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "View Commit History",
+      "text_md": "```bash\ngit log\n```\n\nDisplays the commit history of the repository.",
+      "diagram": null
+    },
+    {
+      "id": "s22-revert-a-commit",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "Revert a Commit",
+      "text_md": "```bash\ngit revert <commit-id>\n```\n\nCreates a new commit that reverses the changes introduced by an earlier commit.",
+      "diagram": null
+    },
+    {
+      "id": "s22-hands-on-practice-tasks",
+      "unit": "s22",
+      "kind": "practical",
+      "title": "Hands-on Practice Tasks",
+      "text_md": "Complete the following tasks to reinforce the Day-1 concepts:\n\n- [ ] Install Git on your system\n- [ ] Install Visual Studio Code\n- [ ] Create a GitHub account\n- [ ] Configure Git username\n- [ ] Configure Git email\n- [ ] Create your first GitHub repository\n- [ ] Clone the repository using Git Bash\n- [ ] Create a `README.md` file\n- [ ] Create a `HelloWorld.java` or another sample program\n- [ ] Check repository status\n- [ ] Stage your files\n- [ ] Create your first commit\n- [ ] Push your files to GitHub\n- [ ] Verify your commit history\n- [ ] Verify the repository from the GitHub website",
+      "diagram": null
+    },
+    {
+      "id": "s22-learning-outcome",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "Learning Outcome",
+      "text_md": "By the end of Day-1, students were able to:\n\n### 💡 Understand\n\n- The importance of Version Control in DevOps\n- The difference between Git and GitHub\n- The concept of a Distributed Version Control System\n- Local and remote repositories\n- Basic Git repository workflow\n\n### 💻 Perform\n\n- Git installation and configuration\n- Git repository initialization\n- Repository cloning\n- Status checking\n- Staging changes\n- Creating commits\n- Pushing changes to GitHub\n- Viewing commit history\n- Reverting changes\n\n### 🔐 Understand Security\n\n- Public vs Private repositories\n- Multi-Factor Authentication\n- Branch protection\n- Repository access control\n\n### 💼 Build a Professional Profile\n\nStudents also learned why a GitHub profile can be valuable for:\n\n- Job interviews\n- Project portfolios\n- Open-source contributions\n- Demonstrating practical coding experience",
+      "diagram": null
+    },
+    {
+      "id": "s22-day-1-quick-revision",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "Day-1 Quick Revision",
+      "text_md": "```text\nGit\n │\n ├── Track Changes\n ├── Version History\n ├── Local Repository\n └── Collaboration\n       │\n       ▼\nGitHub\n │\n ├── Remote Repository\n ├── Collaboration\n ├── Open Source\n ├── Portfolio\n └── Repository Security\n```\n\n### ⭐ Commands to Remember\n\n```bash\ngit --version\n\ngit config --global user.name \"Your Name\"\ngit config --global user.email \"your-email@example.com\"\n\ngit init\ngit clone <repository-url>\n\ngit status\ngit add .\ngit commit -m \"Meaningful message\"\ngit push\n\ngit log\ngit revert <commit-id>\n```",
+      "diagram": null
+    },
+    {
+      "id": "s22-day-1-cheat-sheet",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "Day-1 Cheat Sheet",
+      "text_md": "| Command | Purpose |\n|---|---|\n| `git --version` | Check Git version |\n| `git config` | Configure Git identity |\n| `git init` | Initialize a repository |\n| `git clone` | Clone an existing repository |\n| `git status` | Check repository status |\n| `git add` | Stage changes |\n| `git commit` | Record staged changes |\n| `git push` | Upload commits to remote repository |\n| `git log` | View commit history |\n| `git revert` | Create a commit that reverses earlier changes |",
+      "diagram": null
+    },
+    {
+      "id": "s22-key-takeaway",
+      "unit": "s22",
+      "kind": "overview",
+      "title": "Key Takeaway",
+      "text_md": "> **Git tracks and manages your code history. GitHub provides a platform to host, share, collaborate on, and showcase that Git-based work.**\n\nThe most important Day-1 workflow to remember is:\n\n```text\nCreate / Modify Code\n        ↓\n    git status\n        ↓\n      git add\n        ↓\n    git commit\n        ↓\n     git push\n        ↓\n      GitHub\n```\n\nUnderstanding this workflow gives you the foundation required for the more advanced Git and GitHub practices used in real-world DevOps teams.",
+      "diagram": null
+    },
+    {
+      "id": "s22-day-2-advanced-git-github",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "Day-2: Advanced Git & GitHub",
+      "text_md": "The next module focuses on advanced Git and GitHub concepts, including:\n\n- 🌿 Branching\n- 🔀 Pull Requests (PRs)\n- ⚔️ Merge Conflicts\n- 🔄 Rebase\n- 🧹 Squash Merge\n- ➡️ Fast-Forward Merge\n- 🏢 Real-time development workflows used in software companies",
+      "diagram": null
+    },
+    {
+      "id": "s22-devops-batch-44",
+      "unit": "s22",
+      "kind": "concept",
+      "title": "DevOps Batch-44",
+      "text_md": "**Learn → Practice → Build → Collaborate → Automate**\n\n> *Git is not just a command-line tool. It is the foundation for managing source code throughout the DevOps lifecycle.*",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is a Version Control System (VCS), and why is it important?",
+      "prompt": "What is a Version Control System (VCS), and why is it important?",
+      "reference_answer": "A Version Control System tracks changes made to files and maintains their history. It helps developers collaborate, understand what changed, recover previous versions, and manage source code efficiently.",
+      "id": "s22-q01",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-check-git-version",
+        "s22-what-was-covered-in-the-session"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between Git and GitHub?",
+      "prompt": "What is the difference between Git and GitHub?",
+      "reference_answer": "Git** is a distributed version control system used to track changes locally. **GitHub** is a cloud-based platform used to host Git repositories and support collaboration, sharing, and project management.",
+      "id": "s22-q02",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-day-2-advanced-git-github",
+        "s22-git-github-fundamentals",
+        "s22-check-git-version"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why is Git called a Distributed Version Control System?",
+      "prompt": "Why is Git called a Distributed Version Control System?",
+      "reference_answer": "Git is called distributed because each developer's local repository contains the project's version history. Developers can perform many Git operations locally without depending on a central server.",
+      "id": "s22-q03",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-check-git-version",
+        "s22-configure-git-email",
+        "s22-configure-git-username"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the purpose of the .git directory?",
+      "prompt": "What is the purpose of the .git directory?",
+      "reference_answer": "The `.git` directory contains the repository's Git metadata and information required for version control, including repository history and configuration information.",
+      "id": "s22-q04",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-check-git-version",
+        "s22-configure-git-email",
+        "s22-configure-git-username"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between git clone and git init?",
+      "prompt": "What is the difference between git clone and git init?",
+      "reference_answer": "| `git clone` | `git init` |\n|---|---|\n| Creates a local copy of an existing repository | Initializes a new Git repository |\n| Usually used with an existing remote repository | Used when starting Git tracking in a local project |\n| Downloads the existing repository history | Creates the local `.git` repository structure |",
+      "id": "s22-q05",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-check-git-version",
+        "s22-clone-a-repository",
+        "s22-configure-git-email"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the purpose of git status?",
+      "prompt": "What is the purpose of git status?",
+      "reference_answer": "`git status` shows the current state of the working directory and staging area. It helps identify modified, untracked, and staged files.",
+      "id": "s22-q06",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-check-git-version",
+        "s22-check-repository-status",
+        "s22-configure-git-email"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a commit, and why should commit messages be meaningful?",
+      "prompt": "What is a commit, and why should commit messages be meaningful?",
+      "reference_answer": "A commit records staged changes in the Git repository. Meaningful commit messages make the project history easier for developers to understand and maintain.",
+      "id": "s22-q07",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-create-a-commit",
+        "s22-revert-a-commit",
+        "s22-view-commit-history"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between a Public Repository and a Private Repository?",
+      "prompt": "What is the difference between a Public Repository and a Private Repository?",
+      "reference_answer": "Public Repository:** Can be viewed publicly on GitHub.\n- **Private Repository:** Access is restricted to authorized users.\n\nCompanies generally use repository visibility and access controls according to the sensitivity of their source code and project requirements.",
+      "id": "s22-q08",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-check-repository-status",
+        "s22-clone-a-repository",
+        "s22-initialize-a-repository"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why do recruiters often ask for your GitHub profile?",
+      "prompt": "Why do recruiters often ask for your GitHub profile?",
+      "reference_answer": "A GitHub profile can demonstrate practical development experience through projects, repositories, commit history, collaboration, and open-source contributions. It can act as a technical portfolio alongside a resume.",
+      "id": "s22-q09",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-day-2-advanced-git-github",
+        "s22-git-github-fundamentals",
+        "s22-check-git-version"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Joining an Existing Project",
+      "prompt": "Which Git command will you use first, and why?",
+      "reference_answer": "I would use:\n\n```bash\ngit clone <repository-url>\n```\n\nThis creates a local copy of the existing GitHub repository so I can work on the project locally.",
+      "id": "s22-s01",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-check-git-version",
+        "s22-configure-git-email",
+        "s22-configure-git-username"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Recovering a Deleted File",
+      "prompt": "How can Git help you recover the previous version?",
+      "reference_answer": "Git maintains the project's version history. I would inspect the repository history and identify the required previous version or commit, then restore the required file or changes from that history.\n\nThe important point is that Git provides a history of changes, which can help recover earlier versions.",
+      "id": "s22-s02",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-check-git-version",
+        "s22-configure-git-email",
+        "s22-configure-git-username"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Project Exists on GitHub",
+      "prompt": "How will you start working on the project?",
+      "reference_answer": "```bash\ngit clone <repository-url>\n```\n\nAfter cloning, I would move into the project directory and begin working on the local copy.",
+      "id": "s22-s03",
+      "unit": "s22",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Consistent Git Identity",
+      "prompt": "Which Git configuration commands will you use?",
+      "reference_answer": "```bash\ngit config --global user.name \"Your Name\"\ngit config --global user.email \"your-email@example.com\"\n```\n\nThese configure the name and email associated with commits created from that Git environment.",
+      "id": "s22-s04",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-check-git-version",
+        "s22-configure-git-email",
+        "s22-configure-git-username"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "New Local Project",
+      "prompt": "What steps will you perform before pushing the project to GitHub?",
+      "reference_answer": "```bash\ngit init\ngit add .\ngit commit -m \"Initial commit\"\n```\n\nThen I would connect the local repository to the appropriate remote GitHub repository and push the committed changes.",
+      "id": "s22-s05",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-day-2-advanced-git-github",
+        "s22-git-github-fundamentals",
+        "s22-check-git-version"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Showcasing Development Work",
+      "prompt": "How would you use GitHub to showcase your projects and contributions?",
+      "reference_answer": "I would maintain a professional GitHub profile containing relevant projects, clear repository names, useful `README.md` files, meaningful commit history, and public repositories where appropriate. I would also highlight relevant open-source contributions.",
+      "id": "s22-s06",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-day-2-advanced-git-github",
+        "s22-git-github-fundamentals",
+        "s22-check-git-version"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Restricting Source Code Access",
+      "prompt": "Which GitHub repository settings would you recommend?",
+      "reference_answer": "I would use a **Private Repository** and configure access so that only authorized team members can access it. I would also use appropriate repository security and branch protection settings based on the team's requirements.",
+      "id": "s22-s07",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-day-2-advanced-git-github",
+        "s22-git-github-fundamentals",
+        "s22-check-git-version"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Open-Source Contribution",
+      "prompt": "Which GitHub feature will you use, and what is the typical workflow?",
+      "reference_answer": "I would use a **fork** of the repository.\n\nA typical workflow is:\n\n```text\nOriginal Repository\n        ↓\n       Fork\n        ↓\nYour GitHub Repository\n        ↓\n     Clone Locally\n        ↓\n   Make Changes\n        ↓\n      Commit\n        ↓\n       Push\n        ↓\n Pull Request\n        ↓\nOriginal Repository\n```",
+      "id": "s22-s08",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-day-2-advanced-git-github",
+        "s22-git-github-fundamentals",
+        "s22-git-workflow"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Teammate Cannot See Local Changes",
+      "prompt": "What steps might you have missed?",
+      "reference_answer": "I would check whether I:\n\n1. Saved the files.\n2. Checked the changes with `git status`.\n3. Staged the changes using `git add`.\n4. Created a commit using `git commit`.\n5. Pushed the commit using `git push`.\n\nThe key point is that **local changes are not automatically available on GitHub**. They need to be committed and pushed.",
+      "id": "s22-s09",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-what-was-covered-in-the-session"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Securing Source Code",
+      "prompt": "Which GitHub security features would you enable?",
+      "reference_answer": "Based on the session, I would consider:\n\n- 🔐 Multi-Factor Authentication (MFA)\n- 🔒 Private repositories where required\n- 🛡️ Branch protection\n- 👥 Controlled repository access\n- 🔑 Appropriate permissions for team members\n\nThe goal is to ensure that only authorized users can access or modify sensitive source code.",
+      "id": "s22-s10",
+      "unit": "s22",
+      "concept_ids": [
+        "s22-day-2-advanced-git-github",
+        "s22-git-github-fundamentals",
+        "s22-check-git-version"
+      ]
+    }
+  ]
+}

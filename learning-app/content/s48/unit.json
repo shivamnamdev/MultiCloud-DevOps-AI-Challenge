@@ -1,0 +1,48 @@
+{
+  "id": "s48",
+  "title": "Session 48 — Advanced Prompt Engineering + AI Co-Programmer",
+  "subtitle": "Session 48",
+  "session": 48,
+  "module": "M8 Azure + AI",
+  "order": 4800,
+  "status": "light",
+  "source_file": "Session-48-Advanced-Prompt-Engineering-AI-CoProgrammer/README.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s48-topics-covered",
+      "unit": "s48",
+      "kind": "overview",
+      "title": "Topics covered",
+      "text_md": "- Advanced Prompt Patterns for DevOps workflows\n- Chain-of-Thought Prompting — step-by-step AI reasoning\n- AI for Code Review and Documentation generation\n- AI for Infrastructure as Code — Terraform and Ansible\n- AI-Assisted Troubleshooting — feed logs to AI\n- Agentic AI Workflows — autonomous task execution",
+      "diagram": null
+    },
+    {
+      "id": "s48-key-learnings",
+      "unit": "s48",
+      "kind": "concept",
+      "title": "Key learnings",
+      "text_md": "- Chain-of-thought prompting: adding Think step by step dramatically improves AI output quality\n- AI code review catches security issues that human reviewers regularly miss — use always\n- Give AI full context: role plus task plus output format plus constraints for best results\n- AI for IaC: Write Terraform for 3-tier AWS architecture gives working code in 30 seconds\n- Agentic AI takes autonomous actions — the near future of all DevOps operations automation",
+      "diagram": null
+    },
+    {
+      "id": "s48-task-095",
+      "unit": "s48",
+      "kind": "practical",
+      "title": "Task 095",
+      "text_md": "**Lab task 095:** Build 10 advanced DevOps prompts for automation — test each and document the quality output\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    },
+    {
+      "id": "s48-task-096",
+      "unit": "s48",
+      "kind": "practical",
+      "title": "Task 096",
+      "text_md": "**Lab task 096:** Use AI to write and review a complete Terraform module — compare AI output vs manual code\n\nDo this yourself in a free-tier account and write down the commands you used.",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

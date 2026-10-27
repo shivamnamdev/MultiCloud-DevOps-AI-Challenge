@@ -1,0 +1,287 @@
+{
+  "id": "s26",
+  "title": "Jenkins Pipelines · Day 6",
+  "subtitle": "Session 26 · Batch-44 · DevOps Batch-44 | Day 06: Jenkins Declarative Pipeline & Stage View",
+  "session": 26,
+  "module": "M4 CI/CD: Git, GitHub, Jenkins",
+  "order": 2600,
+  "status": "ready",
+  "source_file": "Session-26-Jenkins-Pipelines/🚀 Day-6 of DevOps i.e Day-4 of Jenkins Pipeline Batch-44 | 27th July 2026.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s26-introduction-to-jenkins-pipeline",
+      "unit": "s26",
+      "kind": "concept",
+      "title": "Introduction to Jenkins Pipeline",
+      "text_md": "Jenkins Pipeline is a Pipeline as Code approach where the entire CI/CD workflow is written in a Jenkinsfile. Instead of configuring jobs manually through the Jenkins UI, every build step is version-controlled and stored with the application's source code.\nKey Points\nPipeline as Code\nReusable and maintainable\nVersion controlled\nEasy collaboration\nPreferred over Freestyle Jobs",
+      "diagram": null
+    },
+    {
+      "id": "s26-declarative-pipeline-structure",
+      "unit": "s26",
+      "kind": "concept",
+      "title": "Declarative Pipeline Structure",
+      "text_md": "The trainer explained the basic syntax of a Declarative Pipeline and how every pipeline starts with the pipeline {} block.\nImportant sections discussed:\nAgent\nStages\nSteps\nEnvironment\nPost actions\nStudents were encouraged to understand each block because interviewers often ask candidates to write a basic Jenkins pipeline on the spot.",
+      "diagram": null
+    },
+    {
+      "id": "s26-jenkinsfile",
+      "unit": "s26",
+      "kind": "concept",
+      "title": "Jenkinsfile",
+      "text_md": "A Jenkinsfile stores the complete automation workflow.\nIt contains:\nBuild instructions\nTesting steps\nDeployment logic\nNotifications\nEnvironment variables\nThe instructor demonstrated writing the Jenkinsfile first in a text editor and then implementing it inside Jenkins.",
+      "diagram": null
+    },
+    {
+      "id": "s26-agent-block",
+      "unit": "s26",
+      "kind": "concept",
+      "title": "Agent Block",
+      "text_md": "The agent block specifies where the pipeline executes.\nDiscussion included:\nagent any\nDedicated agents\nJenkins Controller vs Agent\nPipeline execution on different nodes\nThe trainer explained why organizations use multiple build agents for scalability.",
+      "diagram": null
+    },
+    {
+      "id": "s26-stages-and-steps",
+      "unit": "s26",
+      "kind": "concept",
+      "title": "Stages and Steps",
+      "text_md": "Pipelines are divided into logical stages.\nExamples discussed:\nCheckout\nBuild\nTest\nPackage\nDeploy\nEach stage contains one or more steps, which execute shell commands or Jenkins actions.",
+      "diagram": null
+    },
+    {
+      "id": "s26-git-integration",
+      "unit": "s26",
+      "kind": "concept",
+      "title": "Git Integration",
+      "text_md": "The session demonstrated connecting Jenkins with a Git repository.",
+      "diagram": null
+    },
+    {
+      "id": "s26-topics-covered",
+      "unit": "s26",
+      "kind": "concept",
+      "title": "Topics covered",
+      "text_md": "- Repository checkout\n- Branch selection\n- Automatic source code download\n- Pipeline execution after code changes\nThe trainer also explained how Jenkins always works with the latest repository version.",
+      "diagram": null
+    },
+    {
+      "id": "s26-environment-variables",
+      "unit": "s26",
+      "kind": "concept",
+      "title": "Environment Variables",
+      "text_md": "Environment variables help avoid hardcoding values inside pipelines.\nExamples included:\nProject names\nBuild versions\nCredentials\nURLs\nThe instructor explained how environment variables improve pipeline maintainability.",
+      "diagram": null
+    },
+    {
+      "id": "s26-post-section",
+      "unit": "s26",
+      "kind": "concept",
+      "title": "Post Section",
+      "text_md": "The post block executes actions after pipeline completion.\nCommon uses:\nSuccess notification\nFailure notification\nWorkspace cleanup\nReport generation\nStudents learned that this block executes regardless of build success or failure depending on the condition used.",
+      "diagram": null
+    },
+    {
+      "id": "s26-ai-assisted-pipeline-development",
+      "unit": "s26",
+      "kind": "concept",
+      "title": "AI-Assisted Pipeline Development",
+      "text_md": "One of the interesting discussions was using AI tools to:\nGenerate Jenkinsfiles\nImprove pipeline syntax\nFix errors\nOptimize code\nHowever, the trainer emphasized understanding the pipeline before relying on AI.",
+      "diagram": null
+    },
+    {
+      "id": "s26-interview-perspective",
+      "unit": "s26",
+      "kind": "concept",
+      "title": "Interview Perspective",
+      "text_md": "A significant part of the session focused on interview preparation.\nThe trainer mentioned that interviewers may ask candidates to:\nWrite a Jenkins Pipeline from scratch\nExplain each pipeline block\nIdentify errors\nModify an existing Jenkinsfile\nExplain execution flow\nStudents were advised to practice writing short pipelines (10-15 lines) without referring to documentation.\n\nMain Commands/Keywords Discussed\npipeline {}\nagent any\nstages {}\nstage {}\nsteps {}\nenvironment {}\npost {}\ngit\nsh\necho",
+      "diagram": null
+    },
+    {
+      "id": "s26-key-takeaways",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "Key Takeaways",
+      "text_md": "- Jenkins Pipeline is the industry standard for CI/CD automation.\nDeclarative Pipeline is easier to read and maintain than Scripted Pipeline.\nEvery pipeline should be stored as a Jenkinsfile inside the repository.\n- Pipelines automate build, test, and deployment processes.\n- Environment variables reduce hardcoded values.\n- The post block handles notifications and cleanup tasks.\n- Understanding pipeline flow is more important than memorizing syntax.\nReading console logs is the first step in troubleshooting build failures.\nAI can assist in writing pipelines but should not replace conceptual understanding.\nInterviewers frequently ask candidates to write and explain a Jenkins Pipeline.\n\n- 10 Interview Questions & Answers",
+      "diagram": null
+    },
+    {
+      "id": "s26-your-pipeline-succeeds-locally-but-fails-in-jenkins",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "Your pipeline succeeds locally but fails in Jenkins.",
+      "text_md": "**💡 Answer: Compare environment variables, installed tools, Java versions, permissions, and agent configurations.**",
+      "diagram": null
+    },
+    {
+      "id": "s26-the-build-stage-succeeds-but-deploy-fails",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "The Build stage succeeds, but Deploy fails.",
+      "text_md": "**💡 Answer: Verify deployment credentials, server connectivity, deployment scripts, and target server availability.**\n\n\n5. Multiple developers use the same pipeline. How do you avoid hardcoding values?\n**💡 Answer: Use environment variables, parameters, credentials, and shared libraries.**",
+      "diagram": null
+    },
+    {
+      "id": "s26-you-need-different-pipelines-for-development-and-production",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "You need different pipelines for Development and Production.",
+      "text_md": "**💡 Answer: Create separate stages or use conditional logic based on branch names or parameters.**",
+      "diagram": null
+    },
+    {
+      "id": "s26-jenkins-cannot-clone-the-git-repository",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "Jenkins cannot clone the Git repository.",
+      "text_md": "**💡 Answer: Verify repository URL, credentials, SSH keys, access permissions, and network connectivity.**\n\n\n8. A pipeline runs successfully but doesn't generate the expected artifact.\n**💡 Answer: Check build commands, packaging configuration, output directory, and artifact archiving.**",
+      "diagram": null
+    },
+    {
+      "id": "s26-the-pipeline-is-becoming-difficult-to-maintain",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "The pipeline is becoming difficult to maintain.",
+      "text_md": "**💡 Answer: Split logic into reusable functions or Shared Libraries and keep stages modular.**",
+      "diagram": null
+    },
+    {
+      "id": "s26-a-stage-should-run-only-after-successful-testing",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "A stage should run only after successful testing.",
+      "text_md": "**💡 Answer: Configure stage dependencies so deployment executes only if previous stages succeed.**",
+      "diagram": null
+    },
+    {
+      "id": "s26-jenkins-reports-no-agent-available",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "Jenkins reports \"No agent available.\"",
+      "text_md": "**💡 Answer: Ensure build agents are online, labeled correctly, and have available executors.**",
+      "diagram": null
+    },
+    {
+      "id": "s26-credentials-are-exposed-inside-the-jenkinsfile",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "Credentials are exposed inside the Jenkinsfile.",
+      "text_md": "**💡 Answer: Move them to Jenkins Credentials and reference them securely using credentials().**",
+      "diagram": null
+    },
+    {
+      "id": "s26-your-organization-wants-every-build-to-send-a-notification",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "Your organization wants every build to send a notification.",
+      "text_md": "**💡 Answer: Use the post section with success and failure conditions to send notifications.**",
+      "diagram": null
+    },
+    {
+      "id": "s26-pipeline-execution-is-slow",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "Pipeline execution is slow.",
+      "text_md": "**💡 Answer: Optimize build steps, cache dependencies, reduce unnecessary stages, and distribute workloads across agents.**",
+      "diagram": null
+    },
+    {
+      "id": "s26-a-build-passes-but-tests-are-skipped-unintentionally",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "A build passes, but tests are skipped unintentionally.",
+      "text_md": "**💡 Answer: Review pipeline stages, test commands, conditional execution, and Maven/Gradle configurations.**",
+      "diagram": null
+    },
+    {
+      "id": "s26-an-interviewer-asks-you-to-explain-the-pipeline-execution-flow",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "An interviewer asks you to explain the pipeline execution flow.",
+      "text_md": "**💡 Answer: Explain the order: Agent → Stages → Steps → Post Actions, and describe how Jenkins executes each stage sequentially unless configured otherwise.**\n\n\n17. Your pipeline must use different environment variables for each environment.\n**💡 Answer: Define environment-specific variables or use parameterized pipelines.**",
+      "diagram": null
+    },
+    {
+      "id": "s26-a-new-team-member-accidentally-modifies-the-jenkins-pipeline",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "A new team member accidentally modifies the Jenkins Pipeline.",
+      "text_md": "**💡 Answer: Since the Jenkinsfile is stored in Git, review the commit history, revert if necessary, and use code reviews before merging.**",
+      "diagram": null
+    },
+    {
+      "id": "s26-production-deployment-should-require-manual-approval",
+      "unit": "s26",
+      "kind": "overview",
+      "title": "Production deployment should require manual approval.",
+      "text_md": "**💡 Answer: Add a manual approval step before the deployment stage using Jenkins pipeline input/approval mechanisms.**\n\n\n20. An interviewer asks you to write a basic Jenkins Pipeline without documentation.\n**💡 Answer: Create a simple Declarative Pipeline containing pipeline, agent, stages, steps, and a post block, then explain the purpose of each section while writing it.**\n\n\n\n\n---\n> [⬅️ Day 05](Day-05-Jenkins-Java-Mini-Project.md) | [🏠 Master Learning Index](README.md) | [Day 07 ➡️](Day-07-Jenkins-Pipeline-GitHub-Webhooks.md)",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is a Jenkins Pipeline?",
+      "prompt": "What is a Jenkins Pipeline?",
+      "reference_answer": "**💡 Answer: A Jenkins Pipeline is a Pipeline-as-Code feature that automates the CI/CD workflow using a Jenkinsfile stored in the source code repository.**",
+      "id": "s26-q01",
+      "unit": "s26",
+      "concept_ids": [
+        "s26-introduction-to-jenkins-pipeline",
+        "s26-ai-assisted-pipeline-development",
+        "s26-declarative-pipeline-structure"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between Freestyle Jobs and Pipelines?",
+      "prompt": "What is the difference between Freestyle Jobs and Pipelines?",
+      "reference_answer": "**💡 Answer: Freestyle Jobs are configured through the Jenkins UI, whereas Pipelines are written as code, making them version-controlled, reusable, and easier to maintain.**",
+      "id": "s26-q02",
+      "unit": "s26",
+      "concept_ids": [
+        "s26-ai-assisted-pipeline-development",
+        "s26-declarative-pipeline-structure",
+        "s26-introduction-to-jenkins-pipeline"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a Jenkinsfile?",
+      "prompt": "What is a Jenkinsfile?",
+      "reference_answer": "**💡 Answer: A Jenkinsfile is a text file that defines the entire CI/CD process using Declarative or Scripted Pipeline syntax.**",
+      "id": "s26-q03",
+      "unit": "s26",
+      "concept_ids": [
+        "s26-introduction-to-jenkins-pipeline",
+        "s26-jenkinsfile"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is agent any?",
+      "prompt": "What is agent any?",
+      "reference_answer": "**💡 Answer: It tells Jenkins to execute the pipeline on any available executor or build agent.**",
+      "id": "s26-q04",
+      "unit": "s26",
+      "concept_ids": [
+        "s26-agent-block"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What are stages in a Jenkins Pipeline?",
+      "prompt": "What are stages in a Jenkins Pipeline?",
+      "reference_answer": "**💡 Answer: Stages divide the pipeline into logical phases such as Build, Test, Package, and Deploy.**\n\n\n6. What is the purpose of the steps block?\n**💡 Answer: It contains the actual commands or actions executed during a stage.**\n\n\n7. What is the post block used for?\n**💡 Answer: It performs actions after pipeline completion, such as sending notifications or cleaning the workspace.**\n\n\n8. Why are environment variables used?\n**💡 Answer: They store reusable values like versions, URLs, and credentials, reducing hardcoded configurations.**\n\n\n9. Why is Pipeline as Code preferred?\n**💡 Answer: It supports version control, collaboration, code reviews, easier maintenance, and repeatable deployments.**\n\n\n10. Where is a Jenkinsfile stored?\n**💡 Answer: It is stored in the root directory of the application's Git repository.**\n\n\n20 Scenario-Based Interview Questions & Answers\n1. Your Jenkins Pipeline fails during the Build stage. What would you check first?\n**💡 Answer: Review the Console Output, identify the failed command, verify dependencies, and inspect the Jenkinsfile for syntax or configuration errors.**\n\n\n2. A developer updates code in GitHub, but Jenkins doesn't trigger automatically.\n**💡 Answer: Check webhooks, SCM polling configuration, repository permissions, and Jenkins trigger settings.**",
+      "id": "s26-q05",
+      "unit": "s26",
+      "concept_ids": [
+        "s26-introduction-to-jenkins-pipeline",
+        "s26-ai-assisted-pipeline-development",
+        "s26-declarative-pipeline-structure"
+      ]
+    }
+  ]
+}

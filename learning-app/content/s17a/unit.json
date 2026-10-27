@@ -1,0 +1,563 @@
+{
+  "id": "s17a",
+  "title": "AWS Databases RDS · Day 7",
+  "subtitle": "Session 17 · Batch-45 · Part 1: 20 AWS RDS Interview Questions and Answers",
+  "session": 17,
+  "module": "M3 AWS",
+  "order": 1700,
+  "status": "ready",
+  "source_file": "Session-17-AWS-Databases-RDS/🚀 Day-7 of AWS RDS Batch-45 _ 13th Oct 2026 _ 8_00 AM IST _ Zoom Session 2026-10-13 07_48(GMT+5_30).md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s17a-why-databases-are-required",
+      "unit": "s17a",
+      "kind": "concept",
+      "title": "Why Databases Are Required",
+      "text_md": "- Store data in an **organized, structured, and persistent** way.\n- Enable **fast searching, sorting, and retrieval** beyond human memory capacity.\n- Support **multi-user access** and collaborative productivity.\n- Power **data-driven decisions**: over 90% of business decisions are based on data; companies use purchase history, behavior, and patterns to drive automation and personalization.\n- Prevent **major business loss** from data loss; databases are described as \"company gold.\"",
+      "diagram": null
+    },
+    {
+      "id": "s17a-types-of-databases",
+      "unit": "s17a",
+      "kind": "concept",
+      "title": "Types of Databases",
+      "text_md": "Three major categories were identified:\n\n**Relational Databases (SQL)**\n\n- Data stored in **rows and columns** (tables); relationships exist between tables.\n- Terminology: tables = *relations*, columns = *attributes*, rows = *tuples* — use these terms in interviews.\n- Examples: **MySQL, Oracle, PostgreSQL, MariaDB, SQL Server**.\n- Best for: predefined schemas, transactional systems (accounting, e-commerce, inventory).\n\n**Non-Relational Databases (NoSQL)**\n\n- No fixed schema; data stored as **documents (JSON), key-value pairs, graphs, or column families**.\n- Examples: **MongoDB, Cassandra, Redis**.\n- Best for: unstructured or evolving data, applications where schema is unknown upfront.\n\n**Time-Series Databases**\n\n- Data changes **every second** (e.g., stock market, monitoring metrics, IoT sensor readings).\n- Most popular example: **Prometheus** — to be covered in upcoming practicals.\n- Standard relational databases are not scalable enough for this use case.",
+      "diagram": null
+    },
+    {
+      "id": "s17a-database-deep-dives",
+      "unit": "s17a",
+      "kind": "concept",
+      "title": "Database Deep Dives",
+      "text_md": "**MySQL**\n\n- Open-source, free, one of the most widely used databases globally.\n- Supports all major platforms (Linux, Windows, Mac) and all major programming languages (Node.js, PHP, Python, Java, Ruby, etc.).\n- Comes with backup/restore utilities: `mysqldump` and `mysqlrestore`.\n- **Default port: 3306** — critical interview fact.\n- Supports multiple storage engines (e.g., InnoDB).\n- Can be installed locally for testing; also available as RDS managed service.\n- A **Bastion/Jump Host EC2 instance** with MySQL client installed is used to connect to a private RDS instance.\n\n**Oracle**\n\n- **Not free; enterprise-licensed** — standard and enterprise editions available.\n- Leader in **banking and enterprise** domains due to critical support SLAs.\n- Provides advanced features: **encryption, wallet, Data Guard, RRAC, replication**.\n- Oracle team available for direct support when issues arise.\n- Key difference from MySQL: Oracle supports multiple databases under one instance; MySQL uses a single instance with multiple schemas.\n\n**MongoDB**\n\n- Open-source, released from **2018** as community edition.\n- Stores data in **JSON format** (document-based).\n- Best choice when: schema is undefined, schema is constantly evolving, or data is unstructured.\n- Use cases: gaming session storage, e-commerce (products with different attributes), leaderboards.\n- Provides **auto-scaling and sharding** (replication-like feature).\n- Queries are simple and highly efficient.\n\n**Cassandra**\n\n- Developed by **Apache**; designed for **high-volume read/write operations**.\n- Best for **IoT devices** — different vendors produce different schemas, and Cassandra handles heterogeneous data from multiple sources in a single database.\n- Real-world use case shared: used at Wipro for **Saudi project sensor data** — temperature and other sensors from different countries/vendors, all maintained centrally.\n- Supports **horizontal scaling** by adding nodes; peer-to-peer architecture.\n- Free to use; handles unstructured/documented data.",
+      "diagram": null
+    },
+    {
+      "id": "s17a-why-databases-cannot-be-public",
+      "unit": "s17a",
+      "kind": "concept",
+      "title": "Why Databases Cannot Be Public",
+      "text_md": "- Public databases expose systems to **SQL injection, bots, and unauthorized data harvesting**.\n- Compliance frameworks (**HIPAA, PCI DSS, SOX**) prohibit direct internet-facing databases.\n- All traffic must be **encrypted**; activity must be logged and auditable.\n\n**Best Practices Discussed:**\n\n- Always place database in a **private subnet** within a VPC\n- Connect via a **Jump Host / Bastion Server / Proxy Server** (not directly from the internet)\n- **Restrict security groups** — apply least privilege\n- Enable **enhanced monitoring** (basic + advanced)\n- Store passwords securely in **vaults**\n- Enable **encryption** (encryption algorithms)\n- Maintain **automated backups**\n- Deploy across **multiple Availability Zones**",
+      "diagram": null
+    },
+    {
+      "id": "s17a-architecture-overview",
+      "unit": "s17a",
+      "kind": "concept",
+      "title": "Architecture Overview",
+      "text_md": "The session presented a target architecture:\n\n- **Internet → NAT Gateway → AWS VPC**\n- VPC contains: public subnets (with Internet Gateway) + private subnets\n- **EC2 instance** (Jump Host) sits in the public subnet\n- **RDS** sits in the private subnet — accessible only via EC2\n- Security groups act as firewalls; route tables manage internal routing\n\n**Jump Host aliases used in industry:** Jump Server, Jump Box, Bastion Host, Proxy Server, DMZ (zone distinction noted — RDP is a separate protocol).",
+      "diagram": null
+    },
+    {
+      "id": "s17a-traditional-vs-managed-database-rds",
+      "unit": "s17a",
+      "kind": "concept",
+      "title": "Traditional vs. Managed Database (RDS)",
+      "text_md": "**Self-managed (on-premises or EC2)** requires manual handling of:\n\n- Power, hardware, OS installation and patching\n- Database software installation and patching\n- High availability, scaling, backup, DBA team management\n\n**AWS RDS (PaaS)** automates all of the above with one click:\n\n- Provisioning, resizing, multi-AZ deployment\n- Read replicas, automated minor version updates\n- Performance monitoring, enterprise-level security\n- Backup and recovery, patching\n- Result: **DBA roles are being reduced** as cloud engineers handle everything via GUI",
+      "diagram": null
+    },
+    {
+      "id": "s17a-aws-rds-practical-walkthrough",
+      "unit": "s17a",
+      "kind": "concept",
+      "title": "AWS RDS — Practical Walkthrough",
+      "text_md": "**Supported Engines in RDS (7 options):**\n\n- Aurora (MySQL-compatible), Aurora (PostgreSQL-compatible), MySQL, PostgreSQL, MariaDB, Oracle, Microsoft SQL Server, IBM DB2\n\n**Aurora vs. Standard RDS — Key Differences:**\n\n- Aurora automatically increases storage; standard RDS requires manual storage increases\n- Aurora is **log-structured**: every write is stored in **3 Availability Zones = 6 copies**\n- Aurora is **5x faster** than standard MySQL; supports up to **128 TB** database size\n- Data replication syncs in **10 milliseconds** vs. typical ~3 seconds in standard setups\n- Aurora = enterprise-level MySQL/Postgres; standard RDS = single-instance managed service\n\n**PostgreSQL — Key Facts:**\n\n- One of the most advanced open-source relational databases; ~35 years old\n- Object-oriented programming concepts integrated into PL/SQL\n- Stores data in page format for fast retrieval\n- Current version in RDS: **18.3**\n\n**Live Demo — Creating a Postgres RDS Instance (steps):**\n\n1. Navigate to RDS → Create Database → **Full Configuration**\n2. Select engine: **PostgreSQL**\n3. Template: **Free Tier**\n4. Database identifier: `database-1`\n5. Enable **auto-generate password**\n6. Authentication: **Password + IAM database authentication**\n7. Instance size: default (learning purpose)\n8. **Public access: No** (always private)\n9. Click **Create Database** — ready in 2–4 minutes\n10. View credentials once (copy immediately — shown only one time)\n\n**Live Demo — Creating a MySQL RDS Instance (additional config explored):**\n\n- Engine: MySQL, Version: **8.x**\n- **Storage auto-scaling**: enable with one click; scales from 20 GB to 1,000 GB automatically\n- Auto-scaling type: **vertical scaling** (same instance, increased size)\n- **Port: 3306** (default; not changed in real-time environments)\n- **Logging options**: Audit log, Error log, General log, IAM log, Slow query log — all enableable with one click\n- **Backup retention**: recommended **30–60 days**, max 90 days; logs can be exported to CloudWatch\n- **Backup window**: schedule during **non-business hours** (e.g., Saturday/Sunday, 5 AM UTC)\n- **Maintenance window**: separate from backup window — do not overlap; max 2-hour window\n- **Delete protection**: enable in production to prevent accidental deletion\n- **Endpoint**: acts as hostname/IP address for application connection strings\n\n**Deleting an RDS Instance:**\n\n- Select database → Actions → Delete\n- Choose whether to take a final snapshot (not needed for test instances)\n- Confirm acknowledgment → deletion is **permanent and unrecoverable**",
+      "diagram": null
+    },
+    {
+      "id": "s17a-backup-restore-from-s3",
+      "unit": "s17a",
+      "kind": "concept",
+      "title": "Backup & Restore from S3",
+      "text_md": "- RDS snapshots are stored in S3 by default (AWS-managed backend).\n- To restore an on-premises Oracle/MySQL database from S3: use **dump files** (`mysqldump` / Oracle equivalent), download from S3, then run restore command on target.\n- S3 storage class for backups: **Standard** by default; Glacier for cost-saving archival.\n- Option in RDS console: **\"Restore from S3\"** — available as a direct button.\n- Postgres backups in production confirmed by attendee to go directly to S3.",
+      "diagram": null
+    },
+    {
+      "id": "s17a-quick-revision-checklist",
+      "unit": "s17a",
+      "kind": "concept",
+      "title": "Quick Revision Checklist",
+      "text_md": "- RDS is a managed relational database service; AWS handles many infrastructure and maintenance tasks.\n- MySQL default port: **3306**.\n- Use the RDS **endpoint hostname**, not a hard-coded IP address.\n- Keep production databases private wherever possible.\n- Permit only required network sources through security groups.\n- Use Multi-AZ for high availability and read replicas for read scaling.\n- Understand automated backups, point-in-time recovery, and manual snapshots.\n- Test restores and failover behaviour; do not rely on configuration alone.\n- Schedule planned maintenance during a suitable low-traffic window where possible.\n- Review Terraform plans carefully before destroying resources.\n- Check current AWS documentation for engine-specific features, limits, and pricing.",
+      "diagram": null
+    },
+    {
+      "id": "s17a-suggested-practice-lab",
+      "unit": "s17a",
+      "kind": "practical",
+      "title": "Suggested Practice Lab",
+      "text_md": "1. Create a MySQL or PostgreSQL RDS instance in a lab VPC.\n2. Set **Public access: No** and use private subnets.\n3. Configure the database security group to allow only the required client security group.\n4. Connect using the RDS endpoint from an approved host.\n5. Review backup retention, maintenance settings, and CloudWatch metrics.\n6. Write down the steps to restore a snapshot in a test environment.\n7. If the lab was created with Terraform, review the destroy plan and clean up safely.\n\n**Important:** AWS features, engine support, quotas, and pricing can change. Verify current AWS documentation and your account's configuration before applying these steps in production.",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is Amazon RDS?",
+      "prompt": "What is Amazon RDS?",
+      "reference_answer": "Amazon Relational Database Service (RDS) is a managed AWS service for setting up, operating, and scaling relational databases. AWS manages many routine tasks such as infrastructure provisioning, backups, patching, and failure detection, while the user manages database configuration, data, access, and application queries.",
+      "id": "s17a-q01",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-traditional-vs-managed-database-rds"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What does PaaS mean, and how does RDS fit into it?",
+      "prompt": "What does PaaS mean, and how does RDS fit into it?",
+      "reference_answer": "PaaS stands for Platform as a Service. The cloud provider manages much of the underlying platform, so the customer can focus on using the service. With RDS, AWS manages the underlying infrastructure and many database maintenance tasks instead of requiring the team to install and maintain the database on a virtual machine.",
+      "id": "s17a-q02",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-traditional-vs-managed-database-rds"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between a relational and a non-relational database?",
+      "prompt": "What is the difference between a relational and a non-relational database?",
+      "reference_answer": "A relational database organizes data into tables with rows, columns, and a defined schema, and commonly uses SQL. A non-relational database may use document, key-value, graph, or other data models and can be more flexible for changing data structures.",
+      "id": "s17a-q03",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-database-deep-dives",
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-types-of-databases"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the default port for MySQL?",
+      "prompt": "What is the default port for MySQL?",
+      "reference_answer": "The default MySQL port is **3306**. For RDS connectivity, the database security group must allow the required inbound traffic from the application's security group or another approved source.",
+      "id": "s17a-q04",
+      "unit": "s17a",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is an RDS endpoint?",
+      "prompt": "What is an RDS endpoint?",
+      "reference_answer": "An RDS endpoint is a DNS hostname used by an application or database client to connect to the database. Applications should use the endpoint rather than hard-coding an IP address, because the underlying IP can change during maintenance or failover.",
+      "id": "s17a-q05",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-traditional-vs-managed-database-rds"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Should an application database be publicly accessible?",
+      "prompt": "Should an application database be publicly accessible?",
+      "reference_answer": "Normally, no. For a production application, set **Public access to No** and place the database in private subnets. Allow access only from trusted application resources or an approved administrative path, such as a bastion host or VPN. Public accessibility alone does not automatically grant access, but it increases exposure and should be avoided unless there is a specific, controlled need.",
+      "id": "s17a-q06",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-why-databases-cannot-be-public",
+        "s17a-database-deep-dives",
+        "s17a-traditional-vs-managed-database-rds"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a DB subnet group?",
+      "prompt": "What is a DB subnet group?",
+      "reference_answer": "A DB subnet group is a collection of subnets in a VPC that RDS can use for a database deployment. For production deployments, it should generally include private subnets in multiple Availability Zones to support resilient architectures.",
+      "id": "s17a-q07",
+      "unit": "s17a",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is a bastion host or jump host?",
+      "prompt": "What is a bastion host or jump host?",
+      "reference_answer": "A bastion host is a controlled server used as an entry point for administrators to reach private resources. For example, an engineer may connect to a secured bastion host and then connect to a private RDS database. Access to the bastion should be restricted and monitored; alternatives such as VPN or AWS Systems Manager may also be suitable.",
+      "id": "s17a-q08",
+      "unit": "s17a",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between vertical and horizontal scaling?",
+      "prompt": "What is the difference between vertical and horizontal scaling?",
+      "reference_answer": "Vertical scaling means changing the database instance size to provide more CPU, memory, or other capacity. Horizontal scaling means adding capacity across multiple database instances or replicas, depending on the database engine and architecture. Read replicas can help with read-heavy workloads, but they do not automatically increase write capacity.",
+      "id": "s17a-q09",
+      "unit": "s17a",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Multi-AZ in Amazon RDS?",
+      "prompt": "What is Multi-AZ in Amazon RDS?",
+      "reference_answer": "Multi-AZ is an availability feature that maintains a standby in another Availability Zone for supported RDS deployments. It is primarily designed for high availability and failover. It should not be confused with a read replica, which is commonly used to scale read traffic.",
+      "id": "s17a-q10",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-traditional-vs-managed-database-rds"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a read replica?",
+      "prompt": "What is a read replica?",
+      "reference_answer": "A read replica is a copy of a source database that can serve read queries. It can reduce read load on the primary database. Replication is generally asynchronous, so a replica may lag behind the source. A read replica is not a substitute for backups.",
+      "id": "s17a-q11",
+      "unit": "s17a",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Amazon Aurora?",
+      "prompt": "What is Amazon Aurora?",
+      "reference_answer": "Amazon Aurora is an AWS relational database engine compatible with MySQL and PostgreSQL. It separates compute from a distributed storage layer and is designed for performance and availability. Exact performance, storage limits, and feature support depend on the Aurora version and configuration, so verify current AWS documentation rather than relying on a fixed performance multiplier.",
+      "id": "s17a-q12",
+      "unit": "s17a",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the purpose of automated backups in RDS?",
+      "prompt": "What is the purpose of automated backups in RDS?",
+      "reference_answer": "Automated backups support point-in-time recovery within the configured backup retention period. RDS takes backups and retains transaction logs to allow recovery to a supported time. Teams should confirm retention settings and test recovery procedures rather than assuming that backups alone guarantee recoverability.",
+      "id": "s17a-q13",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-backup-restore-from-s3",
+        "s17a-traditional-vs-managed-database-rds"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between an automated backup and a manual snapshot?",
+      "prompt": "What is the difference between an automated backup and a manual snapshot?",
+      "reference_answer": "Automated backups are managed by RDS according to the retention settings and support point-in-time recovery. A manual DB snapshot is initiated by the user and remains until the user deletes it. Snapshots are useful before major changes, migrations, or planned maintenance.",
+      "id": "s17a-q14",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-backup-restore-from-s3"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is IAM database authentication?",
+      "prompt": "What is IAM database authentication?",
+      "reference_answer": "IAM database authentication allows supported database engines and configurations to authenticate using AWS IAM-generated authentication tokens instead of relying only on a long-lived database password. It requires the relevant RDS configuration, IAM permissions, and compatible client support. It is not supported by every RDS engine or configuration.",
+      "id": "s17a-q15",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-database-deep-dives",
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-types-of-databases"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between a database password and IAM database authentication?",
+      "prompt": "What is the difference between a database password and IAM database authentication?",
+      "reference_answer": "Traditional password authentication uses a database username and password managed by the database. IAM database authentication uses a short-lived token generated with AWS credentials and IAM permissions. The right choice depends on engine support, application requirements, operational complexity, and security policy.",
+      "id": "s17a-q16",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-database-deep-dives",
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-types-of-databases"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What are maintenance windows in RDS?",
+      "prompt": "What are maintenance windows in RDS?",
+      "reference_answer": "A maintenance window is a selected time period during which RDS can apply certain planned maintenance activities. Teams often choose a low-traffic period to reduce impact. Some maintenance actions may cause downtime or a restart, so review the pending maintenance details and plan accordingly.",
+      "id": "s17a-q17",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-why-databases-are-required"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "How can you troubleshoot an application that cannot connect to RDS?",
+      "prompt": "How can you troubleshoot an application that cannot connect to RDS?",
+      "reference_answer": "Check the RDS status and endpoint, VPC and subnet routing, security group rules, network ACLs, DNS resolution, port number, database credentials, TLS settings if required, and whether the client is on an allowed network path. For MySQL, confirm that the client is reaching port 3306.",
+      "id": "s17a-q18",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-why-databases-cannot-be-public"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why should you run terraform destroy after a temporary RDS lab?",
+      "prompt": "Why should you run terraform destroy after a temporary RDS lab?",
+      "reference_answer": "`terraform destroy` removes resources managed by the relevant Terraform configuration, helping prevent continued charges for temporary resources. Before running it, verify the workspace, account, region, and plan. It can delete data and infrastructure, so never run it against production or shared resources without explicit approval and a reviewed plan.",
+      "id": "s17a-q19",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-suggested-practice-lab",
+        "s17a-traditional-vs-managed-database-rds"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your application running on EC2 cannot connect to a private RDS MySQL database. What do you check?",
+      "prompt": "Your application running on EC2 cannot connect to a private RDS MySQL database. What do you check?",
+      "reference_answer": "1. Confirm the RDS instance is available and copy the correct endpoint.\n2. Confirm the EC2 instance and RDS are in reachable VPC/network paths.\n3. Check the RDS security group inbound rule: allow TCP 3306 from the EC2 application's security group.\n4. Check route tables and network ACLs if applicable.\n5. Verify credentials and test DNS resolution.\n\nAvoid opening port 3306 to `0.0.0.0/0`.",
+      "id": "s17a-s01",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-why-databases-cannot-be-public",
+        "s17a-aws-rds-practical-walkthrough"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A developer asks you to make the production database publicly accessible for easy access from a laptop. What do you recommend?",
+      "prompt": "A developer asks you to make the production database publicly accessible for easy access from a laptop. What do you recommend?",
+      "reference_answer": "Keep the database private. Use a VPN, a secured bastion host, AWS Systems Manager where appropriate, or another approved access path. Restrict access to known sources and use least-privilege permissions. Do not expose the database to the internet simply for convenience.",
+      "id": "s17a-s02",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-why-databases-cannot-be-public",
+        "s17a-database-deep-dives",
+        "s17a-traditional-vs-managed-database-rds"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to create a MySQL RDS instance for a lab. Which port should you use?",
+      "prompt": "You need to create a MySQL RDS instance for a lab. Which port should you use?",
+      "reference_answer": "Use TCP **3306**, the default MySQL port, unless the database has been deliberately configured otherwise. Ensure the security group allows access only from the required lab client or application security group.",
+      "id": "s17a-s03",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-suggested-practice-lab",
+        "s17a-traditional-vs-managed-database-rds"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "The application is using an IP address to connect to RDS, and connectivity breaks after a database failover. How would you improve the setup?",
+      "prompt": "The application is using an IP address to connect to RDS, and connectivity breaks after a database failover. How would you improve the setup?",
+      "reference_answer": "Configure the application to use the RDS DNS endpoint rather than a hard-coded IP address. Review connection retry and pooling behaviour as well, because failover can interrupt existing connections while DNS and clients reconnect.",
+      "id": "s17a-s04",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-database-deep-dives"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your e-commerce database is experiencing high CPU because of increased traffic. What steps would you take?",
+      "prompt": "Your e-commerce database is experiencing high CPU because of increased traffic. What steps would you take?",
+      "reference_answer": "Review CloudWatch metrics, slow queries, query plans, indexes, connection counts, and application behaviour first. If the instance is undersized, consider vertical scaling. If read traffic is the main issue, evaluate read replicas and application changes. Do not scale blindly without identifying the bottleneck.",
+      "id": "s17a-s05",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-database-deep-dives",
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-types-of-databases"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your database must remain available if an Availability Zone has a problem. What RDS feature should you consider?",
+      "prompt": "Your database must remain available if an Availability Zone has a problem. What RDS feature should you consider?",
+      "reference_answer": "Consider a supported Multi-AZ deployment. It is designed to improve availability through standby infrastructure and failover. Confirm the engine's deployment options and test the application's ability to reconnect after failover.",
+      "id": "s17a-s06",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-database-deep-dives"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Reports are putting heavy read load on the production database. What can you do?",
+      "prompt": "Reports are putting heavy read load on the production database. What can you do?",
+      "reference_answer": "First optimize the report queries and schedule heavy jobs sensibly. If appropriate, use a read replica for read-only reporting traffic. Monitor replication lag and ensure reports can tolerate slightly stale data if replication is asynchronous.",
+      "id": "s17a-s07",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-why-databases-are-required",
+        "s17a-database-deep-dives",
+        "s17a-traditional-vs-managed-database-rds"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A team accidentally deletes important rows from a database. How can you recover the data?",
+      "prompt": "A team accidentally deletes important rows from a database. How can you recover the data?",
+      "reference_answer": "Identify the required recovery time and point. Use point-in-time recovery from automated backups when available, or restore a suitable snapshot. Restore to a separate database where possible, validate the data, and then plan a controlled data recovery or application cutover. Avoid experimenting directly on the only production copy.",
+      "id": "s17a-s08",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-database-deep-dives",
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-types-of-databases"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Before applying a schema migration, the team wants a recovery option. What should you do?",
+      "prompt": "Before applying a schema migration, the team wants a recovery option. What should you do?",
+      "reference_answer": "Confirm that recent automated backups are healthy and take a manual snapshot if appropriate. Test the migration in a non-production environment, define a rollback plan, and schedule the change during an approved window. A snapshot is a recovery aid, not a replacement for a tested migration plan.",
+      "id": "s17a-s09",
+      "unit": "s17a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A Terraform lab created an RDS database, and the student has finished the exercise. How do you avoid unnecessary charges?",
+      "prompt": "A Terraform lab created an RDS database, and the student has finished the exercise. How do you avoid unnecessary charges?",
+      "reference_answer": "Review the Terraform workspace and run `terraform plan -destroy` or otherwise review the planned destruction before running `terraform destroy`. Confirm that the resources belong to the lab and that no required data will be lost. Also check for related resources such as snapshots, storage, or other billable components.",
+      "id": "s17a-s10",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-database-deep-dives"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "The AWS Console returns an account verification or 403 error while creating an RDS resource. What should you do?",
+      "prompt": "The AWS Console returns an account verification or 403 error while creating an RDS resource. What should you do?",
+      "reference_answer": "Read the full error message and check whether the account has restrictions or requires verification. Follow the guidance in the error and raise an AWS Support case if needed. Do not try to bypass account controls. Verify that the selected Region and requested configuration are supported.",
+      "id": "s17a-s11",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-traditional-vs-managed-database-rds"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A database connection works from a bastion host but not from the application EC2 instance. What does this suggest?",
+      "prompt": "A database connection works from a bastion host but not from the application EC2 instance. What does this suggest?",
+      "reference_answer": "The database may be reachable from the bastion, but the application path may have different security group rules, routing, DNS, or credentials. Check whether the RDS security group allows inbound traffic from the application's security group, not just the bastion's. Test connectivity from the application host.",
+      "id": "s17a-s12",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-database-deep-dives",
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-types-of-databases"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Your team wants to stop managing database OS patching and routine infrastructure tasks. What service would you consider?",
+      "prompt": "Your team wants to stop managing database OS patching and routine infrastructure tasks. What service would you consider?",
+      "reference_answer": "Consider Amazon RDS, which manages the underlying infrastructure and many routine database operations. The team still remains responsible for database design, query performance, access control, application compatibility, backup policy choices, and recovery testing.",
+      "id": "s17a-s13",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-database-deep-dives",
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-types-of-databases"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "The database needs more CPU and memory, but the data volume is not the main issue. What scaling approach may help?",
+      "prompt": "The database needs more CPU and memory, but the data volume is not the main issue. What scaling approach may help?",
+      "reference_answer": "Vertical scaling by modifying the DB instance class may help. Check CPU, memory-related indicators, connections, and query performance before resizing. Plan for any expected interruption and test the change in a lower environment when practical.",
+      "id": "s17a-s14",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-database-deep-dives",
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-types-of-databases"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "An application team wants to store frequently changing JSON documents with a flexible schema. Is a relational database always the best fit?",
+      "prompt": "An application team wants to store frequently changing JSON documents with a flexible schema. Is a relational database always the best fit?",
+      "reference_answer": "Not necessarily. A document-oriented database such as MongoDB may fit a flexible document model, depending on access patterns and consistency requirements. Choose the database based on query patterns, transactions, scale, data relationships, and operational needs rather than choosing solely by popularity.",
+      "id": "s17a-s15",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-database-deep-dives",
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-types-of-databases"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A monitoring platform stores measurements that change every few seconds. Which data model might be suitable?",
+      "prompt": "A monitoring platform stores measurements that change every few seconds. Which data model might be suitable?",
+      "reference_answer": "A time-series database or a purpose-built monitoring system may be suitable. Prometheus, for example, is commonly used for metrics and time-series monitoring data. Consider retention, query patterns, cardinality, and whether the data is operational metrics or transactional application data.",
+      "id": "s17a-s16",
+      "unit": "s17a",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Your application requires passwordless-style database access using AWS identity permissions. What RDS option might you evaluate?",
+      "prompt": "Your application requires passwordless-style database access using AWS identity permissions. What RDS option might you evaluate?",
+      "reference_answer": "Evaluate IAM database authentication if the chosen RDS engine and configuration support it. Configure the required IAM permissions and database settings, and ensure the client can generate and use authentication tokens. Do not assume all database engines support it.",
+      "id": "s17a-s17",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-database-deep-dives"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "RDS maintenance is planned during your busiest business hours. What should you do?",
+      "prompt": "RDS maintenance is planned during your busiest business hours. What should you do?",
+      "reference_answer": "Review the maintenance details and operational impact, then choose or request an appropriate maintenance window where supported. Communicate with stakeholders, confirm backups, check application reconnection behaviour, and monitor the database during and after maintenance. Some urgent maintenance may have constraints that limit scheduling choices.",
+      "id": "s17a-s18",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-traditional-vs-managed-database-rds"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "A junior engineer opens the RDS security group to all IP addresses to fix a connection error. What is the immediate response?",
+      "prompt": "A junior engineer opens the RDS security group to all IP addresses to fix a connection error. What is the immediate response?",
+      "reference_answer": "Remove the broad inbound rule and replace it with the minimum required access, ideally from the application's security group or a known administrative network. Check logs and exposure duration, follow the organization's incident process if the database may have been exposed, and rotate credentials if there is evidence they may be compromised.",
+      "id": "s17a-s19",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-traditional-vs-managed-database-rds"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "You are asked to choose between RDS Multi-AZ and a read replica. How do you explain the difference?",
+      "prompt": "You are asked to choose between RDS Multi-AZ and a read replica. How do you explain the difference?",
+      "reference_answer": "Multi-AZ is primarily for availability and failover. A read replica is primarily for serving read traffic and reducing load on the source database. They solve different problems, and a production architecture may use both if the engine and workload require them.",
+      "id": "s17a-s20",
+      "unit": "s17a",
+      "concept_ids": [
+        "s17a-aws-rds-practical-walkthrough",
+        "s17a-traditional-vs-managed-database-rds",
+        "s17a-why-databases-are-required"
+      ]
+    }
+  ]
+}

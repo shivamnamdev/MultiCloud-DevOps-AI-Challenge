@@ -2,7 +2,14 @@
   "id": "fw1",
   "title": "Free Workshop: Terraform & IaC",
   "subtitle": "Workshop of 22 Aug 2026",
+  "session": -1,
+  "module": "Free workshop",
+  "order": -100,
+  "status": "ready",
   "source_file": "FREE Workshop's/22Aug2026.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
   "concepts": [
     {
       "id": "fw1-quick-revision-map",

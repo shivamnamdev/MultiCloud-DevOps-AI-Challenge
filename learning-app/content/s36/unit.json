@@ -1,0 +1,318 @@
+{
+  "id": "s36",
+  "title": "Prometheus Grafana Introduction · Day 6",
+  "subtitle": "Session 36 · Batch-44 · Day-6 of Kubernetes Batch-44 : Continuous Monitoring with Prometheus, Grafana & ",
+  "session": 36,
+  "module": "M5 Docker, Kubernetes, Monitoring",
+  "order": 3600,
+  "status": "ready",
+  "source_file": "Session-36-Prometheus-Grafana-Introduction/🚀 Day-6 of Kubernetes Batch-44 | 17th Aug 2026.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s36-full-session-overview",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Full Session Overview",
+      "text_md": "This session focused on continuous monitoring of applications running in a Kubernetes environment, with the main emphasis on Prometheus, Grafana, Helm, Kubernetes metrics, centralized monitoring, and practical deployment of the monitoring stack.\nThe session began by reviewing the previous Kubernetes work. The instructor explained that the team had already:\nCreated a Kubernetes/GKE cluster\nDeployed microservices\nCreated Pods\nCreated Services\nCreated ReplicaSets\nCreated Deployments\nHowever, one major question remained:\nHow do we continuously know whether the deployed application is healthy and performing properly?\nThis led to the introduction of continuous monitoring.\nThe instructor explained why monitoring is necessary. In a production environment, manually checking hundreds or thousands of machines, Pods, CPU usage, memory usage, logs, network traffic, and application health is not practical. Monitoring allows teams to identify problems early, reduce downtime, understand resource utilization, and take corrective action before a small problem becomes a major outage.\nA major concept introduced was centralized continuous monitoring. Instead of keeping logs and metrics only on individual servers, data should be collected and stored in a centralized monitoring system. This is particularly useful when a server goes down or an attacker deletes logs from the original machine.\nThe session then compared several monitoring tools, including:\nNagios\nZabbix\nELK\nAppDynamics\nSplunk\nDatadog\nPrometheus\nGrafana\nThe primary focus was placed on Prometheus + Grafana, particularly because of their strong suitability for Kubernetes environments and their open-source nature.",
+      "diagram": null
+    },
+    {
+      "id": "s36-monitoring-concepts-discussed",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Monitoring Concepts Discussed",
+      "text_md": "The instructor explained several different types of monitoring.\nInfrastructure Monitoring\nMonitoring the underlying infrastructure such as:\nCPU\nMemory\nDisk\nVM health\nKubernetes nodes\nResource utilization\nApplication Monitoring\nMonitoring the actual application and its components, including:\nApplication health\nPods\nServices\nDeployments\nApplication behavior\nApplication metrics\nNetwork Monitoring\nMonitoring network-related information such as:\nIncoming traffic\nOutgoing traffic\nNetwork utilization\nRead/write activity\nNetwork performance\nThe session emphasized that monitoring is not limited to CPU and memory. A complete monitoring strategy considers the infrastructure, application, and network.",
+      "diagram": null
+    },
+    {
+      "id": "s36-why-continuous-monitoring-is-required",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Why Continuous Monitoring Is Required",
+      "text_md": "The session highlighted several reasons.\nEarly Problem Detection\nMonitoring helps identify problems before they become major failures.\n```text\nSmall Problem\n      ↓\nMonitoring detects it\n      ↓\nAlert\n      ↓\nTroubleshooting\n      ↓\nProblem fixed\nReduce Downtime\n```\n\nIf an application becomes unhealthy during business hours, monitoring can alert the responsible team before the issue causes a prolonged outage.\nReal-Time Visibility\nTeams can monitor:\nCPU\nMemory\nDisk\nNetwork\nApplication health\nKubernetes resources\nHistorical Analysis\nMetrics can be stored so teams can analyze how infrastructure behaved over time.\nLarge-Scale Monitoring\nChecking thousands of machines manually is impractical.\nCentralized monitoring solves this problem.",
+      "diagram": null
+    },
+    {
+      "id": "s36-centralized-monitoring",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Centralized Monitoring",
+      "text_md": "One of the most important concepts in the session was centralized monitoring.\nInstead of storing monitoring data only on individual servers:\nServer 1 → Logs\nServer 2 → Logs\nServer 3 → Logs\nServer 4 → Logs\n```text\nthe data can be collected centrally:\nServer 1 ─┐\nServer 2 ─┤\nServer 3 ─┼──→ Central Monitoring System\nServer 4 ─┘\n```\n\nThis provides a central location for monitoring and historical analysis.\nIt also protects against situations where:\nA server goes down\nLogs are lost\nA server is corrupted\nSomeone deletes local logs\nThere are too many machines to inspect manually",
+      "diagram": null
+    },
+    {
+      "id": "s36-monitoring-tools-discussed",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Monitoring Tools Discussed",
+      "text_md": "The session mentioned several monitoring and observability tools.\nNagios\nA traditional monitoring solution discussed in comparison with Prometheus.\nZabbix\nThe instructor highlighted its agent-based approach and the challenge of managing agents across a very large environment.\nELK\nThe ELK stack was discussed as a combination of multiple components:\nElasticsearch\nLogstash\nKibana\nThe main challenge discussed was the need to manage multiple components.\nAppDynamics\nDescribed as a powerful monitoring solution, but with higher cost considerations.\nSplunk\nDiscussed primarily in the context of logging and enterprise usage.\nDatadog\nDiscussed as another enterprise monitoring solution.\nPrometheus + Grafana\nThe primary focus of the session.",
+      "diagram": null
+    },
+    {
+      "id": "s36-prometheus-and-grafana",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Prometheus and Grafana",
+      "text_md": "The central concept of the session was the Prometheus + Grafana monitoring stack.\nThey are two separate open-source tools that work together.\n```text\nKubernetes\n    ↓\nMetrics\n    ↓\nPrometheus\n    ↓\nGrafana\n    ↓\nDashboards\nThe instructor described their roles as:\nPrometheus\n```\n\nPrometheus collects and stores metrics in a time-series database.\nGrafana\nGrafana retrieves the data and provides visualization through dashboards and graphs.\nTherefore:\nPrometheus = metrics collection and storage\nGrafana = visualization and dashboards",
+      "diagram": null
+    },
+    {
+      "id": "s36-prometheus-as-a-time-series-database",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Prometheus as a Time-Series Database",
+      "text_md": "A major concept discussed was the meaning of a time-series database.\nMonitoring data is continuously generated.\nFor example:\n10:00 → CPU = 30%\n10:01 → CPU = 35%\n10:02 → CPU = 42%\n10:03 → CPU = 50%\nPrometheus stores these metrics along with their time information.\nThis allows historical analysis.\nFor example:\nCPU\n100% |                 *\n80% |              *\n60% |          *\n40% |     *\n20% | *\n+--------------------\nTime\nThis is why Prometheus is suitable for continuously changing infrastructure metrics.",
+      "diagram": null
+    },
+    {
+      "id": "s36-prometheus-data-flow",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Prometheus Data Flow",
+      "text_md": "The session explained the basic architecture:\n```text\nKubernetes Cluster\n       ↓\nNodes / Kubernetes Components\n       ↓\nMetrics Sources\n       ↓\nPrometheus\n       ↓\nTime-Series Storage\n       ↓\nGrafana\n       ↓\nDashboard\nPrometheus collects the metrics and stores them.\n```\n\nGrafana then queries Prometheus and converts the data into visual dashboards.",
+      "diagram": null
+    },
+    {
+      "id": "s36-node-exporter",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Node Exporter",
+      "text_md": "The session introduced Node Exporter.\nNode Exporter is used to expose node-level metrics so that Prometheus can collect them.\nConceptually:\n```text\nKubernetes Node\n      ↓\nNode Exporter\n      ↓\nNode Metrics\n      ↓\nPrometheus\n```\n\nNode-level information can include infrastructure metrics such as CPU, memory and other system information.\nThe instructor distinguished this from Kubernetes-specific metrics.",
+      "diagram": null
+    },
+    {
+      "id": "s36-kube-state-metrics",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Kube-State-Metrics",
+      "text_md": "Another important component discussed was kube-state-metrics.\nIts purpose is to expose metrics about Kubernetes resources and their states.\nConceptually:\n```text\nKubernetes Cluster\n       ↓\nkube-state-metrics\n       ↓\nKubernetes Resource Metrics\n       ↓\nPrometheus\n```\n\nIt can provide information related to resources such as:\nPods\nDeployments\nServices\nReplicaSets\nOther Kubernetes objects\nThe session made the distinction:\nNode Exporter → node/system-level metrics\nkube-state-metrics → Kubernetes object/state information\nThis is an important interview distinction.",
+      "diagram": null
+    },
+    {
+      "id": "s36-grafana",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Grafana",
+      "text_md": "Grafana was introduced as the visualization layer.\nThe basic architecture is:\n```text\nPrometheus\n    ↓\nMetrics\n    ↓\nGrafana\n    ↓\nDashboard\nGrafana can display metrics through:\nGraphs\nPanels\nCharts\nDashboards\n```\n\nThe instructor explained that Grafana itself does not primarily act as the metrics database in this architecture. It queries a configured data source.",
+      "diagram": null
+    },
+    {
+      "id": "s36-grafana-data-source",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Grafana Data Source",
+      "text_md": "A very important practical concept was the Grafana Data Source.\nGrafana needs to know where the monitoring data is stored.\nTherefore:\n```text\nGrafana\n   ↓\nData Source\n   ↓\nPrometheus\n```\n\nAfter configuring Prometheus as the data source, Grafana can query Prometheus.\nThe instructor emphasized:\nData Source provides the connection between Grafana and the monitoring backend.\nOnce connected, queries can be executed and the resulting data can be visualized.",
+      "diagram": null
+    },
+    {
+      "id": "s36-promql",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "PromQL",
+      "text_md": "The session introduced PromQL, Prometheus Query Language.\nGrafana uses PromQL queries to retrieve metrics from Prometheus.\nThe conceptual flow is:\n```text\nGrafana\n   ↓\nPromQL Query\n   ↓\nPrometheus\n   ↓\nMetric Data\n   ↓\nGrafana Panel\n```\n\nThis allows users to retrieve specific metrics and create meaningful dashboards.",
+      "diagram": null
+    },
+    {
+      "id": "s36-grafana-port",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Grafana Port",
+      "text_md": "The session mentioned that Grafana commonly runs on:\nPort 3000\nTherefore:\n```text\nGrafana\n   ↓\n:3000\nThis is a useful practical and interview detail.\n```",
+      "diagram": null
+    },
+    {
+      "id": "s36-helm",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Helm",
+      "text_md": "The session introduced Helm as a major Kubernetes concept.\nThe instructor gave the simple definition:\nHelm is a package manager for Kubernetes.\nThe comparison was made with Linux package managers:\nUbuntu/Debian → APT\nRed Hat family → YUM\nKubernetes → Helm\nHelm makes it easier to install, upgrade, customize and remove Kubernetes applications.",
+      "diagram": null
+    },
+    {
+      "id": "s36-helm-charts",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Helm Charts",
+      "text_md": "Helm packages are called Helm Charts.\nA chart contains the Kubernetes configuration required for an application.\nInstead of manually creating many Kubernetes YAML files:\nDeployment YAML\nService YAML\nConfig YAML\nStorage YAML\nRBAC YAML\n...\na Helm Chart can package the application's Kubernetes configuration.\nConceptually:\nHelm Chart\n|\n+-- Kubernetes Resources\n+-- Templates\n+-- Configuration",
+      "diagram": null
+    },
+    {
+      "id": "s36-helm-values-yaml",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Helm values.yaml",
+      "text_md": "One of the most important files discussed was:\nvalues.yaml\nThis file contains configurable values used by Helm templates.\nThe instructor emphasized that the values can be customized according to requirements.\nConceptually:\n```text\nvalues.yaml\n     ↓\nHelm Templates\n     ↓\nKubernetes Resources\nThis makes Helm charts reusable and configurable.\n```",
+      "diagram": null
+    },
+    {
+      "id": "s36-helm-chart-benefits",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Helm Chart Benefits",
+      "text_md": "Helm can be used to:\nInstall applications\nUpgrade applications\nConfigure applications\nCustomize deployments\nRemove applications\nReuse predefined charts\nFor example, instead of manually building the Prometheus/Grafana Kubernetes configuration, a ready-made Helm Chart can be used.\nThis is especially useful for complex applications with many Kubernetes resources.",
+      "diagram": null
+    },
+    {
+      "id": "s36-helm-repository",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Helm Repository",
+      "text_md": "The practical section demonstrated adding a Helm repository.\nThe basic workflow was:\n```text\nHelm Repository\n      ↓\nhelm repo add\n      ↓\nRepository Available\n      ↓\nhelm repo update\n      ↓\nLatest Chart Information\n      ↓\nhelm install\n```\n\nThe instructor explained that the local Helm repository information may become outdated, so:\n```bash\nhelm repo update\n```\n\ncan be used to retrieve the latest chart information.",
+      "diagram": null
+    },
+    {
+      "id": "s36-helm-installation-workflow",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Helm Installation Workflow",
+      "text_md": "The practical workflow demonstrated in the session was approximately:\n```text\n1. Create GKE Cluster\n        ↓\n2. Connect to Cluster\n        ↓\n3. Create Monitoring Namespace\n        ↓\n4. Add Helm Repository\n        ↓\n5. Update Helm Repository\n        ↓\n6. Install Prometheus/Grafana Chart\n        ↓\n7. Verify Kubernetes Resources\n        ↓\n8. Configure Grafana\n        ↓\n9. Connect Prometheus as Data Source\n        ↓\n10. Build Dashboards\n```\n\nThis is the core practical workflow of the session.",
+      "diagram": null
+    },
+    {
+      "id": "s36-monitoring-namespace",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Monitoring Namespace",
+      "text_md": "The instructor demonstrated creating a separate namespace for monitoring.\nThe command discussed was:\n```bash\nkubectl create namespace monitor\n```\n\nThe namespace can be checked using:\n```bash\nkubectl get ns\n```\n\nThe reason for creating a separate namespace was resource isolation and better organization.\nConceptually:\nKubernetes Cluster\n|\n+-- Application Namespace\n|\n+-- Application Namespace\n|\n+-- monitor\n|\n+-- Prometheus\n+-- Grafana\n+-- Monitoring Components\nThis is a good operational practice because monitoring components can be managed separately from application workloads.",
+      "diagram": null
+    },
+    {
+      "id": "s36-gke-cluster-practical",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "GKE Cluster Practical",
+      "text_md": "The practical session created a GKE Standard cluster.\nThe instructor selected:\nStandard cluster\nDefault/basic configuration\nNode pool\nNodes per zone\nAppropriate machine sizing\nThe instructor also explained that if students wanted to deploy both their application and the monitoring stack, they should choose an appropriately sized cluster.\nThe cluster was then connected so Kubernetes commands could be executed.",
+      "diagram": null
+    },
+    {
+      "id": "s36-prometheus-grafana-helm-stack",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Prometheus/Grafana Helm Stack",
+      "text_md": "The session used a ready-made Helm chart for Prometheus and Grafana.\nThe instructor referred to the kube-prometheus-stack Helm chart.\nThe purpose is to provide a ready-made monitoring stack instead of manually developing every monitoring component.\nConceptually:\n```text\nHelm\n  ↓\nkube-prometheus-stack\n  ↓\nPrometheus\nGrafana\nNode Exporter\nkube-state-metrics\nand related components\n```\n\nThis demonstrates one of the major benefits of Helm.",
+      "diagram": null
+    },
+    {
+      "id": "s36-why-helm-is-useful-here",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Why Helm Is Useful Here",
+      "text_md": "Without Helm, installing the monitoring stack manually would require managing many Kubernetes resources.\nWith Helm:\n```text\nHelm Chart\n     ↓\nMultiple Kubernetes Resources\n     ↓\nInstalled Together\n```\n\nThis reduces repetitive configuration and makes upgrades and configuration management easier.",
+      "diagram": null
+    },
+    {
+      "id": "s36-helm-and-kubernetes-relationship",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Helm and Kubernetes Relationship",
+      "text_md": "An important clarification from the session was that Helm is not a cloud service.\nHelm is a Kubernetes package manager.\nThe conceptual relationship is:\n```text\nKubernetes\n     ↑\nHelm\n     ↓\nManages Kubernetes Applications\n```\n\nHelm communicates with the Kubernetes environment to deploy and manage resources.",
+      "diagram": null
+    },
+    {
+      "id": "s36-monitoring-architecture-explained",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Monitoring Architecture Explained",
+      "text_md": "The most important architecture from the session can be represented as:\nKubernetes Cluster\n|\n+-------------+-------------+\n|                           |\nNodes                  Kubernetes Objects\n|                           |\nNode Exporter              kube-state-metrics\n|                           |\n+-------------+-------------+\n```text\n                        |\n                        ↓\n                   Prometheus\n                        |\n                 Time-Series DB\n                        |\n                        ↓\n                     Grafana\n                        |\n                  Data Source\n                        |\n                        ↓\n                    PromQL\n                        |\n                        ↓\n                  Dashboards\n```\n\nThis architecture is the main concept you should remember from the session.",
+      "diagram": null
+    },
+    {
+      "id": "s36-monitoring-and-alerting-workflow",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Monitoring and Alerting Workflow",
+      "text_md": "The session also explained the general enterprise monitoring workflow.\n```text\nMetric Collection\n       ↓\nData Storage\n       ↓\nVisualization\n       ↓\nThreshold\n       ↓\nAlert\n       ↓\nL1/L2/NOC Team\n       ↓\nTroubleshooting\n       ↓\nDevOps / L3 Team\n       ↓\nResolution\n```\n\nModern monitoring systems can also use machine learning/predictive capabilities to identify patterns and potentially predict future problems.",
+      "diagram": null
+    },
+    {
+      "id": "s36-manual-linux-monitoring-commands",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Manual Linux Monitoring Commands",
+      "text_md": "Before automation, the instructor reviewed some basic Linux monitoring commands.\nCPU / Processes\ntop\nor:\nhtop\nThese can provide information about:\nCPU usage\nMemory\nProcesses\nProcess IDs\nSystem activity\nMemory\nfree\nDisk\ndf -h\nThe session emphasized that these manual commands are useful for troubleshooting, even though production monitoring is normally automated.",
+      "diagram": null
+    },
+    {
+      "id": "s36-common-infrastructure-problems",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Common Infrastructure Problems",
+      "text_md": "Several common monitoring scenarios were discussed:\nHigh CPU\nHigh memory\nLow memory\nOut-of-memory conditions\nDisk becoming full\nNetwork outage\nSlow network\nApplication issues\nSoftware bugs\nHigh system temperature\nPoor resource utilization\nOversized infrastructure\nMonitoring helps identify these conditions before they become major incidents.",
+      "diagram": null
+    },
+    {
+      "id": "s36-capacity-planning",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Capacity Planning",
+      "text_md": "The session also discussed the importance of monitoring for capacity planning.\nFor example, suppose an application is very small but the infrastructure is unnecessarily large:\n```text\nSmall Application\n       ↓\nLarge VM\n       ↓\nLow Resource Utilization\n       ↓\nWasted Cost\n```\n\nMonitoring allows teams to identify underutilized resources and make better infrastructure-sizing decisions.",
+      "diagram": null
+    },
+    {
+      "id": "s36-centralized-monitoring-vs-manual-monitoring",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Centralized Monitoring vs Manual Monitoring",
+      "text_md": "Manual Monitoring\nServer 1 → Check\nServer 2 → Check\nServer 3 → Check\n...\nServer 1000 → Check\nThis doesn't scale.\nCentralized Monitoring\n```text\nServers / Kubernetes\n       ↓\nMetrics Collection\n       ↓\nCentral Monitoring\n       ↓\nDashboard\n       ↓\nAlerts\n```\n\nThis is much more practical for large environments.",
+      "diagram": null
+    },
+    {
+      "id": "s36-key-topics-covered",
+      "unit": "s36",
+      "kind": "overview",
+      "title": "Key Topics Covered",
+      "text_md": "Monitoring Fundamentals\nContinuous monitoring\nProactive monitoring\nCentralized monitoring\nReal-time monitoring\nInfrastructure monitoring\nApplication monitoring\nNetwork monitoring\nCapacity planning\nHistorical metrics\nAlerting\nMonitoring Tools\nPrometheus\nGrafana\nNagios\nZabbix\nELK\nAppDynamics\nSplunk\nDatadog\nPrometheus\nPrometheus architecture\nTime-series database\nMetric collection\nMetric storage\nHistorical data\nPromQL\nPrometheus data source\nGrafana\nVisualization\nDashboards\nPanels\nData sources\nPrometheus integration\nGrafana port 3000\nPromQL queries\nKubernetes Monitoring\nNode monitoring\nKubernetes object monitoring\nNode Exporter\nkube-state-metrics\nPod metrics\nDeployment metrics\nService metrics\nHelm\nHelm package manager\nHelm Charts\nvalues.yaml\nHelm repository\n```bash\nhelm repo add\nhelm repo update\n```\n\nHelm installation\nApplication upgrades\nApplication removal\nChart customization\nPractical Work\nGKE Standard cluster\nKubernetes cluster connection\nMonitoring namespace\nHelm repository configuration\nPrometheus/Grafana stack\nkube-prometheus-stack\nGrafana data source configuration\nLinux Monitoring\ntop\nhtop\nfree\ndf -h\nFinal Session Takeaway\nThe core learning of this session was:\nAfter deploying applications to Kubernetes, we need continuous visibility into their health, performance, resource usage and behavior. Prometheus provides the metrics collection and time-series storage layer, while Grafana provides visualization and dashboards. Helm makes deploying this monitoring stack into Kubernetes much easier.\nThe complete flow is:\n```text\nApplication\n     ↓\nKubernetes\n     ↓\nNodes / Pods / Services\n     ↓\nNode Exporter + kube-state-metrics\n     ↓\nPrometheus\n     ↓\nTime-Series Metrics\n     ↓\nGrafana Data Source\n     ↓\nPromQL\n     ↓\nDashboards\n     ↓\nMonitoring / Alerts\n     ↓\nTroubleshooting\n```\n\nThe session therefore connected several concepts learned throughout the Kubernetes course into a real monitoring architecture.\n\n10 Interview Questions & Answers",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "Why is monitoring required in a production environment?",
+      "prompt": "Why is monitoring required in a production environment?",
+      "reference_answer": "Monitoring is required to continuously check the health and performance of applications and infrastructure. It helps identify problems such as high CPU usage, memory issues, disk problems, network failures, application failures, and downtime before they become major outages.\nMonitoring also helps:\nDetect issues proactively.\nReduce downtime.\nUnderstand real-time application health.\nPerform capacity planning.\nTroubleshoot failures.\nIdentify abnormal behavior or trends.",
+      "id": "s36-q01",
+      "unit": "s36",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is centralized monitoring?",
+      "prompt": "What is centralized monitoring?",
+      "reference_answer": "Centralized monitoring means collecting monitoring data and logs from multiple servers, nodes, pods, or applications into a centralized monitoring system.\nFor example, instead of manually checking logs from 1,000 machines, all the required monitoring information can be collected centrally.\nBenefits include:\nEasier troubleshooting.\nCentralized visibility.\nBetter security.\nReduced manual effort.\nMonitoring large environments efficiently.\nLogs remain available even if an individual server goes down.\n\n3. What is Prometheus?\n**💡 Answer:**\n\nPrometheus is an open-source monitoring and metrics collection system that is widely used with Kubernetes.\nIt collects and stores metrics such as:\nCPU usage\nMemory usage\nPod information\nNode metrics\nApplication metrics\nKubernetes object metrics\nPrometheus stores metrics and allows users to query them using PromQL.\n\n4. What is Grafana?\n**💡 Answer:**\n\nGrafana is a visualization and dashboarding tool. It connects to data sources such as Prometheus and displays metrics using graphs, charts, dashboards, and panels.\nIn the session, Prometheus was used for collecting/storing metrics, while Grafana was used for visualization.\nGrafana commonly runs on port 3000.\n\n5. What is the difference between Prometheus and Grafana?\n**💡 Answer:**\n\nPrometheus\nGrafana\nMonitoring and metrics system\nVisualization and dashboard system\nCollects metrics\nDisplays metrics\nStores/query metrics\nQueries data sources\nUses PromQL\nUses queries from configured data sources\nActs as a metrics backend\nActs as a visualization layer\n\nA common architecture is:\nKubernetes → Exporters/Metrics → Prometheus → Grafana\n\n6. Why is Prometheus commonly used with Kubernetes?\n**💡 Answer:**\n\nPrometheus is well suited for Kubernetes because it can monitor Kubernetes components and workloads and integrates with Kubernetes monitoring components.\nThe session highlighted it as an open-source monitoring solution particularly suitable for Kubernetes environments.\nIt can monitor:\nNodes\nPods\nDeployments\nServices\nKubernetes resources\nApplication metrics\n\n7. What is Helm?\n**💡 Answer:**\n\nHelm is a package manager for Kubernetes.\nSimilar to how Linux uses package managers such as apt or yum, Helm helps manage Kubernetes applications.\nHelm can be used to:\nInstall applications.\nUpgrade applications.\nRemove applications.\nManage Kubernetes application configurations.\nHelm packages are called Helm Charts.\nFor example, instead of manually creating many Kubernetes manifest files for Prometheus and Grafana, a Helm Chart can provide the required Kubernetes resources.\n\n8. What is a Helm Chart?\n**💡 Answer:**\n\nA Helm Chart is a collection of Kubernetes configuration templates and files used to package and deploy an application.\nA chart can contain:\nKubernetes deployment definitions.\nServices.\nConfigurations.\nTemplates.\nvalues.yaml.\nOther required resources.\nThe session specifically emphasized the importance of values.yaml, which can be customized according to deployment requirements.\n\n9. What is values.yaml in Helm?\n**💡 Answer:**\n\nvalues.yaml contains configurable values used by Helm templates.\nInstead of modifying Kubernetes manifests directly, we can customize values through values.yaml.\nFor example, we can configure:\nApplication versions.\nResource limits.\nReplica counts.\nService configuration.\nOther deployment-specific settings.\nThis makes Helm deployments reusable and customizable.\n\n10. What are Node Exporter and Kube-State-Metrics?\n**💡 Answer:**\n\nNode Exporter collects metrics related to a particular infrastructure node, such as CPU, memory, disk, and other system-level information.\nKube-State-Metrics provides metrics about the state of Kubernetes resources, such as:\nPods\nDeployments\nServices\nReplicaSets\nOther Kubernetes objects\nIn simple terms:\nNode Exporter → Node/system-level metrics\nKube-State-Metrics → Kubernetes object/state metrics\nPrometheus can collect these metrics and Grafana can visualize them.\n\n10 Scenario-Based Interview Questions & Answers",
+      "id": "s36-q02",
+      "unit": "s36",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario: Your production application is suddenly down. How would monitoring help you troubleshoot it?",
+      "prompt": "Scenario: Your production application is suddenly down. How would monitoring help you troubleshoot it?",
+      "reference_answer": "I would first check the monitoring dashboard to determine whether the problem is related to infrastructure or the application.\nI would check:\nNode health.\nCPU and memory usage.\nPod status.\nDeployment status.\nNetwork-related metrics.\nApplication metrics.\nRecent alerts.\nRelevant logs.\nIf a node has high CPU or memory usage, I would investigate the resource-consuming processes or pods. If the pods are failing, I would inspect the pod status and events.\nThe goal is to identify the issue quickly instead of manually checking every server.",
+      "id": "s36-s01",
+      "unit": "s36",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario: You have 1,000 Kubernetes pods. Can you manually check the logs and resource usage of every pod?",
+      "prompt": "Scenario: You have 1,000 Kubernetes pods. Can you manually check the logs and resource usage of every pod?",
+      "reference_answer": "No. Manually checking 1,000 pods would be inefficient and error-prone.\nI would implement centralized continuous monitoring using Prometheus and Grafana. Metrics from Kubernetes components and nodes can be collected centrally, and Grafana can provide dashboards for monitoring the entire environment.\nThis provides a centralized view instead of requiring manual inspection of every pod.\n\n3. Scenario: A server goes down and its local logs are no longer available. How would you investigate the incident?\n**💡 Answer:**\n\nI would use centralized monitoring and centralized log collection.\nIf monitoring or logging data has already been collected in a separate centralized system, the failure of the original server does not necessarily destroy the collected information.\nI would use the centralized monitoring system to determine:\nWhen the server failed.\nWhat resource usage looked like before failure.\nWhether any alerts were triggered.\nWhether there was an abnormal CPU, memory, disk, or network condition.\n\n4. Scenario: An attacker deletes logs from a compromised server. How can centralized monitoring help?\n**💡 Answer:**\n\nIf logs and monitoring information are continuously sent to a centralized location, deleting logs from the compromised server does not necessarily remove the already-collected centralized data.\nI would investigate the centralized monitoring/logging system to determine:\nWhen abnormal activity started.\nWhat happened before the compromise.\nWhich systems were affected.\nWhether unusual resource or network behavior occurred.\nCentralized monitoring therefore provides an additional layer of visibility.\n\n5. Scenario: Your Kubernetes cluster has very high CPU usage. How would you investigate it?\n**💡 Answer:**\n\nI would start with the monitoring dashboard and identify which node or workload is consuming excessive CPU.\nMy investigation would be:\nCheck node CPU utilization.\nIdentify high-consuming pods.\nCheck whether the application workload has increased.\nCheck pod resource requests and limits.\nCheck whether any application process is consuming abnormal CPU.\nReview relevant logs and metrics.\nDetermine whether scaling is required.\nThe session also discussed HPA, or Horizontal Pod Autoscaling, as a mechanism for automatically scaling pods based on workload.\n\n6. Scenario: You need to deploy Prometheus and Grafana into a Kubernetes cluster. Would you manually create every manifest?\n**💡 Answer:**\n\nNot necessarily. I would use Helm because Prometheus and Grafana Helm Charts are available.\nThe general process would be:\nCreate or access the Kubernetes cluster.\nCreate a dedicated monitoring namespace.\nAdd the required Helm repository.\nUpdate the Helm repository.\nInstall the Prometheus/Grafana Helm Chart.\nVerify the deployed Kubernetes resources.\nConfigure Grafana with Prometheus as its data source.\nCreate or import dashboards.\nThis reduces manual configuration and makes the deployment easier to manage.\n\n7. Scenario: Your company wants monitoring components isolated from application workloads. What would you do?\n**💡 Answer:**\n\nI would create a separate Kubernetes namespace for monitoring components.\nFor example:\n```bash\nkubectl create namespace monitor\n```\n\nThen I would deploy Prometheus and Grafana into that namespace.\nThe advantage is resource and administrative isolation. Monitoring components can be managed separately from business applications, and access can be assigned to the appropriate support or operations team.\n\n8. Scenario: Grafana is running, but no Prometheus metrics are appearing in Grafana. What would you check?\n**💡 Answer:**\n\nI would first verify that Prometheus is running and accessible.\nThen I would check the Grafana Data Source configuration.\nThe troubleshooting process would be:\nVerify the Prometheus pod is running.\nVerify the Prometheus service.\nCheck Prometheus accessibility.\nOpen Grafana configuration.\nVerify Prometheus is configured as a data source.\nVerify the Prometheus endpoint/URL.\nTest the data source connection.\nRun a PromQL query in Grafana.\nCheck whether Prometheus itself contains the expected metrics.\nGrafana needs a correctly configured data source to fetch and visualize Prometheus metrics.\n\n9. Scenario: Your Helm repository was added several months ago. Before installing a monitoring application, what should you do?\n**💡 Answer:**\n\nI would update the Helm repositories before installing the application.\nThe session covered:\n```bash\nhelm repo update\n```\n\nThis ensures that the local Helm repository information is updated with the latest available chart information.\nThe typical flow is:\n```bash\nhelm repo add <repo-name> <repo-url>\nhelm repo update\n```\n\nThen the required chart can be installed.",
+      "id": "s36-s02",
+      "unit": "s36",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to monitor both Kubernetes resources and the underlying nodes. Which components would you consider?",
+      "prompt": "You need to monitor both Kubernetes resources and the underlying nodes. Which components would you consider?",
+      "reference_answer": "I would use different metric sources depending on what I need to monitor.\nFor Kubernetes resource/state information, I would use Kube-State-Metrics.\nFor node-level infrastructure metrics, I would use Node Exporter.\nA simplified architecture would be:\nKubernetes Nodes → Node Exporter → Prometheus\nKubernetes Objects → Kube-State-Metrics → Prometheus\nPrometheus → Grafana → Dashboards\nThis allows infrastructure-level and Kubernetes-level metrics to be monitored from a centralized system.",
+      "id": "s36-s03",
+      "unit": "s36",
+      "concept_ids": []
+    }
+  ]
+}

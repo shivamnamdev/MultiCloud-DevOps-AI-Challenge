@@ -1,0 +1,240 @@
+{
+  "id": "s28",
+  "title": "Advanced Jenkins Jobs · Day 8",
+  "subtitle": "Session 28 · Batch-44 · Day-8 of DevOps i.e Day-6 of Jenkins Pipeline Batch-44 : Jenkins Pipeline with S",
+  "session": 28,
+  "module": "M4 CI/CD: Git, GitHub, Jenkins",
+  "order": 2800,
+  "status": "partial",
+  "source_file": "Session-28-Advanced-Jenkins-Jobs/🚀 Day-8 of DevOps i.e Day-6 of Jenkins Pipeline Batch-44 | 29th July 2026 | 8:00 AM IST | Live Session.md",
+  "needs_authoring": [
+    {
+      "section": "git commit -m \"message\" — use --amend for updating.",
+      "chars": 7074
+    }
+  ],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s28-git-init-to-initialize-repository",
+      "unit": "s28",
+      "kind": "concept",
+      "title": "git init to initialize repository.",
+      "text_md": "3.     git add config.xml (specific file) or git add . (all files in current directory) or git add /* (including sub-folders).",
+      "diagram": null
+    },
+    {
+      "id": "s28-git-commit-m-message-use-amend-for-updating",
+      "unit": "s28",
+      "kind": "concept",
+      "title": "git commit -m \"message\" — use --amend for updating.",
+      "text_md": "5.     git remote add origin <repo-url> then git push.\n- Private GitHub repo used to secure backup; collaborators added via Settings → Collaborators.\n- Only config.xml is strictly necessary for config backup; full folder backup covers everything.\nPlugin-Based Backup\n- Backup plugin automates this process; supports restore functionality for migration between Jenkins instances.\n\nCommon Day-to-Day Issues and Troubleshooting\nThumb Rule\n- Always check console output logs first — the log will reveal the root cause in most cases.\n- Follow up with Manage Jenkins → check for deprecated/vulnerable plugins.\nFrequent Issues Reported (Real-World)\n- Incomplete or wrong configuration — most common cause of job failures; often submitted by QA or developers without complete information.\n- All jobs running on master node — causes slowness; jobs should be distributed to agents.\n- Slave/agent offline — users report \"job not running\" without knowing the agent is down; DevOps must check node status.\n- Plugin not supported or slow — may require upgrading or downgrading the plugin.\n- Developer changed tooling without informing DevOps — e.g., switching from Maven to Gradle, or upgrading JDK version; pipeline fails silently.\n- Saurabh's company established a process: developers must inform DevOps before making any pipeline-related changes, otherwise DevOps is not responsible for failures.\n- QA/non-DevOps users modifying job configuration — changing Java version, Maven version, Node version without notice causes unexpected failures.\n- Long job queues — caused by insufficient CPU/RAM on nodes; solution is to increase resources, optimize jobs into smaller parts, or distribute across agents.\n- Jenkins responding slowly — caused by excessive logs filling memory, or insufficient RAM (e.g., only 1 GB allocated).\n- Jenkins file overwritten on branch merge — developer/TL merges branches and accidentally overwrites Jenkinsfile; requires recheck and rewrite.\nCAB/CAP Process (Change Management)\n- In ITIL-following organizations, all Jenkins changes require a CAP (Change Advisory Board) call — typically held Wednesday/Thursday.\n- CAP call covers: what is changing, which teams are impacted, rollback plan if the change fails.\n- Supporting teams are added to the call so they are aware and available if collateral failures occur.\n\nMulti-Environment Deployment and Branching Strategies\nCommon Branching Models\n- Main/Master branch: Production-ready code.\n- Develop branch: Active development; CI/CD can run here.\n- Feature branches: New features isolated from main development flow.\n- Hotfix branch: Emergency production fixes applied directly, then merged back.\nDeploying to Multiple Environments\n- Different branches per environment (dev, stage, prod) with separate pipelines per branch — most common approach.\n- Tags can be used to deploy specific versions to specific environments.\n- Parameterized pipelines (single job, environment passed as parameter) — used by Akshay's team; environment name determines target machine and variable set.\n- One repo, one pipeline, different parameters for dev/QA/prod/UAT.\n- Multiple jobs (job1, job2, job3) per environment — straightforward but verbose.\n- Promoting code from dev → stage is done via Pull Requests (PRs) — code does not change, only the target branch differs.\n- Kubernetes project on GitHub used as real-world example: 1.6, 1.35, 1.36 release branches visible; teams deploy by selecting the relevant release branch or tag.\nCode Owners\n- CODEOWNERS file in repository defines who must approve PRs for specific files/directories.\n- Approvers receive review requests automatically when relevant code changes are submitted.\n\nJenkins Agents / Nodes\nHomework Review\n- Rohit Pawar: Created master VM in GCP with Jenkins + JDK; created CentOS slave in GCP (connected); attempted Windows VM (free trial issue), used local machine as Windows agent instead.\n- Aditya: Created Ubuntu and CentOS machines in GCP, both connected as slaves; shared screenshot in group.\n- Others encouraged to complete the same exercise — \"no excuse, no choice.\"\nExecutor Configuration\n- Executors = runners; determine how many parallel jobs a node can handle.\n- Minimum/maximum executor count depends on application and project requirements — no universal standard; default of 1 is sufficient for basic use.\n- If a job is queued for extended periods (e.g., 1 hour), the agent may be overloaded or shared — solution is to add more agents or increase resources.\n\nUpcoming Topics / Roadmap\n- SonarQube: Plugin install → server creation → scanner configuration → integration into pipeline for code quality checks.\n- JFrog Artifactory (noted as outdated/chargeable; still used in many companies) → artifact storage.\n- Docker: Most common; artifact deployment pipeline to be covered as part of the full project flow.\n- Full project session: Expected to run ~1 hour 50 minutes covering the complete CI/CD flow end-to-end in a single session.\n- Git/GitHub Advanced Session: Requested by Aditya; Vikas confirmed it will be covered separately in Batch 44.\n\nFreelancing / Job Opportunities\n- Kubernetes freelancing role: 40–50 hours of extra work; requires Kubernetes knowledge; interview with Vikas's team at 8 PM same day; direct referral if passed.\n- i.techtsystem / Parakh company opening: 2–8 years experience; direct referral available through a known interviewer.\n- Barclays opening (Pune): Shared by Abhinav in WhatsApp group; 5+ years DevOps experience preferred (4–5 years may also qualify).\n- All opportunities: zero-degree/zero-formal-experience barrier for Kubernetes role; apply and let the interview determine eligibility.\n\nReverse KT Session — Friday, 31st July, 8 AM\n- Each participant presents for 5 minutes on a topic they found interesting or learned.\n- Topics can include: Linux, GCP, Git/GitHub, Jenkins, Docker — anything covered in the batch.\n- Participants must comment their topic in the WhatsApp group thread that will be opened.\n- Goal: Teach back to the group, not just revise — \"Reverse KT, not revision.\"\n- Avoid duplicate topics (e.g., multiple people explaining ls command).\n\nOpen Questions\n- Git merge vs. Git rebase difference: Rajvaibhav attempted an explanation but audio was unclear; cherry-pick was clarified (picking a specific commit from one branch to apply to another) but merge vs. rebase distinction was not fully resolved in session.\n- Groovy DSL depth: Dewashish asked whether more Groovy content is coming — Vikas confirmed it was already covered; pipeline syntax (agent, stages, steps) is the core Groovy knowledge needed; writing a Groovy pipeline for a Java project is the key interview deliverable.\n- GitHub Copilot in Jenkins: Sumit asked about integrating Copilot for pipeline code generation — Vikas noted VS Code + Copilot can assist with pipeline file editing (Ctrl+Shift+I), but backend Jenkins files should not be directly modified.\n- Stale/hung pipelines: CPU/memory check is the primary diagnosis; disk space exhaustion on the slave node is another common cause (Saurabh confirmed this from experience).",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "Where is Jenkins data stored?",
+      "prompt": "Where is Jenkins data stored?",
+      "reference_answer": "Jenkins stores all its data in the Jenkins Home directory.\nLinux\n/var/lib/jenkins\nWindows\nC:\\ProgramData\\Jenkins\\.jenkins\nThis directory contains jobs, plugins, users, workspace, logs, secrets, and configuration files.",
+      "id": "s28-q01",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is config.xml?",
+      "prompt": "What is config.xml?",
+      "reference_answer": "config.xml is the primary configuration file of Jenkins.\nIt stores:\nGlobal settings\nSecurity configuration\nSystem configuration\nJenkins automatically manages this file, so manual editing is generally not recommended.\n\n3. What is stored inside the jobs folder?\n**💡 Answer:**\n\nEach Jenkins job has its own folder.\nInside every job folder:\nconfig.xml\nBuild history\nConsole logs\nJob metadata\nDeleting the folder permanently deletes the job.\n\n4. Where are Jenkins plugins stored?\n**💡 Answer:**\n\nPlugins are stored inside:\nplugins/\nEvery plugin is stored as a .jpi or .hpi file.\n\n5. What is Workspace in Jenkins?\n**💡 Answer:**\n\nWorkspace is the directory where Jenkins performs:\nGit checkout\nBuild\nTesting\nPackaging\nDeployment\nEvery job gets its own workspace.\n\n6. Where are Jenkins secrets stored?\n**💡 Answer:**\n\nPasswords, API keys, tokens and credentials are stored inside:\nsecrets/\nNever modify these files manually.\n\n7. How do you back up Jenkins?\n**💡 Answer:**\n\nTwo common methods:\nGit backup\nBackup Plugin\nGit commands:\n```bash\ngit init\ngit add .\ngit commit -m \"Backup\"\ngit remote add origin URL\ngit push\n```\n\nAutomated backups are commonly done with the Backup Plugin.\n\n8. Where should Jenkins backups be stored?\n**💡 Answer:**\n\nA private GitHub repository is a common best practice so only authorized collaborators can access the backup.\n\n9. What is the first step when a Jenkins job fails?\n**💡 Answer:**\n\nAlways check:\nConsole Output\nIt usually shows the root cause of the failure.\n\n10. What causes Jenkins to become slow?\n**💡 Answer:**\n\nCommon reasons:\nLow RAM\nToo many logs\nHeavy jobs on master\nToo many builds\nPlugin issues\n\n11. What are Jenkins Agents?\n**💡 Answer:**\n\nAgents execute build jobs.\nMaster schedules the jobs.\nAgents perform the actual work.\n\n12. What is an Executor?\n**💡 Answer:**\n\nExecutor determines how many jobs a node can execute simultaneously.\nMore executors = more parallel builds.\n\n13. Why should builds not run on the Master?\n**💡 Answer:**\n\nRunning all builds on the master:\nSlows Jenkins\nIncreases CPU usage\nMakes the UI unresponsive\nProduction environments usually use agents for builds.\n\n14. What happens if a plugin is disabled?\n**💡 Answer:**\n\nDependent jobs may fail.\nFor example, disabling the Gradle plugin can break Gradle builds.\n\n15. How do you deploy to Dev, QA and Production?\n**💡 Answer:**\n\nCommon methods:\nSeparate branches\nSeparate jobs\nParameterized pipeline\nGit tags\n\n16. What is a parameterized pipeline?\n**💡 Answer:**\n\nOne Jenkins job deploys to multiple environments.\nExample parameter:\nEnvironment=DEV\nEnvironment=QA\nEnvironment=PROD\nPipeline changes behavior based on the selected environment.\n\n17. What is CODEOWNERS?\n**💡 Answer:**\n\nCODEOWNERS defines who must approve changes to specific files or folders before merging.\n\n18. What is Blue-Green Deployment?\n**💡 Answer:**\n\nBlue-Green deployment maintains two production environments.\nBlue = current version\nGreen = new version\nTraffic switches to Green after successful validation, enabling quick rollback if needed. (Mentioned as one deployment approach in the session overview.)\n\n19. What language is Jenkins configuration written in?\n**💡 Answer:**\n\nXML. All backend configuration files are stored as XML.\n\n20. Which upcoming tools were planned for Jenkins integration?\n**💡 Answer:**\n\nSonarQube\nJFrog Artifactory\nDocker\nThese would be integrated into the CI/CD pipeline.\n\n20 Real-Time Scenario Questions & Answers",
+      "id": "s28-q02",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 1",
+      "prompt": "A build suddenly fails. What will you check first?",
+      "reference_answer": "First check:\nConsole Output\nThen identify whether the issue is related to code, configuration, plugins, or infrastructure.",
+      "id": "s28-s01",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 2",
+      "prompt": "All Jenkins jobs are very slow.",
+      "reference_answer": "Check:\nCPU usage\nRAM\nDisk space\nRunning builds\nBuild queue\nNumber of jobs on master",
+      "id": "s28-s02",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 3",
+      "prompt": "Jobs remain in the queue and never start.",
+      "reference_answer": "Possible causes:\nAgent offline\nNo available executors\nInsufficient CPU/RAM\nVerify node status and executor availability.",
+      "id": "s28-s03",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 4",
+      "prompt": "A developer changes Maven to Gradle without informing DevOps.",
+      "reference_answer": "The pipeline may fail because it still expects Maven.\nUpdate the pipeline to use the correct build tool after coordinating with the development team.",
+      "id": "s28-s04",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 5",
+      "prompt": "Someone accidentally deletes a Jenkins job.",
+      "reference_answer": "Restore it from:\nGit backup\nBackup Plugin\nJenkins backup directory",
+      "id": "s28-s05",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 6",
+      "prompt": "The workspace is full.",
+      "reference_answer": "Clean the workspace, remove old builds, archive required artifacts, and configure workspace cleanup. (The workspace is where builds execute.)",
+      "id": "s28-s06",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 7",
+      "prompt": "A plugin update causes builds to fail.",
+      "reference_answer": "Rollback or disable the problematic update after checking plugin compatibility and dependencies.",
+      "id": "s28-s07",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 8",
+      "prompt": "Your Jenkins server crashes.",
+      "reference_answer": "Restore from the latest backup stored in Git or created by the Backup Plugin.",
+      "id": "s28-s08",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 9",
+      "prompt": "A user reports \"Job is not running.\"",
+      "reference_answer": "Verify whether the assigned agent is offline before troubleshooting the job itself.",
+      "id": "s28-s09",
+      "unit": "s28",
+      "concept_ids": [
+        "s28-git-commit-m-message-use-amend-for-updating"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 10",
+      "prompt": "There are 200 plugins installed. Is that okay?",
+      "reference_answer": "Yes, but remove deprecated or unused plugins to reduce security risks and maintenance overhead.",
+      "id": "s28-s10",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 11",
+      "prompt": "You need to deploy the same application to Dev, QA, and Production.",
+      "reference_answer": "Use a parameterized pipeline or different branches/tags for each environment.",
+      "id": "s28-s11",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 12",
+      "prompt": "A pull request cannot be merged.",
+      "reference_answer": "Check whether approvals required by the CODEOWNERS file are still pending.",
+      "id": "s28-s12",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 13",
+      "prompt": "A Jenkinsfile is overwritten after a branch merge.",
+      "reference_answer": "Review the merge, restore the correct Jenkinsfile from version control, and prevent accidental overwrites with proper review practices.",
+      "id": "s28-s13",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 14",
+      "prompt": "The build queue keeps increasing.",
+      "reference_answer": "Add more agents, increase resources, or optimize jobs into smaller tasks.",
+      "id": "s28-s14",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 15",
+      "prompt": "A production change is requested in an ITIL-based company.",
+      "reference_answer": "Follow the Change Advisory Board (CAB/CAP) process with impact analysis and rollback planning before implementation.",
+      "id": "s28-s15",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 16",
+      "prompt": "You need to migrate Jenkins to another server.",
+      "reference_answer": "Restore the backed-up Jenkins configuration using the Backup Plugin or the Git-backed Jenkins home directory.",
+      "id": "s28-s16",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 17",
+      "prompt": "Developers ask why they cannot edit Jenkins backend files directly.",
+      "reference_answer": "Backend files are managed by Jenkins and manual edits can corrupt configuration. Use the Jenkins UI whenever possible.",
+      "id": "s28-s17",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 18",
+      "prompt": "A build hangs indefinitely.",
+      "reference_answer": "Check CPU, memory, and disk space on the agent, as these are common causes of hung pipelines.",
+      "id": "s28-s18",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 19",
+      "prompt": "A new environment (UAT) needs to be added.",
+      "reference_answer": "Extend the parameterized pipeline or create a dedicated branch and corresponding deployment configuration for UAT.",
+      "id": "s28-s19",
+      "unit": "s28",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Scenario 20",
+      "prompt": "How do you prepare Jenkins for production?",
+      "reference_answer": "Use agents instead of the master for builds.\nBack up Jenkins regularly.\nMonitor plugin health.\nRemove deprecated plugins.\nSecure secrets and credentials.\nReview console logs when troubleshooting.",
+      "id": "s28-s20",
+      "unit": "s28",
+      "concept_ids": [
+        "s28-git-commit-m-message-use-amend-for-updating"
+      ]
+    }
+  ]
+}

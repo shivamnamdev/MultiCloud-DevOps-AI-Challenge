@@ -1,0 +1,387 @@
+{
+  "id": "s34c",
+  "title": "Kubernetes Components GKE · Day 8",
+  "subtitle": "Session 34 · Batch-44",
+  "session": 34,
+  "module": "M5 Docker, Kubernetes, Monitoring",
+  "order": 3402,
+  "status": "ready",
+  "source_file": "Session-34-Kubernetes-Components-GKE/🚀 Day-8 of Last K8s Session for Batch-44 | 19th Aug 2026.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s34c-interview-quick-revision",
+      "unit": "s34c",
+      "kind": "concept",
+      "title": "Interview Quick Revision",
+      "text_md": "For interviews, remember these practical flows:\n\n**Zero downtime:** Rolling Update → readiness → monitoring → rollback if required.\n\n**High traffic:** HPA scales pods → Cluster Autoscaler adds nodes if capacity is insufficient.\n\n**Node issue:** Check logs/events → cordon → drain → recover/repair → verify workloads.\n\n**Cost optimization:** Right-size → HPA → Cluster Autoscaler → Spot for suitable workloads → Savings Plans/Reserved capacity for predictable workloads.\n\n**Risky release:** Canary → small traffic → monitor → increase gradually → rollback if required.",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is a Rolling Update in Kubernetes?",
+      "prompt": "What is a Rolling Update in Kubernetes?",
+      "reference_answer": "Rolling Update gradually replaces old pods with new pods without stopping the application completely. It is the default Deployment strategy and helps achieve near zero-downtime releases.",
+      "id": "s34c-q01",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between Rolling Update and Recreate?",
+      "prompt": "What is the difference between Rolling Update and Recreate?",
+      "reference_answer": "Rolling Update replaces pods gradually, while Recreate terminates all old pods first and then creates new pods. Recreate causes downtime and is generally avoided for production applications.",
+      "id": "s34c-q02",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is a Canary Deployment?",
+      "prompt": "What is a Canary Deployment?",
+      "reference_answer": "Canary deployment releases a new version to a small percentage of users first. If the new version works correctly, traffic can be increased gradually until the new version becomes fully live.",
+      "id": "s34c-q03",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Blue-Green Deployment?",
+      "prompt": "What is Blue-Green Deployment?",
+      "reference_answer": "Blue-Green maintains two environments. Blue is the current production version and Green contains the new version. After testing Green, traffic is switched to Green using a load balancer or routing layer.",
+      "id": "s34c-q04",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the main disadvantage of Blue-Green deployment?",
+      "prompt": "What is the main disadvantage of Blue-Green deployment?",
+      "reference_answer": "It can be expensive because two environments may need to run at the same time. A common cost-saving approach is to create or scale up the Green environment only during release preparation.",
+      "id": "s34c-q05",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is HPA in Kubernetes?",
+      "prompt": "What is HPA in Kubernetes?",
+      "reference_answer": "HPA stands for Horizontal Pod Autoscaler. It automatically increases or decreases the number of pod replicas based on metrics such as CPU, memory, or custom metrics.",
+      "id": "s34c-q06",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What are minReplicas and maxReplicas in HPA?",
+      "prompt": "What are minReplicas and maxReplicas in HPA?",
+      "reference_answer": "`minReplicas` defines the minimum number of pods that should run, while `maxReplicas` defines the maximum number of pods HPA can create.",
+      "id": "s34c-q07",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Why does HPA need Metrics Server?",
+      "prompt": "Why does HPA need Metrics Server?",
+      "reference_answer": "HPA needs resource utilization data to make scaling decisions. Metrics Server provides CPU and memory metrics that HPA can consume.",
+      "id": "s34c-q08",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Can HPA scale a standalone Pod?",
+      "prompt": "Can HPA scale a standalone Pod?",
+      "reference_answer": "HPA is normally used with scalable workload controllers such as Deployments. A Deployment manages ReplicaSets and provides the replica management required for reliable horizontal scaling.",
+      "id": "s34c-q09",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between HPA and Cluster Autoscaler?",
+      "prompt": "What is the difference between HPA and Cluster Autoscaler?",
+      "reference_answer": "HPA scales pods. Cluster Autoscaler scales cluster nodes. For example, HPA may increase pods from 2 to 8, and if the existing nodes do not have enough capacity, Cluster Autoscaler can add nodes.",
+      "id": "s34c-q10",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is a stateless application?",
+      "prompt": "What is a stateless application?",
+      "reference_answer": "A stateless application does not depend on local pod storage for persistent application state. If a pod is removed, another pod can normally serve the request without losing application state.",
+      "id": "s34c-q11",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is a Stateful application?",
+      "prompt": "What is a Stateful application?",
+      "reference_answer": "A stateful application needs persistent identity or data, such as a database. Kubernetes StatefulSets and persistent volumes are commonly used for these workloads.",
+      "id": "s34c-q12",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "How do you update the image of a Deployment?",
+      "prompt": "How do you update the image of a Deployment?",
+      "reference_answer": "You can update the image in the Deployment YAML and run `kubectl apply -f deployment.yaml`. Kubernetes then starts the configured rollout strategy.",
+      "id": "s34c-q13",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "How do you check the status of an HPA?",
+      "prompt": "How do you check the status of an HPA?",
+      "reference_answer": "Use `kubectl get hpa`. For continuous monitoring, `kubectl get hpa -w` can be used.",
+      "id": "s34c-q14",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What does kubectl drain do?",
+      "prompt": "What does kubectl drain do?",
+      "reference_answer": "`kubectl drain <node>` safely evicts pods from a node so that workloads can be rescheduled onto other available nodes. It is commonly used before node maintenance.",
+      "id": "s34c-q15",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Calico?",
+      "prompt": "What is Calico?",
+      "reference_answer": "Calico is a Kubernetes CNI solution used for pod networking and network security policies. It is commonly seen in self-managed Kubernetes clusters.",
+      "id": "s34c-q16",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is the difference between EKS and kubeadm?",
+      "prompt": "What is the difference between EKS and kubeadm?",
+      "reference_answer": "EKS is a managed Kubernetes service on AWS, while kubeadm is a tool used to bootstrap a self-managed Kubernetes cluster on your own infrastructure.",
+      "id": "s34c-q17",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "How can Kubernetes infrastructure cost be reduced?",
+      "prompt": "How can Kubernetes infrastructure cost be reduced?",
+      "reference_answer": "Use right-sized resources, HPA, Cluster Autoscaler, namespaces where appropriate, Spot/Preemptible capacity for suitable workloads, and Reserved Instances or Savings Plans for predictable workloads.",
+      "id": "s34c-q18",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What are maxSurge and maxUnavailable?",
+      "prompt": "What are maxSurge and maxUnavailable?",
+      "reference_answer": "`maxSurge` controls how many extra pods can be created above the desired replica count during a rollout. `maxUnavailable` controls how many pods can be unavailable during the rollout.",
+      "id": "s34c-q19",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "How would you answer \"Which deployment strategy do you use?\"",
+      "prompt": "How would you answer \"Which deployment strategy do you use?\"",
+      "reference_answer": "A practical answer is: \"We generally use Rolling Updates as the default. For higher-risk releases, we can combine rolling deployment with Canary or Blue-Green techniques depending on traffic, business requirements, and rollback needs.\"",
+      "id": "s34c-q20",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "CPU suddenly reaches 90% and users report slow responses. What will you do?",
+      "prompt": "CPU suddenly reaches 90% and users report slow responses. What will you do?",
+      "reference_answer": "Check pod CPU usage and HPA status first. Verify whether HPA is scaling pods, check application logs and traffic, and confirm that resource requests/limits and HPA thresholds are configured correctly. If required, increase capacity and investigate the application bottleneck.",
+      "id": "s34c-s01",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "HPA shows <unknown> CPU utilization. What will you check?",
+      "prompt": "HPA shows <unknown> CPU utilization. What will you check?",
+      "reference_answer": "Check whether Metrics Server is running and healthy. Verify that resource requests are configured for the containers and inspect HPA events using `kubectl describe hpa`. Also verify that the metrics API is available.",
+      "id": "s34c-s02",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "HPA is created but pods are not scaling.",
+      "prompt": "HPA is created but pods are not scaling.",
+      "reference_answer": "Check `kubectl get hpa`, `kubectl describe hpa`, Metrics Server health, CPU/memory requests, current utilization, and the configured min/max replicas. Also confirm that the target workload is a supported scalable controller.",
+      "id": "s34c-s03",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A new application version is deployed and users see errors. How do you rollback?",
+      "prompt": "A new application version is deployed and users see errors. How do you rollback?",
+      "reference_answer": "First confirm the failed rollout using Deployment status and application logs. Then use Kubernetes rollout history and rollback commands, such as `kubectl rollout undo deployment/<deployment-name>`, to return to a known-good version.",
+      "id": "s34c-s04",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "One Kubernetes node is stuck and pods are not running correctly.",
+      "prompt": "One Kubernetes node is stuck and pods are not running correctly.",
+      "reference_answer": "Check node status, events, CPU/memory pressure, kubelet status, and infrastructure logs. If the node is responsive, cordon and drain it before maintenance. If it is completely unresponsive, recover or restart the underlying VM and verify that workloads are running on healthy nodes.",
+      "id": "s34c-s05",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "You need to deploy a risky release to only 10% of users.",
+      "prompt": "You need to deploy a risky release to only 10% of users.",
+      "reference_answer": "Use a Canary strategy. Keep the stable version serving most traffic and route a small percentage to the new version. Monitor errors, latency, CPU, and business metrics before increasing the percentage.",
+      "id": "s34c-s06",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Your company wants zero-downtime deployment but cannot afford two complete environments.",
+      "prompt": "Your company wants zero-downtime deployment but cannot afford two complete environments.",
+      "reference_answer": "Rolling Update is usually a better fit because it does not require two full environments. Configure readiness probes and rollout parameters carefully and monitor the deployment during the release.",
+      "id": "s34c-s07",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Traffic increases from 1,000 to 100,000 requests and existing nodes have no capacity.",
+      "prompt": "Traffic increases from 1,000 to 100,000 requests and existing nodes have no capacity.",
+      "reference_answer": "HPA can increase the number of pods, but if nodes do not have enough capacity, Cluster Autoscaler should add nodes. This is a good example of HPA and Cluster Autoscaler working together.",
+      "id": "s34c-s08",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A node needs maintenance but is hosting production pods.",
+      "prompt": "A node needs maintenance but is hosting production pods.",
+      "reference_answer": "Cordon the node to prevent new scheduling, then drain it so pods are gracefully evicted and rescheduled on other nodes. Perform maintenance and verify cluster health before returning the node to service.",
+      "id": "s34c-s09",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "After stopping a load test, HPA does not immediately reduce replicas.",
+      "prompt": "After stopping a load test, HPA does not immediately reduce replicas.",
+      "reference_answer": "Check the current metrics and HPA behavior. Scale-down is intentionally less aggressive than scale-up in many situations to avoid constant scaling up and down. Wait for the configured stabilization/scale-down behavior and monitor with `kubectl get hpa -w`.",
+      "id": "s34c-s10",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "You are running dev, QA, and staging workloads and the cloud bill is too high.",
+      "prompt": "You are running dev, QA, and staging workloads and the cloud bill is too high.",
+      "reference_answer": "Evaluate whether separate clusters are actually required. Where isolation and security requirements allow, namespaces can separate environments inside a shared cluster. Also review right-sizing, autoscaling, and idle workloads.",
+      "id": "s34c-s11",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A production workload is running on expensive instances but traffic is predictable.",
+      "prompt": "A production workload is running on expensive instances but traffic is predictable.",
+      "reference_answer": "First right-size the workload and then evaluate Reserved Instances or Savings Plans for the predictable baseline. Autoscaling can handle variable demand.",
+      "id": "s34c-s12",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A non-critical batch workload is very expensive to run.",
+      "prompt": "A non-critical batch workload is very expensive to run.",
+      "reference_answer": "Consider Spot or Preemptible instances if the workload can tolerate interruption. Make the workload retryable and avoid using this approach for workloads where interruption would cause unacceptable business impact.",
+      "id": "s34c-s13",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A deployment is stuck during rollout.",
+      "prompt": "A deployment is stuck during rollout.",
+      "reference_answer": "Check `kubectl rollout status`, Deployment events, ReplicaSet status, pod states, image pull errors, readiness probes, resource constraints, and application logs. Fix the underlying issue before continuing or rollback if the release is unsafe.",
+      "id": "s34c-s14",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "New pods are running but traffic is still going to the old version.",
+      "prompt": "New pods are running but traffic is still going to the old version.",
+      "reference_answer": "Check the Service selector and pod labels. Verify that the new pods match the intended Service selector and inspect endpoints. In a controlled rollout, also verify the load balancer or ingress routing configuration.",
+      "id": "s34c-s15",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "The new version starts successfully but becomes unhealthy after receiving traffic.",
+      "prompt": "The new version starts successfully but becomes unhealthy after receiving traffic.",
+      "reference_answer": "Check readiness and liveness probes, application logs, dependency connectivity, resource usage, and actual traffic behavior. If production impact is occurring, stop or rollback the rollout and investigate the new version.",
+      "id": "s34c-s16",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A node failure happens in a multi-zone cluster.",
+      "prompt": "A node failure happens in a multi-zone cluster.",
+      "reference_answer": "Verify that healthy nodes and pods are available in other zones. Kubernetes can reschedule eligible workloads onto healthy nodes. Multi-zone design improves availability, but stateful workloads require additional care around persistent storage and recovery.",
+      "id": "s34c-s17",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "A Stateful application is on a failed node. Can you treat it exactly like a stateless application?",
+      "prompt": "A Stateful application is on a failed node. Can you treat it exactly like a stateless application?",
+      "reference_answer": "No. Stateful workloads depend on persistent data and identity. Before moving or recovering them, verify persistent volume attachment, storage behavior, replication, and application consistency.",
+      "id": "s34c-s18",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "Your team wants to test a new feature with selected users only.",
+      "prompt": "Your team wants to test a new feature with selected users only.",
+      "reference_answer": "A/B testing or controlled traffic routing can be used when the goal is to compare different versions for different user groups. The routing decision should be based on the application and business requirements.",
+      "id": "s34c-s19",
+      "unit": "s34c",
+      "concept_ids": []
+    },
+    {
+      "kind": "scenario",
+      "title": "An interviewer asks, \"Tell me about a Kubernetes project you worked on.\"",
+      "prompt": "An interviewer asks, \"Tell me about a Kubernetes project you worked on.\"",
+      "reference_answer": "Explain the project using a practical flow: application deployment → Service/load balancing → HPA → Metrics Server → load testing → monitoring → rolling update → troubleshooting → cost optimization. Mention the actual commands and problems you solved, rather than only listing Kubernetes concepts.",
+      "id": "s34c-s20",
+      "unit": "s34c",
+      "concept_ids": [
+        "s34c-interview-quick-revision"
+      ]
+    }
+  ]
+}

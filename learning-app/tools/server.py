@@ -8,16 +8,21 @@ import datetime
 import json
 import mimetypes
 import os
+import re
 import sqlite3
 import sys
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from urllib.parse import parse_qs, urlparse
+
+from search import SearchIndex
 
 APP = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONCEPT_STATUSES = {"not_started", "read", "lab_done", "mastered"}
 QUESTION_STATUSES = {"not_started", "known", "review"}
 CSP = ("default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; "
        "style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'")
-MAX_BODY = 10_000
+MAX_BODY = 20_000
+MAX_NOTE = 5000
 
 
 class Store:
@@ -27,6 +32,10 @@ class Store:
         with self._conn() as c:
             c.execute("CREATE TABLE IF NOT EXISTS progress "
                       "(item_id TEXT PRIMARY KEY, status TEXT NOT NULL, updated_at TEXT NOT NULL)")
+            c.execute("CREATE TABLE IF NOT EXISTS notes "
+                      "(item_id TEXT PRIMARY KEY, text TEXT NOT NULL, updated_at TEXT NOT NULL)")
+            c.execute("CREATE TABLE IF NOT EXISTS bookmarks "
+                      "(item_id TEXT PRIMARY KEY, created_at TEXT NOT NULL)")
 
     def _conn(self):
         return sqlite3.connect(self.path)
@@ -49,28 +58,78 @@ class Store:
             c.close()
 
 
+    def _rows(self, sql):
+        c = self._conn()
+        try:
+            return c.execute(sql).fetchall()
+        finally:
+            c.close()
+
+    def notes(self):
+        return {r[0]: r[1] for r in self._rows("SELECT item_id, text FROM notes")}
+
+    def set_note(self, item_id, text):
+        c = self._conn()
+        try:
+            with c:
+                if text.strip():
+                    c.execute("INSERT INTO notes VALUES (?,?,?) ON CONFLICT(item_id) DO UPDATE "
+                              "SET text=excluded.text, updated_at=excluded.updated_at",
+                              (item_id, text, datetime.datetime.utcnow().isoformat() + "Z"))
+                else:
+                    c.execute("DELETE FROM notes WHERE item_id=?", (item_id,))
+        finally:
+            c.close()
+
+    def bookmarks(self):
+        return [r[0] for r in self._rows("SELECT item_id FROM bookmarks ORDER BY created_at")]
+
+    def set_bookmark(self, item_id, on):
+        c = self._conn()
+        try:
+            with c:
+                if on:
+                    c.execute("INSERT OR IGNORE INTO bookmarks VALUES (?,?)",
+                              (item_id, datetime.datetime.utcnow().isoformat() + "Z"))
+                else:
+                    c.execute("DELETE FROM bookmarks WHERE item_id=?", (item_id,))
+        finally:
+            c.close()
+
+
 class Content:
     def __init__(self, content_dir):
         self.dir = content_dir
+        self._kinds = None
+        self._meta = None
+        self._index = None
+        self._sig = None
+
+    def _paths(self):
+        if not os.path.isdir(self.dir):
+            return []
+        return [os.path.join(self.dir, n, "unit.json") for n in sorted(os.listdir(self.dir))
+                if os.path.isfile(os.path.join(self.dir, n, "unit.json"))]
 
     def units(self):
         out = []
-        if not os.path.isdir(self.dir):
-            return out
-        for name in sorted(os.listdir(self.dir)):
-            p = os.path.join(self.dir, name, "unit.json")
-            if os.path.isfile(p):
-                with open(p, encoding="utf-8") as f:
-                    out.append(json.load(f))
+        for p in self._paths():
+            with open(p, encoding="utf-8") as f:
+                out.append(json.load(f))
+        out.sort(key=lambda u: (u.get("order", 0), u["id"]))
         return out
 
     def unit(self, unit_id):
-        for u in self.units():
-            if u["id"] == unit_id:
-                for c in u["concepts"]:
-                    c["diagram_src"] = self._diagram(c.get("diagram"))
-                return u
-        return None
+        if not re.fullmatch(r"[\w-]+", unit_id or ""):
+            return None
+        p = os.path.join(self.dir, unit_id, "unit.json")
+        if not os.path.isfile(p):
+            return None
+        with open(p, encoding="utf-8") as f:
+            u = json.load(f)
+        for c in u["concepts"]:
+            c["diagram_src"] = self._diagram(c.get("diagram"))
+        return u
 
     def _diagram(self, d):
         if not d:
@@ -82,14 +141,32 @@ class Content:
         with open(p, encoding="utf-8") as f:
             return f.read()
 
+    def _refresh(self):
+        """Rebuild kinds, item metadata and the search index when any unit.json changed."""
+        sig = tuple((p, os.stat(p).st_mtime) for p in self._paths())
+        if sig != self._sig:
+            units = self.units()
+            kinds, meta = {}, {}
+            for u in units:
+                for c in u["concepts"]:
+                    kinds[c["id"]] = "concept"
+                    meta[c["id"]] = {"unit_id": u["id"], "unit_title": u["title"], "kind": "concept", "title": c["title"]}
+                for q in u["questions"]:
+                    kinds[q["id"]] = "question"
+                    meta[q["id"]] = {"unit_id": u["id"], "unit_title": u["title"], "kind": "question", "title": q["title"]}
+            self._kinds, self._meta, self._index, self._sig = kinds, meta, SearchIndex(units), sig
+
     def item_kinds(self):
-        kinds = {}
-        for u in self.units():
-            for c in u["concepts"]:
-                kinds[c["id"]] = "concept"
-            for q in u["questions"]:
-                kinds[q["id"]] = "question"
-        return kinds
+        self._refresh()
+        return self._kinds
+
+    def item_meta(self):
+        self._refresh()
+        return self._meta
+
+    def index(self):
+        self._refresh()
+        return self._index
 
 
 def make_handler(content, store, web_dir):
@@ -109,8 +186,35 @@ def make_handler(content, store, web_dir):
             self.end_headers()
             self.wfile.write(body)
 
+        def _json_body(self):
+            try:
+                n = int(self.headers.get("Content-Length", "0"))
+                if n <= 0 or n > MAX_BODY:
+                    return None
+                req = json.loads(self.rfile.read(n))
+                return req if isinstance(req, dict) else None
+            except (ValueError, TypeError):
+                return None
+
         def do_GET(self):
-            path = self.path.split("?", 1)[0]
+            parsed = urlparse(self.path)
+            path = parsed.path
+            if path == "/api/search":
+                qs = parse_qs(parsed.query)
+                try:
+                    limit = int(qs.get("limit", ["25"])[0])
+                except ValueError:
+                    limit = 25
+                return self._send(200, content.index().search(qs.get("q", [""])[0][:200], limit))
+            if path == "/api/notes":
+                return self._send(200, store.notes())
+            if path == "/api/bookmarks":
+                return self._send(200, store.bookmarks())
+            if path == "/api/mine":
+                meta, notes, marks = content.item_meta(), store.notes(), store.bookmarks()
+                ids = list(dict.fromkeys(marks + list(notes)))
+                return self._send(200, [dict(meta[i], item_id=i, note=notes.get(i, ""), bookmarked=i in marks)
+                                        for i in ids if i in meta])
             if path == "/api/units":
                 prog = store.all()
                 out = []
@@ -119,6 +223,7 @@ def make_handler(content, store, web_dir):
                     qids = [q["id"] for q in u["questions"]]
                     out.append({
                         "id": u["id"], "title": u["title"], "subtitle": u.get("subtitle", ""),
+                        "module": u.get("module", ""), "status": u.get("status", ""),
                         "concepts": len(cids), "questions": len(qids),
                         "diagrams": sum(1 for c in u["concepts"] if c.get("diagram")),
                         "concepts_studied": sum(1 for i in cids if prog.get(i, "not_started") != "not_started"),
@@ -133,24 +238,35 @@ def make_handler(content, store, web_dir):
             return self._static(path)
 
         def do_POST(self):
-            if self.path != "/api/progress":
-                return self._send(404, {"error": "not found"})
-            try:
-                n = int(self.headers.get("Content-Length", "0"))
-                if n <= 0 or n > MAX_BODY:
-                    raise ValueError("bad length")
-                req = json.loads(self.rfile.read(n))
-                item_id, status = req["item_id"], req["status"]
-            except (ValueError, KeyError, TypeError):
-                return self._send(400, {"error": "expected JSON {item_id, status}"})
+            req = self._json_body()
+            if req is None:
+                return self._send(400, {"error": "expected a JSON object"})
+            item_id = req.get("item_id")
+            if not isinstance(item_id, str):
+                return self._send(400, {"error": "item_id (string) required"})
             kind = content.item_kinds().get(item_id)
-            allowed = CONCEPT_STATUSES if kind == "concept" else QUESTION_STATUSES
+            if self.path not in ("/api/progress", "/api/notes", "/api/bookmarks"):
+                return self._send(404, {"error": "not found"})
             if kind is None:
                 return self._send(404, {"error": "unknown item"})
-            if status not in allowed:
-                return self._send(400, {"error": "status not allowed for %s" % kind})
-            store.set(item_id, status)
-            return self._send(200, {"item_id": item_id, "status": status})
+            if self.path == "/api/progress":
+                status = req.get("status")
+                allowed = CONCEPT_STATUSES if kind == "concept" else QUESTION_STATUSES
+                if status not in allowed:
+                    return self._send(400, {"error": "status not allowed for %s" % kind})
+                store.set(item_id, status)
+                return self._send(200, {"item_id": item_id, "status": status})
+            if self.path == "/api/notes":
+                text = req.get("text")
+                if not isinstance(text, str) or len(text) > MAX_NOTE:
+                    return self._send(400, {"error": "text (string, max %d chars) required" % MAX_NOTE})
+                store.set_note(item_id, text)
+                return self._send(200, {"item_id": item_id, "saved": bool(text.strip())})
+            on = req.get("on")
+            if not isinstance(on, bool):
+                return self._send(400, {"error": "on (boolean) required"})
+            store.set_bookmark(item_id, on)
+            return self._send(200, {"item_id": item_id, "bookmarked": on})
 
         def _static(self, path):
             if path in ("", "/"):

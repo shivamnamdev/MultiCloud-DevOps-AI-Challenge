@@ -1,0 +1,64 @@
+{
+  "id": "s24a",
+  "title": "Jenkins Introduction Setup · Day 3",
+  "subtitle": "Session 24 · Batch-44 · DevOps Batch-44 | Day 03: Jenkins & Continuous Integration (CI) Fundamentals",
+  "session": 24,
+  "module": "M4 CI/CD: Git, GitHub, Jenkins",
+  "order": 2400,
+  "status": "ready",
+  "source_file": "Session-24-Jenkins-Introduction-Setup/🚀 Day-3 of DevOps i.e Day-1 of Jenkins Batch-44 | 22th July 2026 | 8:00 AM IST | Live Session.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s24a-open-source",
+      "unit": "s24a",
+      "kind": "concept",
+      "title": "Open Source",
+      "text_md": "No licensing cost and a strong global community.",
+      "diagram": null
+    },
+    {
+      "id": "s24a-platform-independent",
+      "unit": "s24a",
+      "kind": "concept",
+      "title": "Platform Independent",
+      "text_md": "Runs on Windows, Linux, macOS, Docker containers, Kubernetes, AWS, Azure, and GCP.",
+      "diagram": null
+    },
+    {
+      "id": "s24a-plugin-support",
+      "unit": "s24a",
+      "kind": "concept",
+      "title": "Plugin Support",
+      "text_md": "More than 2000 plugins allow Jenkins to integrate with tools such as:\nGit\nGitHub\nGitLab\nBitbucket\nMaven\nGradle\nDocker\nKubernetes\nTerraform\nAnsible\nSonarQube\nSlack\nJira\nAWS\nAzure\nGCP",
+      "diagram": null
+    },
+    {
+      "id": "s24a-pipeline-as-code",
+      "unit": "s24a",
+      "kind": "concept",
+      "title": "Pipeline as Code",
+      "text_md": "Pipelines can be written using a Jenkinsfile, making automation version-controlled and reusable.",
+      "diagram": null
+    },
+    {
+      "id": "s24a-distributed-builds",
+      "unit": "s24a",
+      "kind": "practical",
+      "title": "Distributed Builds",
+      "text_md": "Multiple Jenkins agents can execute builds simultaneously, improving performance.\n\nReal-Time CI Workflow\n```text\nDeveloper\n      │\n      ▼\nGit Repository\n      │\n      ▼\nJenkins Detects Commit\n      │\n      ▼\nDownload Source Code\n      │\n      ▼\nCompile Application\n      │\n      ▼\nRun Unit Tests\n      │\n      ▼\nStatic Code Analysis\n      │\n      ▼\nPackage Application\n      │\n      ▼\nGenerate Reports\n      │\n      ▼\nReady for Deployment\n```\n\n\nThis automated workflow reduces manual intervention and ensures that every code change is validated before moving to the next stage.\n\nJenkins Installation on Windows\nThe session included a complete hands-on installation of Jenkins on Windows.\nStep 1: Install Java\nJenkins requires Java to run because it is built using Java.\nStudents installed Java 21 and verified the installation using:\njava -version\n\nIf Java was not detected, the following checks were performed:\nVerify Java installation.\nConfigure the JAVA_HOME environment variable.\nAdd Java to the system PATH.\nStep 2: Download Jenkins\nThe Windows installer (.msi) was downloaded from the official Jenkins website.\nStep 3: Install Jenkins\nDuring installation:\nJenkins service was installed.\nDefault port 8080 was selected.\nWindows service configuration was completed.\nStep 4: Start Jenkins\nAfter installation, Jenkins started automatically as a Windows service.\nStep 5: Unlock Jenkins\nStudents accessed:\nhttp://localhost:8080\n\nJenkins requested the initial admin password.\nWindows location:\nC:\\ProgramData\\Jenkins\\.jenkins\\secrets\\initialAdminPassword\n\nStep 6: Install Recommended Plugins\nJenkins downloaded and installed the recommended plugin set, including Git, Pipeline, Credentials, and other essential plugins.\nStep 7: Create Admin User\nStudents created their administrator account and logged in to the Jenkins dashboard.\n\nJenkins Dashboard\nAfter successful installation, the dashboard provides:\nNew Item (Create Jobs)\nBuild History\nManage Jenkins\nNodes\nPlugins\nCredentials\nBuild Queue\nSystem Logs\nThis becomes the central location for managing all CI/CD activities.\n\nIntroduction to Google Cloud Platform (GCP)\nThe second part of the session introduced Google Cloud Platform (GCP) for cloud-based Jenkins installation.\nStudents learned how to:\nCreate a free GCP account.\nUse free trial credits.\nNavigate the Google Cloud Console.\nCreate a Compute Engine virtual machine.\n\nCreating an Ubuntu VM on GCP\nRecommended VM configuration:\nOperating System: Ubuntu 24.04 LTS\nRAM: 4 GB\nMachine Type: e2-medium (or similar)\nExternal Public IP: Enabled\nBoot Disk: Standard Persistent Disk\nThis VM will be used in upcoming sessions to install Jenkins on Linux.\n\nJenkins Installation on Ubuntu (High-Level Steps)\nThe Linux installation process includes:\nUpdate package repositories.\nInstall Java 21.\nAdd the Jenkins repository.\nInstall Jenkins using apt.\nStart the Jenkins service.\nEnable Jenkins to start automatically on boot.\nVerify service status.\nAccess Jenkins using the VM's external IP and port 8080.\n\nFirewall Configuration\nOne of the most common issues encountered during the session was the inability to access Jenkins from the browser.\nRoot cause:\nThe firewall blocked incoming traffic on port 8080.\nResolution:\nCreate a firewall rule in GCP.\nAllow TCP traffic on port 8080.\nAssociate the rule with the VM.\nVerify that the VM has an external IP address.\nAfter applying these changes, Jenkins became accessible from the browser.\n\nCommon Troubleshooting\nJava Not Found\nCause: Java not installed or JAVA_HOME not configured.\n**💡 Solution:**\n\nInstall Java 21.\nVerify with java -version.\nSet JAVA_HOME and update PATH.\n\nJenkins Not Opening on localhost:8080\nPossible Causes:\nJenkins service stopped.\nPort conflict.\nFirewall restrictions.\nJava issues.\nChecks:\nConfirm Jenkins service is running.\nEnsure port 8080 is free.\nRestart the Jenkins service if required.\n\nPlugin Installation Failed\nPossible Causes:\nInternet connectivity issues.\nCorporate proxy.\nTemporary update center issue.\n**💡 Solution:**\n\nRetry installation.\nVerify internet access.\nInstall plugins later if required.\n\nJenkins Not Accessible on GCP\nPossible Causes:\nFirewall not configured.\nMissing external IP.\nIncorrect network tag.\n**💡 Solution:**\n\nAllow TCP 8080.\nVerify VM networking settings.\nRestart Jenkins if needed.\n\nAWS vs GCP Discussion\nThe session briefly compared AWS and GCP:\nAWS\nGCP\nMost widely adopted cloud provider\nSimple and beginner-friendly interface\nLargest service portfolio\nGenerous free trial credits\nStrong enterprise presence\nExcellent Kubernetes integration\nLarger job market\nEasy learning experience\n\nStudents were encouraged to gain hands-on experience with both platforms to become multi-cloud engineers.\n\nLinkedIn Career Guidance\nVikas emphasized the importance of building a professional online presence. Students were advised to:\nOptimize their LinkedIn profiles.\nPost learning updates regularly.\nShare screenshots of completed labs.\nTag mentors and relevant communities.\nEngage with other professionals' posts.\nConsistent activity on LinkedIn can improve visibility, expand professional networks, and increase opportunities for interviews and referrals.\n\nNext Steps\nStudents were assigned the following tasks before the next session:\nInstall Jenkins on Windows or Linux.\nVerify Java 21 installation.\nAccess Jenkins on http://localhost:8080.\nCreate a free AWS and/or GCP account.\nLaunch an Ubuntu 24.04 VM with 4 GB RAM.\nPrepare the VM for Jenkins installation.\nConfigure firewall rules to allow port 8080.\nComplete the Module Expert form.\nWatch the recorded sessions if any part was missed.\nShare a LinkedIn post summarizing what they learned.",
+      "diagram": null
+    },
+    {
+      "id": "s24a-key-takeaways",
+      "unit": "s24a",
+      "kind": "overview",
+      "title": "Key Takeaways",
+      "text_md": "Continuous Integration enables developers to merge code frequently and receive rapid feedback.\nJenkins automates repetitive tasks such as building, testing, and packaging applications.\nIts extensive plugin ecosystem allows seamless integration with virtually every major DevOps tool.\nInstalling Jenkins requires Java, proper service configuration, and access to port 8080.\nLinux is generally preferred for production Jenkins deployments due to better performance and stability.\nCloud platforms such as AWS and GCP provide an ideal environment for learning and running Jenkins in real-world scenarios.\nRegular hands-on practice and documenting your learning on LinkedIn are essential habits for building a successful DevOps career.",
+      "diagram": null
+    }
+  ],
+  "questions": []
+}

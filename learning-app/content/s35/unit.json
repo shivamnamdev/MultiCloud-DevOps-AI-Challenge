@@ -1,0 +1,251 @@
+{
+  "id": "s35",
+  "title": "GKE Ecommerce Project · Day 5",
+  "subtitle": "Session 35 · Batch-44 · Project-2 on Day-5 of Kubernetes Batch-44: E-Commerce Microservices Deployment o",
+  "session": 35,
+  "module": "M5 Docker, Kubernetes, Monitoring",
+  "order": 3500,
+  "status": "ready",
+  "source_file": "Session-35-GKE-Ecommerce-Project/🚀 Project-2 on Day-5 of Kubernetes Batch-44 | 14th Aug 2026 .md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s35-session-overview",
+      "unit": "s35",
+      "kind": "overview",
+      "title": "Session Overview",
+      "text_md": "The session focused on deploying a real-world e-commerce microservices application on Kubernetes, with emphasis on understanding the architecture, creating a Kubernetes cluster, deploying multiple microservices, troubleshooting failures, and explaining the project effectively in interviews.\nThe instructor explained the difference between monolithic and microservices architecture, why microservices are useful for modern applications, how different services can use different programming languages, and how Kubernetes helps manage containerized microservices efficiently.\nThe practical portion covered creating a Google Kubernetes Engine (GKE) cluster, connecting to the cluster, cloning the project code, understanding the src and release folders, working with Kubernetes YAML manifests, deploying services using kubectl, exposing the frontend, observing Kubernetes self-healing, deleting and recreating pods/deployments, and troubleshooting service failures.\nA major part of the session was also dedicated to interview preparation, particularly how to describe this project on a resume and how to answer cross-questions about architecture, deployment, scaling, troubleshooting, and Kubernetes.",
+      "diagram": null
+    },
+    {
+      "id": "s35-key-topics-covered",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "Key Topics Covered",
+      "text_md": "Monolithic vs Microservices Architecture\nAdvantages of Microservices\nIndependent Deployment and Scaling\nLoose Coupling and Isolation\nMultiple Programming Languages in Microservices\nMicroservices and AI Services\nCost Optimization with Kubernetes\nKubernetes Architecture for Microservices\nGKE Cluster Creation\nStandard vs Autopilot Cluster\nKubernetes Nodes and Resources\nKubernetes YAML/Manifest Files\nDeployment and Service Objects\nkubectl Commands\nKubernetes Deployment\nKubernetes Service\nFrontend Exposure\nLoadBalancer Service\nKubernetes Self-Healing\nPod Recreation\nDeployment Deletion\nRedeployment\nMonorepo Concept\nsrc and release Folder Structure\nE-commerce Microservices Architecture\nProduct Catalog Service\nCart Service\nCheckout Service\nPayment Service\nCurrency Service\nRecommendation/AI Service\nDatabase Integration\nMonitoring and Grafana\nTroubleshooting Microservices\nResume and Interview Project Explanation\nManual Deployment vs CI/CD Automation\nFuture Jenkins Automation",
+      "diagram": null
+    },
+    {
+      "id": "s35-monolithic-architecture",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "Monolithic Architecture",
+      "text_md": "In a monolithic architecture, application components are developed and deployed as a single application/unit.\nFor example:\nFrontend\nBackend\nDatabase\nPayment\nProduct\nCheckout\n\nare tightly integrated into one application.\nThe major disadvantage discussed was that if a critical component fails, the entire application can potentially be affected. Scaling individual components is also difficult because the whole application generally needs to be scaled.",
+      "diagram": null
+    },
+    {
+      "id": "s35-microservices-architecture",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "Microservices Architecture",
+      "text_md": "Microservices divide an application into small, independent services.\nFor the e-commerce application, examples include:\nFrontend\nProduct Catalog\nCart\nCheckout\nPayment\nCurrency\nEmail\nRecommendation\n\nEach service can be developed, deployed, scaled, and potentially maintained independently.\nThe key characteristics discussed were:\nIndependent services\nIsolation\nLoose coupling\nIndependent deployment\nIndependent scaling\nEasier replacement of individual services\nBetter fault isolation",
+      "diagram": null
+    },
+    {
+      "id": "s35-why-different-languages-can-be-used",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "Why Different Languages Can Be Used",
+      "text_md": "A major benefit of microservices is that different services do not necessarily need to use the same programming language.\nFor example:\nFrontend Service       → JavaScript/TypeScript\nBackend Service        → Node.js\nAI Recommendation      → Python\nOther Services         → Go/Java/etc.\n\nThe instructor specifically explained that Python can be useful for AI-related services, allowing the AI component to be developed separately without forcing the entire application to use Python.",
+      "diagram": null
+    },
+    {
+      "id": "s35-kubernetes-for-microservices",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "Kubernetes for Microservices",
+      "text_md": "Running many microservices directly on separate VMs can become expensive.\nFor example, if there are 10 services and each requires multiple VMs for high availability, infrastructure requirements can increase significantly.\nKubernetes allows multiple containerized workloads to run on a smaller cluster of nodes.\nThe session therefore connected Kubernetes with:\nResource utilization\nCost optimization\nContainer orchestration\nScaling\nHigh availability\nSelf-healing",
+      "diagram": null
+    },
+    {
+      "id": "s35-gke-cluster",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "GKE Cluster",
+      "text_md": "The practical session used Google Kubernetes Engine (GKE).\nThe workflow was approximately:\n```text\nGoogle Cloud\n     ↓\nCreate GKE Cluster\n     ↓\nConfigure Nodes\n     ↓\nConnect to Cluster\n     ↓\nClone Application\n     ↓\nApply Kubernetes Manifest\n     ↓\nCreate Deployments & Services\n     ↓\nExpose Application\n     ↓\nTest Application\n```\n\n\nThe instructor demonstrated creating a cluster using the Standard configuration and discussed node CPU, memory, disk size, and node count.",
+      "diagram": null
+    },
+    {
+      "id": "s35-kubernetes-manifest-files",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "Kubernetes Manifest Files",
+      "text_md": "The Kubernetes deployment configuration was maintained through YAML manifest files.\nThe manifest describes resources such as:\nDeployments\nServices\nConfiguration\nMetadata\nPorts\nReplicas\nOther Kubernetes settings\nThe session pointed out that when many microservices exist, YAML files can contain a significant amount of repeated configuration.\nThis is one reason templates and automation become useful.",
+      "diagram": null
+    },
+    {
+      "id": "s35-monorepo-concept",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "Monorepo Concept",
+      "text_md": "The project used a monorepo-style structure, where multiple microservices are maintained within a single repository.\nA simplified structure discussed was:\n```text\nmicroservices-demo/\n│\n├── src/\n│   ├── service-1/\n│   ├── service-2/\n│   ├── service-3/\n│   └── ...\n│\n└── release/\n    └── Kubernetes manifests\n```\n\n\nThe key idea is that multiple services can exist in separate folders while still being maintained within one repository.",
+      "diagram": null
+    },
+    {
+      "id": "s35-kubernetes-deployment",
+      "unit": "s35",
+      "kind": "practical",
+      "title": "Kubernetes Deployment",
+      "text_md": "The practical deployment involved connecting to the GKE cluster and applying Kubernetes configuration.\nThe instructor demonstrated commands around:\n```bash\nkubectl get pods\nkubectl get svc\nkubectl get deployments\nkubectl apply -f <manifest-file>\nkubectl create -f <manifest-file>\n```\n\n\nApplying the manifest caused Kubernetes to create the required resources for the microservices.",
+      "diagram": null
+    },
+    {
+      "id": "s35-kubernetes-services",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "Kubernetes Services",
+      "text_md": "The session explained that simply running a frontend pod does not automatically make it accessible from the internet.\nA Kubernetes Service can provide networking and exposure for workloads.\nThe discussion mentioned mechanisms such as:\nService\nLoadBalancer\nIngress\nkube-proxy\nFor the practical application, a LoadBalancer-based approach was used to expose the frontend externally.",
+      "diagram": null
+    },
+    {
+      "id": "s35-e-commerce-microservices-flow",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "E-commerce Microservices Flow",
+      "text_md": "The main project was an e-commerce application.\nA simplified flow discussed in the session was:\n```text\nUser\n ↓\nFrontend\n ↓\nProduct Catalog\n ↓\nProduct Details\n ↓\nCart\n ↓\nCheckout\n ↓\nPayment\n ↓\nOrder\n```\n\n\nAdditional services can support the application:\nCurrency Service\nRecommendation Service\nEmail Service\n\nThe recommendation service was used as an example of where an AI-based microservice could be integrated.",
+      "diagram": null
+    },
+    {
+      "id": "s35-currency-service",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "Currency Service",
+      "text_md": "The session also discussed international e-commerce.\nFor example:\nUser → India\n```text\nProduct Price → USD\n        ↓\nCurrency Service\n        ↓\nINR\n```\n\n\nA separate currency microservice can handle currency conversion instead of embedding this functionality into the entire application.",
+      "diagram": null
+    },
+    {
+      "id": "s35-kubernetes-self-healing",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "Kubernetes Self-Healing",
+      "text_md": "One of the most important practical demonstrations was Kubernetes' self-healing behavior.\nA pod was deleted intentionally.\nThe observed behavior was:\n```text\nPod Running\n     ↓\nPod Deleted\n     ↓\nDeployment detects missing replica\n     ↓\nNew Pod Created\n     ↓\nApplication Recovers\n```\n\n\nThis happens because the Kubernetes Deployment maintains the desired state.\nThe important interview point is:\nA Deployment manages the desired number of pod replicas, so when a pod disappears, Kubernetes attempts to create a replacement.",
+      "diagram": null
+    },
+    {
+      "id": "s35-pod-failure-vs-deployment-failure",
+      "unit": "s35",
+      "kind": "practical",
+      "title": "Pod Failure vs Deployment Failure",
+      "text_md": "The session made an important distinction.\nIf an individual pod is deleted:\n```text\nPod deleted\n    ↓\nDeployment remains\n    ↓\nNew pod created\n```\n\n\nBut if the Deployment itself is deleted, Kubernetes no longer has that Deployment object managing the pods.\nTherefore, the application/service can be affected until the Deployment is recreated.\nThis distinction is extremely important for troubleshooting questions.",
+      "diagram": null
+    },
+    {
+      "id": "s35-troubleshooting-resource-issues",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "Troubleshooting Resource Issues",
+      "text_md": "During deployment, the session encountered a resource-related issue where the cluster did not have sufficient resources for a workload.\nThe discussion connected the problem with:\nCPU availability\nWorker nodes\nWorkloads\nCluster sizing\nThe lesson was that Kubernetes deployment failures are not always caused by incorrect YAML. Insufficient cluster resources can also prevent workloads from being scheduled.",
+      "diagram": null
+    },
+    {
+      "id": "s35-redeployment",
+      "unit": "s35",
+      "kind": "practical",
+      "title": "Redeployment",
+      "text_md": "When a service or deployment is removed, it may need to be redeployed.\nThe session demonstrated applying the Kubernetes manifest again to recreate missing resources.\nIt also explained that using a complete manifest can result in Kubernetes reporting that some resources already exist while creating resources that are missing.\nFor production environments, targeted deployment of the affected service can be preferable to blindly redeploying everything.",
+      "diagram": null
+    },
+    {
+      "id": "s35-monitoring-and-troubleshooting",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "Monitoring and Troubleshooting",
+      "text_md": "The instructor connected this project with future monitoring concepts.\nThe planned monitoring approach involves tools such as:\n```text\nApplication\n    ↓\nKubernetes\n    ↓\nMonitoring\n    ↓\nPrometheus / Grafana\n    ↓\nAlerts\n    ↓\nDevOps / L1 / L2 Team\n```\n\n\nMonitoring can help identify failures that users may otherwise discover first.\nThe session emphasized that in a real production environment, engineers should not depend only on manually checking the application.",
+      "diagram": null
+    },
+    {
+      "id": "s35-manual-deployment-vs-automation",
+      "unit": "s35",
+      "kind": "practical",
+      "title": "Manual Deployment vs Automation",
+      "text_md": "The practical deployment was intentionally performed manually for learning purposes.\nThe instructor explained that after understanding the manual process, it can be automated using tools such as Jenkins.\nPossible future flow:\n```text\nDeveloper\n   ↓\nGit Repository\n   ↓\nBuild\n   ↓\nDocker Image\n   ↓\nPush Image\n   ↓\nJenkins / CI-CD\n   ↓\nKubernetes\n   ↓\nDeployment\n```\n\n\nThe purpose of first performing the process manually is to understand what automation is actually automating. Humanity occasionally discovers that knowing the thing before automating the thing is useful.",
+      "diagram": null
+    },
+    {
+      "id": "s35-practical-workflow-demonstrated",
+      "unit": "s35",
+      "kind": "practical",
+      "title": "Practical Workflow Demonstrated",
+      "text_md": "The practical flow of the session can be summarized as:\n```text\n1. Create GKE Cluster\n        ↓\n2. Configure Nodes\n        ↓\n3. Connect to Kubernetes Cluster\n        ↓\n4. Clone Microservices Repository\n        ↓\n5. Explore src Folder\n        ↓\n6. Explore release Folder\n        ↓\n7. Review Kubernetes Manifest\n        ↓\n8. Apply/Create Manifest\n        ↓\n9. Create Deployments\n        ↓\n10. Create Services\n        ↓\n11. Check Pods\n        ↓\n12. Check Deployments\n        ↓\n13. Check Services\n        ↓\n14. Expose Frontend\n        ↓\n15. Access Application\n        ↓\n16. Delete a Pod\n        ↓\n17. Observe Self-Healing\n        ↓\n18. Delete a Deployment\n        ↓\n19. Observe Application Failure\n        ↓\n20. Redeploy Required Service\n        ↓\n21. Restore Application\n```",
+      "diagram": null
+    },
+    {
+      "id": "s35-important-commands-covered",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "Important Commands Covered",
+      "text_md": "The transcript clearly demonstrated or discussed commands from the following areas:\n```bash\nkubectl get pods\nkubectl get svc\nkubectl get deployments\nkubectl apply -f <manifest>\nkubectl create -f <manifest>\nkubectl delete deployment <deployment-name>\ngit clone <repository>\n```\n\n\nThe exact command spelling for some portions of the live demonstration was not always clear in the transcript, so the summary preserves the commands that were identifiable rather than inventing missing details.",
+      "diagram": null
+    },
+    {
+      "id": "s35-interview-focused-learning",
+      "unit": "s35",
+      "kind": "concept",
+      "title": "Interview-Focused Learning",
+      "text_md": "A significant part of the session focused on how to present the project in an interview.\nA suitable project explanation based strictly on the session would cover:\nE-commerce application\nMicroservices architecture\nMultiple independent services\nKubernetes/GKE deployment\nContainerized workloads\nKubernetes Deployments and Services\nExternal application exposure\nSelf-healing\nResource troubleshooting\nMonorepo structure\nKubernetes manifest management\nMonitoring\nFuture CI/CD automation\nA strong explanation should focus on what you implemented and what problem Kubernetes solved, rather than merely listing tools.",
+      "diagram": null
+    },
+    {
+      "id": "s35-key-takeaways",
+      "unit": "s35",
+      "kind": "overview",
+      "title": "Key Takeaways",
+      "text_md": "Microservices divide an application into independent services.\nEach service can potentially use a different programming language.\nMicroservices provide better isolation and independent deployment.\nIndividual services can be scaled independently.\nKubernetes is well suited for running large numbers of containerized microservices.\nGKE was used to create the Kubernetes environment.\nKubernetes manifests define application resources declaratively.\nA Deployment maintains the desired state of pods.\nKubernetes can automatically recreate deleted pods, demonstrating self-healing.\nDeleting the Deployment itself is different from deleting an individual pod.\nKubernetes Services provide stable networking and can expose applications.\nLoadBalancer can be used to expose a frontend externally.\nResource limitations such as CPU can prevent workloads from being scheduled.\nA monorepo can maintain multiple microservices within one repository.\nManual deployment should be understood before automating it through CI/CD.\nMonitoring tools such as Grafana become important for production troubleshooting.\nThe project can be presented as a real-world Kubernetes-based e-commerce microservices deployment.\nTroubleshooting knowledge is as important as deployment knowledge for a DevOps role.\nOne-Line Session Summary\nThe session covered a hands-on Kubernetes microservices e-commerce project on GKE, including architecture, cluster creation, YAML manifests, deployments, services, external exposure, self-healing, troubleshooting, redeployment, monitoring concepts, and how to present the project in DevOps interviews.\n10 Interview Questions & Answers",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is the difference between monolithic and microservices architecture?",
+      "prompt": "What is the difference between monolithic and microservices architecture?",
+      "reference_answer": "In a monolithic architecture, the entire application is developed and deployed as a single unit. In microservices architecture, the application is divided into smaller, independent services. Each service can be developed, deployed, scaled, and maintained independently.",
+      "id": "s35-q01",
+      "unit": "s35",
+      "concept_ids": [
+        "s35-microservices-architecture",
+        "s35-monolithic-architecture",
+        "s35-e-commerce-microservices-flow"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "Why did you use Kubernetes for the microservices application?",
+      "prompt": "Why did you use Kubernetes for the microservices application?",
+      "reference_answer": "Kubernetes helps manage multiple containerized microservices. It provides features such as service discovery, scaling, self-healing, load balancing, and automated deployment. It reduces the effort required to manually manage individual containers.",
+      "id": "s35-q02",
+      "unit": "s35",
+      "concept_ids": [
+        "s35-kubernetes-for-microservices",
+        "s35-e-commerce-microservices-flow",
+        "s35-kubernetes-deployment"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is GKE?",
+      "prompt": "What is GKE?",
+      "reference_answer": "GKE stands for Google Kubernetes Engine. It is Google's managed Kubernetes service that allows us to create and manage Kubernetes clusters on Google Cloud.",
+      "id": "s35-q03",
+      "unit": "s35",
+      "concept_ids": [
+        "s35-gke-cluster"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is a Kubernetes Deployment?",
+      "prompt": "What is a Kubernetes Deployment?",
+      "reference_answer": "A Deployment manages the desired state of application Pods. It ensures that the required number of replicas are running and creates replacement Pods when existing Pods fail or are deleted.\n\n5. What happens if you manually delete a Pod managed by a Deployment?\n**💡 Answer:**\n\nThe Deployment detects that the actual number of Pods is lower than the desired number and automatically creates a new Pod. This demonstrates Kubernetes' self-healing capability.\n\n6. What is the difference between a Pod and a Deployment?\n**💡 Answer:**\n\nA Pod is the smallest deployable unit in Kubernetes and runs one or more containers. A Deployment manages Pods and ensures that the desired number of replicas are running.\n\n7. Why do we need a Kubernetes Service?\n**💡 Answer:**\n\nPods are temporary and their IP addresses can change. A Service provides a stable networking endpoint for accessing Pods. It can also expose an application internally or externally depending on its type.\n\n8. How did you expose the frontend application?\n**💡 Answer:**\n\nThe frontend was exposed using a Kubernetes Service with a LoadBalancer configuration. This allowed the application to receive an externally accessible address through the cloud provider's load-balancing infrastructure.\n\n9. What is a Kubernetes YAML manifest?\n**💡 Answer:**\n\nA YAML manifest is a declarative configuration file used to define Kubernetes resources such as Deployments and Services. Instead of manually creating every resource, we define the desired state in YAML and apply it using kubectl.\n\n10. What problem can occur if the Kubernetes cluster does not have enough resources?\n**💡 Answer:**\n\nIf the cluster does not have enough CPU or memory, Kubernetes may not be able to schedule a Pod. The Pod can remain in a pending state until sufficient resources become available or the cluster is scaled.\n\n10 Scenario-Based Interview Questions & Answers\n1. A Pod is deleted unexpectedly. What will you do?\n**💡 Answer:**\n\nFirst, I would check the Pods:\n```bash\nkubectl get pods\n```\n\n\nThen I would check the Deployment:\n```bash\nkubectl get deployments\n```\n\n\nIf the Pod is managed by a Deployment, Kubernetes should automatically create a replacement. I would verify that the new Pod is running and check its events/logs if it does not recover.\n\n2. A Pod is stuck in Pending. How would you troubleshoot it?\n**💡 Answer:**\n\nI would first check:\n```bash\nkubectl get pods\nkubectl describe pod <pod-name>\n```\n\n\nI would look for scheduling events such as insufficient CPU or memory. If the cluster does not have enough resources, I would either reduce resource requirements or scale the cluster by adding/expanding nodes.\n\n3. Your frontend Pods are running, but users cannot access the application. What would you check?\n**💡 Answer:**\n\nI would verify the Service:\n```bash\nkubectl get svc\n```\n\n\nThen I would check:\nService type\nExternal IP\nPort configuration\nTarget port\nPod labels/selectors\nPod status\nI would also use kubectl describe svc to investigate configuration problems.\n\n4. You deleted a Deployment and the application stopped working. Why didn't Kubernetes recreate the Pods?\n**💡 Answer:**\n\nBecause the Deployment itself was deleted. Kubernetes can recreate Pods when the Deployment still exists and detects that replicas are missing. Once the Deployment is removed, there is no controller maintaining those Pods.\nI would recreate the Deployment using the Kubernetes manifest.\n\n5. One microservice is down, but the other services are working. Why is this possible in microservices architecture?\n**💡 Answer:**\n\nMicroservices are independently deployed and isolated. Therefore, failure of one service does not necessarily bring down the entire application. However, services that depend on the failed service may also experience errors.\nI would identify the failed service and check its Pods, logs, Service, and dependencies.\n\n6. You deployed a microservice, but its Pod keeps restarting. What would you check?\n**💡 Answer:**\n\nI would check the Pod status and logs:\n```bash\nkubectl get pods\nkubectl logs <pod-name>\nkubectl describe pod <pod-name>\n```\n\n\nI would investigate application errors, configuration problems, missing environment variables, container startup failures, resource limits, and health probes.\n\n7. Your application suddenly requires more capacity. How would you handle it in Kubernetes?\n**💡 Answer:**\n\nI would scale the affected microservice rather than scaling the entire application unnecessarily.\nFor example:\n```bash\nkubectl scale deployment <deployment-name> --replicas=3\n```\n\n\nFor production workloads, I could also use Horizontal Pod Autoscaler (HPA) to automatically adjust replicas based on resource utilization.\n\n8. A developer says, \"The application works locally but fails in Kubernetes.\" How would you troubleshoot it?\n**💡 Answer:**\n\nI would compare the local and Kubernetes environments.\nI would check:\nContainer image\nEnvironment variables\nConfiguration\nPorts\nService connectivity\nDependencies\nSecrets\nPod logs\nPod events\nCommands such as kubectl logs and kubectl describe pod would help identify the actual failure instead of performing the traditional DevOps ritual of staring at the screen and hoping.\n\n9. You have 10 microservices and manually deploying each one is taking too much time. What would you improve?\n**💡 Answer:**\n\nI would automate the deployment process using a CI/CD pipeline.\nA possible workflow would be:\n```text\nDeveloper\n   ↓\nGit Repository\n   ↓\nBuild\n   ↓\nDocker Image\n   ↓\nContainer Registry\n   ↓\nJenkins/CI Pipeline\n   ↓\nKubernetes\n   ↓\nDeployment\n```\n\n\nThis reduces manual effort and provides consistent deployments.\n\n10. Production users report that the application is slow. How would you investigate it?\n**💡 Answer:**\n\nI would first identify which component is causing the problem instead of assuming Kubernetes is guilty.\nI would check:\n```bash\nkubectl get pods\nkubectl top pods\nkubectl top nodes\n```\n\n\nThen I would investigate CPU/memory utilization, Pod health, application logs, service communication, and database performance.\nFor a production environment, I would use monitoring tools such as Prometheus and Grafana to identify resource and performance trends.",
+      "id": "s35-q04",
+      "unit": "s35",
+      "concept_ids": [
+        "s35-kubernetes-deployment",
+        "s35-kubernetes-for-microservices",
+        "s35-kubernetes-manifest-files"
+      ]
+    }
+  ]
+}

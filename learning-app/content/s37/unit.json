@@ -1,0 +1,379 @@
+{
+  "id": "s37",
+  "title": "Grafana Dashboards · Day 7",
+  "subtitle": "Session 37 · Batch-44 · Interview Questions & Answers",
+  "session": 37,
+  "module": "M5 Docker, Kubernetes, Monitoring",
+  "order": 3700,
+  "status": "ready",
+  "source_file": "Session-37-Grafana-Dashboards/🚀 Day-7 of Kubernetes HPA + Helm + Grafana Batch-44 _ 18th Aug 2026 _ 8_00 AM IST _ Live Session.md",
+  "needs_authoring": [],
+  "unparsed_qa": [],
+  "unanswered_questions": [],
+  "concepts": [
+    {
+      "id": "s37-architecture-of-the-monitoring-stack",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Architecture of the Monitoring Stack",
+      "text_md": "- **Three core components** work together to deliver Kubernetes monitoring:\n    - **Kube-state-metrics**: Collects Kubernetes-level data — CPU usage, memory utilization, pod status, and all cluster resource states.\n    - **Node Exporter**: Fetches node-specific information (per-node metrics) and exports it to the Prometheus database.\n    - **Prometheus**: Pulls data from the cluster via these exporters, stores it in a **time-series database** using key-value pairs, enabling PromQL queries.\n- **Persistent Volume Claims (PVC)**: Data is stored in PVCs rather than a generic database; the term \"claim\" is used because the storage is bound to Prometheus.\n- **Grafana**: Acts as the visualization layer — runs PromQL queries against Prometheus, fetches the data, and renders graphs on the UI.\n- **Data flow**: Cluster metrics → kube-state-metrics / node exporter → Prometheus (time-series DB, key-value store) → Grafana (PromQL queries) → visual dashboards.\n- Prometheus's time-series database stores data as matrices; Grafana can visualize this data across configurable time zones (e.g., last 15 minutes, 1 hour, 1 month).",
+      "diagram": null
+    },
+    {
+      "id": "s37-kubernetes-cluster-setup-on-google-cloud",
+      "unit": "s37",
+      "kind": "practical",
+      "title": "Kubernetes Cluster Setup on Google Cloud",
+      "text_md": "- Instructor deleted the previous cluster and created a new one live to demonstrate the process.\n- **Cluster configuration steps:**\n    - Navigate to the Kubernetes list overview page in Google Cloud Console.\n    - Click **Create** → select **Standard** mode (not Autopilot).\n    - Name the cluster (e.g., `grafana-day-2`).\n    - Select **one node per zone** — since the US-central region has three zones, this automatically creates **three nodes**.\n    - Set disk size to **30 GB per node** (reduced from the default 100 GB), resulting in 90 GB total across the cluster.\n    - Leave all other configuration at defaults; click **Create**.\n- Cluster creation takes approximately 2–3 minutes.\n- Participants were instructed to navigate to the same page and follow along in real time.",
+      "diagram": null
+    },
+    {
+      "id": "s37-helm-installation-of-prometheus-grafana-stack",
+      "unit": "s37",
+      "kind": "practical",
+      "title": "Helm Installation of Prometheus & Grafana Stack",
+      "text_md": "- **Helm** is described as an open-source stack of ready-made, pre-configured components — it installs and configures all monitoring components in one command rather than requiring manual setup.\n- **Step-by-step commands executed** (from a shared GitHub repo):\n    1. Connect to the Kubernetes cluster.\n    2. Create a **namespace**: `monitor` (namespace can be renamed as needed).\n    3. Add the **Prometheus community Helm repo**.\n    4. Run `helm repo update` to update all available repos in the environment.\n    5. Run `helm install kube-prometheus-stack` — installs all components (pods, services, deployments) into the `monitor` namespace.\n- The Helm chart name (`kube-prometheus-stack`) is from the Prometheus community; the release name and namespace can be customized.\n- Installation takes 2–3 minutes; Helm deploys all services automatically.",
+      "diagram": null
+    },
+    {
+      "id": "s37-exposing-grafana-via-load-balancer",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Exposing Grafana via Load Balancer",
+      "text_md": "- After installation, all services run internally within the `monitor` namespace.\n- **To access Grafana over the internet**, a Load Balancer service must be created:\n    - Command: `kubectl expose deployment kube-prometheus-stack-grafana --port=3000 --target-port=3000 --type=LoadBalancer --name=grafana --namespace=monitor`\n    - `--port=3000` and `--target-port=3000`: Grafana runs internally on port 3000.\n    - `--type=LoadBalancer`: Exposes the service publicly over the internet.\n    - `--name=grafana`: Name of the newly created service.\n- Verify with: `kubectl get svc -n monitor` — wait ~30–40 seconds for the **external IP** to be generated and published.\n- Once the external IP is available, access Grafana at `<external-IP>:3000`.\n- **Service type options** discussed: ClusterIP (internal only), NodePort, LoadBalancer (internet-facing).\n- ClusterIP is used for internal cluster communication; Load Balancer is needed for internet access.",
+      "diagram": null
+    },
+    {
+      "id": "s37-grafana-login-and-initial-configuration",
+      "unit": "s37",
+      "kind": "practical",
+      "title": "Grafana Login and Initial Configuration",
+      "text_md": "- **Default credentials**: Username = `admin`; password is base64-encrypted and retrieved via a specific `kubectl` command from the Helm output.\n- The initial admin password is **static** (set at install time), but each deployment generates a different encrypted value.\n- After logging in with admin credentials, the Grafana homepage shows options: Home, Bookmarks, Shared Dashboards, Alerting, Connections, and Administration.",
+      "diagram": null
+    },
+    {
+      "id": "s37-data-sources-and-connections",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Data Sources and Connections",
+      "text_md": "- Grafana can connect to **any data source**, not just Prometheus:\n    - Prometheus, MySQL, PostgreSQL, Azure Monitor, AWS CloudWatch, Graphite, InfluxDB, and others.\n    - In a company context, data sources could include Salesforce, Jira, or any internal system.\n- When Helm installs the stack, **two data sources are automatically configured**: Prometheus and AlertManager — no manual setup required.\n- To add a new data source: **Connections → Data Sources → Add new data source** → select the type → provide URL, username, and password.\n- Prometheus is accessible internally within the cluster on **port 9090**; Grafana connects to it using the internal cluster service URL with the `monitor` namespace.\n- For sensitive credentials, a **Vault** can be used to store secrets; the token from Vault can be referenced in the data source configuration instead of hardcoding credentials.\n- Whether Prometheus is visible over the internet depends on whether it is exposed as a Load Balancer; by default it is not exposed externally.",
+      "diagram": null
+    },
+    {
+      "id": "s37-dashboard-import-and-customization",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Dashboard Import and Customization",
+      "text_md": "- Grafana dashboards are written in **JSON** (Go language, ~97% Go).\n- Writing a dashboard from scratch requires ~940 lines of JSON code — not practical for most users.\n- **Recommended approach**: Import ready-made dashboards from the [Grafana Dashboards community site](https://grafana.com/grafana/dashboards/).",
+      "diagram": null
+    },
+    {
+      "id": "s37-importing-via-dashboard-id",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Importing via Dashboard ID",
+      "text_md": "- Search for the desired dashboard (e.g., \"Kubernetes Nodes,\" \"Kubernetes Pod Metrics\").\n- Copy the **dashboard ID** (e.g., `747` for Kubernetes Pod Metrics, `1860` for Node Exporter).\n- In Grafana: **Dashboards → New → Import** → paste the ID → click **Load** → select the Prometheus data source → click **Import**.",
+      "diagram": null
+    },
+    {
+      "id": "s37-importing-via-json-file",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Importing via JSON File",
+      "text_md": "- Download the JSON file from the community site, open in VS Code to inspect/modify, then upload via **Dashboards → New → Import → Upload JSON file**.\n- If a dashboard with the same UID already exists, the UID must be changed to avoid conflicts.",
+      "diagram": null
+    },
+    {
+      "id": "s37-dashboard-variables",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Dashboard Variables",
+      "text_md": "- Dashboards use **variables** (prefixed with `$`) to allow dynamic filtering — e.g., selecting namespace, pod, cluster, or container from a dropdown without editing the dashboard.\n- This enables a **single dashboard for all namespaces and pods**, selectable at runtime.",
+      "diagram": null
+    },
+    {
+      "id": "s37-panel-customization",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Panel Customization",
+      "text_md": "- Each panel can be edited: change the visualization type (graph, gauge, speedometer), rename the panel, modify the PromQL query, adjust thresholds.\n- **Duplicate a panel** as a shortcut: duplicate an existing panel (e.g., CPU) and change the query and name (e.g., to \"Network\") rather than building from scratch.\n- Visualization types include graphs, gauges, and other chart types; style can be customized as needed.\n- If data is not appearing in a panel, the metric name may not exist in the cluster — use the **Explore** tab to verify the metric before adding it to a dashboard.",
+      "diagram": null
+    },
+    {
+      "id": "s37-promql-queries-and-the-explore-tab",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "PromQL Queries and the Explore Tab",
+      "text_md": "- **PromQL** is the query language used by Grafana to fetch data from Prometheus.\n- To find and test a query before adding it to a dashboard:\n    - Go to **Connections → Data Sources → Prometheus → Explore** (or use the **Explore** button directly).\n    - Select the metric from the dropdown (e.g., CPU, memory, network bytes, I/O).\n    - Run the query to verify data is available.\n- Example metric explored: **container network receive/transmit bytes total** — used to monitor network traffic per pod/container/namespace.\n- Data in Prometheus is available for every pod, cluster, namespace, and container — the query filters it by the variables selected.\n- Workflow for adding a new panel: find the metric in Explore → confirm data → copy the PromQL query → paste into a panel's query editor → save.",
+      "diagram": null
+    },
+    {
+      "id": "s37-user-and-team-management",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "User and Team Management",
+      "text_md": "- **Creating users**: Administration → Users and Access → Users → New User → provide name, email, username, password.\n- **Default role for new users is Viewer** — limited access (Home, Bookmarks, Shared Dashboards, Alerting only; no Connections or Administration tabs).\n- To grant more access: change role to **Admin** or **Editor** via the user's profile.\n- **Force logout**: Admins can force-logout any user from their session (useful for security or access revocation).\n- **Teams**: Create a team, add users to it; all members of a team share the same access level — useful for managing access at a group level (e.g., \"Deepak Team\").\n- **Service Accounts**: Non-human, robotic accounts used for automation — unlike human users, they do not leave the organization, making them reliable for automated pipelines and integrations.\n- **Plugins**: Extend Grafana's capabilities for domain-specific use cases (e.g., temperature units for healthcare, petroleum sensor data for oil & gas).\n- **Enterprise License**: Grafana is open-source, but an Enterprise edition is available with advanced features; the license can be activated via the Administration → License tab.",
+      "diagram": null
+    },
+    {
+      "id": "s37-creating-alert-rules",
+      "unit": "s37",
+      "kind": "practical",
+      "title": "Creating Alert Rules",
+      "text_md": "- Alerts can be created **per panel** (from the panel's alert tab) or globally from the **Alerting** menu.\n- Steps to create an alert rule:\n    1. Name the alert rule.\n    2. Define the condition/behavior — e.g., \"if network usage exceeds threshold for more than 5 minutes.\"\n    3. Set the **evaluation period** — how frequently to check the condition.\n    4. Set **Keep Firing** duration — how long to keep firing the alert after the condition is met, until the issue is resolved.",
+      "diagram": null
+    },
+    {
+      "id": "s37-contact-points-and-notifications",
+      "unit": "s37",
+      "kind": "practical",
+      "title": "Contact Points and Notifications",
+      "text_md": "- **Contact points** define where alerts are sent:\n    - Email (requires SMTP configuration), Slack, Microsoft Teams (via Webhook URL), Telegram, Discord, Google Chat, Cisco Webex, SNS, and others.\n- **SMTP configuration**: Requires the company's own SMTP server; using an external mail server (e.g., Gmail) risks emails being blocked or flagged as spam.\n- **Microsoft Teams integration**: Create a channel, generate a **Webhook URL**, paste it into the Teams contact point configuration in Grafana.\n- Notification routing: alerts can be routed to different teams/contact points based on severity or team assignment.",
+      "diagram": null
+    },
+    {
+      "id": "s37-alert-silencing-maintenance-windows",
+      "unit": "s37",
+      "kind": "practical",
+      "title": "Alert Silencing (Maintenance Windows)",
+      "text_md": "- During planned maintenance, alerts should be **suppressed** to avoid false positives (false alerts).\n- Create a **silencer** in Grafana — define the duration of the maintenance window; alerts will not fire during that period.\n- After the maintenance window ends, alerting resumes automatically.",
+      "diagram": null
+    },
+    {
+      "id": "s37-active-alerts-view",
+      "unit": "s37",
+      "kind": "practical",
+      "title": "Active Alerts View",
+      "text_md": "- The **Active Notifications** section shows all currently firing alerts — useful for DevOps engineers to review overnight incidents without sorting through email.\n- Alerts can be grouped by team, contact person, or severity for easier triage.",
+      "diagram": null
+    },
+    {
+      "id": "s37-alert-manager",
+      "unit": "s37",
+      "kind": "practical",
+      "title": "Alert Manager",
+      "text_md": "- **Alert Manager** is a separate service running on **port 9093**, automatically set up by the Helm stack.\n- It handles routing, grouping, and firing of alert notifications.",
+      "diagram": null
+    },
+    {
+      "id": "s37-golden-signals-framework-for-monitoring",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Golden Signals Framework for Monitoring",
+      "text_md": "Introduced by Chander as a best-practice framework for defining what to monitor and how to answer interview questions about alerting strategy:\n\n- **L — Latency**: Is the service responding slowly? Are there slowness issues?\n- **E — Error**: Are there errors occurring in the system?\n- **T — Traffic**: Has traffic increased or decreased unexpectedly?\n- **S — Saturation**: Are resources (CPU, memory) at or beyond capacity?\n- These four signals are **interconnected** — high traffic can cause latency, which can cause errors, which indicates saturation.\n- In interviews, when asked \"what parameters do you alert on?\", the recommended answer is: \"We follow the golden signals — Latency, Error, Traffic, Saturation — and set thresholds accordingly.\"\n- **Observability** is described as a higher-level concept than monitoring — the preferred job title/skill term for this domain is \"Observability Engineer\" or \"Continuous Monitoring SME.\"\n- Tools like Prometheus/Grafana, Splunk, Dynatrace, and AppDynamics all follow the same 90% logic; the concepts transfer across tools.",
+      "diagram": null
+    },
+    {
+      "id": "s37-devops-roles-and-responsibilities-in-monitoring",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "DevOps Roles and Responsibilities in Monitoring",
+      "text_md": "- The DevOps engineer's role is to **build, deploy, and configure** the monitoring infrastructure (Prometheus, Grafana, alerts, dashboards) and hand it over to L1/L2/L3 teams.\n- **L1/L2/L3 responsibilities post-handover**:\n    - L1/L2/L3: Respond to and resolve alerts.\n    - If unresolvable, escalate via ticket to DevOps.\n    - DevOps logs into the server to investigate infrastructure-level issues.\n- Panel-level issues (data not appearing, alert not firing) are DevOps problems; alert-triggered but unresolved issues are L1/L2/L3 problems.\n- DevOps sets up the system once; ongoing monitoring and response is the operations team's responsibility.",
+      "diagram": null
+    },
+    {
+      "id": "s37-prometheus-vs-grafana",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Prometheus vs Grafana",
+      "text_md": "| Prometheus | Grafana |\n|---|---|\n| Collects metrics | Visualizes metrics |\n| Stores time-series data | Queries data sources |\n| Uses PromQL | Builds dashboards and panels |\n| Focuses on monitoring data | Focuses on visualization and alerting |\n\n### Monitoring Flow\n\n**Kubernetes → Metrics Components → Prometheus → PromQL → Grafana → Dashboard → Alert → Notification**\n\n---\n`",
+      "diagram": null
+    },
+    {
+      "id": "s37-core-concepts-to-remember",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Core Concepts to Remember",
+      "text_md": "| Concept | Simple Explanation |\n|---|---|\n| **Prometheus** | Collects and stores monitoring metrics |\n| **Grafana** | Visualizes metrics through dashboards |\n| **PromQL** | Query language used with Prometheus |\n| **kube-state-metrics** | Provides Kubernetes object/state metrics |\n| **Node Exporter** | Provides node-level infrastructure metrics |\n| **Helm** | Packages and simplifies Kubernetes application deployment |\n| **Dashboard** | Collection of monitoring visualizations |\n| **Panel** | Individual visualization inside a dashboard |\n| **Contact Point** | Destination for alert notifications |\n| **SMTP** | Used for email notification delivery |\n| **Service Account** | Stable identity for automated processes |\n| **Alert Silencing** | Temporarily prevents notifications during expected events |\n| **Alert Fatigue** | Engineers becoming desensitized because of excessive alerts |",
+      "diagram": null
+    },
+    {
+      "id": "s37-four-golden-signals",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Four Golden Signals",
+      "text_md": "These four signals provide a useful framework for application monitoring:\n\n| Signal | Meaning |\n|---|---|\n| 🕐 **Latency** | How long requests take |\n| ❌ **Errors** | Number or rate of failed requests |\n| 📈 **Traffic** | Amount of demand or requests |\n| 🔋 **Saturation** | How heavily a resource is being utilized |\n\n### Easy Memory Trick\n\n> **Latency + Traffic + Errors + Saturation = Golden Signals**",
+      "diagram": null
+    },
+    {
+      "id": "s37-production-monitoring-mindset",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Production Monitoring Mindset",
+      "text_md": "A useful way to think about a DevOps monitoring workflow is:\n\n```text\nBUILD\n  ↓\nCONFIGURE\n  ↓\nMONITOR\n  ↓\nALERT\n  ↓\nTROUBLESHOOT\n  ↓\nOPERATE / HANDOVER\n```\n\nMonitoring is not just about making attractive graphs. The real goal is to make system behavior understandable and turn abnormal conditions into an operational response.",
+      "diagram": null
+    },
+    {
+      "id": "s37-important-note-about-hpa",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Important Note About HPA",
+      "text_md": "The session introduced **Horizontal Pod Autoscaling (HPA)** as an objective and the cluster was created with scaling practice in mind.\n\nHowever, the source transcript explicitly indicates that the detailed HPA practical was **not fully covered in this session** and was planned for further discussion.\n\n> **For interview preparation:** Treat HPA implementation as a topic planned for the next discussion rather than claiming that the complete HPA practical was demonstrated here.",
+      "diagram": null
+    },
+    {
+      "id": "s37-student-revision-checklist",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Student Revision Checklist",
+      "text_md": "- [ ] Understand Prometheus and Grafana roles\n- [ ] Understand the Kubernetes monitoring architecture\n- [ ] Understand Helm-based monitoring stack deployment\n- [ ] Understand Kubernetes namespaces\n- [ ] Understand Grafana Service exposure\n- [ ] Understand Grafana users, teams and roles\n- [ ] Understand service accounts\n- [ ] Understand dashboards and panels\n- [ ] Understand PromQL\n- [ ] Understand CPU, memory and network metrics\n- [ ] Understand Grafana alert rules\n- [ ] Understand contact points\n- [ ] Understand SMTP notifications\n- [ ] Understand alert silencing\n- [ ] Understand alert fatigue\n- [ ] Memorize the four golden signals\n- [ ] Practice all 10 interview questions\n- [ ] Practice all 10 scenario-based questions\n- [ ] Review the HPA scope carefully",
+      "diagram": null
+    },
+    {
+      "id": "s37-interview-preparation-strategy",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Interview Preparation Strategy",
+      "text_md": "For this session, focus on being able to explain these **five flows** without looking at notes:\n\n### 1. Monitoring Flow\n\n```text\nKubernetes → Prometheus → Grafana\n```\n\n### 2. Query Flow\n\n```text\nGrafana Panel → PromQL → Prometheus → Metric Data\n```\n\n### 3. Alert Flow\n\n```text\nMetric → Query → Condition → Alert Rule\n```\n\n### 4. Notification Flow\n\n```text\nAlert Rule → Contact Point → SMTP / Notification Channel → Team\n```\n\n### 5. Production Operations Flow\n\n```text\nMonitor → Detect → Alert → Investigate → Troubleshoot → Resolve\n```\n\nIf you can explain these five flows clearly, you understand the core of the session rather than merely remembering a collection of tool names. Humans do occasionally reward understanding over button-clicking.",
+      "diagram": null
+    },
+    {
+      "id": "s37-session-source",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "Session Source",
+      "text_md": "This GitHub study material was prepared from the **Session 37 / Grafana & Kubernetes monitoring session material provided for Batch 44**. The HPA scope has been kept explicit because the source material states that its detailed practical was not fully covered.",
+      "diagram": null
+    },
+    {
+      "id": "s37-clouddevopshub",
+      "unit": "s37",
+      "kind": "concept",
+      "title": "CloudDevOpsHub",
+      "text_md": "**Multi Cloud + DevOps with AI**\n\n> Learn → Practice → Build → Monitor → Troubleshoot → Prepare for Interviews",
+      "diagram": null
+    }
+  ],
+  "questions": [
+    {
+      "kind": "interview",
+      "title": "What is Prometheus?",
+      "prompt": "What is Prometheus?",
+      "reference_answer": "Prometheus is an open-source monitoring and metrics collection system. It collects time-series metrics from different targets and stores them so they can be queried later. In a Kubernetes environment, Prometheus can collect metrics related to nodes, pods, containers, and Kubernetes objects.",
+      "id": "s37-q01",
+      "unit": "s37",
+      "concept_ids": [
+        "s37-helm-installation-of-prometheus-grafana-stack",
+        "s37-prometheus-vs-grafana"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Grafana and why is it used with Prometheus?",
+      "prompt": "What is Grafana and why is it used with Prometheus?",
+      "reference_answer": "Grafana is a visualization and monitoring platform. It connects to Prometheus as a data source, uses **PromQL** to query metrics, and displays the results through dashboards and panels.\nThe typical flow is:\n**Kubernetes → Prometheus → Grafana → Dashboard**",
+      "id": "s37-q02",
+      "unit": "s37",
+      "concept_ids": [
+        "s37-helm-installation-of-prometheus-grafana-stack",
+        "s37-prometheus-vs-grafana",
+        "s37-exposing-grafana-via-load-balancer"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is PromQL?",
+      "prompt": "What is PromQL?",
+      "reference_answer": "PromQL stands for **Prometheus Query Language**. It is used to query and analyze metrics stored in Prometheus.\nFor example, PromQL can be used to retrieve CPU, memory, network, pod, or node-related metrics and display them in Grafana.",
+      "id": "s37-q03",
+      "unit": "s37",
+      "concept_ids": [
+        "s37-promql-queries-and-the-explore-tab"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is kube-state-metrics?",
+      "prompt": "What is kube-state-metrics?",
+      "reference_answer": "`kube-state-metrics` generates metrics about the state of Kubernetes objects.\nIt can provide information about resources such as:\n\n- Pods\n- Deployments\n- ReplicaSets\n- Nodes\n- Namespaces\n\nIt is useful when we need to understand the state of Kubernetes resources rather than just operating-system-level metrics.",
+      "id": "s37-q04",
+      "unit": "s37",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "What is Node Exporter?",
+      "prompt": "What is Node Exporter?",
+      "reference_answer": "Node Exporter exposes infrastructure-level metrics from machines or nodes.\nIt can provide metrics related to:\n\n- CPU\n- Memory\n- Disk\n- Network\n- System resources\n\nPrometheus collects these metrics and Grafana can visualize them.",
+      "id": "s37-q05",
+      "unit": "s37",
+      "concept_ids": []
+    },
+    {
+      "kind": "interview",
+      "title": "Why is Helm used for installing Prometheus and Grafana?",
+      "prompt": "Why is Helm used for installing Prometheus and Grafana?",
+      "reference_answer": "Helm is a package manager for Kubernetes. Instead of manually creating many Kubernetes YAML files, we can use a Helm chart to deploy and manage applications.\nFor Prometheus and Grafana, Helm simplifies:\n\n- Installation\n- Configuration\n- Upgrades\n- Version management\n- Resource deployment",
+      "id": "s37-q06",
+      "unit": "s37",
+      "concept_ids": [
+        "s37-helm-installation-of-prometheus-grafana-stack",
+        "s37-prometheus-vs-grafana",
+        "s37-exposing-grafana-via-load-balancer"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What are Grafana dashboards and panels?",
+      "prompt": "What are Grafana dashboards and panels?",
+      "reference_answer": "A **dashboard** is a collection of monitoring visualizations, while a **panel** is an individual visualization inside that dashboard.\nFor example, a Kubernetes dashboard might contain separate panels for:\n\n- CPU utilization\n- Memory utilization\n- Network traffic\n- Pod status\n- Node status\n\nEach panel can use a PromQL query to retrieve its data.",
+      "id": "s37-q07",
+      "unit": "s37",
+      "concept_ids": [
+        "s37-dashboard-import-and-customization",
+        "s37-dashboard-variables",
+        "s37-exposing-grafana-via-load-balancer"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What is Grafana alerting?",
+      "prompt": "What is Grafana alerting?",
+      "reference_answer": "Grafana alerting allows us to define conditions under which Grafana should generate an alert.\nFor example, we could configure an alert when CPU utilization remains above a defined threshold.\nThe general process is:\n**Metric → Query → Condition → Alert Rule → Contact Point → Notification**",
+      "id": "s37-q08",
+      "unit": "s37",
+      "concept_ids": [
+        "s37-active-alerts-view",
+        "s37-alert-manager",
+        "s37-alert-silencing-maintenance-windows"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What are contact points in Grafana?",
+      "prompt": "What are contact points in Grafana?",
+      "reference_answer": "Contact points define where Grafana sends alert notifications.\nDepending on the configuration, notifications can be sent through mechanisms such as:\n\n- Email\n- Slack\n- Webhooks\n\nFor example, a production alert can be configured to notify the operations team through email or another supported notification channel.",
+      "id": "s37-q09",
+      "unit": "s37",
+      "concept_ids": [
+        "s37-contact-points-and-notifications",
+        "s37-exposing-grafana-via-load-balancer",
+        "s37-grafana-login-and-initial-configuration"
+      ]
+    },
+    {
+      "kind": "interview",
+      "title": "What are the four golden signals of monitoring?",
+      "prompt": "What are the four golden signals of monitoring?",
+      "reference_answer": "The four golden signals are:\n\n1. **Latency**: How long a request takes.\n2. **Traffic**: The amount of demand on the system.\n3. **Errors**: The number or rate of failed requests.\n4. **Saturation**: How much a resource is being utilized.\n\nThey provide a useful framework for deciding what application-level metrics should be monitored.",
+      "id": "s37-q10",
+      "unit": "s37",
+      "concept_ids": [
+        "s37-four-golden-signals",
+        "s37-golden-signals-framework-for-monitoring",
+        "s37-architecture-of-the-monitoring-stack"
+      ]
+    },
+    {
+      "kind": "scenario",
+      "title": "Based Interview Questions & Answers",
+      "prompt": "Based Interview Questions & Answers",
+      "reference_answer": "I would first check the node and pod metrics in Grafana. I would identify whether the CPU consumption is coming from a particular pod, container, or the node itself.\nI would then:\n\n1. Check CPU metrics in Grafana.\n2. Identify the affected node/pod.\n3. Verify the pod resource consumption using Kubernetes commands.\n4. Check whether there was a recent deployment or traffic increase.\n5. Review application logs if necessary.\n6. Determine whether resource limits/requests need adjustment or whether scaling is required.\n\n---\n\n### 2. Scenario: Grafana is running, but you cannot see Prometheus metrics. What would you check?\n\n**Answer:**\nI would first verify that Prometheus is running correctly.\nI would check:\n\n1. Prometheus pod status.\n2. Prometheus service.\n3. Grafana's configured data source.\n4. Whether Grafana can communicate with Prometheus.\n5. Whether the Prometheus data source is showing as healthy.\n6. Whether the PromQL query actually returns data.\n\nThe problem could be related to the data source configuration, connectivity, Prometheus itself, or the query.\n\n---\n\n### 3. Scenario: Your Grafana dashboard is showing \"No Data.\" What would you do?\n\n**Answer:**\nI would troubleshoot it systematically.\nFirst, I would check whether Prometheus contains the required metric. Then I would test the PromQL query directly in Grafana's query interface.\nI would verify:\n\n- Metric name\n- PromQL syntax\n- Time range\n- Prometheus data source\n- Labels and filters\n- Prometheus target status\n\nIf the metric doesn't exist in Prometheus, I would investigate the relevant exporter or metric collection component.\n\n---\n\n### 4. Scenario: You need to monitor CPU and memory for all Kubernetes nodes. How would you design the Grafana dashboard?\n\n**Answer:**\nI would create a Kubernetes infrastructure dashboard with separate panels for CPU and memory.\nFor example:\n\n- Node CPU utilization\n- Node memory utilization\n- Node availability\n- Network usage\n- Disk usage\n\nI would use PromQL queries to retrieve the required metrics and configure Grafana panels to make comparison between nodes easy.\n\n---\n\n### 5. Scenario: Your team is receiving hundreds of alerts every day, and engineers are ignoring them. What would you do?\n\n**Answer:**\nThis is an example of **alert fatigue**.\nI would review the existing alert rules and determine which alerts are genuinely actionable.\nI would:\n\n- Remove unnecessary alerts.\n- Adjust thresholds.\n- Increase evaluation duration where appropriate.\n- Separate warning and critical alerts.\n- Configure alerts according to business impact.\n- Use maintenance silences when required.\n\nThe objective is to ensure that when an engineer receives an alert, it actually deserves attention.\n\n---\n\n### 6. Scenario: You are performing planned maintenance and Grafana keeps sending alerts. How would you handle it?\n\n**Answer:**\nI would use **Grafana alert silencing** for the planned maintenance period.\nBefore starting maintenance, I would configure a silence for the relevant alerts and duration. After maintenance is completed, the silence would expire or be removed.\nThis prevents unnecessary notifications while still keeping the alert rules configured.\n\n---\n\n### 7. Scenario: A company wants only the monitoring team to manage Grafana dashboards. Developers should only be able to view them. How would you configure Grafana?\n\n**Answer:**\nI would use Grafana's **users, teams, and roles**.\nI would:\n\n- Create a monitoring team with appropriate editing/administrative permissions.\n- Add monitoring engineers to that team.\n- Give developers viewer-level access.\n- Avoid giving administrative permissions to users who don't need them.\n\nThis follows the principle of giving users only the access required for their responsibilities.\n\n---\n\n### 8. Scenario: An employee who originally configured automated monitoring leaves the company. The automation stops because it used that employee's account. How would you prevent this?\n\n**Answer:**\nI would use a **service account** for automation instead of depending on an individual employee account.\nThe service account provides a stable identity for automated processes and can be assigned only the permissions required for the automation.\nThis reduces dependency on individual users and makes the system easier to maintain.\n\n---\n\n### 9. Scenario: You want Grafana to send an email whenever a critical monitoring condition occurs. What would you configure?\n\n**Answer:**\nI would configure Grafana alerting with an email-based contact point.\nThe process would be:\n\n1. Create the required alert rule.\n2. Define the alert condition.\n3. Configure SMTP settings.\n4. Create an email contact point.\n5. Associate the contact point with the appropriate alert/notification policy.\n6. Test the alert.\n\nThe final flow would be:\n**Metric → Alert Rule → Contact Point → SMTP → Email**\n\n---\n\n### 10. Scenario: Your application is experiencing slow responses, but CPU and memory usage appear normal. What metrics would you investigate?\n\n**Answer:**\nI would not assume that normal CPU and memory mean the application is healthy. I would investigate the **four golden signals**.\nI would check:\n\n- **Latency**: Are requests taking longer than normal?\n- **Traffic**: Has request volume increased?\n- **Errors**: Are requests failing?\n- **Saturation**: Is another resource becoming a bottleneck?\n\nI would then correlate these metrics with application logs and infrastructure metrics to identify the actual bottleneck.",
+      "id": "s37-s01",
+      "unit": "s37",
+      "concept_ids": [
+        "s37-interview-preparation-strategy"
+      ]
+    }
+  ]
+}
