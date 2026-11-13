@@ -223,7 +223,7 @@ Based on the concepts covered in **Day-2 of DevOps with Batch-45 — 27 October 
 ## Part 1: 20 Git & GitHub Interview Questions and Answers
 
 ### 1. What is Git?
-**Answer:** Git is a distributed version control system used to track changes in source code. It helps developers collaborate, review history, and return to earlier versions when needed.
+**Answer:** Git is a distributed version control system used to track changes in source code. It helps developers collaborate, review history, and return to earlier versions when needed. it is one of the popular SCM tool.. 
 
 ### 2. What is GitHub?
 **Answer:** GitHub is a platform for hosting Git repositories online. Teams use it to share code, manage branches, raise pull requests, review changes, and collaborate.
