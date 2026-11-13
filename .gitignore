@@ -1,0 +1,30 @@
+
+
+# Large media: never push to GitHub (videos/audio/archives live locally, on YouTube or in free storage)
+# video
+*.mp4
+*.mov
+*.mkv
+*.webm
+*.avi
+*.m4v
+*.mpg
+*.mpeg
+*.wmv
+*.flv
+*.3gp
+*.mts
+# audio
+*.mp3
+*.wav
+*.m4a
+*.aac
+*.flac
+*.ogg
+*.opus
+*.aiff
+# archives
+*.zip
+*.7z
+*.rar
+.hyperframes/

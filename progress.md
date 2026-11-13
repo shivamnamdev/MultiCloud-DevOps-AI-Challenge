@@ -31,3 +31,13 @@
 - [x] Skill router routes Docker, AWS, Kubernetes, and Linux domain skills.
 - [x] Generated 9-file B.L.A.S.T. packages conform to Creator OS checklists.
 
+
+### [2026-11-13] — Analysis + syllabus blueprint
+- Analysed all 60 sessions (~770k words). Author chose: topic-map-only use of CloudDevOpsHub notes, full syllabus plan first, scripts only. Drafted `SYLLABUS_BLUEPRINT.md`; awaiting approval. No scripts written, no tools changed.
+
+### [2026-11-13] — Course ad drafted
+- Author kept all 33 sessions and asked for the ad first. Wrote AD-001 (full) + AD-002 (short) packages with the 3 course-ad skills; Build/Ship/Fix thesis; gate report: not ready to film until price/access/refund/CTA supplied. No tools changed.
+
+### [2026-11-13] — 33 session scripts generated
+- Wrote `SESSION-01..33` `02_script.md` (132 episodes, 660 scenes, ~39.5k voiceover words). Checks: uniform 4x5 structure; 8-word-shingle overlap with source notes = 18 of ~65k (0.03%, shared technical facts only); no CloudDevOpsHub/Vikas/salary/placement-promise text.
+- Known gap: ~290 spoken words/episode (Python course ~600); episode timestamps are nominal and must be re-timed. Technical items marked for fact-check before recording: tool versions, Terraform S3 lockfile option, Trivy/action versions, EKS/GKE/AKS CLI flags, MCP SDK API.

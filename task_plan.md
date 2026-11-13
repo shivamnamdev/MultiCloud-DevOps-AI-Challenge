@@ -32,3 +32,15 @@
 - [ ] Generate Jenkins vs GitHub Actions Comparison Carousel from `Session-26-Jenkins-Pipelines`
 - [ ] Generate 1-Page ATS DevOps Resume Post from `Session-45-ATS-Resume-Preparation`
 
+
+## 🆕 Python-style course rebuild (2026-11-13)
+- [x] Syllabus blueprint drafted: `SYLLABUS_BLUEPRINT.md` (33 sessions / 132 episodes, topic-map-only rule, scripts only)
+- [ ] **Author approval of blueprint** (blocking; no scripts until approved)
+- [ ] Pilot: SESSION-21 docker-fundamentals -> author review
+- [ ] Batches of 3-4 sessions in learning order
+- [x] Author decision 2026-11-13: keep all 33 sessions; **first deliverable = course advertisement** (not the Docker pilot) to test attraction
+- [x] Ad package drafted: `social-content/course-product/ADVERTISEMENT/AD-001_full-course-ad/` + `AD-002_short-cutdown/` (blocked on offer facts, see `09_gate_report.md`)
+- [ ] Teleprompter videos for the ads after placeholders are filled; then pilot session scripts
+- [x] **All 33 session scripts written** (2026-11-13): `social-content/course-product/SESSION-01..33_*/02_script.md`, 4 episodes x 5 scenes each, Roman Hinglish, original wording.
+- [ ] Depth pass: scripts average ~290 spoken words/episode vs ~600 in the Python course; timestamps are nominal. Decide: expand to Python depth, or keep as outlines for recording
+- [ ] Fill AD-001 offer placeholders, then teleprompter videos
