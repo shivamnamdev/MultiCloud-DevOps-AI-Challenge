@@ -66,3 +66,7 @@
 ### [2026-11-14] — SESSION-00 reworked to follow the LESSON-00 kickoff journey
 - Author asked for Session 00 to drive the same journey as `LESSON-00_program-kickoff`. Episode 1 now opens with the tutorial-trap hook and the promise and contract; episode 4 ends with Task-002 (setup) and Task-001 (public commitment post) and the bridge to Session 01. Episodes 2 and 3 (the course architecture told as the story) are unchanged. A student handout with both tasks is appended to the script.
 - Deliberately not carried over from LESSON-00: salary and package figures, "previous batch" results, the 98% and 15-lakh statistics, 55 sessions / 116 tasks / 8 projects, live cohort, WhatsApp group and Wednesday mock interviews, the gym-versus-boxing-coach comparison, and CloudDevOpsHub / mentor names. AWS free-tier wording is kept generic ("read the current terms") because the offer has changed for new accounts.
+
+### [2026-11-14] — Kubernetes handwritten notes transcribed
+- Transcribed the 25-page `K8 Notes.pdf` into `K8s-Handwritten-Notes.md` (pods, pod states and exit codes, ReplicaSets, Deployments, namespaces, ResourceQuota/LimitRange, services, PV/PVC/StorageClass, horizontal vs vertical scaling), with corrections marked.
+- The PDF has no Docker content, although the author expected it to. Docker and Git notes are still to come. Not committed.
