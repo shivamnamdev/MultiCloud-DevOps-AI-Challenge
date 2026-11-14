@@ -74,3 +74,12 @@ Compared with what the 33-session syllabus was built from:
 - **Docker (S30-S31):** Batch-45 Day-1 and Day-2 added. Day-2 is the richest practical source (54 code fences / ~51 command lines: install, pull Ubuntu/CentOS/Alpine, size comparison, interactive/detached run, port mapping, volumes, NGINX personalised page, 20 interview Q&A).
 - **Noise to ignore (not course content):** job-opportunity announcements with salary figures, batch logistics/dates, promotional demos. Never carry into scripts.
 - Local untracked work (scripts, ads, audits) is unaffected; the pull changed only upstream files.
+
+---
+
+## 🏨 Course-wide analogy (2026-11-14)
+- **One story, three zoom levels.** Every topic sits at exactly one level, which is what stops analogies from clashing. Source of truth: `ANALOGY_STORY.md`; per-session beats: `ANALOGY_SESSION_MAP.md`.
+- **Locked vocabulary:** building = server, truck = container (food truck that plugs into the building's power and water), blueprint = code, landlord = cloud provider, staff = Linux/IAM users, guest = end user, assistant = AI only (Python is the "operations officer", so the two never collide).
+- **Limit:** the story explains why a tool exists and where it sits. Commands, YAML and CIDR arithmetic are taught directly.
+- **Existing scripts:** the 33 scripts already use scattered one-off comparisons (kitchen in 4 files, warehouse in 2, restaurant/factory/apartment in 1 each; SESSION-14 already says "gated campus"). None uses a hotel. These need replacing when the story is woven in.
+- **Settled 2026-11-14:** company name is Atithi Hotels; a container is a truck (truck design = image, fit-out sheet = Dockerfile, depot = registry, serving window = port, parking bay = Pod, truck park = microservices). Jenkins agent is a workbench, so "bay" means only a Pod.

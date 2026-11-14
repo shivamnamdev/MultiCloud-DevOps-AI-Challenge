@@ -1,10 +1,12 @@
 # ✍️ 02: SCRIPT — SESSION-02: AI Co-Programmer for DevOps
 ### *DevOps with AI: Build, Ship, Fix — Original Hinglish Script (Faceless Production Edition)*
-*Rules: 3s visual hook + promise + desi analogy + hands-on lab in every episode + binge bridge. Topic map: `SYLLABUS_BLUEPRINT.md` (original wording).*
+*Rules: 3s visual hook + promise + course story (Atithi Hotels) + hands-on lab in every episode + binge bridge. Topic map: `SYLLABUS_BLUEPRINT.md` (original wording). Story words: `ANALOGY_STORY.md`.*
 
 ## 🎯 Production Metadata
 - **Script ID:** `DEVOPS-S02`
 - **Focus:** How LLMs work (just enough), prompting for DevOps, AI on logs/IaC/review, verification habits, agents
+- **Story position:** Zoom level 3, head office. Atithi Hotels ki har team ke saath ek padha-likha assistant baithta hai.
+- **Story words used:** assistant (AI), brief (prompt), auzaar aur chaabiyan (agent ke tools aur permissions), guest (end user)
 - **Episodes:**
   - Episode 1: AI andar se kaise sochta hai: tokens, context aur hallucination
   - Episode 2: Prompt Engineering: DevOps ke liye RTCF framework
@@ -16,10 +18,10 @@
 # 📺 EPISODE 1: AI andar se kaise sochta hai
 
 ### [00:00 – 01:15] Scene 1: Confident Galat Jawab
-**[VISUAL: A chat window. User: "Command to list EC2 instances older than 7 days?" AI answers with a smooth command. The terminal runs it: red "Unknown option". Stamp: "SOUNDS RIGHT ≠ IS RIGHT".]**
+**[VISUAL: Atithi head office. A new assistant sits down beside an engineer and hands over a neatly written slip. Cut to a chat window. User: "Command to list EC2 instances older than 7 days?" AI answers with a smooth command. The terminal runs it: red "Unknown option". Stamp: "SOUNDS RIGHT ≠ IS RIGHT".]**
 
 **(Voiceover):**
-Aapne AI se command maangi. Jawab itna confident tha ki aapne bina padhe terminal mein chala diya, aur error. Ye galti AI ki bhi hai, aur ek had tak aapki bhi. Is episode ka maksad AI ko jaadu se hata kar ek tool ki tarah samajhna hai. Jab aap jaante ho ki wo andar se kaise kaam karta hai, tab aapko pata hota hai kab uspar bharosa karna hai aur kab nahi.
+Atithi Hotels ki har team ke saath ek naya assistant baithne wala hai: bahut padha-likha, bahut tez, aur hamesha confident. Ye assistant AI hai. Pehle hi din kya hota hai, dekho. Aapne AI se command maangi. Jawab itna confident tha ki aapne bina padhe terminal mein chala diya, aur error. Ye galti AI ki bhi hai, aur ek had tak aapki bhi. Is episode ka maksad AI ko jaadu ki tarah nahi, ek assistant ki tarah samajhna hai, jiski taakat aur kamzori dono aapko pata ho. Jab aap jaante ho ki wo andar se kaise kaam karta hai, tab aapko pata hota hai kab uspar bharosa karna hai aur kab nahi.
 
 ### [01:15 – 04:30] Scene 2: LLM = Agla Shabd Predict Karne wali Machine
 **[VISUAL: A sentence typed word by word: "Kubernetes is a container ___" with a probability bar: "orchestration 62%, platform 21%, system 9%...". The top word is picked.]**
@@ -43,23 +45,23 @@ Lab: AI se poochho "docker run mein memory aur CPU limit kaise lagate hain". Jo 
 **[VISUAL: Two-column card: "AI is good at: drafts, boilerplate, explanations" / "AI is risky at: versions, your environment, secrets".]**
 
 **(Voiceover):**
-Recap: LLM sambhavit text banata hai, context limited hai, data purana ho sakta hai. Isliye AI draft ke liye ek great tool hai, final decision ke liye nahi. Agla sawaal: AI se behtar jawab kaise nikalein? Wo hai prompt engineering, aur DevOps ke liye uska ek seedha framework.
+Recap: LLM sambhavit text banata hai, context limited hai, data purana ho sakta hai. Isliye hamara assistant draft ke liye great hai, final decision ke liye nahi. Agla sawaal: is assistant se behtar kaam kaise nikalein? Wo hai prompt engineering, aur DevOps ke liye uska ek seedha framework.
 
 ---
 
 # 📺 EPISODE 2: Prompt Engineering — RTCF Framework
 
 ### [00:00 – 01:15] Scene 1: Do Prompt, Do Natije
-**[VISUAL: Two prompts side by side. Left: "Make a Dockerfile". Right: a detailed prompt with stack, constraints, and output format. The right output is a clean multi-stage Dockerfile; the left is generic.]**
+**[VISUAL: Two briefs handed to the same assistant. Left: "Make a Dockerfile". Right: a detailed prompt with stack, constraints, and output format. The right output is a clean multi-stage Dockerfile; the left is generic.]**
 
 **(Voiceover):**
-"Ek Dockerfile bana do." Aur doosra: "Node 20 ki Express app ke liye multi-stage Dockerfile, non-root user, aur chhoti image." Pehle ka jawab generic, doosre ka jawab kaam ka. Fark AI mein nahi, prompt mein hai. AI ek bahut samajhdar intern ki tarah hai: jitna saaf kaam doge, utna accha dega. Aaj ka framework yaad karna aasaan hai: R, T, C, F.
+"Ek Dockerfile bana do." Aur doosra: "Node 20 ki Express app ke liye multi-stage Dockerfile, non-root user, aur chhoti image." Pehle ka jawab generic, doosre ka jawab kaam ka. Fark AI mein nahi, prompt mein hai. Hamara assistant bahut samajhdar hai, par use utna hi pata hai jitna aap brief mein batate ho. Jitna saaf brief, utna accha kaam. Prompt wahi brief hai. Aaj ka framework yaad karna aasaan hai: R, T, C, F.
 
 ### [01:15 – 05:00] Scene 2: R-T-C-F: Role, Task, Context, Format
 **[VISUAL: Four blocks light up in sequence with an example for each: Role: "Senior SRE". Task: "Find why the pod restarts". Context: "Logs, K8s 1.29, 512Mi limit". Format: "3 likely causes, then commands".]**
 
 **(Voiceover):**
-Role: AI ko batao wo kaun hai, jaise "tum ek senior SRE ho". Task: kaam ek line mein, jaise "ye pod baar baar restart kyun ho raha hai". Context: jo aapko pata hai, wo sab: logs, versions, limits, kya try kiya. Format: jawab kaise chahiye, jaise "teen sambhavit wajah, har ek ke liye ek command". Context sabse zaroori hai, kyunki AI aapka environment dekh nahi sakta. Aur ek baat: secrets, passwords aur private keys kabhi prompt mein mat daalna.
+RTCF assistant ko brief karne ka tareeka hai. Role: AI ko batao wo kaun hai, jaise "tum ek senior SRE ho". Task: kaam ek line mein, jaise "ye pod baar baar restart kyun ho raha hai". Context: jo aapko pata hai, wo sab: logs, versions, limits, kya try kiya. Format: jawab kaise chahiye, jaise "teen sambhavit wajah, har ek ke liye ek command". Context sabse zaroori hai, kyunki AI aapka environment dekh nahi sakta. Aur ek baat: secrets, passwords aur private keys kabhi prompt mein mat daalna.
 
 ### [05:00 – 08:30] Scene 3: Iterate, Examples aur Step-by-Step Reasoning
 **[VISUAL: A chat conversation where the user refines: "Shorter", "Use alpine", "Explain each line". Each reply improves. A side note: "Show 1 example of the style you want".]**
@@ -77,7 +79,7 @@ Lab: ek kharab prompt lo, jaise "mera pipeline fail ho raha hai, fix karo". Ab R
 **[VISUAL: A sticky note on a monitor: "R·T·C·F + Verify".]**
 
 **(Voiceover):**
-Recap: Role, Task, Context, Format, aur aakhir mein verify. Ab dekhte hain ki AI ko DevOps ke asli kaam mein kaise lagayein: code, config, logs aur review. Episode 3 mein.
+Recap: Role, Task, Context, Format, aur aakhir mein verify. Saaf brief, phir jaanch. Ab dekhte hain ki assistant ko DevOps ke asli kaam mein kaise lagayein: code, config, logs aur review. Episode 3 mein.
 
 ---
 
@@ -87,7 +89,7 @@ Recap: Role, Task, Context, Format, aur aakhir mein verify. Ab dekhte hain ki AI
 **[VISUAL: A wall of 3,000 log lines scrolling. One red line is buried inside. A magnifying glass drops onto it.]**
 
 **(Voiceover):**
-Production mein error aaya, aur aapke saamne teen hazaar log lines hain. Insaan ke liye ye dhoondhna thakane wala hai. AI is jagah kamal ka sahayak ho sakta hai, kyunki wo lambe text ko jaldi padh kar patterns nikal deta hai. Aaj hum teen kaam dekhenge: logs ka analysis, config ka draft, aur code review.
+Production mein error aaya, aur aapke saamne teen hazaar log lines hain. Insaan ke liye ye dhoondhna thakane wala hai. Hamara assistant yahan kamal ka kaam karta hai, kyunki wo lambe text ko jaldi padh kar patterns nikal deta hai. Aaj hum teen kaam dekhenge: logs ka analysis, config ka draft, aur code review.
 
 ### [01:15 – 05:00] Scene 2: Logs ka Analysis
 **[VISUAL: A screen showing a log excerpt pasted into the chat with a prompt: "Group these errors, tell the first failure, suggest 3 checks." AI response highlights the first error line.]**
@@ -111,17 +113,17 @@ Lab: ek chhoti Bash script lo jisme `rm -rf $DIR/*` jaisi line ho, aur AI se rev
 **[VISUAL: Three-step loop: "Draft by AI → Check by you → Test in a safe place".]**
 
 **(Voiceover):**
-Recap: logs mein AI shuruaat ka rasta dikhata hai, config mein draft deta hai, review mein dusri aankh banta hai. Hamesha: draft AI ka, check aapka, test safe jagah par. Ab last episode: agents. Jab AI sirf bolta nahi, kaam bhi karta hai, tab guardrails kitne zaroori ho jaate hain.
+Recap: logs mein assistant shuruaat ka rasta dikhata hai, config mein draft deta hai, review mein dusri aankh banta hai. Hamesha: draft AI ka, check aapka, test safe jagah par. Ab last episode: agents. Jab assistant sirf bolta nahi, kaam bhi karta hai, tab guardrails kitne zaroori ho jaate hain.
 
 ---
 
 # 📺 EPISODE 4: Agents, Guardrails aur Trust but Verify
 
 ### [00:00 – 01:15] Scene 1: Jab AI Khud Commands Chalane Lage
-**[VISUAL: A terminal where an AI agent proposes a series of commands and runs them: `git checkout`, `terraform apply`. A big red "Approve?" dialog hovers.]**
+**[VISUAL: The assistant is handed a toolbox and a small ring of keys. Cut to a terminal where an AI agent proposes a series of commands and runs them: `git checkout`, `terraform apply`. A big red "Approve?" dialog hovers.]**
 
 **(Voiceover):**
-Ab tak AI sirf jawab deta tha. Agent ek aisa AI hai jo tools use karke kaam kar sakta hai: files padhna, commands chalana, API call karna. Ye bahut powerful hai, aur isiliye khatarnaak bhi. Agar AI ko aapke production ki permission mil gayi aur usne ek galat command chala di, to nuksaan seedha asli hoga. Isliye is episode ka mool mantra: pehle guardrails, phir autonomy.
+Ab tak hamara assistant sirf jawab deta tha. Agent wo assistant hai jise aapne auzaar aur kuch chaabiyan bhi de di hain. Wo tools use karke kaam kar sakta hai: files padhna, commands chalana, API call karna. Ye bahut powerful hai, aur isiliye khatarnaak bhi. Agar AI ko aapke production ki permission mil gayi aur usne ek galat command chala di, to nuksaan seedha asli hoga. Isliye is episode ka mool mantra: pehle guardrails, phir autonomy.
 
 ### [01:15 – 05:00] Scene 2: Chatbot, Copilot, Agent: Farq
 **[VISUAL: Three tiers: Chatbot (talks), Copilot (suggests in your editor), Agent (plans and acts with tools). Each tier lists "what it can touch".]**
@@ -130,10 +132,10 @@ Ab tak AI sirf jawab deta tha. Agent ek aisa AI hai jo tools use karke kaam kar 
 Chatbot sirf baat karta hai. Copilot aapke editor mein code suggest karta hai, aur aap accept ya reject karte ho. Agent plan banata hai aur tools ke through kaam bhi karta hai. Jaise jaise AI ko zyada kaam milta hai, uske paas utni hi zyada power hoti hai, aur utni hi zyada galti ki keemat. Isliye har step par poochho: ye AI kya touch kar sakta hai?
 
 ### [05:00 – 08:30] Scene 3: Guardrails ki Checklist
-**[VISUAL: A shield with five labels: Least privilege, Read-only first, Human approval, Sandbox, Audit log.]**
+**[VISUAL: A shield with five labels: Least privilege, Read-only first, Human approval, Sandbox, Audit log. Beside it, the assistant holding only two keys from a large key board.]**
 
 **(Voiceover):**
-Paanch guardrails yaad rakho. Least privilege: AI ko sirf zaroori permission do. Read-only pehle: pehle dekhne do, badalne baad mein. Human approval: production badalne wale step par insaan ki haan zaroori. Sandbox: test environment mein hi experiment. Aur audit log: har action ka record, taaki baad mein pata chale kisne kya kiya. Ye wahi principles hain jo hum insaano ke liye bhi lagate hain, bas AI par bhi lagani hain.
+Paanch guardrails yaad rakho. Least privilege: AI ko sirf zaroori permission do, yaani assistant ko sirf un kamron ki chaabi jinki use is kaam ke liye zaroorat hai. Read-only pehle: pehle dekhne do, badalne baad mein. Human approval: production badalne wale step par insaan ki haan zaroori. Sandbox: test environment mein hi experiment. Aur audit log: har action ka record, taaki baad mein pata chale kisne kya kiya. Ye wahi principles hain jo hum insaano ke liye bhi lagate hain, bas AI par bhi lagani hain.
 
 ### [08:30 – 11:30] Scene 4: Lab: Safe Agent Workflow
 **[VISUAL: A repo with a branch `ai/fix-yaml`. The agent opens a pull request. A reviewer comments, runs the pipeline, and merges.]**
@@ -142,7 +144,7 @@ Paanch guardrails yaad rakho. Least privilege: AI ko sirf zaroori permission do.
 Lab: ek test repo banao. AI se ek chhota change maango, jaise YAML mein resource limit add karna, aur use main par nahi, ek alag branch par karwao. Fir ek pull request kholo, pipeline chalao, khud diff padho aur tab merge karo. Ye safe workflow hai: AI draft karta hai, git history record karti hai, pipeline test karti hai, aur insaan final haan deta hai.
 
 ### [11:30 – 13:00] Scene 5: Recap aur Bridge
-**[VISUAL: A closing card: "AI = autopilot. You = pilot." with the Build → Ship → Fix arrow.]**
+**[VISUAL: A closing card: "AI = assistant. You = in charge." with the Build → Ship → Fix arrow.]**
 
 **(Voiceover):**
-Recap: agent ko tab tak power mat do jab tak guardrails na ho. Draft AI ka, jaanch aapki, final haan insaan ki. Ye soch poore course mein saath chalegi, har tool ke saath. Ab ek solid neev banate hain: Linux. Kyunki cloud ka zyadatar hissa Linux par hi chalta hai.
+Recap: agent ko tab tak power mat do jab tak guardrails na ho. Draft assistant ka, jaanch aapki, final haan insaan ki. Guest tak kuch bhi bina jaanch ke nahi pahunchta. Ye soch poore course mein saath chalegi, har tool ke saath. Ab Atithi Hotels ki pehli building lene ka waqt hai, aur us building ko chalane wala system hai Linux. Kyunki cloud ka zyadatar hissa Linux par hi chalta hai.
