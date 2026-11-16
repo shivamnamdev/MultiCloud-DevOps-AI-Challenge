@@ -95,3 +95,12 @@
 - `SESSION-03` not changed: no note section falls in it.
 - Updated `SYLLABUS_BLUEPRINT.md` (rows 04, 05, new 05B, change log: 35 session scripts plus Session 00), `ANALOGY_SESSION_MAP.md` (rows 04, 05, new 05B), `ANALOGY_STORY.md` (NAT words), and the notes map (section 6: what was applied, four changes from the plan, eight statements in the notes that were corrected).
 - Not done: lab commands not run end to end on Ubuntu or Rocky; callbacks in sessions 10 and 14; Kubernetes notes (sessions 23 to 25). Not committed.
+
+### [2026-11-16] — Linux work pushed; sessions 06, 07, 08 rewritten (batch 2)
+- Pushed the Linux work: `0eef835` (sessions 04, 05, new 05B, syllabus, story map, notes map).
+- `SESSION-06_bash-scripting`, `SESSION-07_python-for-devops`, `SESSION-08_aws-ec2-basics` rewritten with the Atithi story, `atithi-booking` as the lab thing to protect, check and serve, and each with a student cheat sheet. About 2,700, 2,450 and 2,500 spoken words; four episodes each, six scenes per episode.
+- No author notes exist for these topics (the Linux, Kubernetes and Git notes do not cover them), so the new material is original: 06 adds redirects and pipes, `&&` / `||` and `[[ ]]`, `bash -x` and shellcheck, cron troubleshooting; 07 adds `with` and `pathlib`, DryRun and waiters, `subprocess`, pytest; 08 adds the shared responsibility model, AWS CLI habits (`sts get-caller-identity`, profiles, `--query`), purchase options, and the three SSH failure messages.
+- Corrections to the older drafts: the cron backup file name now includes the time (the old name, date only, was overwritten by the two-minute test); `healthcheck.sh` from Session 05 is improved in Session 06 with a usage message and a default limit; the Session 08 CLI lab uses CloudShell so no access keys are needed before IAM (Session 09), and root access keys are named as never to be created.
+- AWS facts stated with a pointer to the live source instead of a number: free-tier terms (read the account's own billing page), public IPv4 address charge (pricing page). Re-check before recording.
+- New story word: edge location = pickup counter (`ANALOGY_STORY.md`). Map rows 06 to 08 updated.
+- Not done: lab commands in 06 to 08 not run end to end; session 07 episode 3 needs an AWS account (run after Session 09). Next batch: 09 to 11.

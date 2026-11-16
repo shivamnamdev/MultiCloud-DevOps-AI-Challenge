@@ -104,6 +104,7 @@ Roads connect all three: the internet.
 | Concept | In the story |
 |---|---|
 | Region, Availability Zone | A city, and separate towers in it with independent power |
+| Edge location | A small pickup counter in many cities, so guests collect a brochure close to home |
 | EC2 instance, instance type | A rented building, and its size |
 | AMI | A fully furnished model hotel you can photocopy |
 | Key pair | The building key handed over when the lease is signed |
