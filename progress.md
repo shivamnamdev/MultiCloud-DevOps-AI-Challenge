@@ -104,3 +104,11 @@
 - AWS facts stated with a pointer to the live source instead of a number: free-tier terms (read the account's own billing page), public IPv4 address charge (pricing page). Re-check before recording.
 - New story word: edge location = pickup counter (`ANALOGY_STORY.md`). Map rows 06 to 08 updated.
 - Not done: lab commands in 06 to 08 not run end to end; session 07 episode 3 needs an AWS account (run after Session 09). Next batch: 09 to 11.
+
+### [2026-11-16] — Sessions 09, 10, 11 rewritten (batch 3)
+- `SESSION-09_aws-iam`, `SESSION-10_aws-ec2-storage-and-scaling`, `SESSION-11_aws-load-balancing` rewritten with the Atithi story and a student cheat sheet each. About 2,550, 2,550 and 2,400 spoken words; four episodes, six scenes each (episodes with an extra scene have seven).
+- Story: IAM users are "staff at the landlord's office" and are kept distinct from Linux users (Session 04), with the Linux `asha` vs `asha-aws` example; role = duty badge; policy = permission letter.
+- Session 10 carries the callback to Session 05B: `mkfs`, mount and `/etc/fstab` on a cloud volume, with `nofail` added (a missing volume can otherwise block boot), and resizing a volume then its file system (`resize2fs` or `xfs_growfs`), the cloud version of the LVM lesson.
+- Corrections to the older drafts: 503 on an ALB now means "no registered targets" (the old text said "no healthy target"; when every target is unhealthy the ALB sends to all of them); IAM user and long-lived keys are described as the learning route, with IAM Identity Center named as the usual route in companies; new topics added from standard AWS behaviour, not from author notes: `X-Forwarded-For`, instance refresh, scheduled scaling and warm-up, weighted target groups, the shared access-denied checklist, credential report.
+- Facts to re-check before recording: EBS volume modification cooldown; ASG scale-in timing; ALB default health-check values; AWS quarantine policy wording. The scripts avoid exact numbers for these.
+- Not done: lab commands not run end to end. Session 11 episode 3 HTTPS part needs a domain (marked as optional). Next batch: 12 to 14 (S3, static site hosting, RDS, VPC); the Session 14 callback to the NAT story word is still to add.

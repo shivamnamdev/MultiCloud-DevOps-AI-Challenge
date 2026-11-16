@@ -108,5 +108,5 @@ The author approved all three recommendations in section 5.
 ### Still open
 
 - Lab commands in 04, 05 and 05B have not been run end to end. Run them on Ubuntu (04, 05) and on Rocky or AlmaLinux 9 (05B) before recording.
-- Callbacks to 05B in sessions 10 (disks on a cloud volume) and 14 (NAT gateway) are added when those sessions are rewritten.
+- Callback to 05B in session 10 (disks, fstab with `nofail`, resize on a cloud volume) is done (2026-11-16). The callback in session 14 (NAT gateway) is still to add when that session is rewritten.
 - Kubernetes notes (section 2) are applied when sessions 23 to 25 are rewritten.
