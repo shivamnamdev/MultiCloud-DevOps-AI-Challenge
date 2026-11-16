@@ -70,3 +70,14 @@
 ### [2026-11-14] — Kubernetes handwritten notes transcribed
 - Transcribed the 25-page `K8 Notes.pdf` into `K8s-Handwritten-Notes.md` (pods, pod states and exit codes, ReplicaSets, Deployments, namespaces, ResourceQuota/LimitRange, services, PV/PVC/StorageClass, horizontal vs vertical scaling), with corrections marked.
 - The PDF has no Docker content, although the author expected it to. Docker and Git notes are still to come. Not committed.
+
+### [2026-11-14] — Git cohort material reviewed and mapped to the Git section
+- Author added their own 16-day live Git cohort as `courses/Github-Live-Cohort-Transcript` (16 transcripts, 15 daily notes, 11 chapter notes in `.docx`). Read all daily notes and chapter notes; sampled the transcripts for the scenarios and comparisons spoken in class.
+- Wrote `GIT_NOTES_INTEGRATION_MAP.md`: gap against SESSION-16, an eight-episode plan (proposed as 16A local Git + 16B GitHub and teams), the cohort's comparisons translated into the Atithi Hotels story, touch points in sessions 04, 17, 20, 22 and 31, and items not to carry over.
+- No script changed. Waiting on three decisions listed in section 8 of the map. Nothing committed.
+
+### [2026-11-14] — Git section rewritten as sessions 16 and 16B (author's decision)
+- Author decided: two courses. A dedicated Git and GitHub course (deep, four episodes per session, planned in `courses/Github-Live-Cohort-Transcript/SYLLABUS_BLUEPRINT.md`, awaiting approval), and this course covering every point in brief, in the Atithi Hotels story, with the booking website as the lab project.
+- Rewrote `SESSION-16_git-and-github/02_script.md` as Part A (three zones, reading history, branch and merge, inside `.git`) and added `SESSION-16B_github-and-team-workflows/02_script.md` as Part B (remotes, pull requests, stash / detached HEAD / cherry-pick, undo and the five-role team run). Four episodes x five scenes each; about 2,150 and 2,450 spoken words.
+- Updated `SYLLABUS_BLUEPRINT.md` (row 16B and a change log), `ANALOGY_SESSION_MAP.md` (rows 16 and 16B), `ANALOGY_STORY.md` (new Git story words), `GIT_NOTES_INTEGRATION_MAP.md` (status and decisions).
+- Not done: touch points in sessions 04, 17, 20, 22, 31 (map section 6). Session 00 still says every session has four episodes, which stays true per part; its caption names "Session 16" only. Commands not run end to end; fact-check before recording. Nothing committed.

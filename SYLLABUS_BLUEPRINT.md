@@ -24,7 +24,8 @@
 | 13 | aws-rds | S17 | SQL vs NoSQL, RDS, backups, Multi-AZ, replicas |
 | 14 | aws-vpc-networking | S18, S19 | CIDR, subnets, IGW/NAT, route tables, NACL vs SG, bastion, peering |
 | 15 | aws-monitoring-and-serverless | S20, S21 | CloudWatch, SNS, alarms, Lambda, EventBridge |
-| 16 | git-and-github | S22, S23 | Internals, branching, PRs, conflicts, workflows |
+| 16 | git-and-github (Part A) | S22, S23 + author's Git cohort days 1-9 | Three zones, reading history, branches, merges, conflicts, inside `.git` |
+| 16B | github-and-team-workflows (Part B) | S22, S23 + author's Git cohort days 10-16 | Remotes, pull requests, stash, detached HEAD, cherry-pick, undo, forks, team run |
 | 17 | jenkins-foundations | S24, S25 | CI idea, install, freestyle vs pipeline, Maven, Jenkinsfile |
 | 18 | jenkins-pipelines-and-plugins | S26, S27 | Stages, parallel, shared libraries, key plugins |
 | 19 | jenkins-advanced-and-distributed | S28, S29 | Multibranch, credentials, backup, agents |
@@ -55,3 +56,6 @@
 - Keep all 33, or a smaller "Core 24" (drop 02, 15, 19, 20, 29, 30, 32, 33 for a later "Advanced" course)?
 - Starting point: pilot SESSION-21 (recommended), or a different session?
 - Name for the new course (the repo/course folder is still `MultiCloud-DevOps-AI-Challenge`).
+
+## Change log
+- **2026-11-14:** Git split into 16 (Part A) and 16B (Part B), four episodes each, so the author's 16-day Git cohort is covered in brief without renumbering sessions 17-33. The course is still 33 numbered sessions; it now has 34 session scripts plus Session 00. Detail: `GIT_NOTES_INTEGRATION_MAP.md`. The deep version of this material is a separate dedicated course in `courses/Github-Live-Cohort-Transcript`.

@@ -134,7 +134,12 @@ Linux users versus IAM users now makes sense: one is staff *inside a building*, 
 |---|---|
 | Code | Blueprints of the hotel's services |
 | Git, commit | The blueprint register; a signed, dated revision |
+| Working directory, staging area, repository | Drawing table; approval tray; the register itself |
 | Branch, merge, conflict | A draft copy; approving it into the master; two designers moved the same wall |
+| HEAD, `.git` | The "you are here" pin; the register's back room |
+| Stash, detached HEAD, cherry-pick | The designer's own drawer; the archive reading room (look, do not draw); lifting one page from a draft into the master |
+| Reset, revert | Removing your own unshared pages; a correction slip added to the register, with no page torn out |
+| Fork, tag, branch protection | An outside contractor's own copy of the vault; a release stamp; a lock on the master |
 | GitHub / GitLab | The central vault at head office where all designers sync |
 | Pull request | "Chief architect, please review before this goes into the master" |
 | Build (Maven), artifact | Workshop tools that gather materials and fabricate the unit; the finished unit |

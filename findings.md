@@ -83,3 +83,22 @@ Compared with what the 33-session syllabus was built from:
 - **Limit:** the story explains why a tool exists and where it sits. Commands, YAML and CIDR arithmetic are taught directly.
 - **Existing scripts:** the 33 scripts already use scattered one-off comparisons (kitchen in 4 files, warehouse in 2, restaurant/factory/apartment in 1 each; SESSION-14 already says "gated campus"). None uses a hotel. These need replacing when the story is woven in.
 - **Settled 2026-11-14:** company name is Atithi Hotels; a container is a truck (truck design = image, fit-out sheet = Dockerfile, depot = registry, serving window = port, parking bay = Pod, truck park = microservices). Jenkins agent is a workbench, so "bay" means only a Pod.
+
+---
+
+## 🧭 Git cohort material (2026-11-14)
+- **Source:** `courses/Github-Live-Cohort-Transcript`, the author's own teaching. Transcripts are auto-captioned Hinglish in Devanagari; chapter notes are `.docx` (convert with `textutil -convert txt`).
+- **Gap:** SESSION-16 has four episodes. The cohort also covers reading history, switching with uncommitted work, `.git` internals beyond objects, stash, detached HEAD, cherry-pick, reset modes, forks, a five-role team run and professional habits. Four episodes cannot hold it; see `GIT_NOTES_INTEGRATION_MAP.md` section 3.
+- **Privacy:** transcripts and notes name real learners. Use roles only in scripts.
+- **Accuracy:** four statements in the source must not be carried over as written (restore vs rebase, revert leaving no commit, `git switch` only rewriting `HEAD`, working area "not shared" between branches). Listed in section 7 of the map.
+- **Voice:** the chapter notes are drafted lesson plans; the class transcripts hold the author's own scenarios and spoken comparisons (kitchen, two rivers, fridge, time machine) and should set the voice.
+
+---
+
+## 🗺️ Source course lesson-path sheet (read 2026-11-16)
+- A view-only Google Sheet ("Online Multi Cloud with AWS + DEVOPS with AI", tabs Batch-45 and Batch-44). The author is not the owner and the owner has disabled copy and download, so no copy is kept; topic-level notes only.
+- It is the same 58-day, 10-module path our 33 sessions were condensed from. No new module.
+- **Batch-45 changes vs Batch-44:** days 27-28 are GitLab instead of Jenkins plugins / advanced jobs; day 32 is Docker's AI assistant (Gordon), with Dockerfile folded into day 31; day 20 adds cost optimisation and a budget alarm; a ninth project (MCP server on Kubernetes with kagent) and an Argo CD project are listed.
+- **Not in our scripts (checked by search):** Argo CD / GitOps, Docker Gordon, kagent, Splunk, Kafka, Bedrock, scripted Jenkins pipelines. GitLab is named once (16B, as an alternative to GitHub). Route 53 appears only in session 12.
+- **Order difference:** the source teaches Bash and Python after Ansible (days 43-44); ours teaches them right after Linux (sessions 06-07).
+- **Not to carry:** salary lines, job-board items, batch dates, reel links, mock-interview schedule, resume session.
