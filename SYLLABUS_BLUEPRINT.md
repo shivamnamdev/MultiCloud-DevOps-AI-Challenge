@@ -12,8 +12,9 @@
 | 01 | cloud-and-devops-foundations | S02, S03 (+tech parts of S01) | Virtualization, IaaS/PaaS/SaaS, what DevOps really is, CI/CD vocabulary |
 | 02 | ai-co-programmer-for-devops | S04, S48, S49 | Prompting, agents, using AI on logs/IaC/review, with verification habits |
 | 03 | linux-foundations | S05, S06 | Filesystem, shell, 40 core commands, VM + SSH access |
-| 04 | linux-users-permissions-ssh | S06, S08 | Users/groups, chmod/chown, SSH keys, apt/yum, boot process |
-| 05 | linux-sysadmin-and-troubleshooting | S07, S09 | Services, monitoring commands, networking, health-check script |
+| 04 | linux-users-permissions-ssh | S06, S08 + author's Linux notes 1-6, 16 | Users/groups, password policy, chmod/chown, umask, SUID/SGID/sticky, SSH keys, apt/dnf, boot process and targets |
+| 05 | linux-sysadmin-and-troubleshooting | S07, S09 + author's Linux notes 7-10 | Monitoring commands, process states, services, logs and logrotate, networking, static IP, firewall basics, health-check script |
+| 05B | linux-storage-web-server-and-security | S07, S09 + author's Linux notes 10-15 | Partitions, file systems, fstab, swap, LVM, Apache, firewalld zones, SELinux, NAT (on a Red Hat family VM) |
 | 06 | bash-scripting | S43 | Variables, conditions, loops, functions, error handling, cron |
 | 07 | python-for-devops | S44 | boto3, requests, paramiko, venv, automation scripts (links to Python course) |
 | 08 | aws-ec2-basics | S10 | Regions/AZs, account, EC2 launch, key pairs |
@@ -58,4 +59,5 @@
 - Name for the new course (the repo/course folder is still `MultiCloud-DevOps-AI-Challenge`).
 
 ## Change log
+- **2026-11-16:** Linux grew by one script. Session 05B (storage, web server, security layers) was added for the part of the author's Linux notes that had no home (disks and swap, LVM, Apache, SELinux, NAT), and sessions 04 and 05 were rewritten to carry the rest. Sessions 03 to 05 stay on Ubuntu and name the Red Hat family equivalent once; 05B runs on a Rocky or AlmaLinux VM. No session was renumbered: 33 numbered sessions, 35 session scripts plus Session 00. Detail: `NOTES_INTEGRATION_MAP_LINUX_K8S.md`.
 - **2026-11-14:** Git split into 16 (Part A) and 16B (Part B), four episodes each, so the author's 16-day Git cohort is covered in brief without renumbering sessions 17-33. The course is still 33 numbered sessions; it now has 34 session scripts plus Session 00. Detail: `GIT_NOTES_INTEGRATION_MAP.md`. The deep version of this material is a separate dedicated course in `courses/Github-Live-Cohort-Transcript`.

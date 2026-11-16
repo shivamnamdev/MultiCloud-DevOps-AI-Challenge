@@ -81,3 +81,17 @@
 - Rewrote `SESSION-16_git-and-github/02_script.md` as Part A (three zones, reading history, branch and merge, inside `.git`) and added `SESSION-16B_github-and-team-workflows/02_script.md` as Part B (remotes, pull requests, stash / detached HEAD / cherry-pick, undo and the five-role team run). Four episodes x five scenes each; about 2,150 and 2,450 spoken words.
 - Updated `SYLLABUS_BLUEPRINT.md` (row 16B and a change log), `ANALOGY_SESSION_MAP.md` (rows 16 and 16B), `ANALOGY_STORY.md` (new Git story words), `GIT_NOTES_INTEGRATION_MAP.md` (status and decisions).
 - Not done: touch points in sessions 04, 17, 20, 22, 31 (map section 6). Session 00 still says every session has four episodes, which stays true per part; its caption names "Session 16" only. Commands not run end to end; fact-check before recording. Nothing committed.
+
+### [2026-11-16] — Pushed Git work; Linux and Kubernetes notes mapped to sessions
+- Committed and pushed: this repo `1145d29` (sessions 16 and 16B, Git map, syllabus and story updates), `Github-Live-Cohort-Transcript` `b95585f` (dedicated course syllabus draft and planning files), parent `01073a6` (new cohort submodule and pointer bump). Other uncommitted edits in the parent (CLAUDE.md, reel files under `architecture/`, root `progress.md`, Python course pointer) were left alone.
+- Read the source course's lesson-path sheet (view-only, not the author's); topic-level notes are in `findings.md`.
+- Wrote `NOTES_INTEGRATION_MAP_LINUX_K8S.md`: every section of the Linux and Kubernetes notes checked against the scripts and placed in a session. Proposes a new SESSION-05B for disks, LVM, Apache, SELinux and NAT. No script changed; three decisions are listed in section 5 of that file. Not committed.
+
+### [2026-11-16] — Linux notes woven in: sessions 04 and 05 rewritten, new SESSION-05B
+- Author approved the three recommendations in `NOTES_INTEGRATION_MAP_LINUX_K8S.md` (new 05B; Ubuntu main line with 05B on a Red Hat family VM; reopen the earlier Linux sessions).
+- `SESSION-04`: added the author's notes sections 1 to 6 and 16 (user types, `useradd` options, primary and secondary groups, password policy scene, sudoers lines, umask, SUID / SGID / sticky bit, targets). Episodes 1 and 2 now have six scenes. About 2,600 spoken words. Student command sheet appended.
+- `SESSION-05`: full rewrite with the Atithi story (it had none) and notes sections 7 to 10. Episodes 1 and 3 have six scenes. About 2,500 spoken words. Student command sheet appended.
+- `SESSION-05B_linux-storage-web-server-and-security` (new): disks and swap, LVM, Apache with firewalld, SELinux and NAT. Four episodes x six scenes, about 3,000 spoken words. Student command sheet appended.
+- `SESSION-03` not changed: no note section falls in it.
+- Updated `SYLLABUS_BLUEPRINT.md` (rows 04, 05, new 05B, change log: 35 session scripts plus Session 00), `ANALOGY_SESSION_MAP.md` (rows 04, 05, new 05B), `ANALOGY_STORY.md` (NAT words), and the notes map (section 6: what was applied, four changes from the plan, eight statements in the notes that were corrected).
+- Not done: lab commands not run end to end on Ubuntu or Rocky; callbacks in sessions 10 and 14; Kubernetes notes (sessions 23 to 25). Not committed.

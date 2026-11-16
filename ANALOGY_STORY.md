@@ -62,10 +62,10 @@ Roads connect all three: the internet.
 | Port | A numbered door on the building (22 staff entrance, 80 public entrance, 443 secured public entrance) |
 | SSH | Private staff entrance opened with a personal key |
 | Firewall | Guard at the gate with a list of who may enter |
-| NAT / masquerade | All outgoing letters carry the hotel's one public address; the front desk remembers who sent what |
-| Port forwarding | Front desk passing a caller on door 22 to the right room inside |
+| NAT / masquerade | All outgoing letters carry the hotel's one public address; the dispatch desk remembers who sent what (the same desk as the NAT gateway in the cloud sessions) |
+| Port forwarding | The operator at the gate passing a caller on door 22 to the right room inside |
 
-### Linux: managing one building (sessions 03–06)
+### Linux: managing one building (sessions 03–06, including 05B)
 
 | Concept | In the story |
 |---|---|
