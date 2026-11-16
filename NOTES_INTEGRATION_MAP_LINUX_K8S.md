@@ -1,6 +1,6 @@
 # Where the author's Linux and Kubernetes notes go
 
-**Status:** Linux part approved by the author and applied on 2026-11-16 (sessions 04, 05 and new 05B; see section 6). Kubernetes part is approved as a plan and not applied yet.
+**Status:** Linux part approved by the author and applied on 2026-11-16 (sessions 04, 05 and new 05B; see section 6). Kubernetes part applied on 2026-11-17 to sessions 23 to 25 (see section 7).
 **Sources:** `Linux-Handwritten-Notes.md` (17 sections) and `K8s-Handwritten-Notes.md` (12 sections).
 **Method:** each note section was checked against the current scripts by keyword search. "In script today" means the topic is at least named there; it does not mean it is taught at the depth of the notes.
 
@@ -109,4 +109,21 @@ The author approved all three recommendations in section 5.
 
 - Lab commands in 04, 05 and 05B have not been run end to end. Run them on Ubuntu (04, 05) and on Rocky or AlmaLinux 9 (05B) before recording.
 - Callback to 05B in session 10 (disks, fstab with `nofail`, resize on a cloud volume) is done (2026-11-16). The callback in session 14 (NAT gateway as the landlord's dispatch desk, and port forwarding as its opposite) is done (2026-11-17).
-- Kubernetes notes (section 2) are applied when sessions 23 to 25 are rewritten.
+- Kubernetes notes (section 2) applied on 2026-11-17; see section 7.
+
+## 7. What was applied: Kubernetes notes (2026-11-17)
+
+| Note section | Where it went | Change from the plan |
+|---|---|---|
+| 1 Pods: commands, `describe` questions, READY, pod YAML, changing the image | Session 23, episode 4 (scenes 3 to 5) | `logs --previous` moved to Session 24, episode 1, next to the exit codes |
+| 2 Pod states and exit codes | Session 24, episode 1 | Added 143 (SIGTERM) to the table; the notes' correction about phases vs STATUS values is kept |
+| 3 ReplicaSets | Session 24, episode 2 | The label-adoption caution (a hand-made pod with a matching label is claimed) was added |
+| 4 Deployments and READY | Session 24, episode 2 | READY for a pod counts containers, for a Deployment counts pods (the notes' correction) |
+| 5 Namespaces | Session 24, episode 3 | Moved from Session 25 so that Session 24 episode 3 covers wings and Services together; Session 25 episode 2 now carries config, resources and quota |
+| 6 ResourceQuota and LimitRange | Session 25, episode 2 | Added that a quota breach shows as `FailedCreate` on the ReplicaSet, not as a Pending pod (the old Session 25 draft said Pending) |
+| 7 Services | Session 24, episode 3 | Default `kubernetes` service and `expose` kept as in the notes |
+| 8 to 10 Persistent Volumes, Claims, StorageClass | Session 25, episode 3 | `ReadWriteOnce` is per node (the notes' correction), `ReadWriteOncePod` added; a Postgres StatefulSet is mentioned but RDS is recommended for production |
+| 11 Horizontal and vertical scaling | Session 24, episode 4 | Tied to Session 10 (Auto Scaling) and Session 13 (instance class vs read replica) |
+| 12 Cheat sheet | Handout tables at the end of Sessions 23, 24 and 25 | None |
+
+Open items for Kubernetes: lab commands not run end to end; GKE steps and Autopilot behaviour need a re-check against the live docs before recording; `kind` and `minikube` setup for Ingress and metrics-server is described, not tested.
