@@ -72,8 +72,24 @@ Not tested: GKE (Session 24 episode 4), Grafana panels in a browser, blackbox pr
 - kube-prometheus-stack: ServiceMonitor must carry the chart's `release` label (value follows the Helm release name; check the rendered Prometheus object).
 - MCP: `pip install "mcp[cli]"` and `from mcp.server.fastmcp import FastMCP` are the official SDK; the standalone `fastmcp` package is separate; Python 3.10+. S33 text updated.
 
-## 5. Still to verify before recording (not checked)
-Action versions (`checkout`, `setup-python`, `docker/*`, `setup-terraform`, Trivy); AWS provider major version; Trivy and gitleaks flags; ECR lifecycle fields; AWS free tier and NAT, ALB, RDS pricing; GKE Autopilot behaviour and flags; AKS pricing tiers and `az aks create` flags and VM sizes; Azure free account terms; Azure DevOps free parallel jobs; GHCR token scopes; Docker Engine install steps; Ansible install and collection names (`community.general.ufw`, `amazon.aws.aws_ec2`); `sshagent` plugin; Grafana admin password step for the chart version; LLM provider SDK, model names and pricing; Lambda limits; S3 limits and storage-class minimum durations.
+## 5. Status of the remaining facts (final, 2026-11-17)
+
+Verified by running or by reading current official docs (sections 3b to 3i above, and this list):
+- GitHub Action versions and inputs, trivy-action, gitleaks flags, `.trivyignore` expiry: 3i. AWS provider major (6.x): 3f. Trivy flags: 3f, 3h, 3i.
+- GKE Autopilot behaviour and flags: 3e (live run).
+- Ansible install, collection names (`community.general.ufw`, `amazon.aws.aws_ec2`): 3g, plus the `aws_ec2` dynamic inventory run against the emulator on 2026-11-17: the tag filter `Env: dev` excluded the prod instance, `keyed_groups` gave `role_web` and `role_db`, config file name must end in `aws_ec2.yml`, needs boto3 and botocore. The key `tags.Role` is deprecated in favour of `ec2_tags.Role` (script updated).
+- Grafana admin password step: 3d.
+- Google Cloud free trial: 90 days and $300 credit for new customers, no billing until upgrade, not usable for Gemini API in AI Studio (matches S00).
+- Azure DevOps free tier: one free Microsoft-hosted parallel job with 1,800 minutes a month, up to 10 free parallel jobs for public projects, and new private organizations may need to request the free grant (matches S30).
+- AKS: `az aks create --attach-acr`, `--node-count`, `--generate-ssh-keys`, `--tier {free,standard,premium}` exist; `az aks update --attach-acr` exists and `az aks check-acr` verifies it; the script's commands are valid (not run: no Azure subscription).
+- ECR lifecycle policy: rules need `tagStatus` and, for tagged images, a `tagPatternList` or `tagPrefixList` (not both); `imageCountMoreThan` keeps the newest N and `sinceImagePushed` expires by age; changes apply within 24 hours; preview first. The S22 sentence (keep the last twenty tagged, expire untagged after seven days) is achievable.
+- GHCR from Actions: `permissions: packages: write` plus `GITHUB_TOKEN` with `docker/login-action` is the documented path (matches S22).
+- Jenkins `sshagent(['credential-id'])`: step exists; private-key credentials only; the `ssh-agent` executable must exist on the agent (matches S31). Not run end to end.
+
+Not applicable (the scripts deliberately avoid the claim, so there is nothing to verify): AWS free tier and NAT, ALB, RDS prices; Lambda and S3 limits and storage-class minimums; AKS pricing numbers; Azure free account terms; LLM provider SDK, model names and prices (S32 uses an interface with `FakeExpert` and tells students to use their own provider's SDK). These lines tell students to read the live pages, which stays correct as prices change.
+
+Not verified at all (needs access I do not have, or is outside what can run locally): real AWS and Azure behaviour and billing, GitHub-hosted runs, GHCR pushes with a real token, webhooks, SonarQube, Docker Engine install steps (the scripts defer to the official docs), Standard-mode GKE, third-party Galaxy roles.
+
 
 ## 3e. GKE lab (Session 24), run LIVE on a real GCP project (us-central1, Autopilot)
 

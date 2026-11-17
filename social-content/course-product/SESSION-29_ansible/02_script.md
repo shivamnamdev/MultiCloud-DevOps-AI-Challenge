@@ -85,25 +85,25 @@ ansible_ssh_private_key_file=~/.ssh/id_ed25519
 ```
 Yahi list YAML mein bhi likh sakte ho, bas syntax alag. Settings do jagah rakhte hain: `group_vars/web.yml` mein poore group ki, aur `host_vars/web1.yml` mein ek building ki. Isse inventory file chhoti rehti hai. `ansible-inventory --graph` chalao to dikhega ki Ansible ne groups ko kaise samjha. Ek chhoti baat: inventory mein password mat likho. Wo key cabinet ka kaam hai, jo hum episode 4 mein dekhenge.
 
-### [03:55 – 07:10] Scene 3: Private Wing aur Dynamic List
+### [03:55 – 07:05] Scene 3: Private Wing aur Dynamic List
 **[VISUAL: Left: control node reaching the private wing through the gatehouse. `ansible_ssh_common_args='-o ProxyJump=ubuntu@GATEHOUSE_IP'`. Right: an `aws_ec2.yml` inventory plugin config filtering by tag `Env=dev` and grouping by tag `Role`. A terminal showing `ansible-inventory --graph` with groups `role_web`, `role_db`.]**
 
 **(Voiceover):**
-Session 14 mein humne private wing banayi thi, jahan buildings tak seedha raasta nahi. Crew ko wahan bhi jaana hai, to gatehouse se jaayegi. Inventory mein `ansible_ssh_common_args='-o ProxyJump=ubuntu@GATEHOUSE_IP'` likho, wahi `ssh -J` jo humne tab seekha tha. Doosri samasya: buildings Auto Scaling se aati jaati hain, to IP ki list haath se kaun likhega? Iske liye dynamic inventory hai. AWS ke liye `amazon.aws.aws_ec2` plugin, jo landlord se pooch kar buildings ki list nikalta hai, tags ke hisaab se filter karta hai, aur tags se groups banata hai: `Role=web` wali buildings ek group. Isliye Session 28 mein tags ki baat zaroori thi. Is plugin ko `boto3` aur AWS ki credentials chahiye, jo role ya profile se aati hain. Pehli baar ke liye haath ki list se shuru karo, phir dynamic par jaana.
+Session 14 mein humne private wing banayi thi, jahan buildings tak seedha raasta nahi. Crew ko wahan bhi jaana hai, to gatehouse se jaayegi. Inventory mein `ansible_ssh_common_args='-o ProxyJump=ubuntu@GATEHOUSE_IP'` likho, wahi `ssh -J` jo humne tab seekha tha. Doosri samasya: buildings Auto Scaling se aati jaati hain, to IP ki list haath se kaun likhega? Iske liye dynamic inventory hai. AWS ke liye `amazon.aws.aws_ec2` plugin, jo landlord se pooch kar buildings ki list nikalta hai, tags ke hisaab se filter karta hai, aur tags se groups banata hai: `Role=web` wali buildings ek group. Is plugin ko `boto3` aur AWS ki credentials chahiye, jo role ya profile se aati hain. Config file ka naam `aws_ec2.yml` par khatam ho, aur group ke liye `keyed_groups` mein `key: ec2_tags.Role`. Pehle haath ki list, phir dynamic.
 
-### [07:10 – 10:15] Scene 4: Ad-hoc Commands aur Modules
+### [07:05 – 10:10] Scene 4: Ad-hoc Commands aur Modules
 **[VISUAL: `ansible web -m ping`, `ansible all -a "uptime"`, `ansible web -m ansible.builtin.apt -a "name=nginx state=present update_cache=yes" --become`. A module catalogue: apt, dnf, copy, file, user, service, template, lineinfile, ufw. `ansible web -m setup -a "filter=ansible_distribution*"`.]**
 
 **(Voiceover):**
 Ad-hoc command ek ek kaam ke liye hai. `ansible web -m ping` ka matlab connection aur Python ka test, ICMP ping nahi. `ansible all -a "uptime"` har building par command. Module ek kaam ke liye tayyar program hai: `apt`, `copy`, `file`, `user`, `service`, `ufw`. Nginx ke liye: `ansible web -m ansible.builtin.apt -a "name=nginx state=present update_cache=yes" --become`. `--become` matlab `sudo`, yaani duty manager ki tarah, jo Linux session ka wahi idea hai. Dhyaan do `state=present`: ye keh raha hai "nginx maujood hona chahiye", ye nahi ki "install karo". Agar pehle se hai to crew kuch nahi karegi. Ye idempotency hai, jo agle episode ka dil hai. Aur `setup` module building ke facts nikalta hai: OS, IP, memory, jo checklist mein sawaal poochne ke kaam aate hain.
 
-### [10:15 – 12:05] Scene 5: Jab Module Nahi Mila: command aur shell
+### [10:10 – 12:00] Scene 5: Jab Module Nahi Mila: command aur shell
 **[VISUAL: A side-by-side. Left: `ansible web -m ansible.builtin.service -a "name=nginx state=started"` result "ok" the second time. Right: `ansible web -m ansible.builtin.shell -a "systemctl start nginx"` always shows "changed". A small note: `creates=` or `changed_when` to teach it.]**
 
 **(Voiceover):**
 Kabhi kabhi koi module nahi milta. Tab `command` ya `shell` hain. Par ye idempotent nahi: har baar chalenge aur har baar "changed" bolenge, chahe kuch na badla ho. Isliye pehle module dhoondho, aur shell tabhi jab koi aur raasta na ho. Aur agar shell chalana hi pada, to Ansible ko sikhao ki kab "changed" maane: `creates=/path` ya `changed_when`. Aur `shell` mein pipes ya user ka text ho, to injection ka khatra, isliye `command` ko tarjeeh do.
 
-### [12:05 – 14:45] Scene 6: Lab: Poori Fleet par Ek Command
+### [12:00 – 14:45] Scene 6: Lab: Poori Fleet par Ek Command
 **[VISUAL: Create `inventory.ini` and `group_vars/web.yml`. Run `ansible all -m ping`: "pong" from both. Run the nginx command once: "changed". Run it again: "ok". `ansible web -m ansible.builtin.service -a "name=nginx state=started enabled=yes" --become`. Browser to both IPs shows the nginx welcome page. A third command opens port 80 with `ufw`.]**
 
 **(Voiceover):**

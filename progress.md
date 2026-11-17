@@ -213,3 +213,6 @@
 
 ## 2026-11-17 Fact-check round 9: Actions pins, DevSecOps tools, S33 query_prometheus
 - actionlint on all S20/S22/S28 workflows; verified every used input exists in the latest action.yml; updated 10 outdated pins. gitleaks, pip-audit, trivy fs and .trivyignore expiry verified. Wrote and tested the missing `query_prometheus` tool (real Prometheus + real MCP client). See FACT_CHECK_REPORT.md 3i.
+
+## 2026-11-17 Fact-check pass complete
+- All runnable labs verified for real (rounds 1 to 9: MCP, Docker, Kubernetes on kind, GKE live, Terraform, Ansible, Jenkins, Actions and DevSecOps tools, query_prometheus); remaining facts checked against docs (section 5 of FACT_CHECK_REPORT.md). Script fixes were applied after every round; all sessions touched stay within 2,500 to 3,000 spoken words.
