@@ -187,3 +187,8 @@
 - Ran the Session 33 hatch in a `python:3.12-slim` container with a stdio MCP client and a stub `kubectl`. Allow-list, pod-name validation and log redaction work on both `mcp<2` and `mcp` 2.3.0.
 - Found: `pip install "mcp[cli]"` now gives 2.x where `FastMCP` is `MCPServer` (`mcp.server.mcpserver`). Session 33 now explains both and pins `mcp[cli]<2` in the lab; also explains that a venv does not change the Python version.
 - Not done: `query_prometheus` is not coded in the script (design only); real-cluster test of the read-only Role.
+
+### [2026-11-17] — Fact-check pass, round 3: Docker
+- Built and ran the Session 22 and 31 Dockerfiles, the read-only run flags, the Session 21 Postgres lab, and the Session 31 `deploy.sh` (local registry, three releases, rollback) on the local Docker engine.
+- Fixes: S21 lab now waits with `pg_isready` (it failed with `Connection refused`); S22 size chart corrected (multi-stage saves nothing for pure Python on `slim`; measured sizes) and a gunicorn read-only warning added; S31 notes the post-rollback health check.
+- Not done: Trivy scan, buildx multi-platform, `ufw` bypass, GHCR push and the Actions workflow, `kind` and Kubernetes labs.

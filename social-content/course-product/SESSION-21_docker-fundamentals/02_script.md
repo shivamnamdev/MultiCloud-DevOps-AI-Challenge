@@ -191,10 +191,11 @@ Lab:
 docker network create appnet
 docker run -d --name db --network appnet \
   -e POSTGRES_PASSWORD=secret -v pgdata:/var/lib/postgresql/data postgres:16
+until docker exec db pg_isready -U postgres; do sleep 1; done
 docker run --rm -e PGPASSWORD=secret --network appnet postgres:16 \
   psql -h db -U postgres -c 'create table if not exists t(x int); insert into t values (1); select * from t;'
 ```
-Ab `docker rm -f db`, wahi `docker run` dobara, aur `select * from t;` wali command phir chalao, bina table banaye: data abhi bhi hai. Phir `docker volume ls` aur `docker volume inspect pgdata` se locker room ki jagah dekho. Password yahan sirf example ke liye hai: asli kaam mein secrets ek alag tareeke se dete hain, jaise Session 13 mein. Safai: `docker rm -f db`, `docker volume rm pgdata`, `docker network rm appnet`, aur building ko stop karo.
+Dhyaan: database ko shuru hone mein kuch second lagte hain, isliye `until docker exec db pg_isready` wali line se intezaar karte hain. Uske bina `psql` ka pehla try aksar `Connection refused` deta hai. Ab `docker rm -f db`, wahi `docker run` dobara (intezaar ke saath), aur `select * from t;` wali command phir chalao, bina table banaye: data abhi bhi hai. Phir `docker volume ls` aur `docker volume inspect pgdata` se locker room ki jagah dekho. Password yahan sirf example ke liye hai: asli kaam mein secrets ek alag tareeke se dete hain, jaise Session 13 mein. Safai: `docker rm -f db`, `docker volume rm pgdata`, `docker network rm appnet`, aur building ko stop karo.
 
 ### [14:20 – 15:30] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "volume = locker room, survives the truck · backup it separately · user-defined network, names not IPs · do not publish the database port · compose = a small park in one building". Then a blank sheet titled "fit-out sheet" appears on a desk.]**

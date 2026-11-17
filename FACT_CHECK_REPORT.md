@@ -35,6 +35,18 @@ A venv would not help: it reuses the interpreter it was made from (3.9 here). A 
 **Finding:** a fresh `pip install "mcp[cli]"` now installs 2.x, where `from mcp.server.fastmcp import FastMCP` fails (renamed to `MCPServer`, import `mcp.server.mcpserver`). The script originally said "check docs". Now it explains both versions and the lab pins `mcp[cli]<2`. Only the import and class name differ.
 Not tested: the `query_prometheus` tool (described in the script, not coded) and a real cluster with the read-only Role.
 
+## 3c. Docker checks (round 3), run on the local Docker engine
+| Session | What ran | Result |
+|---|---|---|
+| 22 | naive Dockerfile (`python app.py`) | builds and serves; prints the Flask development-server warning, runs as root |
+| 22 | multi-stage, non-root Dockerfile with gunicorn | builds, serves `/health` and `/rooms`, `uid=10001(app)` |
+| 31 | Dockerfile with `HEALTHCHECK` | builds, status becomes `healthy`, non-root |
+| 22 | `--read-only --tmpfs /tmp --cap-drop ALL --security-opt no-new-privileges --memory 256m --pids-limit 100` | serves, but gunicorn 27 logs `Read-only file system: /home/app/.gunicorn` (control server). Script now warns |
+| 21 | Postgres on a user network, volume, `psql` | **failed as written** (`Connection refused`: no wait for startup). Works with `pg_isready` loop; script fixed |
+| 31 | `deploy.sh` in an Alpine container with the Docker socket, a local registry, three releases | first deploy, upgrade, broken release: rollback to the previous label, log lines correct, exit 1 |
+Size findings (Session 22 chart): `python:3.12` 1.62 GB, `python:3.12-slim` 205 MB, our Flask image 214 to 228 MB; multi-stage gave no saving for a pure Python service (the old chart claimed about 60 MB). Script corrected: multi-stage helps when the build needs a compiler, and for Java or Go.
+Not tested: Docker `ufw` bypass claim, `docker buildx` multi-platform, Trivy scan, GHCR push, the Session 22 Actions workflow, `kind`.
+
 ## 4. Verified against docs (web)
 - Terraform `use_lockfile`: added in 1.10; DynamoDB arguments deprecated but still working. Script text updated (S28).
 - RDS `manage_master_user_password`: valid for `aws_db_instance`, excludes `password`; secret ARN at `master_user_secret[0].secret_arn`.

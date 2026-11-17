@@ -261,7 +261,7 @@ docker rm -f "$NAME"
 [ -n "$PREV" ] && docker run -d --name "$NAME" --restart unless-stopped -p 8081:5000 "$PREV"
 exit 1
 ```
-Pehle purani truck ka label yaad rakhta hai. Naya design pull karta hai. Truck chalata hai. Bees baar, har teen second par, health check. Pass to log mein ek line, fail to purani truck wapas aur script `exit 1`, jisse Jenkins ka station laal ho. Ek sachchai: isme kuch second ke liye service ruk jaati hai. Kai buildings ke saath rolling ya blue-green se ye bacha jaata hai, jo Kubernetes ka kaam hai. Ek building ke liye ye saaf aur seekhne layak hai.
+Pehle purani truck ka label yaad rakhta hai. Naya design pull karta hai. Truck chalata hai. Bees baar, har teen second par, health check. Pass to log mein ek line, fail to purani truck wapas aur script `exit 1`, jisse Jenkins ka station laal ho. Humne ise ek local registry aur ek toote hue release ke saath aazmaya: pehli deploy, upgrade aur rollback teeno sahi chale, aur log mein teeno line aayi. Ek chhoti baat: rollback ke turant baad purani truck ko khud health check mein aane mein kuch second lagte hain, isliye rollback ke baad bhi ek baar health dekho. Ek sachchai: isme kuch second ke liye service ruk jaati hai. Kai buildings ke saath rolling ya blue-green se ye bacha jaata hai, jo Kubernetes ka kaam hai. Ek building ke liye ye saaf aur seekhne layak hai.
 
 ### [04:50 – 06:55] Scene 3: Pehle Staging, Phir Manjoori, Phir Production
 **[VISUAL: Jenkins stages: Deploy staging, Smoke test, an `input` step "Deploy to production?" with a timeout (with `agent none` so no workbench is held), then Deploy production. A box: "approval only by the duty manager".]**
