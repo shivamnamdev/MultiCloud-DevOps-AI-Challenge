@@ -182,3 +182,8 @@
 - Verified in docs: `use_lockfile` (Terraform 1.10), `manage_master_user_password`, Azure CLI flags, `kind load`, Jenkins Java 17 or 21, ServiceMonitor `release` label, MCP SDK import and Python 3.10+.
 - Script edits: S28 (1.10 and deprecation wording), S33 (Python 3.10+, `mcp` vs `fastmcp`), S17 (Jenkins Java note).
 - Not done: MCP server never ran (no Python 3.10 here); Docker, Kubernetes, Terraform, Ansible, Jenkins and cloud commands need a real environment; list of unverified facts is in section 5 of the report.
+
+### [2026-11-17] — Fact-check pass, round 2: MCP server
+- Ran the Session 33 hatch in a `python:3.12-slim` container with a stdio MCP client and a stub `kubectl`. Allow-list, pod-name validation and log redaction work on both `mcp<2` and `mcp` 2.3.0.
+- Found: `pip install "mcp[cli]"` now gives 2.x where `FastMCP` is `MCPServer` (`mcp.server.mcpserver`). Session 33 now explains both and pins `mcp[cli]<2` in the lab; also explains that a venv does not change the Python version.
+- Not done: `query_prometheus` is not coded in the script (design only); real-cluster test of the read-only Role.

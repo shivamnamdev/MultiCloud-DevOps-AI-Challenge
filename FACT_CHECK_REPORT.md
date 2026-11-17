@@ -20,9 +20,20 @@ Environment: macOS, Python 3.9, no Docker daemon run, no cloud accounts, no Terr
 | 33 | restart helper with a stub `kubectl` | dry run, allow-list refusal, approve, rate limit and kill switch all work |
 
 ## 3. Could not run here
-- MCP server (Session 33): the SDK needs Python 3.10 or newer; this machine has 3.9. Code parses; behaviour is untested. **Run it once on 3.10+ before recording.**
 - Docker builds (22, 31, 32), Kubernetes (23 to 26, 32), Terraform (27, 28), Ansible (29), Jenkins (17 to 19, 31), AWS, Azure and GCP commands.
 - Terraform HCL (S27) only checked for syntax by eye; run `terraform fmt` and `validate` once.
+
+## 3b. MCP server (Session 33), run in a `python:3.12-slim` Docker container (round 2)
+A venv would not help: it reuses the interpreter it was made from (3.9 here). A throwaway container gave Python 3.12 with nothing installed on the Mac. A stdio client called the server with a stub `kubectl`.
+| Check | `mcp<2` (FastMCP) | `mcp` 2.3.0 (MCPServer) |
+|---|---|---|
+| Tools listed (`list_pods`, `get_pod_logs`) | pass | pass |
+| `list_pods("atithi")` | pass | pass |
+| `list_pods("kube-system")` | refused | refused |
+| `get_pod_logs` with `password=abc123` in the log | redacted, "UNTRUSTED LOG TEXT" prefix | same |
+| Pod name `x; rm -rf /` | refused | refused |
+**Finding:** a fresh `pip install "mcp[cli]"` now installs 2.x, where `from mcp.server.fastmcp import FastMCP` fails (renamed to `MCPServer`, import `mcp.server.mcpserver`). The script originally said "check docs". Now it explains both versions and the lab pins `mcp[cli]<2`. Only the import and class name differ.
+Not tested: the `query_prometheus` tool (described in the script, not coded) and a real cluster with the read-only Role.
 
 ## 4. Verified against docs (web)
 - Terraform `use_lockfile`: added in 1.10; DynamoDB arguments deprecated but still working. Script text updated (S28).
