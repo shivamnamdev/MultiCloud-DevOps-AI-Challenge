@@ -132,37 +132,37 @@ Recap: cache, ignore aur secrets ka dhyaan. Ab design ko chhota aur surakshit ba
 
 # 📺 EPISODE 3: Chhota aur Surakshit Design
 
-### [00:00 – 02:05] Scene 1: Hello World, 1.6 GB
+### [00:00 – 02:00] Scene 1: Hello World, 1.6 GB
 **[VISUAL: A bar chart of image sizes: `python:3.12` about 1.6 GB, `slim` about 200 MB, a Python service with the compiler left behind a little smaller or the same, and a Go or Java binary-only design under 100 MB. Next to it, a count of known vulnerabilities shrinking from hundreds to a handful.]**
 
 **(Voiceover):**
 Ek chhoti si service ka design, aur size 1.6 GB? Humne `python:3.12` ka poora design naapa to itna nikla, jabki `slim` sirf lagbhag 200 MB ka tha. Ye dheema download, zyada disk, aur zyada packages, yaani hamle ke zyada raaste hain. Har extra package ek aur jagah hai jahan se koi kamzori aa sakti hai, aur Session 20 ka X-ray, Trivy, utna hi zyada finding dikhata hai. Chhota design tez, sasta aur surakshit hota hai. Teen tareeke: chhota base, multi-stage build, aur non-root user. Aur ek chauthi cheez: design mein sirf wahi jaaye jo truck chalane ke liye chahiye, workshop ka saaman nahi.
 
-### [02:05 – 04:30] Scene 2: Multi-stage: Workshop Peeche, Sirf Truck Aage
+### [02:00 – 05:10] Scene 2: Multi-stage: Workshop Peeche, Sirf Truck Aage
 **[VISUAL: A fit-out sheet with two stages. Stage 1 "workshop": compilers and build tools build wheels or a binary. Stage 2 "truck": a slim base, `COPY --from=build`. A size bar: with a compiler needed, large before and smaller after; for pure Python, nearly unchanged. The workshop stage is discarded.]**
 
 **(Voiceover):**
 Multi-stage build mein pehle stage workshop hai: saare build tools, compilers aur dependencies. Doosre stage mein sirf truck: wo cheezein jo chalane ke liye chahiye. `COPY --from=build` se sirf built files, jaise Python wheels ya ek compiled binary, saath aati hain. Compiler aur tools final design mein jaate hi nahi. Isse design chhota aur attack surface kam. Ek sachchai: agar aapki Python service ko compiler ki zaroorat nahi, jaise sirf Flask aur gunicorn, to `slim` base par multi-stage se size lagbhag wahi rehta hai, humne naapa to 205 MB ke aaspaas. Multi-stage ka asli fayda tab dikhta hai jab build ko gcc ya headers chahiye, ya Java aur Go mein, jahan akeli binary ya jar aati hai. Java ke liye bhi wahi: pehle stage mein Maven aur JDK, doosre mein sirf JRE aur `.jar`, jo Session 17 ke finished unit ko seedha truck mein daalta hai. Go jaisi languages mein ek akeli binary se aur bhi chhota design milta hai.
 
-### [04:30 – 07:10] Scene 3: Non-root aur Base ka Chunav
+### [05:10 – 07:20] Scene 3: Non-root aur Base ka Chunav
 **[VISUAL: `RUN useradd -m -u 10001 app` and `USER app`. A comparison table of bases: full, slim, alpine, distroless. Notes: "alpine uses musl, some Python wheels fail", "distroless has no shell, debugging is harder", "pin the version or digest".]**
 
 **(Voiceover):**
 Truck ko by default root se chalana khatarnak hai. `RUN useradd -m -u 10001 app` aur `USER app` se non-root par chalao, taaki agar service hack ho, to nuksaan kam ho. Session 4 ke service user ka wahi sabak: ek kaam, kam ijaazat. Base ka chunav: slim aksar sahi balance hai. Alpine bahut chhota hai, par musl ki wajah se kabhi kabhi Python packages mein dikkat. Distroless mein shell tak nahi, jo security ke liye achha par debugging ke liye mushkil. Base ko ek tay version par pin karo, jaise `python:3.12.7-slim`, ya digest se, aur use niyam se update karo, Dependabot ya Renovate se, taaki naye security patches milte rahein.
 
-### [07:10 – 09:45] Scene 4: Mac par Banao, Server par Chalao: Architecture
+### [07:20 – 09:25] Scene 4: Mac par Banao, Server par Chalao: Architecture
 **[VISUAL: A laptop with an M-series chip building `rooms:1.0` and a cloud building running Intel or AMD. A message on the server: "exec format error". A fix: `docker build --platform linux/amd64 .` and `docker buildx build --platform linux/amd64,linux/arm64 ...`.]**
 
 **(Voiceover):**
 Ek jaal jo Mac ya ARM laptop wale ko zaroor milta hai. Design usi CPU ke liye banta hai jis par build hua. M-series Mac par build kiya to arm64 design. Use Intel ya AMD wali EC2 building par chalao, to "exec format error". Hal: `--platform linux/amd64` ke saath build karo, ya `docker buildx build --platform linux/amd64,linux/arm64`, jo ek hi naam mein dono ke design rakhta hai. Isse Session 10 ke `t4g` jaise Graviton, yaani ARM, buildings par bhi wahi design chal sakta hai, jo aksar sasti hoti hain. Aur CI mein jo runner hai, wahi architecture banata hai, to wahan ke build par bharosa zyada hota hai.
 
-### [09:45 – 12:20] Scene 5: Truck ko Aur Kasna: Read-only aur Kam Ijaazat
+### [09:25 – 12:50] Scene 5: Truck ko Aur Kasna: Read-only aur Kam Ijaazat
 **[VISUAL: A command `docker run -d --read-only --tmpfs /tmp --cap-drop ALL --security-opt no-new-privileges --memory 256m --pids-limit 100 rooms:slim`. A truck with most doors locked and one labelled `/tmp`. A list of what each flag blocks.]**
 
 **(Voiceover):**
 Design ko non-root banane ke baad ek aur parat chalte waqt lagti hai. `--read-only` truck ki file system ko read-only kar deta hai, aur jahan likhna zaroori ho, jaise `/tmp`, wahan `--tmpfs /tmp`. Isse koi hamlavar andar aakar kuch likh nahi paata. `--cap-drop ALL` Linux ki khaas ijaazatein, yaani capabilities, saari hata deta hai, aur jo chahiye wahi `--cap-add` se wapas. `--security-opt no-new-privileges` ye rokta hai ki koi process aur zyada ijaazat le le. `--memory` aur `--pids-limit` se ek bigdi truck poori building ko nahi khaa sakti. Ek jaal: naye gunicorn mein aisa bhi hota hai ki read-only file system par wo apne home folder mein ek control file likhne ki koshish karta hai, aur log mein `Read-only file system` ka error dikhta hai, jabki service chalti rehti hai. Isko ya to is feature ko band karke, ya ek aur `--tmpfs` lagakar sambhalte hain, aur apne gunicorn version ke docs dekh lo. Ye Session 4 ke least privilege ka truck wala roop hai, aur Kubernetes mein wahi baatein security context ban jaati hain.
 
-### [12:20 – 15:05] Scene 6: Lab: Multi-stage aur Non-root
+### [12:50 – 15:05] Scene 6: Lab: Multi-stage aur Non-root
 **[VISUAL: The multi-stage Dockerfile on screen. `docker images` showing two sizes. `docker run --rm rooms:slim id` printing `uid=10001(app)`. `trivy image rooms:slim` count compared with the single-stage design.]**
 
 **(Voiceover):**
@@ -241,13 +241,13 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: docker/metadata-action@v5
+      - uses: actions/checkout@v7
+      - uses: docker/metadata-action@v6
         id: meta
         with: { images: "ghcr.io/${{ github.repository }}" }
-      - uses: docker/login-action@v3
+      - uses: docker/login-action@v4
         with: { registry: ghcr.io, username: "${{ github.actor }}", password: "${{ secrets.GITHUB_TOKEN }}" }
-      - uses: docker/build-push-action@v6
+      - uses: docker/build-push-action@v7
         with: { push: true, tags: "${{ steps.meta.outputs.tags }}", labels: "${{ steps.meta.outputs.labels }}" }
 ```
 Push karo, aur Packages mein image dikhegi. Ek Git tag `v1.0.0` lagao aur dekho ki wahi design `1.0.0` label ke saath aata hai. Action versions ke liye docs dekh lena, aur Session 20 ki tarah unhe pin karo. Aakhir mein koi bhi doosri building `docker pull` karke wahi truck chala sakti hai.

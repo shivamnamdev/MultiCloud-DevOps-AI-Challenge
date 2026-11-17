@@ -66,31 +66,31 @@ Recap: AIOps kya hai, uski neev, aur LLM ki jagah. Ab hands-on: anomaly detectio
 **(Voiceover):**
 Fixed threshold, jaise "CPU 80% se upar", har jagah sahi nahi. Shaam ke peak mein 80% normal ho sakta hai, aur raat ke teen baje 40% bhi ajeeb. Booking website ka traffic roz ek lahar ki tarah chalta hai, aur weekend par alag. Anomaly detection ye dekhta hai ki value us samay ke liye normal se alag hai ya nahi. Aur ek chhota sa statistics bhi aksar kaafi madad karta hai, isliye bade ML model se pehle usi se shuru karo.
 
-### [01:25 – 03:50] Scene 2: Seedha Tareeka: z-score aur Pichhle Hafte ka Ghanta
+### [01:25 – 03:40] Scene 2: Seedha Tareeka: z-score aur Pichhle Hafte ka Ghanta
 **[VISUAL: A line with a band of the rolling mean plus and minus three standard deviations. A point outside the band is circled. A second chart compares today's 8 p.m. value with the same hour on previous weeks. Notes: "confirm over several points", "flat series need care".]**
 
 **(Voiceover):**
-Sabse saral tareeka: rolling average aur standard deviation. Agar naya value average se teen standard deviation se zyada door ho, to anomaly. Isko z-score kehte hain. Roz ki lahar wale data ke liye aur behtar: aaj ke shaam aath baje ko pichhle hafte ke usi ghante se milao. Prometheus ke andar bhi `stddev_over_time` aur `avg_over_time` hain, aur `predict_linear` aage ka raasta dikhata hai, jaise disk kab bharegi. Teen jaal. Ek, ek hi point par alarm mat bajao: kai points tak anomaly rahe tab. Do, jo series bilkul seedhi ho, usme standard deviation sifar hota hai aur z-score fat jaata hai, isliye wahan alag rule. Teen, naye service ke paas bahut kam history hoti hai, to wahan detector chup rahe. Bade ML model tabhi lagao jab ye saral tareeke kaafi na hon, aur tab bhi pehle ye soch lo ki use samajhaoge kaise.
+Sabse saral tareeka: rolling average aur standard deviation. Agar naya value average se teen standard deviation se zyada door ho, to anomaly. Isko z-score kehte hain. Roz ki lahar wale data ke liye aur behtar: aaj ke shaam aath baje ko pichhle hafte ke usi ghante se milao. Prometheus ke andar bhi `stddev_over_time` aur `avg_over_time` hain, aur `predict_linear` aage ka raasta dikhata hai, jaise disk kab bharegi. Teen jaal. Ek, ek hi point par alarm mat bajao: kai points tak anomaly rahe tab. Do, jo series bilkul seedhi ho, usme standard deviation sifar hota hai aur z-score fat jaata hai, isliye wahan alag rule. Teen, naye service par detector chup rahe, kyunki history kam hai. Bade ML model tabhi, jab ye saral tareeke kaafi na hon.
 
-### [03:50 – 05:50] Scene 3: Autonomy ki Seedhi
+### [03:40 – 05:45] Scene 3: Autonomy ki Seedhi
 **[VISUAL: A ladder with four steps. 1 Observe and report. 2 Suggest a fix with evidence. 3 Fix after a duty manager's approval. 4 Fix alone, only for low-risk, reversible actions. A red zone at the top: "never alone: delete data, scale a database down, change security rules, spend money".]**
 
 **(Voiceover):**
 Automatic fix ek seedhi par chadhta hai. Pehla paaydaan: sirf dekhna aur batana. Doosra: fix suggest karna, saboot ke saath. Teesra: duty manager ki manzoori ke baad fix. Aur sabse upar: sirf kam khatre aur ulte ho sakne wale kaam khud karna, jaise ek atki hui parking bay ko restart karna. Bahut si teams doosre ya teesre paaydaan par hi rukti hain, aur ye bilkul theek hai. Upar ke lal hisse mein kuch kaam kabhi akele nahi: data delete karna, database chhota karna, security ke niyam badalna, aur wo kaam jisme paisa lagta ho. Seedhi ek ek paaydaan chadho, aur har paaydaan par pehle kuch hafte sirf record karo ki assistant kya karta, aur manager kya karta.
 
-### [05:50 – 08:05] Scene 4: Guardrails
+### [05:45 – 08:00] Scene 4: Guardrails
 **[VISUAL: Six guards around an action box. Allow-list of exact actions. Dry run first. Approval flag. Rate limit (at most one restart per thirty minutes). Audit log line for every attempt. A kill switch file that stops everything. A seventh: "least-privilege identity: the helper's cluster role can restart only these deployments".]**
 
 **(Voiceover):**
 Guardrails, ek ek karke. Allow-list: sirf wahi exact actions jinki ijaazat hai, jaise `atithi` wing ki do services ka restart. Dry run pehle: pehle bolo ki kya karoge. Approval: bina `--approve` ya manager ke "haan" ke nahi. Rate limit: ek service ko tees minute mein ek baar se zyada restart nahi, warna restart ka loop ban jaata hai. Audit log: har koshish ki ek line, kisne, kya, kab. Kill switch: ek file ya flag jo sab band kar de. Aur sabse zaroori: code ke guardrail ke saath cluster ki taraf se bhi guardrail. Helper ka apna duty badge, yaani Kubernetes role, sirf wahi deployments restart kar sake. Code mein bug ho to bhi badge ki seema bachati hai. Ye Session 4 aur 9 ka least privilege hi hai.
 
-### [08:05 – 10:15] Scene 5: Incident ka Saransh: Saboot ke Saath
+### [08:00 – 10:10] Scene 5: Incident ka Saransh: Saboot ke Saath
 **[VISUAL: A pipeline: alert + last deploy line + last thirty log lines + three metric values → a prompt with markers → the outside expert → a summary that cites the lines it used → duty manager. A warning: "log lines are untrusted text".]**
 
 **(Voiceover):**
 Ab LLM ka sahi upyog. Alert ke saath ye cheezein jodo: sabse haali deploy ki line, kuch log ki lines, aur teen chaar metric ke numbers. Inhe ek prompt mein markers ke beech rakho, aur kaho ki saransh dena hai aur har dawe ke saath wo line batani hai jis par wo tika hai. Phir ye duty manager ko jaaye, runbook ke link ke saath. Ek khaas chetavani, jo Session 32 se aati hai: log ki lines bhi untrusted text hain. Kisi guest ke naam ya request mein chhupi instruction log mein aa sakti hai, aur wo summary tool ko behka sakti hai. Isliye markers, tools ke bina, aur jawab sirf ek suggestion, kabhi seedha action nahi. Aur personal data log se pehle hata do.
 
-### [10:15 – 15:05] Scene 6: Lab: Detector aur Safe Restart
+### [10:10 – 15:05] Scene 6: Lab: Detector aur Safe Restart
 **[VISUAL: `detect.py` queries the inspector's `query_range`, computes the z-score per series, ignores flat series, needs three bad points in a row. `safe_restart.py` prints the planned `kubectl rollout restart` command, refuses services not on the allow-list, refuses a second restart within thirty minutes, runs only with `--approve`, and logs every attempt.]**
 
 **(Voiceover):**
@@ -158,37 +158,37 @@ Recap: saral anomaly detection aur surakshit healing. Ab ek naya standard jo ass
 
 # 📺 EPISODE 3: Service Hatch ka Standard
 
-### [00:00 – 02:55] Scene 1: Har Assistant, Har Tool ke Liye Alag Wiring?
+### [00:00 – 03:00] Scene 1: Har Assistant, Har Tool ke Liye Alag Wiring?
 **[VISUAL: Three AI apps and five tools joined by a tangle of fifteen custom wires. Then a standard hatch in the middle: three plugs on one side, five on the other, eight connections.]**
 
 **(Voiceover):**
 Maan lo Atithi mein teen alag AI apps hain: ek IDE mein, ek chat mein, ek control room ke liye. Aur paanch tools: Git, Kubernetes, Prometheus, ticketing aur docs. Har app ko har tool se alag jodna, pandrah alag taar. Model Context Protocol, yaani MCP, ek standard hai jisse AI apps tools aur data se ek hi tareeke se jud sakti hain. Isse pandrah taar ki jagah aath: har app ek taraf, har tool doosri taraf. Jaise USB: ek port, kai device. Hamari story mein ye service hatch hai: ek saaf khidki jisse assistant hotel ke tools ko chhoota hai, aur har tool apni hatch par apne niyam tay karta hai.
 
-### [02:55 – 06:05] Scene 2: Hatch ke Hisse
+### [03:00 – 06:20] Scene 2: Hatch ke Hisse
 **[VISUAL: Host (an AI app) containing an MCP client. The client connects to one or more MCP servers. A server exposes three kinds of things: tools (actions), resources (data to read), prompts (ready templates). Two transports: stdio for local, HTTP for remote.]**
 
 **(Voiceover):**
 MCP mein teen bhumikayein. Host wo AI app hai jisse aap baat karte ho. Host ke andar MCP client hota hai, jo server se jud jaata hai. MCP server wo program hai jo capabilities deta hai, yaani hamari service hatch. Server teen cheezein de sakta hai: tools, yaani kaam jaise "pods ki list do"; resources, yaani padhne layak data jaise "ek log ka snapshot"; aur prompts, yaani ready templates. Transport ke do tareeke: local ke liye stdio, jahan host server ko apni hi machine par chalata hai, aur remote ke liye HTTP, jahan server door ki machine par hai aur wahan authentication zaroori hai. Assistant tool chunta hai, par host ke control mein, aur host aksar insaan se manzoori maangta hai.
 
-### [06:05 – 09:40] Scene 3: Hatch ki Suraksha
+### [06:20 – 09:25] Scene 3: Hatch ki Suraksha
 **[VISUAL: A list of dangers. An unknown server run on your machine. A tool description that contains hidden instructions. A tool returning log lines that contain hidden instructions. A token with write access. A remote hatch with no login. A tool that can run any shell command.]**
 
 **(Voiceover):**
-Hatch ek taaqat hai, to usme khatre bhi hain. Pehla: koi anjaan server apne host se jodna, matlab anjaan program apni machine par chalana. Doosra: tool ke description mein ya uske jawab mein chhupi instruction ho sakti hai, jise model padhta hai, isliye server ka source dekho aur sirf bharose wale server jodo. Teesra: tool ke jawab, jaise log, bhi untrusted text hain, wahi prompt injection jo Session 32 mein dekha. Chautha: token ka daayra, yaani wahi least privilege: shuruat read-only se, aur cluster ki taraf se bhi read-only badge. Paanchva: remote hatch par login zaroori hai, kyunki warna jo bhi us URL tak pahunche wo tools chalayega. Chhatha: koi bhi tool jo "koi bhi shell command chalao" kahe, wo hatch nahi, khuli khidki hai. Tool chhote, ek ek kaam ke, aur apne input ko khud jaanchne wale hon.
+Pehla: koi anjaan server apne host se jodna, matlab anjaan program apni machine par chalana. Doosra: tool ke description mein ya uske jawab mein chhupi instruction ho sakti hai, jise model padhta hai, isliye server ka source dekho aur sirf bharose wale server jodo. Teesra: tool ke jawab, jaise log, bhi untrusted text hain, wahi prompt injection jo Session 32 mein dekha. Chautha: token ka daayra, yaani wahi least privilege: shuruat read-only se, aur cluster ki taraf se bhi read-only badge. Paanchva: remote hatch par login zaroori hai. Chhatha: koi bhi tool jo "koi bhi shell command chalao" kahe, wo hatch nahi, khuli khidki hai. Tool chhote hon, aur apne input ko khud jaanchein.
 
-### [09:40 – 12:00] Scene 4: Hatch Kaun Si Cheezein Kholega
+### [09:25 – 11:50] Scene 4: Hatch Kaun Si Cheezein Kholega
 **[VISUAL: A table with columns tool, inputs, returns, risk, and what stops misuse. `list_pods(namespace)`, `get_pod_logs(namespace, pod, tail)`, `query_prometheus(promql)`. All risk "read". A fourth row crossed out: `restart_deployment`, "not in the first version".]**
 
 **(Voiceover):**
 Hatch ka design pehle kaagaz par. Teen tools. `list_pods(namespace)`: allowed namespaces mein pods aur unki halat. `get_pod_logs(namespace, pod, tail)`: kuch aakhri lines, jisme tail ki seema ho aur secrets hata diye gaye hon. `query_prometheus(promql)`: inspector se ek sawaal, jisme URL fixed ho, samay ki seema ho aur jawab chhota ho. Teeno ke saamne risk "sirf padhna". Chautha tool, restart, abhi nahi: wo episode 2 ka alag, manzoori wala helper hai, aur use hatch se jodna ek alag, soch-samajh kar liya hua faisla hoga. Pehle hatch se sirf dekhna sikho.
 
-### [12:00 – 13:55] Scene 5: Lab: Design ko Test Karo
+### [11:50 – 13:50] Scene 5: Lab: Design ko Test Karo
 **[VISUAL: A worksheet. For each tool the learner writes three abuse cases: a wrong wing, an input with a semicolon, a very large output. Then a note on what the code will do for each one.]**
 
 **(Voiceover):**
 Lab (design): har tool ke liye teen galat istemaal likho. Galat wing mein pods maangna. Pod ke naam mein semicolon aur command daalna. Bahut bada output maangna, jaise ek lakh log lines ya ek bahut bhaari PromQL. Phir har ek ke saamne likho ki server kya karega: mana karega, input saaf karega, ya output kaat dega. Agle episode mein hum yahi code mein likhenge, aur jo likha hai wo test bhi karenge.
 
-### [13:55 – 14:25] Scene 6: Recap aur Bridge
+### [13:50 – 14:20] Scene 6: Recap aur Bridge
 **[VISUAL: A card: "host + client + server · tools, resources, prompts · stdio local, HTTP remote with login · untrusted server, description and output · read-only first · small tools, validated inputs".]**
 
 **(Voiceover):**
@@ -198,17 +198,17 @@ Recap: MCP ka idea, uske hisse, aur uski suraksha. Ab apni service hatch banate 
 
 # 📺 EPISODE 4: Apni Service Hatch Banao
 
-### [00:00 – 01:20] Scene 1: Chat Mein Pucho, Control Room Jawab De
+### [00:00 – 01:10] Scene 1: Chat Mein Pucho, Control Room Jawab De
 **[VISUAL: A chat window. "Why is rooms-service restarting?" The assistant calls `list_pods`, then `get_pod_logs`, then `query_prometheus`, and answers: "memory limit hit, OOMKilled, here are the lines". It adds: "I can't restart anything; the duty manager decides."]**
 
 **(Voiceover):**
 Soch ke dekho: duty manager chat mein poochta hai "rooms-service baar baar restart kyun ho rahi hai?" Assistant `list_pods` chalata hai, phir `get_pod_logs`, phir ek `query_prometheus`, aur jawab deta hai ki memory limit par OOMKilled ho raha hai, ye rahi wo lines, aur ye rahi memory ki query. Saath mein saaf kehta hai ki restart wo nahi kar sakta, kyunki hatch mein wo tool hai hi nahi. Faisla manager ka. Is episode mein hum aisi hatch banate hain.
 
-### [01:20 – 04:15] Scene 2: Hatch ka Code
+### [01:10 – 04:10] Scene 2: Hatch ka Code
 **[VISUAL: A Python file using the official MCP Python SDK's `FastMCP`. A `kubectl` helper using an argument list and a timeout. A name check by regex. `list_pods` with a namespace allow-list. Notes: "no shell", "errors trimmed", "descriptions short".]**
 
 **(Voiceover):**
-Official Python SDK ke saath hatch chhoti hoti hai. Ek dhyaan ki baat: SDK ke version 1 mein import `from mcp.server.fastmcp import FastMCP` hai, aur version 2 mein `FastMCP` ka naam badalkar `MCPServer` ho gaya, import `from mcp.server.mcpserver import MCPServer`. Baaki code wahi rehta hai. Hum version 1 ke naam se likhte hain, aur lab mein `pip install "mcp[cli]<2"` se wahi version lagayenge, taaki screen aur aapka code mel khaye. Version 2 par jaana ho to bas ye ek import aur ek naam badlo.
+Official Python SDK ke saath hatch chhoti hoti hai. Ek dhyaan ki baat: version 1 mein `from mcp.server.fastmcp import FastMCP` hai, aur version 2 mein naam `MCPServer` ho gaya. Hum version 1 likhte hain, aur lab mein `pip install "mcp[cli]<2"` lagayenge. Version 2 par jaana ho to bas ek import aur ek naam badlo.
 ```python
 import json, os, re, subprocess
 from mcp.server.fastmcp import FastMCP
@@ -242,7 +242,7 @@ if __name__ == "__main__":
 ```
 Dhyaan do: namespace allow-list, naam ki regex, timeout, error ka chhota hissa, aur shell ka istemaal nahi, sirf argument ki list, taaki naam mein semicolon ka koi matlab hi na rahe.
 
-### [04:15 – 07:00] Scene 3: Logs aur Prometheus: Chhote Output, Saaf Output
+### [04:10 – 08:10] Scene 3: Logs aur Prometheus: Chhote Output, Saaf Output
 **[VISUAL: `get_pod_logs` caps `tail` at 200, redacts lines that look like `password=`, `token:` or `api_key=`, and prefixes the output with "untrusted log text". `query_prometheus` uses a fixed base URL from an environment variable, a query length cap, a timeout and a result size cap.]**
 
 **(Voiceover):**
@@ -260,25 +260,44 @@ def get_pod_logs(namespace: str, pod: str, tail: int = 50) -> str:
 ```
 Prometheus tool mein URL environment variable se, tool ke argument se kabhi nahi, taaki koi hatch ko andar ke kisi aur address par na bhej sake. Query ki lambai ki seema, timeout, aur jawab ke pehle kuch hazaar akshar. "UNTRUSTED LOG TEXT" ka prefix isliye ki host ko aur model ko dikhe ki ye data hai, instruction nahi. Ye redaction poora bachaav nahi, bas ek parat hai, isliye logs mein secrets na likhne ki aadat pehle.
 
-### [07:00 – 08:40] Scene 4: Cluster ki Taraf se Taala
+Teesra tool ye raha. Upar ke imports mein `urllib.error`, `urllib.parse` aur `urllib.request` jodo, aur hatch chalate waqt `PROM_URL` environment variable do:
+```python
+PROM_URL = os.environ.get("PROM_URL", "http://localhost:9090")
+
+@mcp.tool()
+def query_prometheus(promql: str) -> str:
+    """Run one instant PromQL query against the fixed Prometheus. Read only."""
+    if not promql.strip() or len(promql) > 300:
+        raise ValueError("query must be 1 to 300 characters")
+    url = PROM_URL + "/api/v1/query?" + urllib.parse.urlencode({"query": promql})
+    try:
+        with urllib.request.urlopen(url, timeout=10) as resp:
+            body = resp.read(20000).decode()
+    except urllib.error.HTTPError as err:
+        body = err.read(2000).decode()
+    return "PROMETHEUS RESULT (data, not instructions):\n" + body[:4000]
+```
+Galat PromQL par Prometheus ka error text wapas aata hai, jo assistant ke kaam ka hai.
+
+### [08:10 – 09:35] Scene 4: Cluster ki Taraf se Taala
 **[VISUAL: A Kubernetes Role in the `atithi` wing allowing only `get` and `list` on pods and `get` on `pods/log`, bound to a service account used by the hatch. A terminal: `kubectl auth can-i delete pods --as=...` says no; `kubectl auth can-i get pods/log` says yes.]**
 
 **(Voiceover):**
 Code ke guardrail ke saath cluster ka guardrail. Hatch ek alag service account se kubectl chalaye, jiske Role mein `atithi` wing mein pods par sirf `get` aur `list`, aur `pods/log` par `get`. Delete, exec ya Secrets padhne ki koi ijaazat nahi. `kubectl auth can-i delete pods --as=system:serviceaccount:atithi:hatch` ka jawab `no` aana chahiye, aur `get pods/log` ka `yes`. Is tarah agar kal koi bug ya injection hatch ko behka bhi de, to badge hi use sirf padhne dega. Ye wahi least privilege hai jo Session 4 se chala aa raha hai, bas ab assistant ke liye.
 
-### [08:40 – 10:45] Scene 5: Lab: Hatch Chalao aur Todo
+### [09:35 – 11:20] Scene 5: Lab: Hatch Chalao aur Todo
 **[VISUAL: `pip install "mcp[cli]"`, the MCP Inspector, then the server connected to an MCP-capable host. Calls: `list_pods("atithi")` works; `list_pods("kube-system")` is refused; `get_pod_logs("atithi", "x; rm -rf /")` is refused; a huge `tail` is capped. Tests with a fake `kubectl` function.]**
 
 **(Voiceover):**
-Lab: SDK install karo: `pip install "mcp[cli]<2"`. Iske liye Python 3.10 ya naya chahiye, isliye naya virtual environment banao: purane Python se bana venv purana hi rehta hai, to `python3.12 -m venv .venv` jaisa naya interpreter lo, ya ek Docker container `python:3.12-slim` mein chalao. Ye official `mcp` package hai. `fastmcp` naam ka alag package bhi hai jiska import alag hai, isliye docs se milao. MCP Inspector, jo official debugging tool hai, ya kisi MCP-capable host mein server jodo. `list_pods("atithi")`: pods dikhenge. `list_pods("kube-system")`: mana, kyunki wo allow-list mein nahi. `get_pod_logs("atithi", "x; rm -rf /")`: mana, naam ki jaanch se. `tail=100000` do: 200 par kat jaata hai. Phir `kubectl` ki jagah ek nakli function lagakar teeno ke unit tests likho, taaki test mein cluster na chahiye. Aur ek log mein jaan-boojh kar `password=abc123` rakho, aur dekho ki `[redacted]` aata hai. Host ki config mein server ko jodne ka tareeka host ke docs mein hota hai: command `python hatch.py`. Aur hatch ko wahi service account de jo pichhle scene mein banaya.
+Lab: SDK install karo: `pip install "mcp[cli]<2"`. Iske liye Python 3.10 ya naya chahiye: `python3.12 -m venv .venv` jaisa naya interpreter lo, ya `python:3.12-slim` container use karo. `fastmcp` naam ka alag package bhi hai, jiska import alag hai. MCP Inspector ya kisi MCP-capable host mein server jodo. `list_pods("atithi")`: pods dikhenge. `list_pods("kube-system")`: mana, kyunki wo allow-list mein nahi. `get_pod_logs("atithi", "x; rm -rf /")`: mana, naam ki jaanch se. `tail=100000` do: 200 par kat jaata hai. Phir `kubectl` ki jagah ek nakli function lagakar unit tests likho. Aur ek log mein jaan-boojh kar `password=abc123` rakho, aur dekho ki `[redacted]` aata hai. Host ki config mein command `python hatch.py`, aur hatch ko wahi service account jo pichhle scene mein banaya.
 
-### [10:45 – 12:50] Scene 6: Hatch aur Helper Saath Mein
+### [11:20 – 13:10] Scene 6: Hatch aur Helper Saath Mein
 **[VISUAL: The control-room loop. Detector flags an anomaly → an incident card with evidence → the assistant uses the hatch to read pods, logs and metrics → proposes "restart rooms-service" → the duty manager runs the approved helper or declines → an audit line and a post-incident review draft.]**
 
 **(Voiceover):**
 Ab dono ko jodo, par ek ek kadam. Detector anomaly pakadta hai. Assistant hatch se pods, logs aur metrics padhta hai, aur saboot ke saath ek incident card banata hai, jisme runbook ka link hai. Wo suggest karta hai: "rooms-service ko restart karo". Duty manager helper ko `--approve` ke saath chalata hai, ya mana kar deta hai. Har kadam ki ek line audit log mein. Subah assistant post-incident review ka pehla draft likhta hai, jise manager padhta aur sudharta hai. Dekho kitni baar insaan beech mein hai: faisle ke waqt. Jab kuch hafte ke baad bharosa bane, tab hi kam khatre wale kaam, jaise ek stuck pod ka restart, autonomy ki seedhi par ek paaydaan upar jaa sakte hain, aur sirf wahi.
 
-### [12:50 – 15:35] Scene 7: Course ka Antim Sabak
+### [13:10 – 15:30] Scene 7: Course ka Antim Sabak
 **[VISUAL: The Build, Ship, Fix arrow with the full course map behind it: Linux, AWS, Git, Jenkins, Docker, Kubernetes, Prometheus, Terraform, Ansible, Azure, AI. Then the Atithi campus from the first session, now lit up end to end. A pilot beside an autopilot panel.]**
 
 **(Voiceover):**

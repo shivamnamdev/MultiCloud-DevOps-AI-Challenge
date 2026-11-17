@@ -196,8 +196,8 @@ Application ka rollback aasaan tha: `kubectl rollout undo`. Master plan ka rollb
 **(Voiceover):**
 Lab. Vault mein ek workflow jo pull request par ye chalaye:
 ```yaml
-- uses: actions/checkout@v4
-- uses: hashicorp/setup-terraform@v3
+- uses: actions/checkout@v7
+- uses: hashicorp/setup-terraform@v4
 - run: terraform fmt -check -recursive
 - run: terraform init -backend=false
 - run: terraform validate

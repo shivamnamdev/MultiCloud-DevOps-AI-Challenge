@@ -210,3 +210,6 @@
 
 ## 2026-11-17 Fact-check round 8: Jenkins (S17, S18, S19, S31)
 - Ran all four sessions' pipelines for real in Docker (Jenkins 2.580.2, multibranch, shared library, SSH agent, backup script, Trivy scan, local registry). Found and fixed: Trivy scan fails on python:3.12-slim (added `--ignore-unfixed` and `apt-get upgrade`), masking claim (base64 is masked now; reverse/hex leak), first-run parameters note, exact wording of the queue message. See FACT_CHECK_REPORT.md 3h.
+
+## 2026-11-17 Fact-check round 9: Actions pins, DevSecOps tools, S33 query_prometheus
+- actionlint on all S20/S22/S28 workflows; verified every used input exists in the latest action.yml; updated 10 outdated pins. gitleaks, pip-audit, trivy fs and .trivyignore expiry verified. Wrote and tested the missing `query_prometheus` tool (real Prometheus + real MCP client). See FACT_CHECK_REPORT.md 3i.

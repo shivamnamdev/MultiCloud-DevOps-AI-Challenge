@@ -160,3 +160,25 @@ S31 (one real failure fixed): Test, Build image, Scan, Push run in a Multibranch
 - `agent any` ran a build on the SSH workbench when it was online. In the course setup this is expected, but it is worth knowing when workbenches lack Docker.
 
 Not tested: GHCR itself (no token; the registry was local), GitHub webhooks and the GitHub plugin, SonarQube and `waitForQualityGate`, Slack and Email plugins, `agent { docker { image ... } }` (needs Docker paths that work when Jenkins itself is in a container), Windows agents, Jenkins on a real EC2 server, Config as Code beyond the basics, role-based authorization, HTTPS reverse proxy.
+
+## 3i. GitHub Actions, DevSecOps tools (S20, S22, S28) and the S33 `query_prometheus` tool
+
+GitHub Actions cannot be run without GitHub, so this round used actionlint, each action's own `action.yml`, and the real command-line tools in Docker.
+
+Actions and workflows:
+- `actionlint` (latest, in Docker) accepted all workflows from the scripts (CI, image push to GHCR with `permissions: packages: write`, matrix with `exclude`, `concurrency`, `workflow_dispatch` inputs, `needs` and `if`, `environment`, OIDC `id-token: write`, reusable `workflow_call` and its caller). It flagged exactly one thing, the deliberately unsafe `run: echo "${{ github.event.pull_request.title }}"`, and accepted the `env:` version, so the script's injection lesson is right.
+- Pins in the scripts were 2 to 3 majors behind. Latest on 2026-11-17: checkout v7.0.1, setup-python v7.1.0, cache v6.1.0, upload-artifact v7.0.2, download-artifact v8.0.2, docker/metadata-action v6.2.0, docker/login-action v4.8.0, docker/build-push-action v7.4.0, setup-buildx-action v4.4.1, setup-terraform v4.0.1, aws-actions/configure-aws-credentials v6.3.0, trivy-action v0.36.0, gitleaks-action v3.0.0. For every input the course uses (python-version, cache, images, registry, username, password, push, tags, labels, role-to-assume, aws-region, name, path and others) I confirmed the input still exists in the latest `action.yml`, and that the moving major tags (`@v7`, `@v4`, `@v6`) exist. `checkout@v4` still runs on node20, the new majors on node24. Fix applied: all 10 pins in S20, S22 and S28 updated, plus a line that version numbers change and the releases page should be checked.
+- Not run: the workflows on GitHub itself (needs a repo and runners), GHCR push with `GITHUB_TOKEN`, OIDC trust with a real AWS role.
+
+DevSecOps tools (all matched the script):
+- `gitleaks protect --staged` (gitleaks 8.30.1) found both planted secrets (access key and secret key), printed file and line, and exited 1. The newer form `gitleaks git --staged` behaves the same; mentioned in the script.
+- `pip-audit -r requirements.txt` lists vulnerabilities for old pins (flask 0.12.2, jinja2 2.10, requests 2.19.0).
+- `trivy fs --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 .` failed with 5 HIGH on the old pins and passed (exit 0) after upgrading to flask 3.1.3, jinja2 3.1.6 and requests 2.32.5.
+- `.trivyignore` with a comment line and `CVE-ID exp:2026-12-31` suppresses the findings (exit 0); with `exp:2026-01-01` (already expired) the findings come back (exit 1). The YAML form `.trivyignore.yaml` is not read by default (needs `--ignorefile`), which the script does not use.
+
+S33 `query_prometheus` (new code added to the script, 3 tools now in the hatch):
+- Standard library only (urllib), URL from the `PROM_URL` environment variable (never an argument), query 1 to 300 characters, 10 second timeout, response read capped at 20,000 bytes and returned capped at 4,000 characters with a prefix saying it is data.
+- Run through a real MCP client (SDK 1.x, Python 3.12 container) against a real Prometheus container: `up` returns data; `sum(rate(...[1m]))` returns a value; a syntax error returns Prometheus' own error text as data; a 301-character or blank query is rejected; a huge `{__name__=~".+"}` result is cut to 4,044 characters; an unreachable server gives `Name or service not known` without leaking the URL.
+- S33 trimmed back to about 2,996 spoken words after the additions.
+
+Cleanup: Prometheus container and network, the actionlint, gitleaks, trivy and Prometheus images and the trivy cache volume were removed.

