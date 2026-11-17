@@ -66,38 +66,38 @@ Recap: multibranch, pull request ke checks, aur fork ka khatra. Ab key cabinet: 
 
 # 📺 EPISODE 2: Key Cabinet aur Foreman ki Suraksha
 
-### [00:00 – 01:40] Scene 1: Password Log mein Print Ho Gaya
+### [00:00 – 01:35] Scene 1: Password Log mein Print Ho Gaya
 **[VISUAL: A build log with `echo $DOCKER_PASSWORD` printing a real password in plain text to everyone. A red alert. In the next frame, the same line shows `****`.]**
 
 **(Voiceover):**
 Ek developer ne debug karne ke liye `echo $DOCKER_PASSWORD` likh diya, aur password build log mein, sabko dikhta hua. Jenkins ek aisa server hai jo aapke code, cloud ki chaabiyan, aur production tak ke raaste chhoota hai. Agar foreman ka daftar kamzor hua, to poora head office khatre mein. Isliye key cabinet aur Jenkins ki suraksha uska sabse zaroori hissa hai. Session 17 mein humne quotes ka jaal dekha tha. Aaj poori tasveer.
 
-### [01:40 – 04:00] Scene 2: Key Cabinet ka Sahi Upyog
+### [01:35 – 03:50] Scene 2: Key Cabinet ka Sahi Upyog
 **[VISUAL: Manage Jenkins → Credentials with types: Username with password, Secret text, SSH Username with private key, Secret file, Certificate. A scope label "Global" vs "System" vs a folder. A pipeline fragment with `withCredentials([string(credentialsId: 'api-token', variable: 'TOKEN')]) { sh 'curl -sH "Authorization: Bearer $TOKEN" https://api.example.com' }`.]**
 
 **(Voiceover):**
 Jenkins ki key cabinet mein secrets alag alag type ke hote hain: username aur password, secret text, SSH private key, secret file, certificate. Har ek ka ek ID hota hai, aur ek scope. System scope ki chaabi sirf Jenkins ke apne kaam ke liye, global sab conveyors ke liye, aur folder scope sirf ek folder ki conveyors ke liye. Jitna chhota scope, utna achha. Conveyor mein `withCredentials` se chaabi ek variable ban jaati hai, aur Jenkins use log mein `****` kar deta hai. Ek hi shart: single quotes. `sh 'curl ... $TOKEN'`, jisse shell variable padhe, Jenkins nahi, jaisa Session 17 mein dekha.
 
-### [04:00 – 06:40] Scene 3: Masking Pakki Suraksha Nahi
-**[VISUAL: A log where the secret is masked as `****`, but a base64 version of the same secret printed by a script appears in full. Beside it, a Script Console window listing every credential decrypted in clear text for an admin.]**
+### [03:50 – 06:40] Scene 3: Masking Pakki Suraksha Nahi
+**[VISUAL: A log where the secret is masked as `****`, but a reversed, spaced-out or hex copy of the same secret printed by a script appears in full. Beside it, a Script Console window listing every credential decrypted in clear text for an admin.]**
 
 **(Voiceover):**
-Masking ek parda hai, taala nahi. Jenkins log mein secret ka seedha text dhundh kar `****` kar deta hai. Par agar koi parchi secret ko base64 mein ya tukdon mein ya ulta chhaap de, to wo dikh sakta hai, kyunki Jenkins ko wo secret nahi lagega. Aur ek badi baat: Jenkins ka admin Script Console se saari chaabiyan clear text mein padh sakta hai. Matlab, admin hona poore key cabinet ka maalik hona hai. Isliye admin kam logon ko, aur jo conveyor secret use karti hai uska Jenkinsfile bhi review se hi badle, jaisa Session 18 ke trusted library mein. Pehli suraksha secrets ko print na karna hai, doosri unhe kam se kam jagah rakhna.
+Masking ek parda hai, taala nahi. Jenkins log mein secret ka seedha text dhundh kar `****` kar deta hai. Naye Jenkins base64 wali copy bhi chhupa dete hain, par agar koi parchi secret ko ulta, har akshar ke beech jagah daal kar, ya hex mein chhaap de, to wo poora dikh jaata hai, kyunki Jenkins ko wo secret nahi lagega. Aur ek badi baat: Jenkins ka admin Script Console se saari chaabiyan clear text mein padh sakta hai. Matlab, admin hona poore key cabinet ka maalik hona hai. Isliye admin kam logon ko, aur jo conveyor secret use karti hai uska Jenkinsfile bhi review se hi badle, jaisa Session 18 ke trusted library mein. Pehli suraksha secrets ko print na karna hai, doosri unhe kam se kam jagah rakhna.
 
-### [06:40 – 09:30] Scene 4: Lambi Chaabi Nahi, Duty Badge
+### [06:40 – 09:25] Scene 4: Lambi Chaabi Nahi, Duty Badge
 **[VISUAL: Two ways for a build to reach AWS. Way 1: an access key stored in the key cabinet, with a "rotate every 90 days" tag and a leak arrow. Way 2: the workbench building wearing a duty badge with only the permissions it needs, no key anywhere.]**
 
 **(Voiceover):**
 Sabse achhi chaabi wo hai jo hai hi nahi. Maan lo conveyor ko S3 mein finished unit rakhna hai, ya SNS par alert bhejna hai. Pehla tareeka: Session 9 ki access key banao aur key cabinet mein rakho. Wo lambi chaabi hai: jab tak koi use badle nahi, wo chalti rehti hai, aur leak ho sakti hai. Doosra tareeka: Jenkins ki workbench, yaani EC2 building, ko ek duty badge pehna do, jisme sirf zaroori ijaazat ho, jaise ek bucket ke ek prefix mein likhna. Phir koi chaabi key cabinet mein hai hi nahi, aur AWS CLI badge khud utha leta hai. Jo chaabiyan baahar ki service ke liye hoti hain, jaise Slack ya GitHub, unhe key cabinet mein rakho aur rotate karne ka plan banao.
 
-### [09:30 – 12:15] Scene 5: Foreman ke Daftar ki Suraksha ka Checklist
+### [09:25 – 12:05] Scene 5: Foreman ke Daftar ki Suraksha ka Checklist
 **[VISUAL: A checklist screen of Manage Jenkins → Security: Security Realm (own database, LDAP or single sign-on), Authorization (matrix or role-based), "Allow anonymous read access" unticked, CSRF protection on, agent-to-controller access on. HTTPS via a reverse proxy or ALB. Built-In Node: number of executors 0.]**
 
 **(Voiceover):**
 Foreman ke daftar ka checklist. Ek, login zaroori, anonymous read band. Security Realm mein ya Jenkins ka apna database, ya LDAP ya single sign-on, jo company mein ho. Do, Authorization: matrix ya role-based, taaki har insaan ko sirf utna mile jitna kaam ke liye chahiye. Teen, builds controller par nahi: built-in node ke executors zero rakho, aur saare builds workbenches par. Jab chhote setup mein controller par chalte hain, to wahi machine jahan key cabinet rakhi hai, har kisi ke code ko chalti hai. Chaar, HTTPS, jaise Session 18 mein. Paanch, CSRF protection on, aur agent se controller ka access control on. Chhe, Jenkins aur plugins ko update rakho. Saat, Jenkins ka URL seedha internet par khula mat chhodo.
 
-### [12:15 – 14:55] Scene 6: Lab: Secret Safe Conveyor
-**[VISUAL: A Secret text credential with ID `demo-token`. A pipeline that prints only the length of the token, and then a line that prints the token and shows `****`. Manage Nodes → Built-In Node → executors set to 0, and a build stuck in the queue with "waiting for an available executor".]**
+### [12:05 – 14:50] Scene 6: Lab: Secret Safe Conveyor
+**[VISUAL: A Secret text credential with ID `demo-token`. A pipeline that prints only the length of the token, and then a line that prints the token and shows `****`. Manage Nodes → Built-In Node → executors set to 0, and a build stuck in the queue with "Waiting for next available executor".]**
 
 **(Voiceover):**
 Lab. Ek Secret text credential banao, ID `demo-token`. Conveyor mein:
@@ -111,9 +111,9 @@ stage('Use secret') {
   }
 }
 ```
-Log mein length dikhegi, aur `echo "$TOKEN"` ki jagah `****`. Ab ek aur parchi likho jo `echo "$TOKEN" | base64` chalaye, aur dekho ki masking ka parda yahan kaise tootta hai. Phir Manage Jenkins, Nodes mein built-in node ke executors ko zero karo, aur dekho ki build ab "waiting for an available executor" mein atak jaati hai. Agle episodes mein hum workbench jodenge, tab chalegi. Aakhir mein apne account se kisi bhi ek credential ka scope check karo: global hai ya folder?
+Log mein length dikhegi, aur `echo "$TOKEN"` ki jagah `****`. Ab ek aur parchi likho jo `echo "$TOKEN" | rev` chalaye, aur dekho ki masking ka parda yahan kaise tootta hai. Base64 try karoge to wo bhi chhupa milega. Phir Manage Jenkins, Nodes mein built-in node ke executors ko zero karo, aur dekho ki build ab "Waiting for next available executor" mein atak jaati hai. Agle episodes mein hum workbench jodenge, tab chalegi. Aakhir mein apne account se kisi bhi ek credential ka scope check karo: global hai ya folder?
 
-### [14:55 – 15:35] Scene 7: Recap aur Bridge
+### [14:50 – 15:30] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "credentials by type and scope · single quotes · masking is a curtain · admin = all secrets · duty badge not a long key · 0 executors on the controller · HTTPS".]**
 
 **(Voiceover):**
@@ -228,7 +228,7 @@ Recap: Jenkins ka poora toolkit: conveyor, attachments, key cabinet, backup aur 
 | Required check | Branch protection mein Jenkins ka check; laal check par merge nahi |
 | Fork ka khatra | Trust: Contributors ya Nobody; Jenkinsfile trusted revision se |
 | Credentials | Type aur scope; chhota scope; `withCredentials`; single quotes |
-| Masking | Parda hai, taala nahi; base64 se tootta hai |
+| Masking | Parda hai, taala nahi; ulta ya hex chhapne se tootta hai |
 | Admin | Script Console se saari chaabiyan padh sakta hai |
 | AWS access | Duty badge, lambi access key nahi |
 | Hardening | Login, anonymous band, role ya matrix, 0 executors, HTTPS, CSRF, updates |

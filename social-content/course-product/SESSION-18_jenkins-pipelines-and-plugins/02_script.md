@@ -20,47 +20,47 @@
 
 # 📺 EPISODE 1: Conveyor ko Smart Banao
 
-### [00:00 – 01:55] Scene 1: Ek Hi Raasta, Bees Minute
+### [00:00 – 01:50] Scene 1: Ek Hi Raasta, Bees Minute
 **[VISUAL: A single straight conveyor with five stations, one after another, total 20 minutes. Next frame: the same conveyor where the two inspection stations run side by side and a deploy station appears only for the master blueprint. Total 9 minutes.]**
 
 **(Voiceover):**
 Session 17 ki conveyor har station ek ke baad ek chalati hai. Atithi ki booking-service par ye bees minute leti hai. Aur har revision par, chahe wo kisi designer ka adhoora experiment ho, deploy wala station bhi chal jaata hai. Ye dono galat hain. Jo inspections ek doosre par nirbhar nahi, unhe saath chalna chahiye. Aur jo kaam sirf master blueprint ke liye hai, use sirf master par chalna chahiye. Aaj hum conveyor ko smart banate hain: kam samay, kam shor, aur koi bhi dangerous kaam bina haan ke nahi.
 
-### [01:55 – 04:20] Scene 2: Parameter, Environment aur Options
+### [01:50 – 04:10] Scene 2: Parameter, Environment aur Options
 **[VISUAL: Jenkinsfile blocks: `parameters { choice(name: 'ENV', choices: ['dev','staging'], description: 'Target') }`, `environment { APP_NAME = 'booking-service' }`, `options { timeout(time: 20, unit: 'MINUTES'); timestamps(); disableConcurrentBuilds(); buildDiscarder(logRotator(numToKeepStr: '10')) }`.]**
 
 **(Voiceover):**
 Teen blocks ek conveyor ko flexible banate hain. `parameters` mein user chunta hai kahan deploy karna hai, jaise `ENV`, dev ya staging, aur wo `params.ENV` mein aata hai. `environment` mein poori conveyor ke variables, jaise `APP_NAME`. Aur `options` mein conveyor ke niyam: `timeout` taaki atki hui build raat bhar na chale, `timestamps` taaki log mein samay dikhe, `disableConcurrentBuilds` taaki do build ek saath ek hi jagah na likhein, aur `buildDiscarder` taaki purani builds ka kachra disk na bhare. Disk bharna ek sachchi pareshani hai, jo Session 5 se jaante ho. Aur ek aur step: `retry(3)` ek aise station ke aas paas, jo kabhi kabhi network ki wajah se tootta hai, jaise dependency download.
 
-### [04:20 – 06:40] Scene 3: when: Kaun sa Station Kab
+### [04:10 – 06:25] Scene 3: when: Kaun sa Station Kab
 **[VISUAL: Three `when` blocks. `when { branch 'main' }` with a note "only in a multibranch pipeline". `when { expression { env.GIT_BRANCH == 'origin/main' } }` for a single pipeline. `when { expression { params.ENV == 'staging' } }`. A small matrix showing which branch makes the deploy station light up.]**
 
 **(Voiceover):**
 `when` condition tay karti hai ki station chalega ya nahi. Ek jaal yahan pakda jaata hai. `when { branch 'main' }` sirf Multibranch Pipeline mein kaam karta hai, jo hum Session 19 mein banayenge, kyunki sirf wahan Jenkins ko branch ka naam pata hota hai. Aam pipeline job mein usi cheez ke liye `when { expression { env.GIT_BRANCH == 'origin/main' } }` likhte hain, ya parameter se: `when { expression { params.ENV == 'staging' } }`. Aur ek teesra tareeka: `when { changeRequest() }` sirf pull request ke build ke liye. Idea ek hi hai: chhote inspections har revision par, aur deploy sirf master par aur sirf jab koi haan kahe.
 
-### [06:40 – 09:10] Scene 4: Parallel Stations aur Thoda Groovy
+### [06:25 – 08:50] Scene 4: Parallel Stations aur Thoda Groovy
 **[VISUAL: A `parallel` block inside a stage called `Checks`: `Unit tests` and `Lint` side by side, with `failFast true`. A Gantt chart shows total time equal to the slower one. A tiny Groovy panel: `def x = 5`, `"Build ${env.BUILD_NUMBER}"`, a `script { }` block.]**
 
 **(Voiceover):**
 Parallel stations mein do independent inspections saath chalte hain, jaise unit tests aur lint. Total samay unmein se jo dheema ho utna hota hai. `failFast true` laga do to ek fail hote hi doosra rok diya jaata hai. Parallel ke liye wahi workbench ya do workbenches chahiye, aur yaad rakho, executors jitne hain utne hi saath chalenge. Declarative pipeline ke andar kabhi kabhi Groovy chahiye hota hai, jiske liye `script { }` block hai. Groovy mein `def x = 5`, string ke andar `"Build ${env.BUILD_NUMBER}"`, aur chhote functions. Rule: pipeline mein jitna kam Groovy, utna behtar. Zyada logic ho to use ek bash parchi mein daalo, jo Session 6 mein humne test karna seekha tha, ya shared binder mein.
 
-### [09:10 – 11:25] Scene 5: Approval Gate aur post ke Naye Shart
+### [08:50 – 11:00] Scene 5: Approval Gate aur post ke Naye Shart
 **[VISUAL: A deploy station guarded by an `input` step: `input message: "Deploy to staging?", ok: "Deploy", submitter: "lead-developer"` inside `agent none`, wrapped in `timeout(time: 1, unit: 'HOURS')`. A `post` block with `always`, `success`, `failure`, `unstable`, `fixed`, `changed`.]**
 
 **(Voiceover):**
 Production jaise kaam ke pehle insaan ki haan chahiye. Iske liye `input` step hai: `input message: "Deploy to staging?", ok: "Deploy"`. Aur `submitter` se tay karo ki kaun haan kah sakta hai, jaise sirf lead developer. Ek galti: `input` ko kisi workbench par chalte hue mat rakho, kyunki wo workbench ghanton rukegi. Pehle `agent none` rakho, `input` karo, phir naye stage mein workbench maango. Aur har `input` ko ek `timeout` mein lapeto. `post` ke bhi naye shart hain: `unstable` aur `fixed`, jisme pichhli build laal thi aur ab hari hui. Alert ke liye `fixed` bahut kaam ka hai: "Atithi ki build wapas hari ho gayi."
 
-### [11:25 – 14:15] Scene 6: Jenkinsfile mein Galti Pehle Pakdo
+### [11:00 – 13:45] Scene 6: Jenkinsfile mein Galti Pehle Pakdo
 **[VISUAL: A terminal: `curl -s -X POST -u USER:API_TOKEN -F "jenkinsfile=<Jenkinsfile" "$JENKINS_URL/pipeline-model-converter/validate"` printing "Jenkinsfile successfully validated." and, after a typo, an error with a line number. Beside it, a workspace cleanup step `cleanWs()` in `post`.]**
 
 **(Voiceover):**
 Jenkinsfile mein ek bracket chhoot jaaye, to tabhi pata chalta hai jab build chalti hai, aur wo pehle hi second mein tootti hai. Isse bachne ke do aasan tareeke hain. Ek, Jenkins ka apna linter: `curl -X POST -F "jenkinsfile=<Jenkinsfile" $JENKINS_URL/pipeline-model-converter/validate`, jo bina build chalaye batata hai ki structure theek hai ya nahi aur kis line par galti hai. Is call ke liye Jenkins ka API token lagta hai, jo aapka personal token hai aur kabhi Jenkinsfile mein nahi likhte. Do, Replay se chhote badlaav pehle try karo. Aur ek aur ghar ki safai: build ke baad `cleanWs()` ya `post { cleanup { cleanWs() } }` workspace saaf kar deta hai, taaki agle build mein purane build ki files na bachi rahein. Session 5 ke disk bharne ka darr yahin kam hota hai.
 
-### [14:15 – 16:30] Scene 7: Lab: Smart Conveyor
+### [13:45 – 16:30] Scene 7: Lab: Smart Conveyor
 **[VISUAL: A Jenkinsfile with a choice parameter, a `Checks` stage with parallel `Unit` and `Lint`, an approval `input`, and a `Deploy` stage guarded by `when`. Stage View shows two parallel boxes and a paused "Approval" stage waiting for a button.]**
 
 **(Voiceover):**
-Lab. Apni `Jenkinsfile` mein ye jodo. Ek `ENV` choice parameter. Ek `Checks` station jisme `Unit` aur `Lint` `parallel` mein hon, `Lint` ke liye abhi `sh 'echo lint ok'` bhi chalega. Phir ek `Approval` station: `agent none` ke saath `input` aur ek ghante ka timeout. Aur ek `Deploy` station jo `when { expression { params.ENV == 'staging' } }` ke saath chale, aur abhi sirf `echo "deploying ${env.APP_NAME} to ${params.ENV}"` kare. Asli deploy hum capstone mein karenge. `Build with Parameters` se chalao, aur Stage View mein dekho ki parallel boxes saath chalte hain aur approval par conveyor ruk jaati hai. Dev chuno aur dekho ki Deploy skip hota hai.
+Lab. Apni `Jenkinsfile` mein ye jodo. Ek `ENV` choice parameter. Dhyaan: Jenkins ko parameters pehli run ke baad hi pata chalte hain, to pehli build bina parameter ke chalegi, aur uske baad `Build with Parameters` dikhega. Ek `Checks` station jisme `Unit` aur `Lint` `parallel` mein hon, `Lint` ke liye abhi `sh 'echo lint ok'` bhi chalega. Phir ek `Approval` station: `agent none` ke saath `input` aur ek ghante ka timeout. Aur ek `Deploy` station jo `when { expression { params.ENV == 'staging' } }` ke saath chale, aur abhi sirf `echo "deploying ${env.APP_NAME} to ${params.ENV}"` kare. Asli deploy hum capstone mein karenge. `Build with Parameters` se chalao, aur Stage View mein dekho ki parallel boxes saath chalte hain aur approval par conveyor ruk jaati hai. Dev chuno aur dekho ki Deploy skip hota hai.
 
 ### [16:30 – 17:00] Scene 8: Recap aur Bridge
 **[VISUAL: A card: "parameters · environment · options (timeout, discard) · when (branch only in multibranch) · parallel · input outside an agent · post fixed".]**

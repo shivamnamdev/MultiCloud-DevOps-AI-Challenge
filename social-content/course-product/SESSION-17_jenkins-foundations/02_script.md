@@ -20,31 +20,31 @@
 
 # 📺 EPISODE 1: Foreman kyun
 
-### [00:00 – 02:40] Scene 1: Friday Shaam ki Integration
+### [00:00 – 02:35] Scene 1: Friday Shaam ki Integration
 **[VISUAL: Five designers each work for two weeks on their own copy of the booking blueprint. On release Friday, the copies are merged. A giant red cloud of conflicts, a broken room-booking screen, and a clock at 6 PM.]**
 
 **(Voiceover):**
 Atithi ke paanch designers do hafte tak apni apni copy par booking site ka kaam karte hain. Release ki Friday ko sab ki copies milaai jaati hain. Ek ka naya rate table, doosre ka naya payment button, teesre ka naya form. Kuch bhi saath nahi chalta, aur Friday ki shaam ek bhi booking test nahi ho pati. Session 16 mein humne register aur branches seekhe, jo is mushkil ko sambhalte hain. Par ek aur aadat chahiye: kaam ko roz, balki din mein kai baar, milao, aur har baar check karo ki sab saath chalta hai. Is aadat ka naam Continuous Integration hai.
 
-### [02:40 – 05:35] Scene 2: CI ka Matlab: Roz Milao, Roz Jaancho
+### [02:35 – 05:25] Scene 2: CI ka Matlab: Roz Milao, Roz Jaancho
 **[VISUAL: A loop: designer commits → vault → bell → workshop fetches the new revision → fabricates the unit → inspector tests → result on the team's screen. A badge: "minutes, not days".]**
 
 **(Voiceover):**
 CI ka matlab hai: designer apni revision vault mein bhejta hai, aur workshop turant use uthati hai, finished unit banati hai, inspection karti hai, aur team ko batati hai ki sab theek hai ya kuch toota. Teen faayde. Galtiyan jaldi pakdi jaati hain, jab unka kaaran chhota aur taaza hota hai, kyunki ek hi change ki jaanch hai, paanch hafton ki nahi. Fabrication har baar ek jaise saaf mahaul mein hoti hai, "mere laptop par to chal raha tha" wali baat nahi. Aur team ko release se darr nahi lagta. CI ek tool ka naam nahi, ek aadat ka naam hai. Jenkins uske liye ek bahut purana aur bharosemand tool hai.
 
-### [05:35 – 08:15] Scene 3: Kaun Kya Kaam Karta Hai
+### [05:25 – 08:00] Scene 3: Kaun Kya Kaam Karta Hai
 **[VISUAL: A workshop floor plan. A foreman's office (controller) with a schedule board and a plugin shelf. Workbenches (agents) with a "Java" sign. A row of jobs waiting on a board. A caption: "controller plans, workbenches build".]**
 
 **(Voiceover):**
 Jenkins ek open source automation server hai, Java mein bana hua. Uska controller foreman ka daftar hai: wo UI dikhata hai, jobs ko schedule karta hai, aur plugins sambhalta hai. Asli fabrication workbenches par hoti hai, jinhe agents kehte hain. Chhote setup mein foreman khud bhi kaam kar leta hai, par asli workshop mein foreman sirf plan banata hai aur workbenches kaam karti hain. Isse hum Session 19 mein dekhenge. Jenkins ki taakat uske hazaaron plugins hain, yaani foreman ki attachments. Par har attachment ek aur cheez hai jise update aur surakshit rakhna padta hai. Isiliye jo zaroori ho wahi lagao.
 
-### [08:15 – 10:50] Scene 4: Local Hook se Bell tak
+### [08:00 – 10:30] Scene 4: Local Hook se Bell tak
 **[VISUAL: Left: the pre-push hook from Session 16 running tests on one designer's laptop. Right: the vault ringing a bell, and the workshop starting a build for everyone. A line between them: "the same idea, shared".]**
 
 **(Voiceover):**
 Session 16 ke hooks yaad hain? Designer apni laptop par ek `pre-push` hook se tests chala sakta tha. Wo ek local jaancha hai: sirf us designer ke liye, aur wo use band bhi kar sakta hai. CI uska shared roop hai. Vault mein revision aate hi vault workshop ki ghanti bajata hai, aur foreman sab ke liye ek hi tarah ki jaancha chalata hai, jise koi chhod nahi sakta. Is ghanti ko webhook kehte hain, aur wo hum Session 18 mein jodenge. Aaj ke liye bas itna: pehle haath se foreman ko kaam dena seekhenge, phir use ghanti se jodenge.
 
-### [10:50 – 13:35] Scene 5: Lab: Foreman ka Daftar Taiyaar Karo
+### [10:30 – 13:35] Scene 5: Lab: Foreman ka Daftar Taiyaar Karo
 **[VISUAL: A checklist: Ubuntu server (an EC2 building or a local VM), at least 2 GB RAM, Java installed, `java -version`, Git, a security group with 8080 open only to "my IP", and a Name tag `jenkins-lab`.]**
 
 **(Voiceover):**

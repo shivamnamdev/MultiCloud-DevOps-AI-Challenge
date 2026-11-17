@@ -207,3 +207,6 @@
 
 ## 2026-11-17 Fact-check round 7: Ansible (S29)
 - Ran the full S29 lab in Docker (control + 3 systemd Ubuntu targets): ad-hoc, playbook, handlers, drift, role, template, vault, lint, ProxyJump. Five script fixes (community.general collection, host key, changed=2, default nginx site 404, lint prefix). See FACT_CHECK_REPORT.md 3g.
+
+## 2026-11-17 Fact-check round 8: Jenkins (S17, S18, S19, S31)
+- Ran all four sessions' pipelines for real in Docker (Jenkins 2.580.2, multibranch, shared library, SSH agent, backup script, Trivy scan, local registry). Found and fixed: Trivy scan fails on python:3.12-slim (added `--ignore-unfixed` and `apt-get upgrade`), masking claim (base64 is masked now; reverse/hex leak), first-run parameters note, exact wording of the queue message. See FACT_CHECK_REPORT.md 3h.
