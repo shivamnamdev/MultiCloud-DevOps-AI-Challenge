@@ -152,37 +152,37 @@ Recap: run ke flags, port aur firewall ka jaal, debugging aur exit code. Ab ek s
 
 # 📺 EPISODE 4: Locker Room aur Raste
 
-### [00:00 – 02:00] Scene 1: Truck Hati, Data Bhi Gaya
+### [00:00 – 01:55] Scene 1: Truck Hati, Data Bhi Gaya
 **[VISUAL: A database truck holding twenty bookings. `docker rm -f db`. The bookings vanish. A second take with a locker room attached to the building: the new truck opens the same bookings.]**
 
 **(Voiceover):**
 Ek database truck chalayi, usme bookings daali, aur kisi ne truck hata di. Saari bookings gayi. Truck asthayi hai, isliye keemti cheezein truck ke andar nahi, building ke locker room mein rakhte hain. Docker mein iska naam volume hai. Aur trucks aapas mein baat karein, iske liye network. Ek zaroori note: yahan hum lab ke liye database truck chalayenge. Production ke bookings Session 13 ke records office, yaani RDS, mein rakhte hain, jahan backup aur failover landlord sambhalta hai. Truck mein database seekhne aur testing ke liye achha hai, asli ledger ke liye nahi.
 
-### [02:00 – 04:30] Scene 2: Volume, Bind Mount aur tmpfs
+### [01:55 – 04:15] Scene 2: Volume, Bind Mount aur tmpfs
 **[VISUAL: Three panels. 1: named volume `pgdata` managed by Docker, stored under `/var/lib/docker/volumes`, label "portable, managed". 2: bind mount of a host folder `./src:/app`, label "dev convenience". 3: tmpfs, memory only, label "gone when the truck stops".]**
 
 **(Voiceover):**
 Locker room ke teen roop. Volume: Docker khud sambhalta hai, `docker volume create pgdata`, aur `-v pgdata:/var/lib/postgresql/data` se truck mein lagta hai. Truck hata do, volume bacha rehta hai. Bind mount: building ka ek folder seedha truck mein lagta hai, jaise `-v "$PWD/src:/app"`, jo development mein code ko turant dekhne ke liye achha hai, par permissions ki dikkat deta hai. Aur tmpfs: sirf memory mein, truck band to gayab, jaise temporary secrets ke liye. Production ke data ke liye volume. Ek dhyaan: volume building ki disk par rehta hai, isliye building gayi to volume bhi. Isliye volume ka backup alag lena padta hai, aur Session 10 ka EBS snapshot us disk ki photograph ban sakta hai.
 
-### [04:30 – 06:50] Scene 3: Volume ka Backup
+### [04:15 – 06:25] Scene 3: Volume ka Backup
 **[VISUAL: A command: `docker run --rm -v pgdata:/data -v "$PWD":/backup alpine tar czf /backup/pgdata-$(date +%Y%m%d).tgz -C /data .` creating a tarball on the host. A restore command in the other direction. A caution: "a copy of a live database folder may be inconsistent; for databases use the database's own dump".]**
 
 **(Voiceover):**
 Volume ka backup ek chhoti, tez trick se ho jaata hai. Ek temporary truck chalao jisme volume bhi lage aur building ka ek folder bhi: `docker run --rm -v pgdata:/data -v "$PWD":/backup alpine tar czf /backup/pgdata.tgz -C /data .` Ye Session 6 ka `tar` hai, bas truck ke andar. Restore ulte tareeke se. Par database ke liye ek savdhani: chalte database ka folder copy karna ek aadha-adhura photo ho sakta hai. Database ka apna dump, jaise `pg_dump`, ya truck band karke copy. Aur asli production mein RDS ka automated backup. Volume ka backup sirf wahan kaam aata hai jahan aap truck ko stateful ki tarah chala rahe ho.
 
-### [06:50 – 09:10] Scene 4: Raste: Docker Network
+### [06:25 – 08:35] Scene 4: Raste: Docker Network
 **[VISUAL: Two panels. Default bridge: containers reachable by IP only, IPs change. A user-defined bridge `appnet`: containers resolve each other by name, `db` and `app`. Beside them, host and none as options. A line: "published ports = doors to the outside; internal trucks need none".]**
 
 **(Voiceover):**
 Trucks ek network par chalti hain. Default bridge par wo sirf IP se baat karti hain, aur IP badal sakta hai. Apna user-defined bridge network banao: `docker network create appnet`, aur usme trucks daalo, to wo ek doosre ko naam se bula sakti hain, jaise `db`. Isse app ke config mein `DB_HOST=db` likh sakte ho, jaise Session 13 mein endpoint ka naam tha. Ek aur baat: network ke andar ki trucks ko port publish karne ki zaroorat nahi. Wo sirf building ke bahar walon ke liye hota hai. Isiliye database truck ka port kabhi bahar mat kholo. Ye Session 14 ke private wing jaisa hai: andar ka raasta andar hi.
 
-### [09:10 – 11:35] Scene 5: Compose: Ek File Mein Truck Park
+### [08:35 – 10:55] Scene 5: Compose: Ek File Mein Truck Park
 **[VISUAL: A `compose.yaml` with services `app` and `db`, a volume `pgdata`, a network, and an `environment` block. Commands: `docker compose up -d`, `docker compose ps`, `docker compose logs -f app`, `docker compose down`. A caution on `down -v`.]**
 
 **(Voiceover):**
 Do trucks, ek network, ek volume, aur kai flags: har baar itni lambi command likhna thaka deta hai aur galti bhi karwata hai. Isliye Compose: ek `compose.yaml` file mein `app` aur `db` service, volume, aur environment. `docker compose up -d` se sab ek saath, `docker compose ps` se halat, `docker compose logs -f app` se log, `docker compose down` se sab hat jaata hai. `down -v` volume bhi hata deta hai, to data ke saath savdhan. Compose ek building ke andar trucks ka chhota park chalane ke liye hai. Kai buildings ke bade park ko Kubernetes sambhalega, jo hum Session 23 se dekhenge. Aur compose file bhi vault mein, blueprint ke saath, review ke saath.
 
-### [11:35 – 14:20] Scene 6: Lab: App aur Database
+### [10:55 – 14:25] Scene 6: Lab: App aur Database
 **[VISUAL: `docker network create appnet`; `docker run -d --name db --network appnet -e POSTGRES_PASSWORD=secret -v pgdata:/var/lib/postgresql/data postgres:16`; a one-off truck with `psql` creating a table and inserting a row; `docker rm -f db`; the same `docker run` again; `select * from t` shows the row.]**
 
 **(Voiceover):**
@@ -197,7 +197,7 @@ docker run --rm -e PGPASSWORD=secret --network appnet postgres:16 \
 ```
 Dhyaan: database ko shuru hone mein kuch second lagte hain, isliye `until docker exec db pg_isready` wali line se intezaar karte hain. Uske bina `psql` ka pehla try aksar `Connection refused` deta hai. Ab `docker rm -f db`, wahi `docker run` dobara (intezaar ke saath), aur `select * from t;` wali command phir chalao, bina table banaye: data abhi bhi hai. Phir `docker volume ls` aur `docker volume inspect pgdata` se locker room ki jagah dekho. Password yahan sirf example ke liye hai: asli kaam mein secrets ek alag tareeke se dete hain, jaise Session 13 mein. Safai: `docker rm -f db`, `docker volume rm pgdata`, `docker network rm appnet`, aur building ko stop karo.
 
-### [14:20 – 15:30] Scene 7: Recap aur Bridge
+### [14:25 – 15:30] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "volume = locker room, survives the truck · backup it separately · user-defined network, names not IPs · do not publish the database port · compose = a small park in one building". Then a blank sheet titled "fit-out sheet" appears on a desk.]**
 
 **(Voiceover):**

@@ -19,31 +19,31 @@
 
 # 📺 EPISODE 1: Git kyun?
 
-### [00:00 – 01:15] Scene 1: "Pichhle Hafte Jaisa Kar Do"
+### [00:00 – 02:25] Scene 1: "Pichhle Hafte Jaisa Kar Do"
 **[VISUAL: Atithi Hotels head office, design studio. The owner points at the booking website: "Offer banner lagao." A week later, same owner: "Hata do, pichhle hafte jaisa kar do." The designer opens a folder: `booking_final.zip`, `booking_final_v2.zip`, `booking_final_v2_REAL.zip`.]**
 
 **(Voiceover):**
 Atithi Hotels ka campus ban chuka hai. Ab hum head office mein hain, jahan hotel ki services ke design bante hain, yaani code. Owner kehta hai: booking page par offer banner lagao. Team laga deti hai. Ek hafte baad wahi owner: hata do, pichhle hafte jaisa kar do. Ab sawaal ye hai ki pichhle hafte kaisa tha? Kisne kya badla tha? Agar jawab `booking_final_v2_REAL.zip` mein hai, to aap mushkil mein ho. Is session mein hum design ka register banayenge, yaani Git: har badlaav ka hisaab, kisne kiya, kab kiya, kyun kiya, aur zaroorat par purane revision par wapas jaana.
 
-### [01:15 – 05:00] Scene 2: Teen Jagah: Table, Tray, Register
+### [02:25 – 05:35] Scene 2: Teen Jagah: Table, Tray, Register
 **[VISUAL: Three areas in a row. A drawing table with loose sheets (Working Directory). An approval tray holding selected sheets (Staging Area). A bound register with dated, signed pages (Repository). Arrows: `git add` from table to tray, `git commit` from tray to register.]**
 
 **(Voiceover):**
 Studio mein design teen jagah se guzarta hai. Pehli: drawing table, jahan aap kaam karte ho, kaat-peet karte ho. Ye working directory hai, yaani aapka folder. Doosri: approval tray, jahan aap wahi sheets rakhte ho jo agle revision mein jaani hain. Ye staging area hai, aur `git add` sheet ko tray mein rakhta hai. Teesri: register, jahan revision tareekh aur dastakhat ke saath hamesha ke liye darj hota hai. Ye repository hai, aur `git commit` tray ki sheets ko register mein chadha deta hai. Ek revision yaani ek commit: us pal ka poora snapshot. Ab tray ki zaroorat kyun? Socho aapne paanch files badli. Teen ek feature ki hain, do sirf experiment. Tray ke bina sab ya kuch nahi. Tray ke saath aap chunte ho ki is revision mein kya jayega.
 
-### [05:00 – 08:30] Scene 3: Lab: Pehla Register
+### [05:35 – 08:35] Scene 3: Lab: Pehla Register
 **[VISUAL: Terminal: `git config --global user.name`, `user.email`, `mkdir atithi-booking`, `git init -b main`, create `index.html`, `git status`, `git add index.html`, `git status`, `git commit -m "Add booking homepage"`, then `contact.html`, `git log`. A `.gitignore` file with `.env` and `node_modules/`.]**
 
 **(Voiceover):**
 Lab. Pehle dastakhat: `git config --global user.name "Aapka Naam"` aur `user.email`. Phir `mkdir atithi-booking`, andar jao, aur `git init -b main`. Isse ek chhupa hua `.git` folder banta hai, wahi register hai. `echo "<h1>Atithi Hotels: Book Now</h1>" > index.html`. Ab `git status`: file untracked hai, yaani table par padi hai aur Git ne abhi use apnaya nahi. `git add index.html`, phir `git status`: ab wo tray mein hai. `git commit -m "Add booking homepage"`: pehla revision darj. Isi tarah `contact.html` banao aur commit karo. `git add .` table ki saari badli hui files ek saath tray mein rakhta hai. Aur ek file abhi bana lo, `.gitignore`: isme wo naam likho jo register mein kabhi nahi jaane chahiye, jaise `.env`, passwords wali files aur `node_modules/`.
 
-### [08:30 – 11:30] Scene 4: Lab: Galti, aur Status ki Aadat
+### [08:35 – 11:30] Scene 4: Lab: Galti, aur Status ki Aadat
 **[VISUAL: `echo "BROKEN" > index.html`, `git status` shows "modified". `git restore index.html` brings the page back. Then `git add experiment.html`, `git restore --staged experiment.html`. Two commit messages side by side: "update" (crossed out) and "Fix wrong phone number on contact page" (ticked).]**
 
 **(Voiceover):**
 Ab jaan-boojh kar todo. `echo "BROKEN" > index.html`. Homepage gaya. `git status` kehta hai modified. Par register ka aakhri revision bilkul surakshit hai, kyunki aapne ye gadbad na tray mein rakhi, na darj ki. `git restore index.html` table ki sheet ko aakhri revision jaisa kar deta hai. Dhyan rahe, ye wapas nahi aata: jo commit nahi hua, wo gaya. Doosra case: galat file tray mein rakh di. `git restore --staged experiment.html` use tray se wapas table par le aata hai, kaam nahi khota. Do aadatein yahin se pakdo. Ek: har command ke baad `git status`, jab tak teen jagahein aankh band karke na dikhne lagein. Do: commit message batata hai kyun badla. "update" nahi, "Fix wrong phone number on contact page".
 
-### [11:30 – 13:00] Scene 5: Recap aur Bridge
+### [11:30 – 13:05] Scene 5: Recap aur Bridge
 **[VISUAL: A card: "table → `git add` → tray → `git commit` → register · status after every step". Under it, small: "working directory · staging area · repository".]**
 
 **(Voiceover):**
@@ -53,31 +53,31 @@ Recap: drawing table yaani working directory, approval tray yaani staging area, 
 
 # 📺 EPISODE 2: History Padhna
 
-### [00:00 – 01:15] Scene 1: "Chaar Din Pehle Theek Tha"
+### [00:00 – 02:10] Scene 1: "Chaar Din Pehle Theek Tha"
 **[VISUAL: A phone rings in the studio. Hotel manager on the line: "Contact page par email galat hai. Chaar din pehle theek tha." The designer stares at eight revisions and cannot remember which one changed it.]**
 
 **(Voiceover):**
 Do hafte ho gaye, register mein aath revisions hain. Tabhi hotel manager ka phone aata hai: contact page par email galat hai, guests ki mail kahin aur ja rahi hai, aur chaar din pehle sab theek tha. Aapko yaad nahi ki chaar din pehle page kaisa tha, na ye ki kis revision ne use badla. Andaza lagane ki zaroorat nahi. Register sab jaanta hai, bas use padhna aana chahiye. Is episode mein teen sawaal: kya kya hua, kya badla, aur us din file kaisi thi.
 
-### [01:15 – 04:30] Scene 2: `git log`: Register ke Panne
+### [02:10 – 05:10] Scene 2: `git log`: Register ke Panne
 **[VISUAL: Terminal: `git log` with full entries (hash, author, date, message). Then `git log --oneline` as a compact list. Then `git log --name-only` listing files under each commit. A label on the hash: "revision number".]**
 
 **(Voiceover):**
 `git log` register ke panne ulta kholta hai, sabse naya upar. Har entry mein chaar cheezein: revision number, yaani commit hash, kisne kiya, kab kiya, aur message. Hash ek lamba unique ID hai, par kaam ke liye uske pehle saat akshar kaafi hote hain. Poori detail zyada lage to `git log --oneline`: har revision ek line mein. Aur `git log --name-only` ye bhi dikhata hai ki kis revision mein kaun si files badli. Hamare case mein yahi kaam ka hai: contact page kis kis revision mein chhua gaya, turant dikh jaata hai. Yahan samajh aata hai ki achha commit message kyun zaroori tha. "Update contact email" padh kar aap seedha sahi panne par pahunch jaate ho.
 
-### [04:30 – 08:00] Scene 3: `git diff`: Do Revisions Aamne-Saamne
+### [05:10 – 08:15] Scene 3: `git diff`: Do Revisions Aamne-Saamne
 **[VISUAL: Terminal: `git diff b2c3d4a d4e5f6a`. Output annotated line by line: `diff --git a/contact.html b/contact.html` ("a = before, b = after"), `index ..100644` ("file version IDs, mode"), `@@ -1 +1 @@` ("where in the file"), a red `-` line with the right email and a green `+` line with the wrong one.]**
 
 **(Voiceover):**
 `git diff` do revisions ko aamne-saamne rakhta hai. `git diff purana-hash naya-hash`. Output darawna dikhta hai, par ise chaar hisson mein padho. Pehli line: `a/contact.html` pehle wali file hai, `b/contact.html` baad wali. Doosri line `index` se shuru hoti hai: dono versions ke ID, aur ant mein `100644`, yaani normal file. Agar wahan `100755` ho to file executable hai, wahi permission jo Linux session mein dekhi thi. Teesra hissa `@@` wali line: badlaav file mein kahan hai. Aur phir asli cheez: minus wali line pehle thi aur hat gayi, plus wali line nayi aayi. Bina sign wali lines sirf context hain. Akela `git diff` table aur tray ka fark dikhata hai, aur `git diff --staged` tray aur aakhri revision ka.
 
-### [08:00 – 11:30] Scene 4: Lab: Galat Email ki Jaanch
+### [08:15 – 11:05] Scene 4: Lab: Galat Email ki Jaanch
 **[VISUAL: Terminal builds four commits in `atithi-booking`: homepage, contact page with `stay@atithi.example`, heading update, contact email changed to `stya@atithi.example`. Then `git log --oneline`, `git diff <day2> <day4>`, `git show <day4>`, `git show <day2>:contact.html`.]**
 
 **(Voiceover):**
 Lab: `atithi-booking` mein chaar revisions banao. Homepage, phir contact page jisme email `stay@atithi.example` ho, phir homepage ki heading badlo, aur chauthe mein contact email mein jaan-boojh kar typo daalo. Ab jaanch, isi kram mein. Ek: `git log --oneline`, shaq wale revisions dhoondho. Do: `git diff` doosre aur chauthe hash ke beech: minus mein sahi email, plus mein galat. Mil gaya. Teen: `git show chautha-hash` us ek revision ka poora badlaav aur message dikhata hai. Chaar: `git show doosra-hash:contact.html` aapko wo file bilkul waisi dikhata hai jaisi us din thi, bina kahin gaye. Ab sahi email wapas likho aur ek naya revision banao. Aapne kuch yaad nahi kiya, sirf register padha.
 
-### [11:30 – 13:00] Scene 5: Recap aur Bridge
+### [11:05 – 13:00] Scene 5: Recap aur Bridge
 **[VISUAL: A card: "`log --oneline` → `diff A B` → `show A` → `show A:file`". Under it: "minus = pehle tha · plus = ab hai".]**
 
 **(Voiceover):**
@@ -87,25 +87,25 @@ Recap: `git log` batata hai kya kya hua, `git diff` batata hai kya badla, aur `g
 
 # 📺 EPISODE 3: Draft aur Merge
 
-### [00:00 – 01:15] Scene 1: "Dark Mode Banao, Live Site Mat Todna"
+### [00:00 – 02:20] Scene 1: "Dark Mode Banao, Live Site Mat Todna"
 **[VISUAL: The owner at the studio door: "Poori booking site dark mode mein chahiye." Pause. "Aur live site mat todna, guests abhi booking kar rahe hain." Two paths appear: editing the master sheet directly (red), or a separate draft sheet (green).]**
 
 **(Voiceover):**
 Owner ka naya hukm: poori booking site dark mode mein chahiye. Aur saath mein shart: live site mat todna, guests abhi booking kar rahe hain. Aapke paas do raaste hain. Seedha master design par kaam karo, aur agar dark mode ne kuch toda to live site tooti. Ya ek alag draft banao, wahan khul kar experiment karo, aur jab sab theek ho tabhi master mein milao. Git mein ye draft hai branch, aur master hai `main`. Is episode mein: draft banana, use master mein milana, aur us din ka hal jab do logon ne ek hi line badal di.
 
-### [01:15 – 04:30] Scene 2: Draft Sirf ek Nishaan Hai
+### [02:20 – 05:05] Scene 2: Draft Sirf ek Nishaan Hai
 **[VISUAL: A chain of revisions C1-C2-C3 in the register. A clip labelled `main` sits on C3. A second clip `dark-mode` is placed on the same C3. A pin "aap yahan ho" (HEAD) moves from `main` to `dark-mode`. A new revision C4 appears and only the `dark-mode` clip moves. Terminal: `git branch`, `git switch -c dark-mode`, `git log --oneline --graph --all`.]**
 
 **(Voiceover):**
 Sabse pehle ek galatfehmi hatao: draft poore design ki photocopy nahi hai. Branch register ke ek panne par laga ek chhota nishaan hai, jo kehta hai "ye draft abhi is revision par hai". Isliye branch banana pal bhar ka kaam hai. `git switch -c dark-mode` naya nishaan lagata hai aur aapko us par le jaata hai. Shuru mein `main` aur `dark-mode` dono ek hi revision par hote hain. Aur ek pin hota hai, `HEAD`, jo batata hai aap abhi kahan khade ho. Ab aap jo naya revision banaoge, sirf wahi nishaan aage badhega jis par aap khade ho. `main` wahin rahega. `git branch` saare drafts dikhata hai, aur `git log --oneline --graph --all` poora naksha.
 
-### [04:30 – 08:00] Scene 3: Merge: Milana, aur Do Nadiyan
+### [05:05 – 08:35] Scene 3: Merge: Milana, aur Do Nadiyan
 **[VISUAL: Diagram 1, fast-forward: the `main` clip slides forward to where `dark-mode` is. Diagram 2, three-way: both lines have moved; a merge commit joins them with two parent arrows. Two rivers joining into one. Terminal: `git switch main`, `git merge dark-mode`, graph view, `git branch -d dark-mode`.]**
 
 **(Voiceover):**
 Dark mode tayaar hai. `git switch main`, phir `git merge dark-mode`. Do tarah se mil sakta hai. Agar is beech `main` par koi naya revision nahi aaya, to Git bas `main` ka nishaan aage khiska deta hai. Ise fast-forward kehte hain. Agar `main` bhi aage badh chuka hai, to Git ek naya revision banata hai jiske do parents hote hain. Ye merge commit hai. Ab ek sawaal jo sabko uljhata hai: merge ke baad draft ke commits `main` ke log mein kyun dikhte hain? Do nadiyan milti hain to chhoti nadi ka paani gayab nahi hota, wo badi nadi ka hissa ban jaata hai. Draft ke revisions bhi `main` ki history ka pakka hissa ban jaate hain. Kaam ho gaya to `git branch -d dark-mode`. Rebase ek alag tareeka hai jo history seedhi rakhta hai; rule bas itna: jo commits share ho chuke, unhe rebase mat karo.
 
-### [08:00 – 11:30] Scene 4: Lab: Ek hi Deewar, Do Designers
+### [08:35 – 11:30] Scene 4: Lab: Ek hi Deewar, Do Designers
 **[VISUAL: `style.css` with `background: white;`. On `dark-mode` it becomes `background: black;`, on `main` it becomes `background: #f5f0e6;`. `git merge dark-mode` prints CONFLICT. The file shows `<<<<<<< HEAD`, `=======`, `>>>>>>> dark-mode`. Three resolutions shown, then `git add`, `git commit`. A side note: "`--ours` = jahan aap khade ho".]**
 
 **(Voiceover):**
@@ -121,31 +121,31 @@ Recap: draft yaani branch ek nishaan hai, copy nahi. Merge ya to nishaan khiskat
 
 # 📺 EPISODE 4: Register ke Andar
 
-### [00:00 – 01:15] Scene 1: Pichla Kamra
+### [00:00 – 02:10] Scene 1: Pichla Kamra
 **[VISUAL: The designer opens a small door behind the register shelf marked `.git`. Inside: a pin board labelled HEAD, a rack of clips labelled refs, a tray log labelled index, shelves of numbered boxes labelled objects. Terminal: `ls -la`, `ls .git`.]**
 
 **(Voiceover):**
 Aap hafton se `git add` aur `git commit` chala rahe ho. Par ye sab jaata kahan hai? `ls -la` chalao: ek chhupa hua folder dikhega, `.git`. Yahi asli register hai. Aapka project folder sirf drawing table hai; history, drafts aur settings sab is pichle kamre mein hain. Is folder ko hatana yaani poori history hatana. Aaj hum ise khol kar dekhenge, kyunki jo ye samajh leta hai use phir koi Git command jaadu nahi lagta. Aur isi se ek aisa sawaal suljhega jo sabko pareshan karta hai: draft badalte waqt adhoora kaam kahan jaata hai?
 
-### [01:15 – 04:30] Scene 2: Pin, Nishaan aur Tray ki Soochi
+### [02:10 – 04:40] Scene 2: Pin, Nishaan aur Tray ki Soochi
 **[VISUAL: Terminal: `cat .git/HEAD` prints `ref: refs/heads/main`. `git switch dark-mode`, `cat .git/HEAD` prints `ref: refs/heads/dark-mode`. `ls .git/refs/heads`, `cat .git/refs/heads/main` prints a 40-character hash. `ls -la .git/index`. `cat .git/config`.]**
 
 **(Voiceover):**
 `cat .git/HEAD`. Andar ek line: `ref: refs/heads/main`. Ye wahi pin hai, "aap yahan ho". `git switch dark-mode` karo aur dobara dekho: ab wahan `dark-mode` likha hai. Ab `ls .git/refs/heads`: har branch ke naam ki ek chhoti file. `cat .git/refs/heads/main`: andar sirf ek commit hash. Bas. Branch ek file hai jisme ek revision number likha hai. Naya commit banta hai to isi file ka number badal jaata hai. Isiliye branch sasti hai. Teesri cheez: `.git/index`. Ye approval tray ki soochi hai. `git add` isi file ko badalta hai. Aur `.git/config` is register ki settings hain. Naam aur email wali global settings aapke home folder ki `~/.gitconfig` mein rehti hain.
 
-### [04:30 – 08:00] Scene 3: Dabbe: Blob, Tree, Commit, aur Hooks
+### [04:40 – 07:50] Scene 3: Dabbe: Blob, Tree, Commit, aur Hooks
 **[VISUAL: `ls .git/objects`. A diagram: COMMIT (author, date, message, parent) points to a TREE (file names) which points to BLOBs (file contents). A chain of commits linked by parent arrows. Then `ls .git/hooks` showing `pre-commit.sample`, `pre-push.sample`, `commit-msg.sample`.]**
 
 **(Voiceover):**
 `ls .git/objects`: yahan Git ka saara maal rakha hai, teen tarah ke dabbon mein. Blob: ek file ka content. Tree: ek folder ki soochi, kaun sa naam kis blob ka hai. Commit: ek tree ki taraf ishaara, saath mein kisne, kab, kyun, aur pichhla commit kaun sa tha. Har dabbe ka naam uske content ka hash hai, isliye content badla to naam badla. Aur har commit apne parent ko point karta hai, isi se chain banti hai. Isi wajah se history ko chupke se badalna mushkil hai. Ek aur folder: `.git/hooks`. Ye wo scripts hain jo Git ke kisi kaam se pehle ya baad apne aap chalti hain. `pre-commit` commit se pehle jaanch chala sakta hai, `pre-push` push rok sakta hai. Ise yaad rakho: agle session mein vault ki ghanti isi soch ka bada roop hai.
 
-### [08:00 – 11:30] Scene 4: Lab: Adhoora Kaam aur Draft Badalna
+### [07:50 – 11:05] Scene 4: Lab: Adhoora Kaam aur Draft Badalna
 **[VISUAL: Two experiments. A: on `main`, edit `notes.txt` (same content on both branches), `git switch branch-a` succeeds and the change travels along. B: `contact.html` differs between `main` and `branch-b`; edit it on `main`, `git switch branch-b` is refused: "Your local changes would be overwritten". Three options card: commit · stash · restore.]**
 
 **(Voiceover):**
 Lab, do prayog. Pehla: ek file jo dono drafts mein ek jaisi hai, use `main` par badlo, commit mat karo, aur `git switch branch-a`. Git jaane deta hai, aur aapka badlaav saath chala aata hai. Doosra: ek file jo dono drafts mein alag alag commit hui hai, use `main` par badlo aur switch karo. Git mana kar deta hai: "your local changes would be overwritten". Kyun? Kyunki draft badalte waqt Git table ki sheets ko us draft ke revision se badalta hai. Jahan aapka adhoora kaam us badlaav ke raaste mein aata hai, wahan wo rukta hai taaki kuch khoye nahi. Asli rule: adhoora kaam kisi draft ka nahi hota jab tak commit na ho. Aur aapke paas teen raaste hain: commit kar do, `git restore` se hata do, ya `git stash` se alag rakh do, jo hum agle session mein seekhenge.
 
-### [11:30 – 13:00] Scene 5: Recap aur Bridge
+### [11:05 – 13:00] Scene 5: Recap aur Bridge
 **[VISUAL: A card: "`.git` = register · HEAD = aap yahan ho · branch = ek file, ek hash · index = tray · blob → tree → commit". Then the laptop alone on a desk, with a question mark above it.]**
 
 **(Voiceover):**

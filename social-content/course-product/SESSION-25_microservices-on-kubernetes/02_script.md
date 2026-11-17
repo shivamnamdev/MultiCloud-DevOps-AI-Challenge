@@ -66,55 +66,55 @@ Recap: microservices ka vichar aur uski keemat. Ab asli kaam: har truck ko confi
 
 # 📺 EPISODE 2: Notice Board, Envelope aur Budget
 
-### [00:00 – 01:30] Scene 1: Ek Design, Teen Wing
+### [00:00 – 01:35] Scene 1: Ek Design, Teen Wing
 **[VISUAL: A truck design with a hard-coded database address. A developer rebuilds it for dev, staging and prod. Next: one design and three sets of settings supplied from outside.]**
 
 **(Voiceover):**
 Agar dev, staging aur production ke liye alag alag design banane pade, to wo galat tareeka hai. Ek hi design, aur settings bahar se. Kubernetes mein iske liye notice board, yaani ConfigMap, aur sealed envelope, yaani Secret. Aur har truck ko ek sahi allowance ki zaroorat hai: kitna CPU aur memory. Aur har wing ko ek budget. Aaj ye sab, aur uske baad trucks aapas mein baat kaise karein.
 
-### [01:30 – 03:50] Scene 2: ConfigMap aur Secret
+### [01:35 – 03:20] Scene 2: ConfigMap aur Secret
 **[VISUAL: A ConfigMap `rooms-config` with `APP_MODE: production` and `ROOMS_PER_PAGE: "20"`. A Secret `bookings-db` with a base64 value. A pod using `envFrom` and a mounted file. A red tag on the Secret: "base64 is encoding, not encryption".]**
 
 **(Voiceover):**
-ConfigMap mein aam settings: `APP_MODE`, ya page par kitne rooms. Secret mein sensitive cheezein, jaise database password. Pod ko ye do tarah se milte hain: environment variables ya mounted files. `kubectl create configmap rooms-config --from-literal=APP_MODE=production`, `kubectl create secret generic bookings-db --from-literal=password=...`. Bahut zaroori: Secret ki value base64 mein hoti hai, jo sirf encoding hai, encryption nahi. Koi bhi use decode kar sakta hai. Isliye RBAC se access seemit karo, cluster mein secrets ka encryption on rakho, aur bade systems mein cloud ka secret manager, jaise Session 13 mein Secrets Manager. Aur Secret ka YAML kabhi vault mein plain mat daalo, jaise Session 20 ke leak ki kahani.
+ConfigMap mein aam settings: `APP_MODE`, ya page par kitne rooms. Secret mein sensitive cheezein, jaise database password. Bahut zaroori: Secret ki value base64 mein hoti hai, jo sirf encoding hai, encryption nahi. Isliye RBAC se access seemit karo, cluster mein secrets ka encryption on rakho, aur bade systems mein cloud ka secret manager, jaise Session 13 mein Secrets Manager. Aur Secret ka YAML kabhi vault mein plain mat daalo, jaise Session 20 ke leak ki kahani.
 
-### [03:50 – 05:40] Scene 3: Config Badla, Pod ko Pata Nahi
+### [03:20 – 05:10] Scene 3: Config Badla, Pod ko Pata Nahi
 **[VISUAL: A ConfigMap changed with `kubectl edit`. A pod using the value through an environment variable still shows the old value. A mounted file shows the new value after a short delay. A fix: `kubectl rollout restart deployment/rooms`.]**
 
 **(Voiceover):**
 Ek jaal: ConfigMap badal diya, par chalti truck ko wahi purani value dikhti hai. Environment variable truck ke start hote waqt padhe jaate hain, isliye un mein badlaav tab tak nahi dikhta jab tak pod dobara na bane. Mounted file ke roop mein diya ho to kuch der mein file badal jaati hai, par app ko use phir se padhna aana chahiye. Roz ka hal: `kubectl rollout restart deployment/rooms`, jo rolling update ki tarah pods ko ek ek karke dobara banata hai.
 
-### [05:40 – 08:10] Scene 4: Requests, Limits aur Budget
+### [05:10 – 07:45] Scene 4: Requests, Limits aur Budget
 **[VISUAL: A container spec with `requests: cpu 100m, memory 128Mi` and `limits: cpu 500m, memory 256Mi`. A node with a fixed shelf space; requests reserve space, limits are the ceiling. CPU past the limit is slowed; memory past the limit is killed with exit code 137.]**
 
 **(Voiceover):**
 Har truck ke do aankde. Request: kam se kam kitna chahiye, aur allocation officer isi ke hisaab se building chunta hai. Limit: upar ki hadd. CPU limit paar karne par truck ko dheema kiya jaata hai, throttle. Memory limit paar karne par truck ko maar diya jaata hai, OOMKilled, exit code 137, jo hum ne Session 24 mein dekha. CPU ki ikai milli-core hai: `100m` ka matlab ek core ka dasva hissa. Request na ho to HPA ko kuch pata nahi chalta, aur building ki planning bhi andhi. Ek aur asar: jab building par jagah kam pade, to jinhone request nahi di, unhe pehle hataya jaata hai. Isliye har truck par request zaroor likho.
 
-### [08:10 – 11:00] Scene 5: LimitRange aur ResourceQuota
+### [07:45 – 10:20] Scene 5: LimitRange aur ResourceQuota
 **[VISUAL: Two panels. LimitRange: per-container defaults (default limit cpu 500m, memory 512Mi; default request cpu 200m, memory 256Mi). ResourceQuota: a total for the wing: requests.cpu 4, requests.memory 8Gi, limits.cpu 10, limits.memory 16Gi, pods 10. A table "applies to / controls".]**
 
 **(Voiceover):**
-Do object, jinhe log mila dete hain. ResourceQuota poori wing ka total budget hai: sab pods milakar kitna CPU, memory aur kitne pods. Notes ki misaal: ek team ko sau rupaye ka budget mila hai, poori team mil kar usse zyada kharch nahi kar sakti. LimitRange har truck ka allowance hai: default request, default limit, aur minimum aur maximum. Isse koi ek truck zyada na maange, aur jo likhna bhool jaaye use default mil jaaye. Ek zaroori jodi: agar wing mein ResourceQuota ho jisme CPU aur memory hain, to har pod ko request aur limit deni hi padti hai, aur LimitRange unhe default de sakta hai. Quota paar hone par pod Pending nahi hota. Pod banta hi nahi: ReplicaSet ke Events mein `FailedCreate... exceeded quota` likha aata hai.
+Do object, jinhe log mila dete hain. ResourceQuota poori wing ka total budget hai: sab pods milakar kitna CPU, memory aur kitne pods. Notes ki misaal: ek team ko sau rupaye ka budget mila hai, poori team mil kar usse zyada kharch nahi kar sakti. LimitRange har truck ka allowance hai: default request, default limit, aur minimum aur maximum. Ek zaroori jodi: agar wing mein ResourceQuota ho jisme CPU aur memory hain, to har pod ko request aur limit deni hi padti hai, aur LimitRange unhe default de sakta hai. Quota paar hone par pod Pending nahi hota. Pod banta hi nahi: ReplicaSet ke Events mein `FailedCreate... exceeded quota` likha aata hai.
 
-### [11:00 – 13:35] Scene 6: Probes: Truck Taiyaar Hai?
+### [10:20 – 13:00] Scene 6: Probes: Truck Taiyaar Hai?
 **[VISUAL: A timeline for one pod: startup probe → readiness passes → traffic starts. Liveness fails twice → restart. A pod marked not Ready is removed from the Service's endpoints and the marshal skips it. A caution: "a liveness probe that checks the database restarts everyone".]**
 
 **(Voiceover):**
 Probes truck ki sehat ki jaanch hain. Readiness: truck guests ke liye taiyaar hai ya nahi, aur taiyaar na ho to Service us truck ko endpoints se hata deti hai. Liveness: truck atak gayi hai, restart chahiye. Startup: dheere start hone wali truck ke liye. Ye Session 22 ke HEALTHCHECK ka Kubernetes roop hai, aur Session 11 ke marshal ka health check. Probe halka rakho: `/health` jo sirf 200 de. Agar liveness probe database tak jaaye, aur database dheema ho, to saari trucks ek saath restart hongi, aur dikkat aur badh jaayegi. Readiness rolling update ko bhi bachata hai: naya pod tab tak guests ko traffic nahi leta jab tak taiyaar nahi, aur Deployment tab tak purana nahi hatata.
 
-### [13:35 – 15:35] Scene 7: Service se Service ki Baat
+### [13:00 – 15:05] Scene 7: Service se Service ki Baat
 **[VISUAL: `bookings-service` calling `http://rooms-service:5000/rooms/101` in the same wing. A call from another wing to `rooms-service.atithi.svc.cluster.local`. A chain of three services with a timeout at every hop and a short retry with backoff. A red picture of a slow service holding up the whole chain.]**
 
 **(Voiceover):**
 Services ek doosre ko DNS naam se bulati hain. Same wing mein `http://rooms-service:5000`, alag wing se `rooms-service.atithi.svc.cluster.local`. Ye URL code mein hardcode nahi, ConfigMap se. Ab network par bharosa nahi: har call par timeout lagao, thoda retry karo, ruk ruk ke, aur fail ho to saaf, chhota jawab do. Bina timeout ke ek dheemi service poori chain ko latka sakti hai, jise cascading failure kehte hain. Aur retry sirf wahi karo jo do baar chalaye jaane par bhi nuksaan na kare, yaani idempotent, jaise Session 15 mein Lambda ke saath.
 
-### [15:35 – 17:35] Scene 8: Lab: Truck Park ko Budget ke Saath Chalao
+### [15:05 – 17:30] Scene 8: Lab: Truck Park ko Budget ke Saath Chalao
 **[VISUAL: Namespace `atithi`. `kubectl create configmap`, `kubectl create secret generic`. A Deployment YAML for `rooms-service` with `envFrom`, `resources`, `readinessProbe` on `/health`. A LimitRange and a ResourceQuota. A test pod calls `rooms-service`. Scaling beyond the quota shows `FailedCreate` in `kubectl describe rs`.]**
 
 **(Voiceover):**
-Lab. `kubectl create namespace atithi`. Phir `kubectl create configmap rooms-config -n atithi --from-literal=APP_MODE=demo` aur ek Secret. `rooms-service` ke Deployment mein Session 22 ka design, `envFrom` se ConfigMap, `resources` mein request aur limit, aur `readinessProbe` `/health` par. Pehle ek LimitRange lagao, phir ek chhoti ResourceQuota, jaise `pods: "4"`. Ek test pod se `wget -qO- http://rooms-service:5000/health` karo. Ab Deployment ko paanch tak scale karo: paanchva pod nahi banega. `kubectl describe rs -n atithi` ke Events mein `FailedCreate` aur "exceeded quota" padho. Phir quota ki seema ke andar wapas aao, yaani Deployment ko do replicas par scale karo, kyunki rollout ko naye pod ke liye thodi jagah chahiye aur poori quota bhari ho to rollout atak jaata hai. Ab ConfigMap badlo, aur `kubectl rollout restart` se naya value dikhao.
+Lab. `kubectl create namespace atithi`. Phir `kubectl create configmap rooms-config -n atithi --from-literal=APP_MODE=demo` aur ek Secret. `rooms-service` ke Deployment mein Session 22 ka design, `envFrom` se ConfigMap, `resources` mein request aur limit, aur `readinessProbe` `/health` par. Pehle ek LimitRange lagao, phir ek chhoti ResourceQuota, jaise `pods: "4"`. Ek test pod se `wget -qO- http://rooms-service:5000/health` karo. Ab Deployment ko paanch tak scale karo: paanchva pod nahi banega. `kubectl describe rs -n atithi` ke Events mein `FailedCreate` aur "exceeded quota" padho. Phir Deployment ko do replicas par wapas lao, kyunki poori quota bhari ho to rollout atak jaata hai. Ab ConfigMap badlo, aur `kubectl rollout restart` se naya value dikhao.
 
-### [17:35 – 18:05] Scene 9: Recap aur Bridge
+### [17:30 – 18:00] Scene 9: Recap aur Bridge
 **[VISUAL: A card: "ConfigMap + Secret (base64 is not secure) · restart to see new env · requests, limits · LimitRange per truck · ResourceQuota per wing · FailedCreate, not Pending · readiness gates traffic · timeouts + retries".]**
 
 **(Voiceover):**
@@ -182,47 +182,47 @@ Recap: PV, PVC, StorageClass aur reclaim policy. Ab truck park ke entrance par c
 
 # 📺 EPISODE 4: Concierge aur Production ke Taale
 
-### [00:00 – 01:25] Scene 1: Har Service ka Alag Load Balancer?
+### [00:00 – 01:20] Scene 1: Har Service ka Alag Load Balancer?
 **[VISUAL: Four services each with its own cloud load balancer and a rising bill. Replaced by one entrance with rules by path.]**
 
 **(Voiceover):**
 Agar har service ke liye alag LoadBalancer banao, to har ek ka alag IP aur alag bill. Ingress ek hi concierge deta hai, jo HTTP rules se tay karta hai ki kaun si request kaun si service ko jaaye. Ek darwaza, kai kamre. Rule host aur path par chalte hain: `atithi.example` ka `/` web ko, `/api/rooms` rooms-service ko, `/api/bookings` bookings-service ko.
 
-### [01:25 – 03:40] Scene 2: Ingress aur uska Controller
+### [01:20 – 03:40] Scene 2: Ingress aur uska Controller
 **[VISUAL: Internet → one load balancer → ingress controller (nginx or the cloud's own) → rules: `/` → web, `/api/rooms` → rooms-service, `/api/bookings` → bookings-service. A TLS certificate stored in a Secret attached to the Ingress. A side note about Gateway API.]**
 
 **(Voiceover):**
-Ingress sirf ek rule ka object hai. Rule ko asli mein chalane ke liye Ingress controller chahiye: Traefik jaisa koi controller, ya cloud ka apna. Ek zaroori khabar: community ka `ingress-nginx` controller March 2026 mein retire ho gaya, yaani ab uske liye fixes nahi aate, isliye naye kaam mein use mat chuno. Kubernetes project Gateway API aur kisi maintained controller ki taraf jaane ko kehta hai. Controller ke bina Ingress likha rehta hai, kaam nahi karta. GKE mein built-in controller ek Google load balancer banata hai. Ingress mein `ingressClassName` se controller chuna jaata hai, aur TLS ke liye Secret mein certificate jodte hain, jaise Session 11 ke marshal par HTTPS. Path ke do type: `Prefix` aur `Exact`. Naye clusters mein Gateway API aa raha hai jo Ingress se zyada flexible hai. Vichar wahi hai: ek entrance aur rules.
+Ingress sirf ek rule ka object hai. Rule ko asli mein chalane ke liye Ingress controller chahiye: Traefik jaisa koi controller, ya cloud ka apna. Ek zaroori khabar: community ka `ingress-nginx` March 2026 mein retire ho gaya, isliye naye kaam mein use mat chuno; Gateway API ya kisi maintained controller ki taraf jao. Controller ke bina Ingress likha rehta hai, kaam nahi karta. GKE mein built-in controller ek Google load balancer banata hai. Ingress mein `ingressClassName` se controller chuna jaata hai, aur TLS ke liye Secret mein certificate jodte hain, jaise Session 11 ke marshal par HTTPS. Path ke do type: `Prefix` aur `Exact`.
 
-### [03:40 – 06:35] Scene 3: Pod Ek Doosre se Baat Kar Sakte Hain
+### [03:40 – 06:10] Scene 3: Pod Ek Doosre se Baat Kar Sakte Hain
 **[VISUAL: A network graph of all pods fully connected. A hacked `web` pod reaches the records truck directly. Then cut lines until only `bookings-service → postgres` remains.]**
 
 **(Voiceover):**
-By default Kubernetes mein koi bhi pod kisi bhi pod se baat kar sakta hai, kisi bhi wing mein. Agar web truck hack ho jaaye, to hamlavar seedha records tak pahunch sakta hai. NetworkPolicy ek allow-list hai: kaun kisse baat kare. Pehle default-deny lagao: wing ka sab traffic band. Phir sirf zaroori raaste kholo: postgres ke pods sirf bookings-service ke pods se port 5432 par traffic lein. Dhyaan: policy tab kaam karti hai jab cluster ka network plugin use enforce kare. Apne cluster mein check karo, kyunki kuch local clusters mein policy likhne par bhi asar nahi hota. Aur agar egress bhi deny karo, to DNS ke liye raasta kholna mat bhoolo. Ye Session 14 ke wing guard aur door guard ka Kubernetes roop hai.
+By default Kubernetes mein koi bhi pod kisi bhi pod se baat kar sakta hai, kisi bhi wing mein. Agar web truck hack ho jaaye, to hamlavar seedha records tak pahunch sakta hai. NetworkPolicy ek allow-list hai: kaun kisse baat kare. Pehle default-deny lagao: wing ka sab traffic band. Phir sirf zaroori raaste kholo: postgres ke pods sirf bookings-service ke pods se port 5432 par traffic lein. Dhyaan: policy tab kaam karti hai jab cluster ka network plugin use enforce kare. Apne cluster mein check karo, kyunki kuch local clusters mein policy likhne par bhi asar nahi hota. Aur agar egress bhi deny karo, to DNS ke liye raasta kholna mat bhoolo.
 
-### [06:35 – 09:00] Scene 4: Kaun Kya Kar Sakta Hai: RBAC
+### [06:10 – 08:30] Scene 4: Kaun Kya Kar Sakta Hai: RBAC
 **[VISUAL: A ServiceAccount `bookings-sa`, a Role allowing `get` on ConfigMaps in the wing, and a RoleBinding. A command `kubectl auth can-i list secrets --as=system:serviceaccount:atithi:bookings-sa -n atithi` printing `no`. Pod security: non-root, read-only filesystem.]**
 
 **(Voiceover):**
 NetworkPolicy bataati hai ki pods aapas mein kaun baat karein. RBAC alag hai: kaun Kubernetes API par kya kar sakta hai. Har service ko apni ServiceAccount do, yaani duty badge, aur ek Role jisme sirf zaroori ijaazat hon, jaise apni wing ke ConfigMap padhna. Role ko RoleBinding se jodo. Check karne ke liye `kubectl auth can-i list secrets --as=system:serviceaccount:atithi:bookings-sa -n atithi`. Jawab `no` hona chahiye. Ye Session 9 ka least privilege hai, trucks ke liye. Aur pod ko khud bhi kasna: non-root user, read-only filesystem, aur kam capabilities, jaise Session 22 mein `docker run` ke flags the, bas ab pod ke YAML ke `securityContext` mein.
 
-### [09:00 – 11:25] Scene 5: Helm: Franchise Kit
+### [08:30 – 10:50] Scene 5: Helm: Franchise Kit
 **[VISUAL: A chart folder with `Chart.yaml`, `values.yaml`, `templates/`. A diagram: templates + values = rendered YAML. Commands: `helm lint`, `helm template`, `helm install atithi ./atithi -f values-prod.yaml`, `helm upgrade`, `helm rollback atithi 1`.]**
 
 **(Voiceover):**
 Teen services ke liye teen YAML theek hain. Par das services aur teen wings ke liye copy paste ka jungle ban jaata hai. Helm Kubernetes ka package manager hai, ek franchise kit: ek chart mein templates aur `values.yaml` hota hai, aur har wing ke liye alag values file. `helm lint` chart ko jaanchta hai, `helm template` bina lagaye final YAML dikhata hai. `helm install atithi ./atithi -f values-prod.yaml` poori app lagata hai, `helm upgrade` update karta hai, aur `helm rollback atithi 1` pichhle release par wapas. Helm aage monitoring stack lagane mein bhi kaam aayega. Aur chart bhi vault mein, pull request ke saath.
 
-### [11:25 – 13:25] Scene 6: Khoj ka Kram
+### [10:50 – 12:45] Scene 6: Khoj ka Kram
 **[VISUAL: A troubleshooting table. Pending → describe, look at Events (room, quota, storage). CrashLoopBackOff → `logs --previous`, exit code. ImagePullBackOff → image name, registry access. Empty endpoints → labels vs selector. Ingress 502 or 404 → backend not Ready, wrong port, wrong path. PVC Pending → no matching PV or StorageClass.]**
 
 **(Voiceover):**
 Ab ek table jo apne paas rakho. Pod Pending: `kubectl describe pod` ke Events: jagah, quota ya storage. CrashLoopBackOff: `kubectl logs --previous`, aur exit code. ImagePullBackOff: image ka naam ya registry ki ijaazat. Service ke endpoints khaali: label aur selector ka mismatch. Ingress se 502 ya 404: backend pod Ready nahi, port galat, ya path galat. PVC Pending: koi matching PV ya StorageClass nahi. Aur sabka pehla kadam wahi: `kubectl get events --sort-by=.lastTimestamp` aur `describe`. Session 5 ka seedha sawaal: pehle jaano kya toota, phir badlo.
 
-### [13:25 – 15:50] Scene 7: Lab: Concierge aur Taale
+### [12:45 – 15:50] Scene 7: Lab: Concierge aur Taale
 **[VISUAL: An Ingress with three paths applied; `curl` through the entrance reaches web, rooms and bookings. A default-deny NetworkPolicy; the `web` pod can no longer reach postgres; an allow policy for `bookings-service` restores only that path. `kubectl auth can-i` checks.]**
 
 **(Voiceover):**
-Lab. Ek Ingress YAML likho: `/` web ko, `/api/rooms` rooms-service ko, `/api/bookings` bookings-service ko. Local cluster mein Helm se Traefik jaisa maintained controller lagao, jaise `helm install traefik traefik/traefik -n traefik --create-namespace`, aur GKE mein built-in. `ingressClassName` mein controller ka naam do. Ek jaal: Ingress path ko jyon ka tyon service tak bhejta hai. Agar `/api/rooms` rooms-service ko jaata hai, to wo `/api/rooms/health` dekhega, `/health` nahi, aur 404 dega. Isliye ya to service ko wahi prefix ke saath sunao, ya controller ka strip-prefix rule lagao, jo har controller mein alag hota hai. Apply karo, aur `curl` se teeno raaste test karo. Phir `atithi` wing mein ek default-deny NetworkPolicy lagao: pods aapas mein baat nahi kar paate. Ab sirf zaroori allow policies jodo: web se rooms aur bookings, bookings se postgres. Test pod se web se postgres tak koshish karo: nahi pahunchta. Ek ServiceAccount banao aur `kubectl auth can-i` se check karo. Aakhir mein `helm template` se dekho ki chart kya banata. Safai: wing hatao, PVC hatao.
+Lab. Ek Ingress YAML likho: `/` web ko, `/api/rooms` rooms-service ko, `/api/bookings` bookings-service ko. Local cluster mein Helm se Traefik jaisa maintained controller lagao, jaise `helm install traefik traefik/traefik -n traefik --create-namespace`, aur GKE mein built-in. Ek jaal: Ingress path ko jyon ka tyon service tak bhejta hai. `/api/rooms` rooms-service ko jaaye to wo `/api/rooms/health` dekhega aur 404 dega. Isliye service ko wahi prefix do, ya controller ka strip-prefix rule lagao. Apply karke teeno raaste `curl` se test karo. Phir `atithi` wing mein ek default-deny NetworkPolicy lagao: pods aapas mein baat nahi kar paate. Ab sirf zaroori allow policies jodo: web se rooms aur bookings, bookings se postgres. Test pod se web se postgres tak koshish karo: nahi pahunchta. Ek ServiceAccount banao aur `kubectl auth can-i` se check karo. Aakhir mein `helm template` chalao. Safai: wing hatao, PVC hatao.
 
 ### [15:50 – 16:40] Scene 8: Recap aur Bridge
 **[VISUAL: A card: "Ingress rules + controller · TLS in a Secret · default-deny + allow lists · RBAC least privilege · securityContext · Helm for repeatable deploys · describe → logs → events". Then a control room with live meters fades in.]**

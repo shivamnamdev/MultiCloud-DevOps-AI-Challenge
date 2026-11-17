@@ -9,6 +9,7 @@
 ## Condensing 60 source sessions (~770k words) into 33 sessions (132 episodes, ~15 h)
 | # | Session (slug) | Maps from source | Core outcome |
 |---|---|---|---|
+| 00 | the-story-of-atithi-hotels | S01 (program kickoff) | The tutorial trap, the course promise, the whole course as one story (guest journey, three zoom levels), Day 0 setup and commitment tasks. Teaches no tool |
 | 01 | cloud-and-devops-foundations | S02, S03 (+tech parts of S01) | Virtualization, IaaS/PaaS/SaaS, what DevOps really is, CI/CD vocabulary |
 | 02 | ai-co-programmer-for-devops | S04, S48, S49 | Prompting, agents, using AI on logs/IaC/review, with verification habits |
 | 03 | linux-foundations | S05, S06 | Filesystem, shell, 40 core commands, VM + SSH access |

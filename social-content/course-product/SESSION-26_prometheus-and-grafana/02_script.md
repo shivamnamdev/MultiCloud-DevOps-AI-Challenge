@@ -115,37 +115,37 @@ Recap: pull model, exporter, metric ke types, aur PromQL. Ab Kubernetes ke liye 
 
 # 📺 EPISODE 3: Franchise Kit aur Screens
 
-### [00:00 – 01:40] Scene 1: Poora Control Room, Ek Command
+### [00:00 – 01:25] Scene 1: Poora Control Room, Ek Command
 **[VISUAL: A `helm install` command and then pods appearing in a `monitoring` wing: prometheus, alertmanager, grafana, node-exporter, kube-state-metrics.]**
 
 **(Voiceover):**
 Kubernetes cluster ko monitor karne ke liye Prometheus, Alertmanager, Grafana, node exporter aur kube-state-metrics, sab chahiye. Haath se lagana ek din ka kaam hai, aur ek bhi jagah galti ho to adhura. Helm mein ek community franchise kit hai, `kube-prometheus-stack`, jo ye sab ek command mein lagata hai, Session 25 ke Helm ka seedha upyog. Atithi ke har wing aur har cluster mein wahi control room chale, ek jaisa.
 
-### [01:40 – 04:05] Scene 2: kube-prometheus-stack ke Hisse
+### [01:25 – 03:25] Scene 2: kube-prometheus-stack ke Hisse
 **[VISUAL: `helm repo add prometheus-community ...`, `helm install monitoring prometheus-community/kube-prometheus-stack -n monitoring --create-namespace`. A diagram: Prometheus Operator, ServiceMonitor and PodMonitor objects, PrometheusRule, Grafana with prebuilt dashboards, node exporter on every node, kube-state-metrics.]**
 
 **(Voiceover):**
 Kit mein Prometheus Operator hota hai, jo Kubernetes ke objects se Prometheus ko chalata hai. ServiceMonitor aur PodMonitor naye objects hain jinse aap batate ho ki kaun si service ya pod scrape karni hai, bina `prometheus.yml` ko haath se badle. PrometheusRule se alerts. node exporter har building par, aur kube-state-metrics jo Kubernetes ke objects ke numbers deta hai: kitne pods Ready, kitne Pending. Grafana mein cluster ke liye pehle se bane dashboards aate hain. Production mein values file se retention aur storage tay karo, kyunki Prometheus ka data ek PVC par hai, aur default admin password turant badlo.
 
-### [04:05 – 06:35] Scene 3: ServiceMonitor ka Jaal
+### [03:25 – 05:30] Scene 3: ServiceMonitor ka Jaal
 **[VISUAL: A ServiceMonitor with `selector.matchLabels: app: rooms` and `endpoints: port: http, path: /metrics`. A red callout: the operator only picks up monitors that carry the label `release: monitoring`. In Prometheus Targets the rooms job is missing, then appears after the label is added.]**
 
 **(Voiceover):**
 ServiceMonitor banate waqt ek chhota jaal hai. Aap ek ServiceMonitor likhte ho, selector mein `app: rooms`, endpoint mein port ka naam aur `/metrics`, aur Prometheus ke Targets page par rooms dikhta hi nahi. Wajah: Operator sirf un monitors ko uthata hai jinke paas chart ka tay kiya hua label ho, aksar `release: monitoring`. Aur ye bhi dhyaan rakho ki ServiceMonitor ka selector Service ke labels dekhta hai, pod ke nahi, aur port ka naam Service mein bhi likha hona chahiye. Session 23 ka wahi label aur selector wala sabak: ek akshar ka farq aur chupchap khaali. Pehle Targets page dekho, phir labels.
 
-### [06:35 – 09:15] Scene 4: Grafana: Panel, Variable aur Dashboard
+### [05:30 – 07:45] Scene 4: Grafana: Panel, Variable aur Dashboard
 **[VISUAL: Grafana. A Prometheus data source. A dashboard with a stat panel for error percent, a time series for request rate by status, a gauge for CPU, a table of top pods. Dropdown variables `namespace` and `pod`. A row layout: signals on top, detail below.]**
 
 **(Voiceover):**
 Grafana mein Prometheus data source hota hai. Panel mein ek PromQL query aur ek visualization: time series, stat, gauge, table. Variables se dashboard dynamic banta hai: dropdown se namespace ya pod chuno aur saare panels badal jaate hain. Achha dashboard ek kahani batata hai. Upar golden signals: request rate, error percent, latency, saturation. Neeche detail, jaise pod-wise CPU. Zyada panels mat daalo, kyunki raat ke do baje jab koi dekhta hai, to usse jaldi samajh aana chahiye ki guests ko dikkat hai ya nahi. Aur dashboard ko JSON ya ConfigMap mein save karo, taaki wo vault mein rahe, review ho, aur cluster dobara bane to wapas aa jaaye.
 
-### [09:15 – 12:45] Scene 5: Guest ki Nazar se: Blackbox Probe
+### [07:45 – 10:40] Scene 5: Guest ki Nazar se: Blackbox Probe
 **[VISUAL: Two views of the same outage. Inside view: every truck shows `up = 1`. Outside view: a probe from the internet calls the public address and gets a certificate error. A blackbox exporter checking the HTTPS page and its certificate expiry date.]**
 
 **(Voiceover):**
 Ab tak hum andar se dekh rahe the. Ho sakta hai ki saari trucks `up = 1` dikhayen, aur phir bhi guest ko page na khule: certificate expire ho gaya, ya Ingress ka rule galat ho gaya, ya DNS toot gaya. Isliye bahar se bhi dekho. Blackbox exporter inspector ki taraf se ek probe chalata hai: public URL par HTTPS call, jawab ka code, kitna samay laga, aur certificate kitne din mein expire hoga. Alert: "certificate das din mein expire" ek ticket hai, aur "public page fail" ek page. Ye Session 11 ke marshal ke health check ka bahar wala bhai hai, aur wahi sawal: guest ko kya dikhta hai? Ek aur tareeka hai guest ki nazar ka: ek bahar ki cloud ya doosri region se probe lagao, taaki ek hi jagah ka outage dono ko ek saath na chhupa le.
 
-### [12:45 – 15:00] Scene 6: Lab: Cluster ko Dekho aur Apna Panel Banao
+### [10:40 – 15:00] Scene 6: Lab: Cluster ko Dekho aur Apna Panel Banao
 **[VISUAL: `helm repo add`, `helm install monitoring ...`, `kubectl get pods -n monitoring`, `kubectl port-forward -n monitoring svc/monitoring-grafana 3000:80`, a secret read for the admin password, built-in dashboard "Kubernetes / Compute Resources / Namespace (Pods)", a custom panel with the rooms request rate.]**
 
 **(Voiceover):**
@@ -161,31 +161,31 @@ Recap: franchise kit aur screens. Ab ek kadwi sachchai: deewar ki screens ko raa
 
 # 📺 EPISODE 4: Alarm Desk
 
-### [00:00 – 01:35] Scene 1: Do Sau Alert, Ek Raat
+### [00:00 – 01:30] Scene 1: Do Sau Alert, Ek Raat
 **[VISUAL: A phone buzzing two hundred times in a night with low-value alerts. An engineer silences the phone. A real critical alert arrives, unseen.]**
 
 **(Voiceover):**
 Do sau alerts roz raat, aur ek mahine baad aap phone silent kar dete ho. Phir ek asli alert aata hai aur koi nahi dekhta. Ye alert fatigue hai, aur monitoring ka sabse bada dushman. Session 15 ke alarm ka wahi niyam yahan bhi: jis alert par koi kuch nahi karta, wo shor hai. Achha alert kam hota hai, zaroori hota hai, aur usme likha hota hai ki kya karna hai.
 
-### [01:35 – 04:00] Scene 2: Achhe Alert ke Niyam
+### [01:30 – 03:45] Scene 2: Achhe Alert ke Niyam
 **[VISUAL: A checklist. Symptom over cause. Actionable. Severity levels. A `for:` duration. A runbook link. Two examples: "page: guests see errors", "ticket: disk 80%".]**
 
 **(Voiceover):**
 Niyam. Symptom par alert do, kaaran par nahi. "Guests ko errors dikh rahe hain" ya "booking ka SLO jal raha hai" page-worthy hai. "CPU 80 percent" aksar nahi, kyunki ho sakta hai koi guest ko asar hi na ho. Har alert actionable ho: koi kuch kar sake. Severity tay karo: page jo raat ko jagaaye, aur ticket jo din mein dekha jaaye. `for:` duration lagao, taaki ek second ke spike par alert na aaye. Aur har alert ke saath ek runbook ka link, jisme likha ho pehle kya check karna hai. Is se naya duty manager bhi, jo us raat pehli baar aaya hai, kaam shuru kar sakta hai.
 
-### [04:00 – 06:35] Scene 3: Alert Rule aur Alertmanager
+### [03:45 – 06:10] Scene 3: Alert Rule aur Alertmanager
 **[VISUAL: A PrometheusRule YAML with `expr`, `for`, `labels: severity: page`, `annotations: summary, runbook_url`. A flow: Prometheus evaluates the rule → Pending → Firing → Alertmanager groups, deduplicates, routes to chat, email or an on-call tool. A silence and an inhibition rule are shown.]**
 
 **(Voiceover):**
 Prometheus rule mein ek expression hoti hai, jaise "5xx ratio 5 percent se upar", ek `for: 5m`, labels aur annotations. Condition sahi hote hi alert Pending hota hai, aur `for` ke baad Firing, aur wo Alertmanager ke paas jaata hai. Alarm desk teen kaam karta hai. Group: sau pods ke sau alerts ek message mein. Route: label ke hisaab se sahi jagah, jaise `severity: page` on-call tool ko, aur `ticket` chat channel ko. Inhibit: jab poori building gir gayi ho, to us par chalne wale pods ke alerts band. Aur silence: maintenance ke dauran ek tay samay ke liye band. Ek alert jo na kisi ko jagata hai na kuch kehta hai, use delete kar do.
 
-### [06:35 – 09:10] Scene 4: Dead Man's Switch aur SLO Burn
+### [06:10 – 08:35] Scene 4: Dead Man's Switch aur SLO Burn
 **[VISUAL: A "watchdog" alert that always fires. If the alarm desk stops receiving it, a separate service shouts. Next: an error-budget burn chart, a fast burn over one hour and a slow burn over six hours, each with its own severity.]**
 
 **(Voiceover):**
 Ek chhupa sawaal: agar alarm desk hi gir jaaye, to kaun batayega? Isliye ek watchdog alert hota hai jo hamesha fire karta hai, aur jab wo aana band ho jaaye to ek bahar ka service shor machata hai. Kit mein ye pehle se hota hai. Aur ek behtar tareeka SLO par alert: burn rate. Maan lo error budget tees din ka hai. Agar pichhle ek ghante mein budget bahut tez jal raha hai, to ye page hai. Agar dheere, par chhe ghante se lagataar, to ye ticket. Isse chhoti spike par raat ko nahi jaagna padta, par lambi dheemi dikkat bhi nahi chhootti. Ye Session 15 ke "kitni readings ke liye" wale alarm ka samajhdar roop hai.
 
-### [09:10 – 11:30] Scene 5: Lab: Alert Jalao
+### [08:35 – 11:50] Scene 5: Lab: Alert Jalao
 **[VISUAL: A PrometheusRule `RoomsHighErrorRate` with `for: 2m` and `severity: page`. `rooms-service` is switched to a build that returns 500. In Prometheus the alert moves Pending → Firing, and appears in the Alertmanager UI. A runbook page is linked in the annotation.]**
 
 **(Voiceover):**
@@ -198,13 +198,13 @@ annotations: { summary: "rooms errors above 5%", runbook_url: "RUNBOOK-LINK" }
 ```
 `rooms-service` ko jaan boojh kar tod do, jaise ek `/` route jo 500 de, aur `curl` ke loop se traffic do. Prometheus ke Alerts page par alert Pending se Firing hota dekho, aur Alertmanager UI mein bhi. Phir ek chhota runbook likho: pehla kya dekhna hai, kaise rollback karna hai, Session 24 ke `rollout undo` ke saath. Aakhir mein Alertmanager mein ek silence lagao aur dekho ki alert chup ho gaya.
 
-### [11:30 – 14:10] Scene 6: Raat ke Baad: Seekh, Dosh nahi
+### [11:50 – 14:20] Scene 6: Raat ke Baad: Seekh, Dosh nahi
 **[VISUAL: A timeline of an incident: alert fired, acknowledged, mitigated by rollback, resolved. A short review page with headings: what guests saw, what we did, why it happened, what we change. A banner: "blameless".]**
 
 **(Voiceover):**
 Alert ne jagaya, duty manager ne rollback kiya, aur site wapas. Kaam khatam? Nahi. Agle din ek chhoti review likho. Guests ne kya dekha, kab se kab tak. Humne kya kiya. Kyun hua. Aur hum kya badlenge: ek alert, ek test, ek runbook ka hissa. Review mein koi naam nahi liya jaata, kyunki sawal "kisne galti ki" nahi, "system ne ye galti hone kyun di" hai. Isse error budget bhi samajh aata hai, aur wahi budget agle release ka faisla bhi karta hai. Aur ek aadat: har incident ke baad ek alert ya dashboard mein ek sudhaar, taaki wahi raat dobara na aaye. Monitoring tab tak poori nahi hoti jab tak wo har raat ke baad thodi behtar na ho.
 
-### [14:10 – 15:30] Scene 7: Recap aur Bridge
+### [14:20 – 15:35] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "alert on symptoms · actionable · for: · severity routing · runbook link · watchdog · burn-rate alerts". Then a blank master plan on a drawing table appears over the campus map.]**
 
 **(Voiceover):**

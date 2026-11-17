@@ -26,23 +26,23 @@
 **(Voiceover):**
 Atithi ki booking site chal padi hai, aur ab har room ki das das photos, har booking ki PDF invoice, aur har raat ka database backup aa raha hai. Session 10 mein humne buildings ke storeroom, yaani EBS, dekhe the. Wo ek building se juda hota hai, aur uski jagah tay hoti hai. Photos wahan rakhne ka matlab hai ki jab building badhegi ya badlegi, photos bhi saath ghoomengi. Landlord ke paas iska ek aur jawab hai: campus ke bahar ek anant godown. Ismein aap kisi bhi cheez ko ek label ke saath rakh dete ho, aur kahin se bhi wapas maang lete ho. Is godown ka naam Simple Storage Service hai, yaani S3.
 
-### [02:15 – 04:15] Scene 2: Warehouse, Box aur Label
+### [02:15 – 04:20] Scene 2: Warehouse, Box aur Label
 **[VISUAL: A warehouse sign `atithi-room-photos-2026`. Inside, boxes. Each box carries a label: `rooms/101/front.jpg`. The slashes in the label glow as part of the text, while a drawing of folders is crossed out.]**
 
 **(Voiceover):**
 S3 mein teen shabd yaad rakho. Bucket matlab warehouse, jiska naam poori duniya mein sirf ek ka ho sakta hai, kyunki naam address ka hissa banta hai. Object matlab box: aapki file aur uske saath kuch jankari, jaise uska type aur kab bana. Aur key matlab box ka label, jaise `rooms/101/front.jpg`. Dhyaan do: ye slash asli folder nahi hain. Pura `rooms/101/front.jpg` ek hi naam hai, aur `rooms/101/` sirf us naam ka shuruaati hissa, jise prefix kehte hain. Console aapko folders dikhata hai, kyunki wo prefix ke hisaab se dikhata hai, par godown mein koi almari nahi hoti, sirf label wale box hote hain.
 
-### [04:15 – 06:55] Scene 3: File System Nahi, Box Store
+### [04:20 – 07:05] Scene 3: File System Nahi, Box Store
 **[VISUAL: A split card. Left, Linux disk: open a file, change one line in the middle, save. Right, S3: the whole box is taken out and a whole new box with the same label is put back. A small ruler shows a single box can be huge.]**
 
 **(Voiceover):**
 S3 aur Linux ke disk mein ek bada fark hai. Disk par aap file kholte ho, beech ki ek line badalte ho, aur save karte ho. S3 mein aisa nahi hota. Aap poora box daalte ho, ya poora box nikalte ho. Badalna ho, to naya box wahi label lagakar rakh do, jo purane ko badal deta hai. Ek box paanch terabyte tak bada ho sakta hai, par ek hi baar mein daalne ki seema paanch gigabyte hai. Isliye bade box tukdon mein bheje jaate hain, jise multipart upload kehte hain, aur AWS CLI ye khud kar leta hai. Isi wajah se S3 par database ya wo files nahi rakhte jo har second badalti hain. Wahan EBS sahi hai. S3 un cheezon ke liye hai jo ek baar likhi jaati hain aur baar baar padhi jaati hain.
 
-### [06:55 – 09:30] Scene 4: Durability, Availability aur Backup: Teen Alag Cheezein
+### [07:05 – 09:30] Scene 4: Durability, Availability aur Backup: Teen Alag Cheezein
 **[VISUAL: A box being copied automatically into three towers (AZs) of one city. Three labels beneath: "Durability: box does not get lost", "Availability: warehouse door open right now", "Backup: someone can bring back what I deleted". Only the first is lit for plain S3 Standard.]**
 
 **(Voiceover):**
-S3 ke baare mein ek line sunoge: "gyarah nau ki durability." Matlab landlord aapke box ki copy ek city ke kai towers mein rakhta hai, aur box ke kho jaane ka khatra bahut hi kam hai. Ye teen alag baatein hain, jo aksar mila di jaati hain. Durability: box khoya nahi. Availability: godown ka darwaza abhi khula hai ya nahi. Backup: agar aapne galti se box phenk diya, to kya wapas milega. S3 Standard pehli baat ka vaada karta hai. Teesri baat aapko khud banani padti hai, versioning se, jo hum agle episode mein dekhenge. Ek aur rule: aapka data usi region mein rehta hai jo aapne chuna, jab tak aap khud use kahin aur na bhejo. Aur ab S3 mein naya box likhte hi turant padha ja sakta hai.
+S3 ke baare mein ek line sunoge: "gyarah nau ki durability." Matlab landlord aapke box ki copy ek city ke kai towers mein rakhta hai, aur box ke kho jaane ka khatra bahut hi kam hai. Teen alag baatein: Durability: box khoya nahi. Availability: godown ka darwaza abhi khula hai ya nahi. Backup: agar aapne galti se box phenk diya, to kya wapas milega. S3 Standard pehli baat ka vaada karta hai. Teesri baat aapko khud banani padti hai, versioning se, jo hum agle episode mein dekhenge. Ek aur rule: aapka data usi region mein rehta hai jo aapne chuna, jab tak aap khud use kahin aur na bhejo. Aur ab S3 mein naya box likhte hi turant padha ja sakta hai.
 
 ### [09:30 – 11:40] Scene 5: Teen Tarah ka Kharcha
 **[VISUAL: A bill with three lines: "Storage: boxes sitting in the godown, per GB per month", "Requests: every put and get, per thousand", "Data out: boxes leaving the godown to the internet, per GB". Data coming in is marked free, and a small arrow shows traffic to a building in the same region as cheap.]**
@@ -56,7 +56,7 @@ S3 ka bill teen hisson mein aata hai. Ek, storage: kitne box kitne din rakhe. Do
 **(Voiceover):**
 Lab. Console mein ek bucket banao. Naam unique rakho, jaise `atithi-photos-` ke baad apna naam aur ek number. Region wahi jo aapki lab buildings ka hai. Block Public Access on rehne do. Terminal mein `echo "room 101" > front.txt`, phir `aws s3 cp front.txt s3://YOUR-BUCKET/rooms/101/front.txt`, aur `aws s3 ls s3://YOUR-BUCKET/ --recursive` se check karo. Ab ek folder ki kuch photos banao aur `aws s3 sync ./photos s3://YOUR-BUCKET/rooms/` chalao. Sync sirf wo cheezein bhejta hai jo naye ya badli hui hain. Ek box ki jankari, bina use utaare, `aws s3api head-object --bucket YOUR-BUCKET --key rooms/101/front.txt` se dekho: `aws s3` roz ka aasaan aujaar hai, aur `s3api` S3 ki har call seedhi chalata hai. Aakhir mein console se ek object ka URL browser mein kholo. AccessDenied aayega, aur wahi sahi hai: S3 ka default jawab "nahi" hai, aur hum use jaan boojh kar badalenge.
 
-### [14:30 – 15:25] Scene 7: Recap aur Bridge
+### [14:30 – 15:30] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "bucket = unique name · object = file + info · key = label, not folder · put whole box · durability ≠ availability ≠ backup · bill = storage + requests + data out".]**
 
 **(Voiceover):**
