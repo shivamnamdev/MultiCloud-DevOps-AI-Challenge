@@ -4,7 +4,7 @@
 
 ## 🎯 Production Metadata
 - **Script ID:** `DEVOPS-S21`
-- **Focus:** Why containers, container vs VM, what a container really is (process, namespaces, cgroups), Docker client, daemon and registry, images, layers, tags and digests, `docker run` flags, lifecycle and debugging commands, exit codes, logs and their disk cost, published ports and the firewall, volumes and bind mounts, user-defined networks, a first look at Compose
+- **Focus:** Why containers, container vs VM, what a container really is (process, namespaces, cgroups), Docker client, daemon and registry, images, layers, tags and digests, `docker run` flags, lifecycle and debugging commands, exit codes, Docker's AI assistant Gordon, logs and their disk cost, published ports and the firewall, volumes and bind mounts, user-defined networks, a first look at Compose
 - **Builds on:** Session 03 and 05 (processes, signals, `ufw`, disk), Session 04 (groups), Session 10 (EBS, snapshot), Session 13 (why production databases go to RDS), Session 14 (private wing, doors), Session 17 to 20 (the conveyor that delivers a finished unit)
 - **Story position:** Zoom level 3, head office. Finished unit ab ek sealed service truck mein pack hota hai, jise koi bhi building apne courtyard mein park karke apni bijli aur paani se jod sakti hai.
 - **Story words used:** truck (container), truck design (image), serving window (port mapping), locker room (volume), depot (registry), fit-out sheet (Dockerfile, preview), building (server), courtyard (the host's space for trucks), guest (end user), foreman and conveyor (callbacks)
@@ -100,49 +100,55 @@ Recap: design, truck, depot, layers, tag aur digest. Ab trucks ko chalana aur sa
 
 # 📺 EPISODE 3: Truck Chalana
 
-### [00:00 – 01:55] Scene 1: Ek Command, Ek Web Server
+### [00:00 – 01:40] Scene 1: Ek Command, Ek Web Server
 **[VISUAL: Terminal: `docker run -d --name web -p 8080:80 nginx:alpine`. A browser opens `http://BUILDING_IP:8080` and shows the nginx welcome page. A timer reads 3 seconds.]**
 
 **(Voiceover):**
 Ek command, aur ek web server chalu. Pehle ye install, config aur service start ka kaam hota tha, jaise Session 5B mein Apache ke saath hum ne kiya tha. Ab teen second. Aaj hum `docker run` ke zaroori flags, truck ko sambhalne ki commands, aur truck ke andar ki dikkat dhoondhna seekhenge. Aur ek dhyaan ki baat: Session 8 ke security group mein 8080 allow karna padega, warna browser tak jawab nahi aayega. Truck ka serving window aur building ka door, dono ka ek hona zaroori hai.
 
-### [01:55 – 04:20] Scene 2: docker run ke Flags
+### [01:40 – 03:45] Scene 2: docker run ke Flags
 **[VISUAL: A breakdown of `docker run -d --name web -p 8080:80 -e GREETING=hi --memory 256m --cpus 0.5 --restart unless-stopped --log-opt max-size=10m --log-opt max-file=3 nginx:alpine` with each flag labelled.]**
 
 **(Voiceover):**
 `-d` truck ko background mein chalata hai. `--name web` naam deta hai. `-p 8080:80` serving window ko building ke door se jodta hai: baayein host, daayein truck. `-e` environment variable deta hai, jaise Session 6 mein parameter. `--memory 256m` aur `--cpus 0.5` cgroups ki taakat se hadd lagate hain, aur memory ki hadd paar hone par truck ko kill kar diya jaata hai. `--restart unless-stopped` crash ya reboot par truck ko dobara chalata hai. `-it` interactive terminal ke liye, `--rm` band hote hi truck hatane ke liye. Aur ek flag jo sab bhool jaate hain: `--log-opt max-size=10m`, kyunki default mein log kabhi rotate nahi hote aur disk bhar sakti hai.
 
-### [04:20 – 06:45] Scene 3: Port aur Firewall ka Jaal
+### [03:45 – 05:50] Scene 3: Port aur Firewall ka Jaal
 **[VISUAL: A building with a `ufw` rule "deny 8080". A truck started with `-p 8080:80` still answers from the internet. An arrow shows Docker writing its own rule ahead of `ufw`. A fix: `-p 127.0.0.1:8080:80` binds only to the loopback.]**
 
 **(Voiceover):**
 Session 5 mein hum ne `ufw` ka darwaza seekha tha. Ab ek chhupa jaal: Docker apne rules building ke firewall mein khud likh deta hai, aur wo `ufw` ke rules se pehle chal jaate hain. Matlab `ufw deny 8080` likha ho, phir bhi `-p 8080:80` wali truck internet par khuli reh sakti hai. Isliye do niyam. Ek, sirf wahi port publish karo jiski zaroorat hai. Do, agar truck sirf us building ke andar se kisi aur ko dikhani hai, to `-p 127.0.0.1:8080:80` se sirf loopback par bandho. Aur asli darwaza building ka security group rakho, jo Session 8 aur 14 ne sikhaya. Database ka port kabhi publish mat karo.
 
-### [06:45 – 09:05] Scene 4: Lifecycle aur Debugging
+### [05:50 – 07:55] Scene 4: Lifecycle aur Debugging
 **[VISUAL: A state diagram: created → running → paused or exited → removed. Commands listed: `docker ps`, `docker ps -a`, `docker stop`, `start`, `restart`, `rm`, `logs --tail 50 -f`, `exec -it web sh`, `inspect --format`, `stats`, `top`, `cp`.]**
 
 **(Voiceover):**
 `docker ps` chalte trucks dikhata hai, `docker ps -a` band wale bhi. `docker stop`, `start`, `restart`, `rm`. Debugging ke liye: `docker logs --tail 50 -f web` live log, `docker exec -it web sh` chalti truck ke andar ek shell, `docker inspect web` poori detail, `docker stats` live CPU aur memory, aur `docker top web` truck ke process. Ek rule: truck ko aisi cheez maano jo kabhi bhi mar kar dobara ban sakti hai. Andar jaake haath se settings badalna aur use yaad rakhna, ye galat tareeka hai, kyunki design se nayi truck banate hi sab gayab. Badlaav hamesha design ya parameter mein hota hai, truck ke andar nahi.
 
-### [09:05 – 11:25] Scene 5: Truck Mar Gayi: Exit Code Padho
+### [07:55 – 10:00] Scene 5: Truck Mar Gayi: Exit Code Padho
 **[VISUAL: `docker ps -a` showing a status "Exited (137)", "Exited (1)", "Exited (143)". A decode table: 0 normal, 1 app error, 137 killed (often out of memory), 143 stopped by SIGTERM. A line "docker stop = SIGTERM, 10 seconds, then SIGKILL".]**
 
 **(Voiceover):**
 Truck gir jaaye to pehle exit code padho. `docker ps -a` mein "Exited (1)" ka matlab app ne khud galti ke saath band kiya. 0 matlab theek band hui. 137 matlab use kill kiya gaya, aksar memory ki hadd paar karne par. 143 matlab SIGTERM se band hui, jo `docker stop` bhejta hai, aur dus second mein na rukne par SIGKILL. Ye Session 5 ke signals hain. Isi liye app ko truck ka pehla process banao aur exec form mein chalao, taaki signal seedha uske paas pahunche. Phir `docker logs` se wajah padho, aur `docker inspect --format '{{.State.OOMKilled}}' web` se pata karo ki memory ne maara ya nahi.
 
-### [11:25 – 13:40] Scene 6: Settings Truck ke Bahar se
+### [10:00 – 13:20] Scene 6: Docker ka AI Assistant: Gordon
+**[VISUAL: Docker Desktop with a Gordon panel, and `docker ai` in a terminal. A dead truck's exit code 137. Gordon proposes an action card: "Run: docker logs rooms --tail 50" with Approve and Deny buttons. A tag: "draft by the assistant, check by you".]**
+
+**(Voiceover):**
+Docker ka apna AI assistant hai: Gordon. Ye Docker Desktop mein side bar se, ya terminal mein `docker ai` se chalta hai. Wo Docker ke concepts samjhata hai, Dockerfile likhne ya sudharne mein madad karta hai, aur truck mar jaaye to logs padhkar wajah aur fix ka sujhav deta hai. Docker ke docs ke mutabik wo har kaam pehle propose karta hai aur aap approve karte ho, aur permissions har session mein dobara maangi jaati hain. Ye wahi baat hai jo Session 2 mein assistant ke liye seekhi: draft assistant ka, jaanch aapki. Isliye pehle truck ki exit code aur logs aap khud padhna seekho, jo humne abhi kiya, taaki aap jaan sako ki Gordon ka sujhav sahi hai ya nahi. Dhyaan: ise signed-in Docker account aur naya Docker Desktop chahiye, version docs mein dekho, aur uska istemaal plan ki limit mein aata hai. Isliye "approve all" bina soche mat dabana. Lab: pichhle lab ki kharab truck par Gordon se poochho "ye kyun mar gayi?", aur uska jawab apni padhi hui exit code se milao.
+
+### [13:20 – 15:15] Scene 7: Settings Truck ke Bahar se
 **[VISUAL: One truck design started three times with different `-e ENV=dev`, `-e ENV=staging`, `-e ENV=prod` and an `--env-file prod.env` that is listed in `.gitignore`. A red cross over a design with a password baked into a layer.]**
 
 **(Voiceover):**
 Ek truck design, teen jagah: dev, staging aur production. Design ek hi rahega, to farq kahan jaayega? Settings truck ke bahar se aati hain. `-e ENV=staging` se ek-ek variable, ya `--env-file prod.env` se poori list, jaisa Session 15 ke Lambda mein environment variables the. Isse "twelve-factor" soch kehte hain: code ek, settings bahar se. Aur ek pakka niyam: password ya token design ke andar kabhi nahi. Design ki layers ko koi bhi depot se pull karke padh sakta hai. `prod.env` jaisi file `.gitignore` mein rahe, aur asli secrets Secrets Manager ya key cabinet se aayein, truck ke bahar se, chalne ke waqt.
 
-### [13:40 – 16:00] Scene 7: Lab: Todo, Dekho, Sudharo
+### [15:15 – 17:15] Scene 8: Lab: Todo, Dekho, Sudharo
 **[VISUAL: Run nginx, edit the page inside with `docker exec`, remove and re-run: the change is gone. A truck that exits at once, read with `docker logs`. A memory-limited truck killed by an allocation, `OOMKilled` true. `docker system df`, prune.]**
 
 **(Voiceover):**
 Lab. `docker run -d --name web -p 8080:80 nginx:alpine`. Phir `docker exec web sh -c 'echo changed > /usr/share/nginx/html/index.html'` aur browser mein badlaav dekho. Ab `docker rm -f web` aur wahi `docker run` dobara: badlaav gayab. Sabak: writable layer asthayi hai. Doosra test: `docker run --name bad alpine sh -c 'echo oops; exit 1'`, phir `docker ps -a` aur `docker logs bad`, aur exit code padho. Teesra: `docker run --name lim --memory 32m alpine sh -c 'tail /dev/zero'`, phir `docker inspect lim --format '{{.State.OOMKilled}}'`. Aakhir mein `docker rm -f` se saari lab trucks hatao, aur `docker system df` se dekho ki kitni jagah wapas aayi.
 
-### [16:00 – 16:45] Scene 8: Recap aur Bridge
+### [17:15 – 17:55] Scene 9: Recap aur Bridge
 **[VISUAL: A card: "-d -p -e --name --restart --memory --cpus --log-opt · docker adds its own firewall rules · logs, exec, inspect, stats · read the exit code · the writable layer is temporary".]**
 
 **(Voiceover):**
@@ -220,6 +226,7 @@ Recap: Docker ka poora basic toolkit. Par abhi tak hum ne dusron ke truck design
 | Port | `-p host:truck`; Docker ufw se pehle rules likhta hai; `-p 127.0.0.1:...` |
 | Debug | `ps -a`, `logs`, `exec -it`, `inspect`, `stats`, `top` |
 | Exit code | 0 theek, 1 app error, 137 kill (aksar memory), 143 SIGTERM |
+| Gordon | `docker ai` ya Desktop; har kaam pehle propose, aap approve; draft uska, jaanch aapki; account aur plan limit |
 | Volume | `-v name:/path`; truck hati, data bacha; building gayi to volume bhi |
 | Bind mount | Dev ke liye; tmpfs sirf memory mein |
 | Backup | `tar` wali temporary truck; database ke liye dump |

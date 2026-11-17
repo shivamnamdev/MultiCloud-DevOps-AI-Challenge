@@ -4,7 +4,7 @@
 
 ## 🎯 Production Metadata
 - **Script ID:** `DEVOPS-S11`
-- **Focus:** Why load balancers, ALB vs NLB, listeners and rules, target groups and health checks, TLS termination and ACM, client IP (`X-Forwarded-For`), ALB with Auto Scaling, security group chain, troubleshooting 502, 503 and 504
+- **Focus:** Why load balancers, ALB vs NLB, listeners and rules, target groups and health checks, TLS termination and ACM, Route 53 hosted zone and alias record, client IP (`X-Forwarded-For`), ALB with Auto Scaling, security group chain, troubleshooting 502, 503 and 504
 - **Builds on:** Session 08 (user data, security groups), Session 10 (AMI, launch template, Auto Scaling Group)
 - **Story position:** Zoom level 2, the rented campus. Campus ke main gate par ek marshal khada hota hai, jo guests ko sirf unhi buildings ki taraf bhejta hai jo "we are open" kehti hain.
 - **Story words used:** marshal (load balancer), guest (end user), sealed envelope (TLS), building (EC2 instance), door guard (security group), tower (Availability Zone), wedding season (scaling)
@@ -113,37 +113,43 @@ Recap: ALB aur NLB, listener aur rules. Ab andar ke hisse: target group, health 
 
 # 📺 EPISODE 3: "Kya Aap Khule Ho?"
 
-### [00:00 – 01:15] Scene 1: Marshal ko Kaise Pata Building Khuli Hai?
+### [00:00 – 01:00] Scene 1: Marshal ko Kaise Pata Building Khuli Hai?
 **[VISUAL: The marshal sends a small runner to each building with a card: "Are you open?". Two buildings answer "yes" with a stamp; one stays silent and is greyed out on the marshal's board.]**
 
 **(Voiceover):**
 Marshal har building ke paas ek chhota messenger bhejta rehta hai: "kya aap khule ho?" Jo jawab nahi deti, use list se hata deta hai. Jab wo wapas theek ho jaye, use phir list mein jod leta hai. Ye sab target group aur health check se hota hai.
 
-### [01:15 – 04:45] Scene 2: Target Group aur Health Check
+### [01:00 – 03:50] Scene 2: Target Group aur Health Check
 **[VISUAL: A target group card. Targets: instances, IP addresses, or a Lambda. Port 80. Health check: path `/health`, interval, timeout, healthy and unhealthy thresholds, success code 200. A traffic-light timeline showing a target going from healthy to unhealthy after consecutive failures.]**
 
 **(Voiceover):**
 Target group buildings ka wo set hai jise marshal guests bhejta hai. Targets buildings, IP address, ya Lambda ho sakte hain. Health check mein aap path dete ho, jaise `/health`, interval, aur kitni baar lagataar fail ya pass hone par building unhealthy ya healthy maani jaye. Console mein iske default dikhte hain, unhe dekh kar hi tay karo. Achha health endpoint sirf "200 OK" nahi deta. Wo ye bhi dekhta hai ki building ke zaroori hisse, jaise database ka connection, kaam kar rahe hain. Par ise bhaari mat banao: agar har health check ek lamba kaam kare, to khud health check load ban jaata hai. Aur ek aur baat: agar saari buildings ek saath unhealthy dikhein, to marshal sabko dobara guests bhejne lagta hai, kyunki sab band hone se behtar hai ki kuch to kaam kare.
 
-### [04:45 – 08:05] Scene 3: Sealed Envelope: TLS aur Certificate
+### [03:50 – 06:30] Scene 3: Sealed Envelope: TLS aur Certificate
 **[VISUAL: A browser with a padlock sends a sealed envelope to the marshal's gate. The marshal holds a certificate from ACM and opens the envelope at the gate. Inside the campus the letter travels in a plain envelope to the buildings. A listener card: port 80 → redirect to 443.]**
 
 **(Voiceover):**
 HTTPS ke liye certificate chahiye. Guest aur marshal ke beech baat sealed envelope mein hoti hai: ye TLS hai. AWS Certificate Manager, ACM, mein aap certificate le sakte ho, aur ALB ke 443 wale listener par laga sakte ho. Isse TLS termination kehte hain: envelope marshal ke gate par khulta hai, aur peeche buildings ko ya to seedha HTTP ya naye setup mein phir HTTPS mein bheja jaata hai. Port 80 par ek listener rakho jo guest ko 443 par redirect kare, taaki koi bina envelope ke na jaaye. Certificate ek domain ke naam par hota hai, aur ACM ye pakka karne ke liye DNS validation maangta hai, yaani aapko dikhana padta hai ki wo domain aapka hai. Isliye is hisse ko tabhi chalao jab aapke paas apna domain ho.
 
-### [08:05 – 10:40] Scene 4: Health Check Fail Hone par Kya Hota Hai
+### [06:30 – 10:40] Scene 4: Naam se Pata: Route 53
+**[VISUAL: A browser address bar with `www.atithi.example`. A directory page (Route 53): a hosted zone with four name servers, and a records list: `www` alias A record pointing to the ALB's DNS name, and a record at the top name `atithi.example`. A red cross on "CNAME at the zone apex". The registrar page with the four name servers pasted in.]**
+
+**(Voiceover):**
+Ab tak guest ko ALB ka lamba sa DNS naam dena padta tha. Asli guest ko `www.atithi.example` chahiye. Naam se address ka kaam directory, yaani DNS, karti hai, aur AWS ki directory Route 53 hai. Domain registrar se milta hai. Route 53 mein ek hosted zone banate ho, yaani us domain ke records ka register. Zone aapko chaar name servers deta hai, aur registrar ko batana padta hai ki ab ye chaar is domain ki directory hain. Phir marshal ke liye ek alias record: type A, target aapka ALB. Alias isliye ki ALB ke IP badalte rehte hain, aur Route 53 unhe khud follow karta hai. CNAME bhi ek naam ko doosre naam se jod sakta hai, par zone ke sabse upar wale naam, yaani `atithi.example`, par CNAME ban hi nahi sakta, aur Route 53 AWS ke resources ki alias queries ka charge nahi leta. Isliye ALB, CloudFront aur S3 website ke liye alias. Route 53 mein routing policy bhi hoti hai: simple, weighted, latency, failover, aur health check bhi. Lab, agar apna domain hai: `www` ke liye A alias banao, target mein ALB chuno, aur `dig www.atithi.example` ya `nslookup` se jawab dekho. Domain nahi hai to ALB ka DNS naam kaafi hai.
+
+### [10:40 – 12:40] Scene 5: Health Check Fail Hone par Kya Hota Hai
 **[VISUAL: A target in the target group's Targets tab with a status and a reason column: `Target.FailedHealthChecks`, `Target.Timeout`, `Request timed out`. A short decision board: "timeout → security group or port", "wrong code → app or path", "connection refused → service not listening".]**
 
 **(Voiceover):**
 Health check fail ho to console mein target ke saamne ek wajah likhi hoti hai. Usse seedha sahi jagah jao. Timeout aaye, to marshal tak building pahunchi hi nahi: security group ne marshal ko roka, ya port galat hai. Galat status code aaye, jaise 404 jab 200 chahiye tha, to ya to path galat hai ya app ne jawab galat diya. Connection refused aaye, to building mil gayi par us port par koi service sun hi nahi rahi. Ye wahi layer-by-layer soch hai jo Session 5 aur Session 8 mein thi: kaun si parat tak pahunche aur kahan ruke.
 
-### [10:40 – 13:30] Scene 5: Lab: Marshal Khada Karo
+### [12:40 – 14:55] Scene 6: Lab: Marshal Khada Karo
 **[VISUAL: Console: create target group `web-tg` (HTTP 80, health path `/`), register the two buildings. Create an internet-facing ALB in two towers with a security group that allows 80 from anywhere. Listener 80 forwards to `web-tg`. The ALB's DNS name opens in the browser; refreshing alternates the two hostnames. Then `sudo systemctl stop nginx` on one building; its target turns unhealthy.]**
 
 **(Voiceover):**
 Lab. Pehle target group `web-tg`: protocol HTTP, port 80, health check path `/`, aur Episode 1 ki do buildings register karo. Phir ek Application Load Balancer banao: internet-facing, do alag towers ke subnets, aur uska apna naya security group jisme 80 duniya ke liye khula ho. Listener 80 ko `web-tg` par forward karo. Provisioning ke baad ALB ka DNS naam browser mein kholo, aur baar baar refresh karo: building ka naam badalta dikhega. Ab ek building par `sudo systemctl stop nginx` chalao. Kuch der mein uska target unhealthy dikhega, aur saare guests sirf doosri building ko jaayenge. Phir nginx wapas chalu karo aur dekho ki target phir healthy ho jaata hai.
 
-### [13:30 – 14:15] Scene 6: Recap aur Bridge
+### [14:55 – 15:30] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "target group · health check path · reasons column · ACM certificate · redirect 80 → 443".]**
 
 **(Voiceover):**
@@ -209,6 +215,7 @@ Recap: ek highly available web architecture: marshal, Auto Scaling, door guards 
 | Target group | Buildings, IP ya Lambda; health check path, interval, thresholds |
 | Health fail wajah | Timeout (SG ya port), galat code (app ya path), refused (service nahi sun rahi) |
 | TLS | ACM certificate ALB par; 80 se 443 par redirect; DNS validation ke liye domain |
+| Route 53 | Hosted zone = domain ka register; ALB ke liye alias A record; CNAME zone ke top naam par nahi; alias queries free; registrar mein 4 name servers jodo |
 | Guest ka address | `X-Forwarded-For` header |
 | SG zanjeer | Marshal: 80/443 sabko. Buildings: 80 sirf marshal ke SG se |
 | ASG + ALB | Target group se attach, health check type ELB, grace period |

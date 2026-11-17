@@ -4,7 +4,7 @@
 
 ## 🎯 Production Metadata
 - **Script ID:** `DEVOPS-S20`
-- **Focus:** GitHub Actions (workflow, events, jobs, steps, hosted and self-hosted runners), matrix, cache, concurrency, artifacts, `needs` and `if`, secrets, token permissions, environments with approval, script injection, OIDC to AWS, a leaked-secret response, DevSecOps layers (secrets scan, SAST, dependency scan, image scan, IaC scan), pre-commit as the first gate, gates and triage
+- **Focus:** GitHub Actions (workflow, events, jobs, steps, hosted and self-hosted runners, a GitLab CI comparison), matrix, cache, concurrency, artifacts, `needs` and `if`, secrets, token permissions, environments with approval, script injection, OIDC to AWS, a leaked-secret response, DevSecOps layers (secrets scan, SAST, dependency scan, image scan, IaC scan), pre-commit as the first gate, gates and triage
 - **Builds on:** Session 07 (pytest), Session 09 (roles, trust policy, STS, leak response), Session 16 and 16B (hooks, branch protection, pull requests), Session 17 to 19 (Jenkins: conveyor, key cabinet, workbench)
 - **Story position:** Zoom level 3, head office. Conveyor ab vault ke andar hi bani hai, bina alag foreman ke. Aur inspection conveyor ka hissa ban jaati hai: ek blueprint inspector aur ek X-ray finished truck designs ke liye, taaki kharab design depot tak pahunche hi nahi.
 - **Story words used:** vault (GitHub), conveyor (workflow), station (job and step), workbench (runner), key cabinet (secrets), duty badge (role), blueprint inspector (SAST, SonarQube), X-ray (Trivy), truck design (image), depot (registry), master par taala (branch protection), foreman (Jenkins), staff (admin), guest (end user)
@@ -20,19 +20,19 @@
 
 # 📺 EPISODE 1: Vault ke Andar ki Conveyor
 
-### [00:00 – 02:00] Scene 1: Foreman ke Bina Conveyor
+### [00:00 – 01:40] Scene 1: Foreman ke Bina Conveyor
 **[VISUAL: A vault (GitHub repo) with a file `.github/workflows/ci.yml`. A push lights a green check on the commit page. No foreman's office, no server anywhere in the picture.]**
 
 **(Voiceover):**
 Jenkins mein humne ek foreman hire kiya, uska daftar chalaya, uske plugins, backup aur workbenches sambhaale. GitHub Actions mein conveyor seedha vault ke andar hi hai. Ek YAML file `.github/workflows/` folder mein, aur GitHub aapke liye workbenches chalata hai. Foreman ka daftar aapko nahi sambhalna padta. Chhote aur medium projects ke liye ye bahut sahulat wala hai. Aur ek baar concept samajh gaye, to har CI tool aasaan lagta hai, kyunki Session 17 ke stations aur Jenkinsfile ka dhancha yahin dobara dikhega, bas alag shabdon mein.
 
-### [02:00 – 04:30] Scene 2: Workflow ke Hisse
+### [01:40 – 03:45] Scene 2: Workflow ke Hisse
 **[VISUAL: A YAML file with colour-coded sections: `name`, `on` (events), `jobs` → `test` → `runs-on`, `steps`. A diagram: event → workflow → jobs (side by side) → steps (in order). A table comparing Jenkins words to Actions words: Jenkinsfile → workflow, stage → job, step → step, agent → runner.]**
 
 **(Voiceover):**
 Workflow ek YAML file hai. `on` batata hai kaun si ghatna conveyor chalayegi: `push`, `pull_request`, `workflow_dispatch` jo button se chalta hai, ya `schedule` jo cron ki tarah chalta hai, aur UTC mein. `jobs` mein kaam hote hain, aur ye default mein ek saath chalte hain. Har job ke paas `runs-on` hota hai, yaani kaun si workbench, jaise `ubuntu-latest`, ek bilkul saaf machine jo job ke baad gayab ho jaati hai. Job ke andar `steps` ek ke baad ek: ya `run` se shell command, ya `uses` se koi taiyaar action, jaise `actions/checkout`. Jenkins se tulna: Jenkinsfile ki jagah workflow, stage ki jagah job, aur agent ki jagah runner.
 
-### [04:30 – 06:55] Scene 3: Pehla Workflow
+### [03:45 – 05:45] Scene 3: Pehla Workflow
 **[VISUAL: A `ci.yml` for the Flask service: checkout, setup-python, install, pytest. The Actions tab shows a green run with per-step logs and timings.]**
 
 **(Voiceover):**
@@ -52,25 +52,31 @@ jobs:
 ```
 Push karte hi Actions tab mein run dikhta hai, har step ke log ke saath. Test fail ho to pull request par laal cross aata hai, aur wahi Session 19 jaisa required check ban sakta hai. Ek aur cheez: step ka exit code non-zero ho to job fail. Ye wahi Session 6 ka sabak hai, jo har CI tool ke neeche chalta hai.
 
-### [06:55 – 09:20] Scene 4: Workbench: Hosted aur Self-hosted
+### [05:45 – 07:50] Scene 4: Workbench: Hosted aur Self-hosted
 **[VISUAL: Two runner types. Left: GitHub-hosted, a fresh virtual machine per job with a small meter of minutes. Right: self-hosted, your own building in a private wing, with a connection arrow going out to GitHub. A warning on the right: "never on a public repo".]**
 
 **(Voiceover):**
 Workbench do tarah ki hoti hain. GitHub-hosted: har job ke liye ek naya saaf machine, jise GitHub chalata hai, aur uske minutes ka hisaab plan ke saath badalta hai, isliye live billing page dekho. Self-hosted: aapki apni building, jaise Session 19 ki private wing wali workbench, jo GitHub se bahar ki taraf jud jaati hai. Ye tab kaam aati hai jab job ko aapke private network tak pahunchna ho, ya khaas hardware chahiye. Par ek chetavni: self-hosted runner ko public repo par kabhi mat chalao. Koi bhi pull request ka code us workbench par chal sakta hai, aur wahan aapke network ki chaabiyan hain.
 
-### [09:20 – 12:25] Scene 5: Action ko Pin Karo
+### [07:50 – 11:35] Scene 5: Doosra Vault: GitLab CI
+**[VISUAL: Two vaults side by side. Left: GitHub with `.github/workflows/ci.yml`. Right: GitLab with `.gitlab-ci.yml` in the repo root. A translation table: workflow → pipeline, job → job, steps → `script`, `on:` → `rules:`, `runs-on` → runner and `tags`, artifacts and cache, Pages → a job named `pages` with a `public` folder. A short `.gitlab-ci.yml` with `stages`, `image`, `script`.]**
+
+**(Voiceover):**
+Har team GitHub par nahi hoti. GitLab ek aur vault hai jisme conveyor pehle se andar hai, aur uski file ka naam `.gitlab-ci.yml` hai, repo ki jad mein. Vichar wahi, alfaaz alag. Pehle `stages` ki list: `build`, `test`, `deploy`. Ek stage ke jobs saath chalte hain, aur stage ek ke baad ek. Har job mein `image`, yaani kis truck ke andar chalega, aur `script`, yaani commands ki list. GitHub ke `on:` ki jagah `rules:` tay karta hai ki job kab banega, jaise sirf default branch par. `needs` se job stage ka intezaar kiye bina shuru ho sakta hai. Artifacts aur cache ke wahi do idea. Workbench ko GitLab mein runner kehte hain, aur `tags` se tay hota hai ki kaunsa runner kaam uthaye. Wahi dhyaan: apna runner public repo par mat lagao. Ek bonus: `pages` naam ki job `public` folder ko GitLab Pages par website bana deti hai. Aap kisi bhi vault par ho, pin karna, secrets ko masked variables mein rakhna, aur chhoti conveyor, ye sab sikha hua kaam aata hai. Lab: apni `ci.yml` ko kaagaz par `.gitlab-ci.yml` mein likho, aur dekho kaunsa hissa seedha mil jaata hai.
+
+### [11:35 – 14:10] Scene 6: Action ko Pin Karo
 **[VISUAL: Three ways to reference an action. `actions/checkout@v7` (a moving tag), `some-org/tool@main` (a branch, red), `some-org/tool@3f2a...` (a full commit SHA, green). A Dependabot pull request that updates the SHA with a comment of the version.]**
 
 **(Voiceover):**
 `uses:` mein aap kisi aur ka code apni conveyor mein bula rahe ho. Isliye usse bharose se bulao. Branch ka naam, jaise `@main`, kabhi nahi: wo kal kuch bhi ho sakta hai. Tag, jaise `@v7`, theek hai bharose ke publishers ke liye. Version number badalte rehte hain: jo hum likhte hain wo nawambar 2026 ke hain, aur actions ka releases page dekh kar apna version chuno. Sabse surakshit: poora commit SHA, jaise `@3f2a...`, jo badal nahi sakta. Tab updates ko haath se mat dhoondho: Dependabot actions ke updates ke pull request khud bana deta hai, jisme SHA aur version dono likhe hote hain. Session 16B ka chief architect un pull requests ko review karke merge karta hai. Aur ek aur niyam: third-party action jo aapke secrets dekhti ho, use pehle padh lo.
 
-### [12:25 – 15:00] Scene 6: Lab: Apni Conveyor Banao
+### [14:10 – 16:20] Scene 7: Lab: Apni Conveyor Banao
 **[VISUAL: A small Flask repo with `app.py`, `test_app.py` and `requirements.txt`. Add the workflow file, push, green check. Break a test, push, red check on the pull request. Branch protection requires the check.]**
 
 **(Voiceover):**
 Lab. Ek chhota repo banao jisme `app.py` mein ek function ho, jaise `nights(check_in, check_out)`, aur `test_app.py` mein `pytest` ke do tests. `.github/workflows/ci.yml` mein upar wala workflow rakho, aur push karo. Actions tab mein run kholo aur har step ka log dekho. Ab ek test jaan boojh kar tod do, ek branch par, aur pull request kholo. Check laal hoga. Phir branch protection mein ye check required karo, jaise Session 19 mein Jenkins ka check tha, aur dekho ki merge ka button grey ho jaata hai. Test theek karo aur check hara. Ab aapki conveyor vault ke andar hi rehti hai, aur uske badlaav bhi pull request se hote hain.
 
-### [15:00 – 15:30] Scene 7: Recap aur Bridge
+### [16:20 – 16:50] Scene 8: Recap aur Bridge
 **[VISUAL: A card: "workflow = Jenkinsfile · on = event · jobs side by side · steps in order · hosted runner vs self-hosted · pin actions · required check".]**
 
 **(Voiceover):**
@@ -226,6 +232,7 @@ Recap: Git, Jenkins, GitHub Actions aur security gates. Conveyor ab inspection k
 | Events | `push`, `pull_request`, `workflow_dispatch`, `schedule` (UTC) |
 | Runner | Hosted (naya machine, minutes ka hisaab) vs self-hosted (public repo par nahi) |
 | Pin | Branch nahi; tag theek; SHA sabse surakshit; Dependabot se update |
+| GitLab CI | `.gitlab-ci.yml`; `stages`, `image`, `script`, `rules`, `needs`; runner + `tags`; `pages` job + `public` |
 | Cache | Key = lockfile ka hash; cache sirf speed ke liye |
 | Matrix | Combinations; `fail-fast`; `include` / `exclude`; minutes guna ho jaate hain |
 | Concurrency | `cancel-in-progress: true` purani run ko roke |
