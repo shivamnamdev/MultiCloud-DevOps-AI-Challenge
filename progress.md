@@ -176,3 +176,9 @@
 - `SESSION-04_linux-users-permissions-ssh`: two short additions. Episode 3 scene 3: the same SSH public key is pasted into GitHub, private key never leaves. Episode 2 lab: the `100644` vs `100755` mode line in `git diff`, and a `deploy.sh` committed without the execute bit gives `Permission denied` for the next person.
 - `GIT_NOTES_INTEGRATION_MAP.md` status updated: all section 6 touch points (04, 17, 19, 20, 22, 31) are applied.
 - Remaining: fact-check pass of lab commands; open author decisions; Docker notes; Session 00 row in the syllabus table.
+
+### [2026-11-17] — Fact-check pass (first round)
+- Added `FACT_CHECK_REPORT.md`. All 50 code blocks parse. Ran locally: S07, S14, S15, S31 (2 tests), S32 (review-helper, train, model server), S33 (detector, restart helper): all behave as scripted.
+- Verified in docs: `use_lockfile` (Terraform 1.10), `manage_master_user_password`, Azure CLI flags, `kind load`, Jenkins Java 17 or 21, ServiceMonitor `release` label, MCP SDK import and Python 3.10+.
+- Script edits: S28 (1.10 and deprecation wording), S33 (Python 3.10+, `mcp` vs `fastmcp`), S17 (Jenkins Java note).
+- Not done: MCP server never ran (no Python 3.10 here); Docker, Kubernetes, Terraform, Ansible, Jenkins and cloud commands need a real environment; list of unverified facts is in section 5 of the report.
