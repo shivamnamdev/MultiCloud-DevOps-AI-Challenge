@@ -177,6 +177,7 @@ Linux users versus IAM users now makes sense: one is staff *inside a building*, 
 | HPA, self-healing | More trucks when queues grow; a broken truck is replaced automatically |
 | Rescheduling | A truck is never driven from one building to another; a fresh one is sent from the depot |
 | Helm | A franchise kit: one command installs a full set of trucks from a settings form |
+| GitOps, Argo CD | A **site supervisor** who lives at the campus and, every few minutes, compares the standing orders kept in the **config vault** (a Git repo of manifests) with what is really there, and fixes any difference. Rolling back means putting back an older page in the vault |
 | GKE / EKS / AKS | The landlord runs the operations command for you |
 | Prometheus, exporters | Inspector who reads every meter every few seconds; the meters themselves |
 | Alertmanager | Alarm desk that calls the right duty manager |

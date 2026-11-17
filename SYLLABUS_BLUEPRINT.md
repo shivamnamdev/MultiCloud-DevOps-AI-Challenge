@@ -43,6 +43,7 @@
 | 29 | ansible | S40, S41, S42 | Inventory, playbooks, roles, Jinja2, Terraform vs Ansible |
 | 30 | azure-and-azure-devops | S47, S54 | Azure vs AWS/GCP mapping, Boards/Repos/Pipelines/Artifacts |
 | 31 | capstone-cicd-pipeline | S50 | Spring Boot app: webhook -> Jenkins -> Docker -> deploy |
+| 31B | gitops-with-argo-cd (optional) | source-course Argo CD project (Batch-45 list) | GitOps: Git as the single source of truth, Argo CD pulling into Kubernetes, auto-sync, self-heal, prune, rollback by Git revert, dev and prod overlays, AppProject limits, ApplicationSet. Builds on 25, 26 and 31 |
 | 32 | ai-apps-and-mlops-on-cloud | S55, S56 | LLM API in an app, FastAPI model serving on EKS |
 | 33 | aiops-and-mcp-servers | S57, S59 | Anomaly detection/self-healing, building an MCP server |
 
@@ -60,5 +61,6 @@
 - Name for the new course (the repo/course folder is still `MultiCloud-DevOps-AI-Challenge`).
 
 ## Change log
+- **2026-11-17:** Author decisions applied. New optional Session 31B (GitOps with Argo CD, tested on kind with Argo CD 3.6). One extra scene each: Route 53 in Session 11, GitLab CI in Session 20, Docker Gordon in Session 21. Sessions 01, 02, 03 and 16 to be brought to the 2,500 to 3,000 word standard. Session 00 row added. Git course: all 15 sessions approved, pilot is Session 02.
 - **2026-11-16:** Linux grew by one script. Session 05B (storage, web server, security layers) was added for the part of the author's Linux notes that had no home (disks and swap, LVM, Apache, SELinux, NAT), and sessions 04 and 05 were rewritten to carry the rest. Sessions 03 to 05 stay on Ubuntu and name the Red Hat family equivalent once; 05B runs on a Rocky or AlmaLinux VM. No session was renumbered: 33 numbered sessions, 35 session scripts plus Session 00. Detail: `NOTES_INTEGRATION_MAP_LINUX_K8S.md`.
 - **2026-11-14:** Git split into 16 (Part A) and 16B (Part B), four episodes each, so the author's 16-day Git cohort is covered in brief without renumbering sessions 17-33. The course is still 33 numbered sessions; it now has 34 session scripts plus Session 00. Detail: `GIT_NOTES_INTEGRATION_MAP.md`. The deep version of this material is a separate dedicated course in `courses/Github-Live-Cohort-Transcript`.

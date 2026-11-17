@@ -69,6 +69,7 @@ This file applies the hotel-chain story in [ANALOGY_STORY.md](ANALOGY_STORY.md) 
 |---|---|---|---|---|
 | 30 | azure-and-azure-devops | 2 and 3 | You sign with a second landlord. A translation table shows the same buildings under new names, and this landlord offers a ready-made head office: planning wall, vault, conveyor and parts store. | second landlord (Azure), planning wall (Boards) |
 | 31 | capstone-cicd-pipeline | All | The first grand opening. A revision enters the vault, the bell rings, the foreman fabricates and inspects, a truck design is made, a truck rolls out and parks, and a guest is served. | none: every word is reused |
+| 31B | gitops-with-argo-cd (optional) | 3 | Instead of a foreman pushing every new truck out, a site supervisor lives at the campus, compares the standing orders kept in the config vault with what is really there every few minutes, and fixes any difference. Rolling back means putting back an older page in the vault. | site supervisor (Argo CD), config vault (the config repo) |
 | 32 | ai-apps-and-mlops-on-cloud | 3 | One truck phones an outside expert for each guest question. Another runs a trained brain under the AWS-run operations command, and that brain is shipped and re-trained like any truck. | outside expert (LLM API), trained brain (model) |
 | 33 | aiops-and-mcp-servers | 3 | The assistant takes night duty in the control room, and you fit a service hatch so it can use the hotel's tools safely. | night duty (AIOps), service hatch (MCP server) |
 
