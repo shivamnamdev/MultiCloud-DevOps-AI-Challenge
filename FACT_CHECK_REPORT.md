@@ -75,16 +75,24 @@ Not tested: GKE (Session 24 episode 4), Grafana panels in a browser, blackbox pr
 ## 5. Still to verify before recording (not checked)
 Action versions (`checkout`, `setup-python`, `docker/*`, `setup-terraform`, Trivy); AWS provider major version; Trivy and gitleaks flags; ECR lifecycle fields; AWS free tier and NAT, ALB, RDS pricing; GKE Autopilot behaviour and flags; AKS pricing tiers and `az aks create` flags and VM sizes; Azure free account terms; Azure DevOps free parallel jobs; GHCR token scopes; Docker Engine install steps; Ansible install and collection names (`community.general.ufw`, `amazon.aws.aws_ec2`); `sshagent` plugin; Grafana admin password step for the chart version; LLM provider SDK, model names and pricing; Lambda limits; S3 limits and storage-class minimum durations.
 
-## 3e. GKE lab (Session 24), docs check only, NOT run live (no gcloud/GCP access yet)
+## 3e. GKE lab (Session 24), run LIVE on a real GCP project (us-central1, Autopilot)
 
-Verified against Google's docs (now at docs.cloud.google.com):
-- `gcloud container clusters create-auto NAME --region=REGION` is valid; `--location` is also accepted (region or zone). Only NAME is required.
-- `get-credentials` docs now use `--location`; `gke-gcloud-auth-plugin` is mandatory for kubectl (`gcloud components install gke-gcloud-auth-plugin`).
-- Autopilot: pods get default 0.5 vCPU / 2 GiB if unset; requests below minimum (250m CPU) are raised; billing is by Pod requests; nodes autoscale by pod count (can be zero).
-- HPA: `kubectl autoscale ... --cpu-percent=50` needs a CPU request. Docs do not say metrics-server is preinstalled; the script's "already there on GKE" claim needs a live check.
-- Artifact Registry: `gcloud artifacts repositories create REPO --repository-format=docker --location=REGION`, `gcloud auth configure-docker REGION-docker.pkg.dev`, tag `REGION-docker.pkg.dev/PROJECT/REPO/IMAGE:TAG`.
-- Service type LoadBalancer creates a regional external passthrough Network Load Balancer; "wait a minute" for EXTERNAL-IP. Docs say nothing about leftovers after cluster delete.
+Run on 2026-11-17 with gcloud 593.0.0 in an isolated scratchpad config. Everything created was deleted afterwards (cluster, load balancer, Artifact Registry repo, local images); a post-delete check found no forwarding rules, target pools, health checks, firewall rules, disks or instances left.
 
-Script fixes applied: plugin install, `--location` note, API enable command, repo create + configure-docker, Autopilot defaults/minimums, LB leftover check.
+Measured:
+- `create-auto` took about 7.5 min; cluster starts with 0 nodes; it also writes the kubeconfig entry itself. Delete took about 5.5 min and removed the load balancer too.
+- First deploy: pods Pending about 2.5 min (Autopilot opens a node), EXTERNAL-IP about 3.5 min after apply.
+- **ImagePullBackOff with `403 Forbidden`** on the first pull: in a new project the default Compute service account has no roles. Fix that worked: `gcloud artifacts repositories add-iam-policy-binding REPO --location=REGION --member=serviceAccount:PROJECT_NUMBER-compute@developer.gserviceaccount.com --role=roles/artifactregistry.reader`.
+- Apple Silicon: image built with `--platform linux/amd64` ran fine (already covered in S22).
+- Rolling update to a new tag, `rollout history` and `rollout undo` worked. `rollout undo` prints a warning about `last-applied-configuration`.
+- Autopilot kept requests 250m/512Mi as written and added 1Gi ephemeral storage. A pod with no requests got a default CPU (loadgen).
+- **metrics-server is preinstalled** on Autopilot (confirmed; `kubectl top pods` worked).
+- **`kubectl autoscale --cpu-percent` is deprecated**: new form is `--cpu=50%`. Both forms worked on kubectl 1.36; script now uses the new one.
+- HPA with load: CPU 121% then 2 to 5 replicas in about 40 s. After the load stopped: 5 to 3 after about 9 min, 3 to 2 after about 13 min (slow, staggered).
+- Docs gap closed: deleting the cluster removed the Service's load balancer, forwarding rule and firewall rules without deleting the Service first.
+- Side effect to remember: `gcloud auth configure-docker` edits `~/.docker/config.json` (adds a credHelpers line). Removed after the test.
+- A tooling slip of mine: `kubectl run --requests` does not exist (cost a 6-minute idle wait, no effect on conclusions).
 
-Still needs a live run: whether the default node service account can pull from Artifact Registry with no extra role, metrics-server on Autopilot, real EXTERNAL-IP timing, HPA scale-up under load, and what is left after `clusters delete`.
+Script fixes applied (S24): auth plugin, `--location`, API enable, repo create + configure-docker, node service account role command and the 403 symptom, Autopilot defaults, `--cpu=50%`, timings, LB cleanup check. Trimmed to about 2,999 spoken words.
+
+Not tested: Standard mode, Artifact Registry in another region, the console views, real billing amounts (not visible to me).

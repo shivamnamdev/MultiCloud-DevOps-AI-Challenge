@@ -197,3 +197,7 @@
 - Ran the Session 23 to 26 labs on a local `kind` cluster (tools downloaded to the scratchpad; cluster deleted afterwards): self-healing, sick pods, rollout and undo, namespaces, ConfigMap, Secret, quota, PV and PVC, NetworkPolicy, Ingress, Helm, and the monitoring stack with a firing alert.
 - Fixes: S25 Ingress lab no longer uses `ingress-nginx` (retired March 2026; tested with Traefik via Helm) and warns that the path prefix is not stripped; S25 quota lab stalls on `rollout restart` unless scaled back first; S25 NetworkPolicy note (kind enforces); S24 `get endpoints` deprecation; S26 Grafana password command, ServiceMonitor delay, job label from the Service name, gunicorn worker caveat, noisy default alerts on kind.
 - Not done: GKE lab, Grafana in a browser, blackbox and burn-rate rules, Alertmanager receivers, HPA with metrics-server, minikube. Terraform, Ansible, Jenkins and cloud commands are still unchecked.
+
+## 2026-11-17 Fact-check round 5: GKE lab run live
+- Ran S24 lab on a real GCP project (Autopilot, us-central1) with an isolated gcloud; all resources deleted and verified gone.
+- Found and fixed: node service account 403 on Artifact Registry, `--cpu-percent` deprecated, plugin/API/registry steps, timings. S24 trimmed to about 2,999 words. See FACT_CHECK_REPORT.md 3e.
