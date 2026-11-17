@@ -198,3 +198,20 @@ S33 `query_prometheus` (new code added to the script, 3 tools now in the hatch):
 - S33 trimmed back to about 2,996 spoken words after the additions.
 
 Cleanup: Prometheus container and network, the actionlint, gitleaks, trivy and Prometheus images and the trivy cache volume were removed.
+
+## 3j. Session 31B (GitOps with Argo CD), tested on a local kind cluster (2026-11-17)
+
+Argo CD 3.6.1 (latest release that day), Kubernetes 1.37 on kind, `argocd` CLI 3.6.1 in `--core` mode. Git source: a small in-cluster Git server (nginx + git-http-backend), because I did not push to any GitHub account. Everything deleted afterwards (cluster and its Git server).
+
+Verified live:
+- Plain `kubectl apply` of `install.yaml` fails with `applicationsets.argoproj.io ... Too long: may not be more than 262144 bytes`; `kubectl apply --server-side --force-conflicts` works. All pods Running in about a minute.
+- First login: initial admin password from the `argocd-initial-admin-secret` (16 characters) or `argocd admin initial-password -n argocd`; UI through `kubectl port-forward svc/argocd-server 8443:443` answered HTTP 200; CLI `argocd login ... --insecure` worked.
+- A new Application starts `OutOfSync` and `Missing`; after `argocd app sync` it is `Synced` and goes `Progressing` then `Healthy`; `CreateNamespace=true` created the wing; Argo CD adds the annotation `argocd.argoproj.io/tracking-id`.
+- Auto-sync pickup time with default polling: 282 seconds for one commit (about 4m42s), so "about three minutes, sometimes longer" is the honest wording. Hard refresh and webhooks are the fast paths.
+- With `automated` but `selfHeal` off: a hand `kubectl scale` to 5 stays, Application stays `OutOfSync`. With `selfHeal: true`: reverted in 2 to 3 seconds; a hand-deleted Service came back in 4 seconds.
+- Bad release (image tag that does not exist): Application is `Synced` (matches Git) but `Progressing`; the new pod is `ImagePullBackOff` and the old pods keep serving. `git revert` plus push healed it in 1 second after the refresh. `argocd app rollback rooms 1` with auto-sync on fails with "rollback cannot be initiated when auto-sync is enabled". `argocd app history` lists the syncs.
+- Kustomize `base` plus `overlays/dev` (1 replica, wing atithi-dev) and `overlays/prod` (3 replicas, wing atithi-prod) as two Applications: both Synced and Healthy. `argocd app diff rooms-prod --refresh` showed exactly the one-line image change.
+- `AppProject` with allowed repo and `atithi-*` wings: an Application aimed at `kube-system` gets `InvalidSpecError: application destination server ... and namespace 'kube-system' do not match any of the allowed destinations in project 'atithi'`.
+- `ApplicationSet` with a list generator created `rooms-dev` and `rooms-prod`, both Synced and Healthy.
+
+Not tested: `prune` removing a manifest deleted from Git (my test command was blocked by a safety check on a `git rm` and I did not work around it; this is documented Argo CD behaviour and stated in the script as such), webhooks, SSO with Dex, private-repo deploy keys, the secrets tools (Sealed Secrets, External Secrets, SOPS), a GitHub-hosted config repo, a cloud cluster, Argo Rollouts and Flux. The Jenkins "update config vault" stage was described, not run; only the `sed`, commit and push lines were run.

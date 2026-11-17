@@ -216,3 +216,8 @@
 
 ## 2026-11-17 Fact-check pass complete
 - All runnable labs verified for real (rounds 1 to 9: MCP, Docker, Kubernetes on kind, GKE live, Terraform, Ansible, Jenkins, Actions and DevSecOps tools, query_prometheus); remaining facts checked against docs (section 5 of FACT_CHECK_REPORT.md). Script fixes were applied after every round; all sessions touched stay within 2,500 to 3,000 spoken words.
+
+## 2026-11-17 Open decisions applied (part 1)
+- Author chose: Argo CD as optional Session 31B; Route 53, GitLab CI and Docker Gordon as one scene each; bring Sessions 01, 02, 03 and 16 to the standard; approve all 15 Git-course sessions and write the pilot.
+- Done so far: Session 00 row added; Sessions 25 and 12 trimmed to the 3,000-word limit; Route 53 scene (S11, now 2,578 words), GitLab CI scene (S20, 2,767) and Gordon scene (S21, 2,778); new `SESSION-31B_gitops-with-argo-cd` (about 2,537 words, 4 episodes) tested on kind with Argo CD 3.6.1; blueprint, story map and vocabulary updated first. See FACT_CHECK_REPORT.md 3j.
+- Still to do: expand Sessions 01, 02, 03 and 16; Git-course pilot (Session 02 your-first-repository); the sheet's 36 practicals check needs the list from the author (the sheet is view-only).
