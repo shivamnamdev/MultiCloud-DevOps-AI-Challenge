@@ -192,3 +192,8 @@
 - Built and ran the Session 22 and 31 Dockerfiles, the read-only run flags, the Session 21 Postgres lab, and the Session 31 `deploy.sh` (local registry, three releases, rollback) on the local Docker engine.
 - Fixes: S21 lab now waits with `pg_isready` (it failed with `Connection refused`); S22 size chart corrected (multi-stage saves nothing for pure Python on `slim`; measured sizes) and a gunicorn read-only warning added; S31 notes the post-rollback health check.
 - Not done: Trivy scan, buildx multi-platform, `ufw` bypass, GHCR push and the Actions workflow, `kind` and Kubernetes labs.
+
+### [2026-11-17] — Fact-check pass, round 4: Kubernetes (Sessions 23 to 26)
+- Ran the Session 23 to 26 labs on a local `kind` cluster (tools downloaded to the scratchpad; cluster deleted afterwards): self-healing, sick pods, rollout and undo, namespaces, ConfigMap, Secret, quota, PV and PVC, NetworkPolicy, Ingress, Helm, and the monitoring stack with a firing alert.
+- Fixes: S25 Ingress lab no longer uses `ingress-nginx` (retired March 2026; tested with Traefik via Helm) and warns that the path prefix is not stripped; S25 quota lab stalls on `rollout restart` unless scaled back first; S25 NetworkPolicy note (kind enforces); S24 `get endpoints` deprecation; S26 Grafana password command, ServiceMonitor delay, job label from the Service name, gunicorn worker caveat, noisy default alerts on kind.
+- Not done: GKE lab, Grafana in a browser, blackbox and burn-rate rules, Alertmanager receivers, HPA with metrics-server, minikube. Terraform, Ansible, Jenkins and cloud commands are still unchecked.

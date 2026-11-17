@@ -20,7 +20,7 @@ Environment: macOS, Python 3.9, no Docker daemon run, no cloud accounts, no Terr
 | 33 | restart helper with a stub `kubectl` | dry run, allow-list refusal, approve, rate limit and kill switch all work |
 
 ## 3. Could not run here
-- Docker builds (22, 31, 32), Kubernetes (23 to 26, 32), Terraform (27, 28), Ansible (29), Jenkins (17 to 19, 31), AWS, Azure and GCP commands.
+- Docker builds for Session 32, Terraform (27, 28), Ansible (29), Jenkins (17 to 19, 31), AWS, Azure and GCP commands.
 - Terraform HCL (S27) only checked for syntax by eye; run `terraform fmt` and `validate` once.
 
 ## 3b. MCP server (Session 33), run in a `python:3.12-slim` Docker container (round 2)
@@ -46,6 +46,22 @@ Not tested: the `query_prometheus` tool (described in the script, not coded) and
 | 31 | `deploy.sh` in an Alpine container with the Docker socket, a local registry, three releases | first deploy, upgrade, broken release: rollback to the previous label, log lines correct, exit 1 |
 Size findings (Session 22 chart): `python:3.12` 1.62 GB, `python:3.12-slim` 205 MB, our Flask image 214 to 228 MB; multi-stage gave no saving for a pure Python service (the old chart claimed about 60 MB). Script corrected: multi-stage helps when the build needs a compiler, and for Java or Go.
 Not tested: Docker `ufw` bypass claim, `docker buildx` multi-platform, Trivy scan, GHCR push, the Session 22 Actions workflow, `kind`.
+
+## 3d. Kubernetes checks (round 4), on a local `kind` cluster (kind 0.34, Kubernetes 1.37, kubectl 1.36, Helm 4.3)
+Tools were downloaded into the scratchpad only; the cluster used its own kubeconfig and was deleted afterwards.
+| Session | What ran | Result |
+|---|---|---|
+| 23 | kube-system pod list; Deployment, delete pod, scale, relabel a pod; `kind load docker-image` plus `imagePullPolicy: IfNotPresent` plus port-forward | all as scripted (self-healing, orphan pod after relabel, `/health` ok) |
+| 24 | five sick pods | `ImagePullBackOff`, `Error` (exit 1), `OOMKilled` (137), `Pending` (`Insufficient cpu`), `Error` (127): matches the script |
+| 24 | bad image rollout, `rollout undo`, good tag, history | as scripted; `rollout status` hangs on the bad image; undo prints a `last-applied` annotation warning |
+| 24 | two namespaces, cross-namespace DNS, empty endpoints after a bad selector | as scripted; `get endpoints` prints a deprecation warning (EndpointSlice), note added |
+| 25 | ConfigMap, Secret, LimitRange, ResourceQuota (`pods: 4`), probe, scale to 5 | 5th pod refused (`FailedCreate`); **`rollout restart` then stalls** because the quota has no room for the surge pod. Script now says to scale back first |
+| 25 | PV, PVC (`Retain`), data survives a new pod, PV goes `Released`; default StorageClass `standard` creates a PV dynamically | as scripted |
+| 25 | default-deny NetworkPolicy and allow rules | enforced on this kind version (reachable, blocked, reachable). Script no longer says local clusters may not enforce |
+| 25 | `kubectl auth can-i` as a ServiceAccount; `helm create` plus `helm template` | work |
+| 25 | Ingress with three paths via Traefik (Helm) | routes work. **Findings:** `ingress-nginx` was retired in March 2026, so the lab no longer uses it; the path prefix is passed unchanged (`/api/rooms/health` hits the service as that path, 404 for `rooms-service`). Both added to the script |
+| 26 | `kube-prometheus-stack` install, ServiceMonitor with and without `release: monitoring`, PrometheusRule, firing alert in Alertmanager | label gotcha confirmed (no target without it; target appears 1 to 2 minutes after adding it). Alert `RoomsHighErrorRate` fired and reached Alertmanager. Grafana password command verified. Notes added: job label comes from the Service name, gunicorn multi-worker counters, noisy control-plane alerts on kind |
+Not tested: GKE (Session 24 episode 4), Grafana panels in a browser, blackbox probe, burn-rate rules, Alertmanager routing to a receiver, `helm` v3 (the course may be run with either; install and `template` worked on v4), `metrics-server` and HPA, minikube.
 
 ## 4. Verified against docs (web)
 - Terraform `use_lockfile`: added in 1.10; DynamoDB arguments deprecated but still working. Script text updated (S28).
