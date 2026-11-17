@@ -120,3 +120,27 @@ S28 results:
 Open items from this round:
 - GitHub Action pins in the course are behind: checkout v4 (latest v7.0.1), setup-terraform v3 (v4.0.1), aws-actions/configure-aws-credentials v4 (v6.3.0), trivy-action latest v0.36.0 (2026-11-17 check). Also docker/* and setup-python pins. To be handled in the GHCR/Actions round, with a "check the latest version" line.
 - Not tested: real AWS behaviour (public IP, real ALB/RDS/NAT creation and cost), OIDC role trust for the pipeline, cost tools, policy as code, workspaces, `force-unlock`, the real EKS/GKE/AKS creation.
+
+## 3g. Ansible (Session 29), run for real in Docker (control + web1, web2, db1)
+
+Setup: Ubuntu 24.04 containers with systemd and sshd as targets; control node on Python 3.12 with `pipx install ansible-core` (core 2.21.6), `ansible-lint` 26.11.0. Everything local, no cloud.
+
+Matched the script:
+- `ansible.cfg` with `inventory = inventory.ini`; inventory with groups; `ansible-inventory --graph`; `ansible all -m ping` gives pong; `uptime` ad-hoc; `setup` with `filter=ansible_distribution*`.
+- `apt` ad-hoc: first `changed: true`, second `changed: false`. `service` module: second run `changed: false`; with nginx stopped by hand on web2, only web2 changes. `shell` module shows `CHANGED` every time.
+- `site.yml` (the S29 playbook): `--check --diff` shows the diff; on a fresh building the first run is `changed=4` (install, page, ufw rule, handler reload), the second `changed=0`; each page says which building served it.
+- `--limit web1`, `--tags page`, wrong package name error ("No package matching 'nginxx' is available"), `--syntax-check`.
+- Role from `ansible-galaxy init`, `template` with `app_port`/`server_name`, `-e app_port=8080` re-renders and reloads (health `ok` on 8080).
+- Vault: `encrypt_string` + password file works; `no_log: true` hides the value, a task without it prints it; running without the vault password fails clearly.
+- `ProxyJump` via `ansible_ssh_common_args` reaches a host through another (db1 via web1).
+
+Script fixes (all applied):
+1. `ansible-core` has no `community.general`, so the `ufw` task fails with "couldn't resolve module/action". Added `ansible-galaxy collection install community.general` to the lab.
+2. With `host_key_checking = True`, the first Ansible connection fails with "Host key verification failed" unless the student has already run `ssh` once; added the reason to the lab step.
+3. Drift on web2: editing only the page gives `changed=2` (page + reload handler), not `changed=1`. Fixed in the visual and voiceover.
+4. Role lab: `curl /health` on port 80 returns 404, because Ubuntu's default nginx site wins. Verified: the Host header works, and removing `/etc/nginx/sites-enabled/default` makes plain curl return `ok`. Lab now says to add that task. (`default_server` in the template conflicts with the default site and breaks nginx reload.)
+5. `ansible-lint` on the `ansible-galaxy init` skeleton fails on meta/tests files, and wants role variables prefixed (`var-naming[no-role-prefix]`, e.g. `nginx_app_port`). Added a note. Session length now about 2,991 words.
+
+Container artefacts, not script bugs: my minimal image had no `ufw` (real Ubuntu cloud images have it); `ufw` could be installed and the rule added, but the firewall was left inactive.
+
+Not tested: the `amazon.aws.aws_ec2` dynamic inventory (needs real or emulated EC2 instances), `ssh-copy-id` with a password prompt, Molecule, Galaxy roles from third parties, Ansible in a Jenkins/Actions pipeline, Windows targets.
