@@ -112,37 +112,37 @@ Recap: ReplicaSet, Deployment, rollout aur rollback. Ab sawaal: pods badalte reh
 
 # 📺 EPISODE 3: Wings aur Extension Number
 
-### [00:00 – 02:15] Scene 1: Ek Cluster, Teen Team
+### [00:00 – 02:10] Scene 1: Ek Cluster, Teen Team
 **[VISUAL: A cluster drawn as a building with wings labelled dev, staging, prod. Each wing has its own pods and services. The dev wing and the staging wing both contain a service named `backend`, with no clash.]**
 
 **(Voiceover):**
 Ek cluster mein dev, staging aur production, aur kai teams. Agar sab ek hi jagah ho, to naam takrate hain: dono jagah `frontend` aur `backend` hain. Ek ki galti doosre ko tod sakti hai. Namespace cluster ke andar ek alag wing hai: alag naam, alag access, alag resource ki hadd. Dev wing mein `backend` aur staging wing mein bhi `backend` aaram se chalte hain, aur ek doosre se takrate nahi. Notes ki ek achhi misaal: cluster ek library hai aur namespace alag alag bookshelf. Do shelf par ek hi naam ki kitaab ho sakti hai, aur koi confusion nahi.
 
-### [02:15 – 04:55] Scene 2: Namespace ke Commands
+### [02:10 – 04:45] Scene 2: Namespace ke Commands
 **[VISUAL: A Namespace YAML with `name: dev-wing` and `labels: environment: development`, with a red cross over `dev_wing`. Commands: `kubectl create namespace dev`, `kubectl get ns`, `kubectl describe ns dev`, `kubectl get pods -n dev`, `kubectl run redis --image=redis -n dev`, `kubectl create -f x.yaml -n dev`, `kubectl delete ns dev`.]**
 
 **(Voiceover):**
 Namespace ka YAML: `apiVersion: v1`, `kind: Namespace`, aur `metadata` mein `name` aur `labels`. Naam mein underscore nahi chalta, isliye `dev-wing`, `dev_wing` nahi. Bina YAML ke `kubectl create namespace dev`. `kubectl get namespaces` list, `describe` detail. Kisi wing mein kaam ke liye `-n dev`: `kubectl get pods -n dev`, `kubectl run redis --image=redis -n dev`, `kubectl create -f x.yaml -n dev`. Ek pod kis wing mein hai ye bhoolo to `kubectl get pods -A | grep blue`. Flag `-A` ya `--all-namespaces` hai. Ek khatra: `kubectl delete namespace dev` us wing ki saari cheezein hata deta hai. Aur kuch cheezein wing ki hoti hi nahi, jaise nodes aur persistent volumes. Cluster ke default wing: `default`, `kube-system`, `kube-public` aur `kube-node-lease`.
 
-### [04:55 – 07:15] Scene 3: Wing Badalna aur Wing Paar Baat
+### [04:45 – 07:00] Scene 3: Wing Badalna aur Wing Paar Baat
 **[VISUAL: `kubectl config set-context --current --namespace=dev` followed by `kubectl get pods` with no flag. A call from a pod in the staging wing to `backend.dev.svc.cluster.local`. A diagram: `<service>.<namespace>.svc.cluster.local`.]**
 
 **(Voiceover):**
 Har command ke saath `-n dev` thakane wala hai. Isliye `kubectl config set-context --current --namespace=dev`: ab bina `-n` ke har command dev wing mein chalega. Isme bhi khatra: bhool jao ki ab dev mein ho. Isliye prompt mein namespace dikhao. Kya ek wing ka pod doosre wing ke pod se baat kar sakta hai? Haan, service ke poore naam se: `<service>.<namespace>.svc.cluster.local`, jaise `backend.dev.svc.cluster.local`. Apni wing mein sirf `backend` kaafi hai. Ye dhyaan rakho ki wing akeli suraksha ki deewar nahi: bina network policy ke koi bhi pod kisi bhi wing se baat kar sakta hai. Network policy hum Session 25 mein dekhenge.
 
-### [07:15 – 09:40] Scene 4: Service: Permanent Extension Number
+### [07:00 – 09:20] Scene 4: Service: Permanent Extension Number
 **[VISUAL: A client calls pod IP `10.1.0.5`. The pod is replaced and the new IP is `10.1.0.9`; the client breaks. A Service with a stable IP and DNS name `rooms` fixes it. The Service finds its pods by a label selector and lists their IPs as endpoints.]**
 
 **(Voiceover):**
 Pod ka IP naya pod banne par badal jaata hai. Jo client usi IP se baat karta rahe, wo tootega. Service ek permanent extension number hai: ek tay IP aur DNS naam, jo peeche ke pods ko label ke zariye dhoondhti hai aur traffic baantti hai. Cluster mein ek Service pehle se hoti hai: `kubernetes`. `kubectl get services` mein uska TYPE dikhta hai, aur `kubectl describe service kubernetes` mein TargetPort, Labels aur Endpoints. Endpoints wahi pods hain jinhe Service abhi traffic bhej rahi hai. Aur sirf Ready pods hi endpoints mein aate hain. Ye Session 11 ke marshal ka health check hai, bas cluster ke andar.
 
-### [09:40 – 12:25] Scene 5: Service ke Types aur YAML
+### [09:20 – 12:00] Scene 5: Service ke Types aur YAML
 **[VISUAL: Three layered boxes. ClusterIP (inside only), NodePort (a port 30000 to 32767 opened on every node), LoadBalancer (a cloud load balancer with an external IP). A Service YAML with `selector`, `port`, `targetPort`. A command `kubectl expose pod redis --port=6379 --name redis-service`.]**
 
 **(Voiceover):**
 Service ke teen mukhya types. ClusterIP default hai: sirf cluster ke andar. NodePort har building par 30000 se 32767 ke beech ek port kholta hai. LoadBalancer cloud ka load balancer banata hai aur ek external IP deta hai, jo Session 11 ke marshal ka Kubernetes roop hai. YAML mein `selector` batata hai kaun se pods, `port` Service ka darwaza, aur `targetPort` truck ka port. Ek chhoti command: `kubectl expose pod redis --port=6379 --name redis-service`, jo ek chalte pod ke liye ek Service bana deti hai, jo cluster ke andar redis ko 6379 par dikhaye. Aur ek hi pehchaan wali galti: Service ka selector aur pod ka label mile nahi, to `kubectl get endpoints rooms` khaali aayega. Wahi Session 23 ka label jaal.
 
-### [12:25 – 15:00] Scene 6: Lab: Dev Wing, Staging Wing, Ek Naam
+### [12:00 – 15:00] Scene 6: Lab: Dev Wing, Staging Wing, Ek Naam
 **[VISUAL: Namespaces `dev` and `staging`. A Deployment `rooms` and Service `rooms` in each. `kubectl get pods -A | grep rooms`. A test pod in staging calls `rooms.dev.svc.cluster.local`. Break the selector and watch `kubectl get endpoints` go empty.]**
 
 **(Voiceover):**
@@ -158,49 +158,49 @@ Recap: wings aur extension numbers. Ab sawaal: guests ki line badhe to kya karei
 
 # 📺 EPISODE 4: Zyada Trucks ya Bada Truck
 
-### [00:00 – 01:25] Scene 1: Shaadi ka Season
+### [00:00 – 01:15] Scene 1: Shaadi ka Season
 **[VISUAL: A graph of guests per minute. A wedding-season spike. Left: more identical trucks open and share the line. Right: one truck replaced by a bigger truck with more power and more stock. Labels: "out and in" for the left, "up and down" for the right.]**
 
 **(Voiceover):**
 Shaadi ke season mein Atithi ki booking site par line badh jaati hai. Do hi raaste hain. Ya zyada trucks kholo, ya ek truck ko bada karo. Pehle ko horizontal scaling kehte hain, out aur in. Doosre ko vertical scaling, up aur down. Session 10 mein humne Auto Scaling mein buildings badhai thi, aur Session 13 mein records office ka size badhaya tha. Wahi do vichar yahan trucks par hain.
 
-### [01:25 – 03:25] Scene 2: Kab Kaun Sa
+### [01:15 – 03:00] Scene 2: Kab Kaun Sa
 **[VISUAL: A two-column table. Horizontal: more pods, spread the load, fits web servers and microservices. Vertical: more CPU and memory for the existing pod, fits a database or heavy processing. Below, a mapping: web → horizontal, rooms database → vertical, reads → replicas (Session 13).]**
 
 **(Voiceover):**
 Horizontal tab, jab app ke independent copies ban sakte hon: web server, microservices. Badi sale mein zyada log aate hain, aur har pod thoda traffic sambhalta hai. Vertical tab, jab ek hi strong instance chahiye. Maan lo Atithi ke database mein peak ghanton mein complex queries chalte hain. Copies banane se data sync ki dikkat aati hai, to ek ko zyada CPU aur memory do. Session 13 ka wahi sabak: instance class badalna vertical hai, aur read replica horizontal. Seedha rule: web ko phailao, database ko mazboot karo, aur database ko phailana ho to uska poora alag tareeka hai.
 
-### [03:25 – 05:50] Scene 3: HPA: Apne Aap Zyada Trucks
+### [03:00 – 05:00] Scene 3: HPA: Apne Aap Zyada Trucks
 **[VISUAL: A Horizontal Pod Autoscaler watching average CPU against a target of 50 percent of the requested CPU. Pods grow from 2 to 5 under load, then shrink slowly after a cool-down. Requirements listed: metrics server and a CPU request on the container.]**
 
 **(Voiceover):**
 HPA, Horizontal Pod Autoscaler, ek supervisor hai jo pods ka average CPU dekhta hai aur replicas badhata ya ghatata hai. `kubectl autoscale deployment rooms --cpu-percent=50 --min=2 --max=5`. Iske do shart hain. Metrics ka source chahiye, yaani metrics-server, jo GKE mein pehle se hota hai aur local cluster mein alag lagana padta hai. Aur pod ke container mein CPU `request` likha hona chahiye, kyunki percent usi request ka hota hai. Request na ho to HPA ko kuch pata hi nahi chalta. Scale up tez hota hai, par scale down jaan boojh kar dheere: kuch minute ka intezaar, taaki line ek second ke liye ghat jaaye to trucks hat na jaayein. Ye Session 10 ke scale-in jaisa hai.
 
-### [05:50 – 08:25] Scene 4: Vertical, aur Buildings ka Sawaal
+### [05:00 – 07:10] Scene 4: Vertical, aur Buildings ka Sawaal
 **[VISUAL: A vertical autoscaler suggesting new requests for a pod. A warning on changing resources of a running pod. A picture: more trucks need more room, so an extra building opens (cluster autoscaler or Autopilot).]**
 
 **(Voiceover):**
 Vertical ke liye Kubernetes mein Vertical Pod Autoscaler jaisa ek alag tool hai, jo dekhta hai ki pod ko asli mein kitna chahiye, aur request badalne ki salah deta hai. Aam taur par resources badalne ke liye pod ko dobara banana padta hai, isliye ye chalte guests ke beech dhyaan se lagta hai. Naye kuch versions mein pod ko bina dobara banaye resize karne ki suvidha aa rahi hai, to apne version ke docs dekho. Aur ek aur baat: HPA ne pods badha diye, par buildings mein jagah nahi hui to naye pods Pending ho jaayenge. Wahan building ka scaling aata hai: node autoscaler. Autopilot jaise mode mein landlord ye khud karta hai. Ek HPA aur VPA ek hi resource par saath mat chalao.
 
-### [08:25 – 11:00] Scene 5: GKE: Landlord Command Chalaye
+### [07:10 – 10:55] Scene 5: GKE: Landlord Command Chalaye
 **[VISUAL: Two modes. Autopilot: Google manages nodes and billing is by pod resource requests. Standard: you manage node pools with a machine type and autoscaling. A command `gcloud container clusters get-credentials`. Beside it, equivalents: EKS (AWS) and AKS (Azure).]**
 
 **(Voiceover):**
-Control plane khud chalana mehnat ka kaam hai: upgrades, etcd ka backup, security patches. GKE, Google Kubernetes Engine, ye kaam landlord ko de deta hai. Iske do mode. Autopilot mein buildings bhi Google sambhalta hai, aur bill pods ke maange hue resources par aata hai, isliye resource requests likhna zaroori ho jaata hai. Standard mein aap node pools khud chalate ho: machine type, autoscaling, aur zyada control. Regional cluster zyada available hota hai. AWS par wahi kaam EKS karta hai, aur Azure par AKS. Hum GKE seekh rahe hain, par concepts teeno mein ek hain, aur Terraform ke sessions mein hum cluster ko bhi code se banayenge. Cluster se judne ke liye `gcloud container clusters get-credentials`, jo kubeconfig mein ek naya context jod deta hai.
+Control plane khud chalana mehnat ka kaam hai: upgrades, etcd ka backup, security patches. GKE, Google Kubernetes Engine, ye kaam landlord ko de deta hai. Iske do mode. Autopilot mein buildings bhi Google sambhalta hai, aur bill pods ke maange hue resources par aata hai, isliye resource requests likhna zaroori ho jaata hai. Request na likho to Autopilot khud default laga deta hai, aadha vCPU aur do GiB, aur bahut chhoti request ko minimum tak badha deta hai, jaise CPU ke liye 250 milli. Yaani aapke likhe se bill alag ho sakta hai. Standard mein aap node pools khud chalate ho: machine type, autoscaling, aur zyada control. Regional cluster zyada available hota hai. AWS par wahi kaam EKS karta hai, aur Azure par AKS. Hum GKE seekh rahe hain, par concepts teeno mein ek hain, aur Terraform ke sessions mein hum cluster ko bhi code se banayenge. Cluster se judne ke liye `gcloud container clusters get-credentials`, jo kubeconfig mein ek naya context jod deta hai. Ek zaroori cheez: `kubectl` ko GKE se baat karne ke liye `gke-gcloud-auth-plugin` chahiye, jo `gcloud components install gke-gcloud-auth-plugin` se lagta hai. Plugin na ho to kubectl login ki shikayat karta hai. Aur Google ke docs ab `--region` ki jagah `--location` likhte hain, jo region aur zone dono leta hai.
 
-### [11:00 – 13:10] Scene 6: Depot se Image aur Bahar ka Darwaza
+### [10:55 – 13:10] Scene 6: Depot se Image aur Bahar ka Darwaza
 **[VISUAL: A design `rooms-service:1.0.0` pushed from the laptop to Artifact Registry. A cluster pulls it using the nodes' identity. A Service with `type: LoadBalancer` gets an external IP. A bill icon next to the load balancer.]**
 
 **(Voiceover):**
-Apni design ko Artifact Registry mein push karo: `docker tag`, `docker push REGION-docker.pkg.dev/PROJECT/REPO/rooms-service:1.0.0`, jaise Session 22 mein depot mein rakha tha. Cluster ko use khichne ki ijaazat chahiye: nodes ki service account ko registry padhne ka role. Agar pods ImagePullBackOff mein aaye, to pehle yahi dekho, aur Session 9 ke role aur policy ka wahi sabak: kaun kya kar sakta hai. Service ko `type: LoadBalancer` karo, to GKE ek Google load balancer banata hai aur kuch der mein EXTERNAL-IP dikhata hai. Ye load balancer aur uski IP bhi paisa leti hain, jaise Session 11 ka ALB. Isliye lab ke baad cluster ke saath ye sab hatana hai.
+Pehle depot banao: `gcloud artifacts repositories create REPO --repository-format=docker --location=REGION`, aur `gcloud auth configure-docker REGION-docker.pkg.dev` se Docker ko login sikhao. Phir apni design ko Artifact Registry mein push karo: `docker tag`, `docker push REGION-docker.pkg.dev/PROJECT/REPO/rooms-service:1.0.0`, jaise Session 22 mein depot mein rakha tha. Cluster ko use khichne ki ijaazat chahiye: nodes ki service account ko registry padhne ka role. Agar pods ImagePullBackOff mein aaye, to pehle yahi dekho, aur Session 9 ke role aur policy ka wahi sabak: kaun kya kar sakta hai. Service ko `type: LoadBalancer` karo, to GKE ek Google load balancer banata hai aur kuch der mein EXTERNAL-IP dikhata hai. Ye load balancer aur uski IP bhi paisa leti hain, jaise Session 11 ka ALB. Isliye lab ke baad cluster ke saath ye sab hatana hai.
 
-### [13:10 – 15:40] Scene 7: Lab: GKE par Poora Deploy
+### [13:10 – 15:55] Scene 7: Lab: GKE par Poora Deploy
 **[VISUAL: `gcloud container clusters create-auto atithi-lab --region=REGION`, `gcloud container clusters get-credentials atithi-lab --region=REGION`, `kubectl config current-context`, `kubectl apply -f deploy.yaml -f svc.yaml`, `kubectl get svc -w`, a browser at the external IP, `kubectl autoscale`, `gcloud container clusters delete`.]**
 
 **(Voiceover):**
-Lab. GCP project mein billing aur Kubernetes Engine API on karo. `gcloud container clusters create-auto atithi-lab --region=YOUR_REGION`, jisme kuch minute lagte hain. Phir `gcloud container clusters get-credentials atithi-lab --region=YOUR_REGION` aur `kubectl config current-context` se pakka karo ki aap sahi cluster par ho. Deployment aur `type: LoadBalancer` Service ke YAML `kubectl apply -f` karo, jisme container ki CPU request zaroor ho. `kubectl get svc -w` mein EXTERNAL-IP aaye to browser mein kholo. Ek rolling update karo aur rollback bhi. Phir `kubectl autoscale deployment rooms --cpu-percent=50 --min=2 --max=5`, ek chhote load generator se line badhao, aur `kubectl get hpa -w` dekho. Sabse aakhir mein `gcloud container clusters delete atithi-lab --region=YOUR_REGION`, aur console mein dekho ki koi load balancer, disk ya image nahi bacha.
+Lab. GCP project mein billing on karo, aur `gcloud services enable container.googleapis.com artifactregistry.googleapis.com` se Kubernetes Engine aur Artifact Registry API chalu karo. Fir `gke-gcloud-auth-plugin` lagao. `gcloud container clusters create-auto atithi-lab --region=YOUR_REGION`, jisme kuch minute lagte hain. Phir `gcloud container clusters get-credentials atithi-lab --region=YOUR_REGION` aur `kubectl config current-context` se pakka karo ki aap sahi cluster par ho. Deployment aur `type: LoadBalancer` Service ke YAML `kubectl apply -f` karo, jisme container ki CPU request zaroor ho. `kubectl get svc -w` mein EXTERNAL-IP aaye to browser mein kholo. Ek rolling update karo aur rollback bhi. Phir `kubectl autoscale deployment rooms --cpu-percent=50 --min=2 --max=5`, ek chhote load generator se line badhao, aur `kubectl get hpa -w` dekho. Sabse aakhir mein `gcloud container clusters delete atithi-lab --region=YOUR_REGION`, aur console mein dekho ki koi load balancer, forwarding rule, disk ya image nahi bacha. Google ke docs cluster delete ke baad load balancer ki safai ka wada nahi karte, isliye ye check khud karna hai.
 
-### [15:40 – 16:45] Scene 8: Recap aur Bridge
+### [15:55 – 16:50] Scene 8: Recap aur Bridge
 **[VISUAL: A card: "horizontal for web, vertical for the database · HPA needs metrics + CPU request · scale-down is slow on purpose · pods need buildings · managed control plane: GKE, EKS, AKS · registry access · load balancer costs money · delete after the lab". Then a truck park fades in.]**
 
 **(Voiceover):**

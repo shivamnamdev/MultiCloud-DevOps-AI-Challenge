@@ -74,3 +74,17 @@ Not tested: GKE (Session 24 episode 4), Grafana panels in a browser, blackbox pr
 
 ## 5. Still to verify before recording (not checked)
 Action versions (`checkout`, `setup-python`, `docker/*`, `setup-terraform`, Trivy); AWS provider major version; Trivy and gitleaks flags; ECR lifecycle fields; AWS free tier and NAT, ALB, RDS pricing; GKE Autopilot behaviour and flags; AKS pricing tiers and `az aks create` flags and VM sizes; Azure free account terms; Azure DevOps free parallel jobs; GHCR token scopes; Docker Engine install steps; Ansible install and collection names (`community.general.ufw`, `amazon.aws.aws_ec2`); `sshagent` plugin; Grafana admin password step for the chart version; LLM provider SDK, model names and pricing; Lambda limits; S3 limits and storage-class minimum durations.
+
+## 3e. GKE lab (Session 24), docs check only, NOT run live (no gcloud/GCP access yet)
+
+Verified against Google's docs (now at docs.cloud.google.com):
+- `gcloud container clusters create-auto NAME --region=REGION` is valid; `--location` is also accepted (region or zone). Only NAME is required.
+- `get-credentials` docs now use `--location`; `gke-gcloud-auth-plugin` is mandatory for kubectl (`gcloud components install gke-gcloud-auth-plugin`).
+- Autopilot: pods get default 0.5 vCPU / 2 GiB if unset; requests below minimum (250m CPU) are raised; billing is by Pod requests; nodes autoscale by pod count (can be zero).
+- HPA: `kubectl autoscale ... --cpu-percent=50` needs a CPU request. Docs do not say metrics-server is preinstalled; the script's "already there on GKE" claim needs a live check.
+- Artifact Registry: `gcloud artifacts repositories create REPO --repository-format=docker --location=REGION`, `gcloud auth configure-docker REGION-docker.pkg.dev`, tag `REGION-docker.pkg.dev/PROJECT/REPO/IMAGE:TAG`.
+- Service type LoadBalancer creates a regional external passthrough Network Load Balancer; "wait a minute" for EXTERNAL-IP. Docs say nothing about leftovers after cluster delete.
+
+Script fixes applied: plugin install, `--location` note, API enable command, repo create + configure-docker, Autopilot defaults/minimums, LB leftover check.
+
+Still needs a live run: whether the default node service account can pull from Artifact Registry with no extra role, metrics-server on Autopilot, real EXTERNAL-IP timing, HPA scale-up under load, and what is left after `clusters delete`.
