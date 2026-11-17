@@ -221,3 +221,9 @@
 - Author chose: Argo CD as optional Session 31B; Route 53, GitLab CI and Docker Gordon as one scene each; bring Sessions 01, 02, 03 and 16 to the standard; approve all 15 Git-course sessions and write the pilot.
 - Done so far: Session 00 row added; Sessions 25 and 12 trimmed to the 3,000-word limit; Route 53 scene (S11, now 2,578 words), GitLab CI scene (S20, 2,767) and Gordon scene (S21, 2,778); new `SESSION-31B_gitops-with-argo-cd` (about 2,537 words, 4 episodes) tested on kind with Argo CD 3.6.1; blueprint, story map and vocabulary updated first. See FACT_CHECK_REPORT.md 3j.
 - Still to do: expand Sessions 01, 02, 03 and 16; Git-course pilot (Session 02 your-first-repository); the sheet's 36 practicals check needs the list from the author (the sheet is view-only).
+
+## 2026-11-17 Open decisions applied (part 2): older sessions brought to the standard
+- Session 03 (about 2,516 spoken words, was 1,391): added command anatomy and help, practice-ground options, `ls -l` and links, the remaining directories, overwrite trap for `cp` and `mv`, wildcards and editors, redirects; commands run on Ubuntu 24.04.
+- Session 02 (about 2,502, was 1,426): added what never to paste, chat/editor/terminal assistants, a worked RTCF example, grounding with docs and answers that vary, test-first small tasks, a verification toolbox (shellcheck SC2115 confirmed; `${DIR:?}` vs `set -u`), prompt injection, a team page.
+- Session 01 (about 2,507, was 2,159): container preview, regions and AZs preview, the five DORA metrics (2025 report), handout.
+- Session 16 (about 2,518, was 2,156): setup (name, email, default branch, editor), `.gitignore` and its tracked-file trap, `git rm`, `git mv`, `git blame`; all run on Git 2.43. Handouts added to 01, 02, 03 and 16.
