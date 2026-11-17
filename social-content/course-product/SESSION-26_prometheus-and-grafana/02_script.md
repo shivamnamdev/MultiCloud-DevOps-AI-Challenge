@@ -161,31 +161,31 @@ Recap: franchise kit aur screens. Ab ek kadwi sachchai: deewar ki screens ko raa
 
 # 📺 EPISODE 4: Alarm Desk
 
-### [00:00 – 01:30] Scene 1: Do Sau Alert, Ek Raat
+### [00:00 – 01:50] Scene 1: Do Sau Alert, Ek Raat
 **[VISUAL: A phone buzzing two hundred times in a night with low-value alerts. An engineer silences the phone. A real critical alert arrives, unseen.]**
 
 **(Voiceover):**
-Do sau alerts roz raat, aur ek mahine baad aap phone silent kar dete ho. Phir ek asli alert aata hai aur koi nahi dekhta. Ye alert fatigue hai, aur monitoring ka sabse bada dushman. Session 15 ke alarm ka wahi niyam yahan bhi: jis alert par koi kuch nahi karta, wo shor hai. Achha alert kam hota hai, zaroori hota hai, aur usme likha hota hai ki kya karna hai.
+Do sau alerts roz raat, aur ek mahine baad aap phone silent kar dete ho. Duty manager ka phone raat bhar bajta hai, to wo uthana band kar deta hai. Phir ek asli alert aata hai aur koi nahi dekhta. Ye alert fatigue hai, aur monitoring ka sabse bada dushman. Session 15 ke alarm ka wahi niyam yahan bhi: jis alert par koi kuch nahi karta, wo shor hai. Achha alert kam hota hai, zaroori hota hai, aur uske saath runbook hota hai: phone ke bagal ki likhi procedure.
 
-### [01:30 – 03:45] Scene 2: Achhe Alert ke Niyam
+### [01:50 – 04:00] Scene 2: Achhe Alert ke Niyam
 **[VISUAL: A checklist. Symptom over cause. Actionable. Severity levels. A `for:` duration. A runbook link. Two examples: "page: guests see errors", "ticket: disk 80%".]**
 
 **(Voiceover):**
 Niyam. Symptom par alert do, kaaran par nahi. "Guests ko errors dikh rahe hain" ya "booking ka SLO jal raha hai" page-worthy hai. "CPU 80 percent" aksar nahi, kyunki ho sakta hai koi guest ko asar hi na ho. Har alert actionable ho: koi kuch kar sake. Severity tay karo: page jo raat ko jagaaye, aur ticket jo din mein dekha jaaye. `for:` duration lagao, taaki ek second ke spike par alert na aaye. Aur har alert ke saath ek runbook ka link, jisme likha ho pehle kya check karna hai. Is se naya duty manager bhi, jo us raat pehli baar aaya hai, kaam shuru kar sakta hai.
 
-### [03:45 – 06:10] Scene 3: Alert Rule aur Alertmanager
+### [04:00 – 06:20] Scene 3: Alert Rule aur Alertmanager
 **[VISUAL: A PrometheusRule YAML with `expr`, `for`, `labels: severity: page`, `annotations: summary, runbook_url`. A flow: Prometheus evaluates the rule → Pending → Firing → Alertmanager groups, deduplicates, routes to chat, email or an on-call tool. A silence and an inhibition rule are shown.]**
 
 **(Voiceover):**
 Prometheus rule mein ek expression hoti hai, jaise "5xx ratio 5 percent se upar", ek `for: 5m`, labels aur annotations. Condition sahi hote hi alert Pending hota hai, aur `for` ke baad Firing, aur wo Alertmanager ke paas jaata hai. Alarm desk teen kaam karta hai. Group: sau pods ke sau alerts ek message mein. Route: label ke hisaab se sahi jagah, jaise `severity: page` on-call tool ko, aur `ticket` chat channel ko. Inhibit: jab poori building gir gayi ho, to us par chalne wale pods ke alerts band. Aur silence: maintenance ke dauran ek tay samay ke liye band. Ek alert jo na kisi ko jagata hai na kuch kehta hai, use delete kar do.
 
-### [06:10 – 08:35] Scene 4: Dead Man's Switch aur SLO Burn
+### [06:20 – 08:40] Scene 4: Dead Man's Switch aur SLO Burn
 **[VISUAL: A "watchdog" alert that always fires. If the alarm desk stops receiving it, a separate service shouts. Next: an error-budget burn chart, a fast burn over one hour and a slow burn over six hours, each with its own severity.]**
 
 **(Voiceover):**
 Ek chhupa sawaal: agar alarm desk hi gir jaaye, to kaun batayega? Isliye ek watchdog alert hota hai jo hamesha fire karta hai, aur jab wo aana band ho jaaye to ek bahar ka service shor machata hai. Kit mein ye pehle se hota hai. Aur ek behtar tareeka SLO par alert: burn rate. Maan lo error budget tees din ka hai. Agar pichhle ek ghante mein budget bahut tez jal raha hai, to ye page hai. Agar dheere, par chhe ghante se lagataar, to ye ticket. Isse chhoti spike par raat ko nahi jaagna padta, par lambi dheemi dikkat bhi nahi chhootti. Ye Session 15 ke "kitni readings ke liye" wale alarm ka samajhdar roop hai.
 
-### [08:35 – 11:50] Scene 5: Lab: Alert Jalao
+### [08:40 – 11:50] Scene 5: Lab: Alert Jalao
 **[VISUAL: A PrometheusRule `RoomsHighErrorRate` with `for: 2m` and `severity: page`. `rooms-service` is switched to a build that returns 500. In Prometheus the alert moves Pending → Firing, and appears in the Alertmanager UI. A runbook page is linked in the annotation.]**
 
 **(Voiceover):**
@@ -198,13 +198,13 @@ annotations: { summary: "rooms errors above 5%", runbook_url: "RUNBOOK-LINK" }
 ```
 `rooms-service` ko jaan boojh kar tod do, jaise ek `/` route jo 500 de, aur `curl` ke loop se traffic do. Prometheus ke Alerts page par alert Pending se Firing hota dekho, aur Alertmanager UI mein bhi. Phir ek chhota runbook likho: pehla kya dekhna hai, kaise rollback karna hai, Session 24 ke `rollout undo` ke saath. Aakhir mein Alertmanager mein ek silence lagao aur dekho ki alert chup ho gaya.
 
-### [11:50 – 14:20] Scene 6: Raat ke Baad: Seekh, Dosh nahi
+### [11:50 – 14:15] Scene 6: Raat ke Baad: Seekh, Dosh nahi
 **[VISUAL: A timeline of an incident: alert fired, acknowledged, mitigated by rollback, resolved. A short review page with headings: what guests saw, what we did, why it happened, what we change. A banner: "blameless".]**
 
 **(Voiceover):**
 Alert ne jagaya, duty manager ne rollback kiya, aur site wapas. Kaam khatam? Nahi. Agle din ek chhoti review likho. Guests ne kya dekha, kab se kab tak. Humne kya kiya. Kyun hua. Aur hum kya badlenge: ek alert, ek test, ek runbook ka hissa. Review mein koi naam nahi liya jaata, kyunki sawal "kisne galti ki" nahi, "system ne ye galti hone kyun di" hai. Isse error budget bhi samajh aata hai, aur wahi budget agle release ka faisla bhi karta hai. Aur ek aadat: har incident ke baad ek alert ya dashboard mein ek sudhaar, taaki wahi raat dobara na aaye. Monitoring tab tak poori nahi hoti jab tak wo har raat ke baad thodi behtar na ho.
 
-### [14:20 – 15:35] Scene 7: Recap aur Bridge
+### [14:15 – 15:30] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "alert on symptoms · actionable · for: · severity routing · runbook link · watchdog · burn-rate alerts". Then a blank master plan on a drawing table appears over the campus map.]**
 
 **(Voiceover):**

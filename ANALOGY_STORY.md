@@ -216,6 +216,59 @@ How they sit together: Terraform builds the campus, Ansible sets up the building
 | GitHub Actions | A conveyor built into the vault itself |
 | DevSecOps (SonarQube, Trivy) | Inspection built into the conveyor: a blueprint inspector and an X-ray for finished truck designs |
 
+## Hotel services: what each truck carries
+
+The truck is the packaging. The **hotel service** is what is inside it. Every microservice is named after a real hotel service, so "service" in software and "service" in a hotel mean the same thing to a learner. Use these in sessions 21–26 and 31–33.
+
+**Naming rule:** say "the reservations truck", never "the reservations department". "Department" is already taken (Linux groups, systemd).
+
+| Service in the course | Hotel service it carries |
+|---|---|
+| `bookings-service` | Reservations desk |
+| `rooms-service` | Housekeeping and room status |
+| Orders service (food) | Restaurant and room service |
+| Payments service | Billing and cashier |
+| Background worker (emails, reports) | Laundry round and night audit |
+| Frontend / website | The lobby display and booking kiosk screen |
+
+**How services behave** (use one only where the session already teaches the technical idea):
+
+| Software idea | Real hotel moment |
+|---|---|
+| Queue (SQS, Kafka) | The kitchen order ticket on the kitchen rail: the guest orders, the kitchen cooks at its own pace, nothing is lost |
+| Calling a service by name | Housekeeping dials the reservations extension, not a person (Kubernetes Service) |
+| Idempotency, safe retry | Two clerks key in the same booking; the reservation number makes the second one change nothing |
+| Cache | The availability board at the front desk; if stale, you get overbooking |
+| Circuit breaker, timeout | Laundry is down, so the front desk stops promising same-day laundry instead of making every guest wait |
+| Request tracing | One request slip with one number passes through every service, so you can see where it stalled |
+| Batch job, `cron`, backup | Night audit: closes the day's books at a fixed hour |
+| Rate limit | A token system at a busy counter |
+
+**How services are run and changed**
+
+| Software idea | Real hotel moment |
+|---|---|
+| Rolling update | Renovating floor by floor while the hotel stays open |
+| Blue/green | A new wing opens, then guests are moved over at once |
+| Canary | A new menu offered to a few tables first |
+| Rollback | Back to the old menu or the old rooms |
+| Autoscaling, HPA | Extra banquet staff in wedding season |
+| Resource requests and limits | Rooms guaranteed to a group booking, and a hall's fire-code maximum |
+| OOMKilled | The fire marshal clears an overcrowded hall |
+| Readiness probe | Housekeeping marks a room "ready" before a guest is sent up |
+| Liveness probe | The duty manager's hourly walk-round: anything not responding is replaced |
+| Alert, on-call, runbook | The duty manager's phone, and the written procedure beside it |
+| Staging, tests | The test kitchen: the chef tastes before the menu goes live |
+| Job (Kubernetes) | One-time wedding set-up |
+| CronJob | The daily laundry round or night audit |
+| DaemonSet | One guard at every entrance of every building |
+| StatefulSet | Room 101 keeps its number and its guest history |
+| Taints, node affinity | The spa only on the ground floor; the VIP floor only for VIP guests |
+| Security scan | The fire and hygiene inspection |
+| Least privilege (IAM) | A guest key card opens only their own room and the gym |
+
+**Not used, on purpose:** "concierge" stays on Ingress, and "assistant" stays AI-only. A housekeeping trolley is not used for a container: the truck is already in every script.
+
 ## The thread you can repeat in every session: one guest's journey
 
 1. A guest looks up "Atithi Hotels" in the directory and gets the address (DNS).
@@ -244,5 +297,6 @@ No story term stands for two things: building = server, truck = container, bluep
 ## Settled choices
 
 - The company is Atithi Hotels.
-- A container is a **truck**. It is introduced as a food truck; other services are a laundry truck, a billing truck and so on.
+- A container is a **truck**. It is introduced as a food truck; each microservice is a truck carrying one real hotel service (reservations, housekeeping, restaurant, billing, laundry). See "Hotel services" above.
+- Added 2026-11-17: hotel services are named as trucks ("the billing truck"), never as "departments".
 - Related words: truck design (image), fit-out sheet (Dockerfile), depot (registry), serving window (port), parking bay (Pod), truck park (microservices).

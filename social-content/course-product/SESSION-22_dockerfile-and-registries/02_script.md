@@ -20,19 +20,19 @@
 
 # 📺 EPISODE 1: Fit-out Sheet
 
-### [00:00 – 02:15] Scene 1: Dusron ki Truck Nahi, Apni
+### [00:00 – 02:10] Scene 1: Dusron ki Truck Nahi, Apni
 **[VISUAL: A small Flask app folder on a desk, a speech bubble "how do I run this anywhere?". A fit-out sheet slides in, and a truck rolls out of it with the rooms-service painted on its side.]**
 
 **(Voiceover):**
 Pichhle session mein humne dusron ke truck designs chalaye: nginx, postgres. Ab Atithi ki apni rooms-service ko truck mein pack karna hai. Uske liye ek fit-out sheet chahiye, yaani Dockerfile: ek text file jisme likha hota hai ki design kaise banega, kis base se shuru, kya kya andar jaayega, aur truck chalu hote hi kya chalega. Ye wahi nuskha hai jo kisi bhi machine par, kisi bhi building ke courtyard mein, ek jaisi truck deta hai. Aur wo bhi blueprint ka hissa hai: vault mein, pull request ke saath.
 
-### [02:15 – 05:00] Scene 2: Zaroori Instructions
+### [02:10 – 04:55] Scene 2: Zaroori Instructions
 **[VISUAL: A Dockerfile with each instruction highlighted: FROM, WORKDIR, COPY, RUN, ENV, ARG, EXPOSE, USER, HEALTHCHECK, CMD, ENTRYPOINT. Side labels: "when building" for FROM, COPY, RUN, ARG; "when running" for CMD, ENTRYPOINT, ENV.]**
 
 **(Voiceover):**
 `FROM` batata hai kis base design se shuru karna hai, jaise `python:3.12-slim`. `WORKDIR` andar ka kaam ka folder. `COPY` building ki files design mein. `RUN` build ke waqt command chalata hai, jaise `pip install`. `ENV` environment variable jo truck mein bhi rehta hai, aur `ARG` sirf build ke waqt. `EXPOSE` sirf dastavez hai ki app kaun sa port sunti hai, wo port khud nahi kholta. `USER` batata hai kaun chalayega. `HEALTHCHECK` ek chhoti jaanch hai jo Docker baar baar chalata hai. `CMD` truck chalu hote hi default command. `ENTRYPOINT` ek tay command, jisme CMD uske arguments ban sakte hain. Dono ko hamesha exec form mein likho, `["python","app.py"]`, taaki signal sahi pahunche.
 
-### [05:00 – 07:30] Scene 3: Pehli Dockerfile
+### [04:55 – 07:25] Scene 3: Pehli Dockerfile
 **[VISUAL: The Dockerfile on screen and a build log. `docker build -t rooms:1.0 .` then `docker run -d -p 5000:5000 rooms:1.0`. A highlighted line: `app.run(host="0.0.0.0")`.]**
 
 **(Voiceover):**
@@ -48,19 +48,19 @@ CMD ["python", "app.py"]
 ```
 `docker build -t rooms:1.0 .` design banata hai, aur `docker run -d -p 5000:5000 rooms:1.0` truck chalata hai. Ek dhyaan ki baat: app ko `host="0.0.0.0"` par sunna hoga. Agar wo `127.0.0.1` par sunegi, to sirf truck ke andar se dikhegi, aur serving window kaam nahi karega. Ye Session 14 ke private aur public wing wali baat ka chhota roop hai: kisi cheez ko kahan sunna hai, wo uske address par nirbhar hai.
 
-### [07:30 – 09:55] Scene 4: CMD vs ENTRYPOINT aur Dev Server
+### [07:25 – 09:45] Scene 4: CMD vs ENTRYPOINT aur Dev Server
 **[VISUAL: Left: `CMD ["python","app.py"]` with the Flask development server warning. Right: `CMD ["gunicorn","-b","0.0.0.0:5000","-w","2","app:app"]`. A table: CMD is replaced by arguments to `docker run`; ENTRYPOINT stays and CMD becomes its arguments.]**
 
 **(Voiceover):**
 CMD aur ENTRYPOINT ka farq ek misaal se. `CMD ["python","app.py"]` default hai: `docker run rooms:1.0 sh` likhoge to ye replace ho jaayega. `ENTRYPOINT ["python"]` aur `CMD ["app.py"]` likhoge to `docker run rooms:1.0 other.py` sirf argument badlega. Ek aur zaroori sudhaar: `python app.py` Flask ka development server chalata hai, aur Flask khud likhta hai ki production ke liye nahi. Asli service ke liye gunicorn jaisa server: `CMD ["gunicorn","-b","0.0.0.0:5000","-w","2","app:app"]`, aur `requirements.txt` mein `gunicorn`. Wahi Session 5B ke Apache wali baat: web server ek alag, taiyaar cheez hai, jo guests ki bheed sambhalta hai, designer ka test server nahi.
 
-### [09:55 – 12:40] Scene 5: Health Check
+### [09:45 – 12:35] Scene 5: Health Check
 **[VISUAL: A Dockerfile line `HEALTHCHECK --interval=30s --timeout=3s CMD python -c "import urllib.request; urllib.request.urlopen('http://127.0.0.1:5000/health')" || exit 1`. `docker ps` shows `(healthy)` and later `(unhealthy)`. A mention of the marshal's health check.]**
 
 **(Voiceover):**
-Truck chal rahi hai, par kya wo jawab de rahi hai? Process zinda ho aur app atki ho, ye ho sakta hai. Isliye `HEALTHCHECK`: ek chhoti command jo Docker har kuch second par chalata hai. App par ek `/health` route rakho jo sirf 200 de, aur Dockerfile mein `HEALTHCHECK --interval=30s --timeout=3s CMD python -c "..." || exit 1`. `docker ps` mein status healthy ya unhealthy dikhta hai. Ye Session 11 ke marshal ke health check ka truck ke andar ka roop hai. Yahi baat aage Kubernetes mein probes ban jaati hai. Dhyaan: health check halka ho, database tak na jaaye, nahi to database ki dikkat par saari trucks unhealthy dikhengi.
+Truck chal rahi hai, par kya wo jawab de rahi hai? Process zinda ho aur app atki ho, ye ho sakta hai. Isliye `HEALTHCHECK`: ek chhoti command jo Docker har kuch second par chalata hai. App par ek `/health` route rakho jo sirf 200 de, aur Dockerfile mein `HEALTHCHECK --interval=30s --timeout=3s CMD python -c "..." || exit 1`. `docker ps` mein status healthy ya unhealthy dikhta hai. Ye Session 11 ke marshal ke health check ka truck ke andar ka roop hai, jaise housekeeping ka "room ready" status. Yahi baat aage Kubernetes mein probes ban jaati hai. Dhyaan: health check halka ho, database tak na jaaye, nahi to database ki dikkat par saari trucks unhealthy dikhengi.
 
-### [12:40 – 14:55] Scene 6: Lab: Apni Service ko Truck Karo
+### [12:35 – 14:50] Scene 6: Lab: Apni Service ko Truck Karo
 **[VISUAL: `app.py` with `/` and `/health` routes. `requirements.txt` with `flask` and `gunicorn`. Build, run, `curl localhost:5000/health`. Then the same with `127.0.0.1` binding failing from outside.]**
 
 **(Voiceover):**
@@ -82,7 +82,7 @@ if __name__ == "__main__":
 ```
 `requirements.txt` mein `flask` aur `gunicorn`. Dockerfile mein CMD gunicorn wala rakho, aur build karo. `docker run -d -p 5000:5000 --name rooms rooms:1.0`, phir `curl localhost:5000/health`. Ab gunicorn ka bind `127.0.0.1:5000` kar do, dobara build karo, aur dekho ki bahar se jawab nahi aata. `docker ps` mein health status dekho. Ye bahut aam galti hai, aur ise samajhna networking ka ek zaroori sabak hai.
 
-### [14:55 – 15:30] Scene 7: Recap aur Bridge
+### [14:50 – 15:25] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "FROM · WORKDIR · COPY · RUN · ENV/ARG · USER · HEALTHCHECK · CMD / ENTRYPOINT in exec form · bind 0.0.0.0 · gunicorn, not the dev server".]**
 
 **(Voiceover):**

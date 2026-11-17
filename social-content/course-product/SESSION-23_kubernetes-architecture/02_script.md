@@ -30,21 +30,21 @@ Pichhle do sessions mein humne rooms-service ki truck design likhi, usse chhota 
 **[VISUAL: Six cards around a command room: Scheduling, Self-healing, Scaling, Rolling updates and rollbacks, Discovery and load balancing, Config and secrets. A small note: "from Google's Borg, now open source under the CNCF".]**
 
 **(Voiceover):**
-Operations command chhe kaam sambhalta hai. Placement: kaun si truck kis building ke courtyard mein khadi hogi. Self-healing: truck mari to nayi. Scaling: bheed ke hisaab se kam ya zyada trucks. Rolling updates: naya design ek ek karke, aur galat nikla to rollback. Discovery aur load balancing: trucks ek doosre ko dhoondh sakein aur traffic baante. Aur config aur secrets ka prabandh. Ye sab Session 11 ke marshal, Session 10 ke Auto Scaling aur Session 15 ke alarms ke vichar hain, jo ab trucks ke liye ek hi jagah mil gaye. Kubernetes ka vichar Google ke andar ke Borg system se aaya, aur ab ye CNCF ke under open source hai. Log ise chhote mein K8s bhi kehte hain.
+Operations command chhe kaam sambhalta hai. Placement: kaun si truck kis building ke courtyard mein khadi hogi. Self-healing: truck mari to nayi. Scaling: shaadi ke season mein zyada trucks, baad mein kam. Rolling updates: naya design ek ek karke, jaise hotel khula rakh kar floor by floor renovation, aur galat nikla to rollback. Discovery aur load balancing: trucks ek doosre ko dhoondh sakein aur traffic baante. Aur config aur secrets ka prabandh. Ye sab Session 11 ke marshal, Session 10 ke Auto Scaling aur Session 15 ke alarms ke vichar hain, jo ab trucks ke liye ek hi jagah mil gaye. Kubernetes ka vichar Google ke andar ke Borg system se aaya, aur ab ye CNCF ke under open source hai.
 
-### [06:05 – 09:40] Scene 3: Docker, Compose aur Kubernetes
+### [06:05 – 09:35] Scene 3: Docker, Compose aur Kubernetes
 **[VISUAL: A three-row comparison. Docker: build and run one truck. Compose: describe a small park of trucks in one building. Kubernetes: run and keep alive trucks across many buildings. An honest tag: "small project? Kubernetes can be too much".]**
 
 **(Voiceover):**
 Docker ek truck banata aur chalata hai. Compose ek building mein kai trucks ka chhota park define karta hai, development ke liye mast. Kubernetes kai buildings ke cluster par trucks ko chalata, badhata aur zinda rakhta hai. Ye competitors nahi, alag star ke tool hain. Aur sach ye bhi hai ki ek chhoti team ke ek service ke liye Kubernetes bahut bhari cheez ho sakti hai: ek ya do buildings, ek Auto Scaling Group aur ek marshal kaafi ho sakte hain. Hum Kubernetes isliye seekh rahe hain ki jahan scale aur bharose ki zaroorat hai, wahan ye kaise kaam karta hai. Aur ek aur baat: control plane khud chalana mushkil hai, isliye zyadatar log GKE, EKS ya AKS jaisi managed service lete hain, jahan landlord command ka dimaag chalata hai.
 
-### [09:40 – 12:25] Scene 4: Lab: Dard Mehsoos Karo
+### [09:35 – 12:20] Scene 4: Lab: Dard Mehsoos Karo
 **[VISUAL: Terminal. Start five containers with a loop, `docker kill w3`, `docker ps` shows only four, and no one brings w3 back. A second take: `docker run --restart unless-stopped` brings it back on the same building, but not after the building is down.]**
 
 **(Voiceover):**
 Lab. Pehle problem mehsoos karo. `for i in 1 2 3 4 5; do docker run -d --name w$i nginx:alpine; done`. Phir `docker kill w3` aur `docker ps`: chaar hi bachi, aur koi use wapas nahi laayega. `--restart unless-stopped` ke saath ye ek hi building par ho jaata hai. Ab socho ki poori building band ho jaaye, ya trucks sau hon aur buildings das. Docker ke paas us building ke bahar ki koi khabar hi nahi. Isi khali jagah ko operations command bharta hai. Safai: `docker rm -f w1 w2 w3 w4 w5`. Agle episode mein hum command ke andar jhaankenge.
 
-### [12:25 – 13:05] Scene 5: Recap aur Bridge
+### [12:20 – 13:00] Scene 5: Recap aur Bridge
 **[VISUAL: A card: "place · self-heal · scale · roll out · discover · config · across many buildings · managed control plane in the cloud".]**
 
 **(Voiceover):**

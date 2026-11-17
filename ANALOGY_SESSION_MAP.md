@@ -5,6 +5,7 @@ This file applies the hotel-chain story in [ANALOGY_STORY.md](ANALOGY_STORY.md) 
 - **Zoom** says where the session sits: 1 = inside one building, 2 = the rented campus, 3 = head office.
 - **Story beat** is what happens in the company during that session. It can be the opening of episode 1.
 - **New story words** are the terms the session introduces. Later sessions reuse them without re-explaining.
+- **Hotel services** (added 2026-11-17): in sessions 21-26 and 31-33, microservices are trucks that each carry a real hotel service (reservations, housekeeping, restaurant, billing, laundry). Use the tables in the "Hotel services" section of [ANALOGY_STORY.md](ANALOGY_STORY.md). Pilot: session 25.
 
 ## Foundation
 

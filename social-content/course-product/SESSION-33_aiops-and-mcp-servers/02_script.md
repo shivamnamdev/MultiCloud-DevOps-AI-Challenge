@@ -20,31 +20,31 @@
 
 # 📺 EPISODE 1: Raat ki Duty
 
-### [00:00 – 03:15] Scene 1: Teen Baje, Do Hazaar Alerts
+### [00:00 – 03:05] Scene 1: Teen Baje, Do Hazaar Alerts
 **[VISUAL: A phone buzzing at 3 a.m. A wall of alerts scrolls: rooms-service latency, bookings 5xx, queue lag, disk, memory. Behind them one cause: the records office has stopped answering. A funnel turns two thousand alerts into one incident card.]**
 
 **(Voiceover):**
-Raat ke teen baje Atithi ka records office ruk jaata hai. Control room mein do hazaar alerts: har service ki latency, har truck ke errors, queue ka lag. Duty manager ke phone par ghanti nahi, shor. Session 26 ke alarm desk ne grouping aur inhibition se kaafi shor kam kiya tha, par jab system bada ho, tab bhi insaan ko ek ek alert padhna padta hai. AIOps ka matlab hai operations mein data analysis aur AI ka upyog: alerts ko jodna, normal se alag pattern pakadna, aur duty manager ko kam shor aur zyada samajh dena. Ye manager ki jagah lene ke liye nahi, uski madad ke liye hai. Is session mein assistant raat ki duty par baithta hai, par chaabiyan manager ke paas hi rehti hain.
+Raat ke teen baje Atithi ka records office ruk jaata hai. Control room mein do hazaar alerts: billing ki latency, reservations ke errors, kitchen queue ka lag. Duty manager ke phone par ghanti nahi, shor. Session 26 ke alarm desk ne grouping aur inhibition se kaafi shor kam kiya tha, par jab system bada ho, tab bhi insaan ko ek ek alert padhna padta hai. AIOps ka matlab hai operations mein data analysis aur AI ka upyog: alerts ko jodna, normal se alag pattern pakadna, aur duty manager ko kam shor aur zyada samajh dena. Ye manager ki jagah nahi, madad hai. Is session mein assistant raat ki duty par baithta hai, par chaabiyan manager ke paas hi rehti hain.
 
-### [03:15 – 05:55] Scene 2: AIOps ke Paanch Kaam
+### [03:05 – 05:45] Scene 2: AIOps ke Paanch Kaam
 **[VISUAL: Five cards. 1 Correlation: many alerts, one incident. 2 Anomaly detection: unusual for this hour. 3 Root-cause hints: what broke first, what was deployed. 4 Summaries and ChatOps: "what happened in the last hour?". 5 Automatic fixes (faded, with a warning sign).]**
 
 **(Voiceover):**
 AIOps ke paanch kaam. Ek, correlation: ek hi kaaran ke kai alerts ek incident mein. Do, anomaly detection: wo pattern jo us samay ke liye normal nahi, jahan fixed threshold kamzor padte hain. Teen, root-cause ke ishare: kaun si service pehle bigdi, aur us se thodi der pehle kya deploy hua, jaise Session 31 ka deploy log. Chaar, summary aur ChatOps: "pichhle ek ghante mein kya hua?" ka saaf jawab. Aur paanch, automatic fix, jo sabse risky hai, aur jisse hum guardrails ke saath dekhenge. Ek niyam: jitna zyada kaam badle, utna zyada bharosa chahiye, isliye pehle teen kaam aasaan hain aur paanchva sabse mushkil.
 
-### [05:55 – 08:20] Scene 3: Pehle Data, Phir AI
+### [05:45 – 08:10] Scene 3: Pehle Data, Phir AI
 **[VISUAL: A pyramid. Base: reliable meters, logs and traces. Next: labels, ownership and service names. Next: clean alerts, SLOs, runbooks. Top: AI on top, small. A box: "an LLM reads what you give it; give it nothing and it will guess".]**
 
 **(Voiceover):**
 Ek sacchai: AIOps ki neev achhi observability hai. Agar saaf meters, logs, labels aur service ke maalik ka naam nahi, to AI bhi andhera hi dikhayega, aur andhere mein LLM aksar andaza lagata hai, jo sunne mein sahi lagta hai par galat hota hai. Isliye is course mein pehle control room, Session 26, aaya, aur AIOps ab. Pehle labels aur ownership theek karo, SLO tay karo, alerts saaf karo, runbook likho. Phir assistant ke paas padhne ke liye kuch bharosemand hoga. Aur wahi runbook assistant ko batayega ki is alert par kya karna hai.
 
-### [08:20 – 11:05] Scene 4: LLM Kahan Achha, Kahan Nahi
+### [08:10 – 11:00] Scene 4: LLM Kahan Achha, Kahan Nahi
 **[VISUAL: Two columns. Good: summarize a log excerpt, explain an unfamiliar error, draft a post-incident review from a timeline, translate PromQL, suggest what to check next. Bad: do exact arithmetic on metrics, decide the severity alone, run commands unsupervised, remember what it was never shown. A note: "always show the source lines it used".]**
 
 **(Voiceover):**
 LLM kahan achha hai: log ke tukde ka saransh, anjaan error ka matlab, timeline se post-incident review ka pehla draft, PromQL samjhana, aur "agla kya dekhna chahiye" ka suggestion. Kahan nahi: metrics par sahi hisaab, akele severity tay karna, bina nigrani ke commands chalana, aur wo cheezein jo use dikhayi hi nahi gayi. Hisaab ke liye code use karo, jaise agle episode ka z-score. Aur ek niyam jo bahut kaam aata hai: assistant jab kuch kahe, to saath mein wo lines bhi dikhaye jin par uska andaza tika hai, taaki duty manager ek nazar mein jaanch sake. Bina saboot ka jawab, chahe kitna bhi saaf bole, sirf ek raay hai.
 
-### [11:05 – 13:50] Scene 5: Lab: Do Hazaar Mein Se Bees
+### [11:00 – 13:50] Scene 5: Lab: Do Hazaar Mein Se Bees
 **[VISUAL: A sheet with twenty sample alerts from a made-up incident: times, service, alert name, and a dependency map. The learner groups them by time window and dependency, finds the first alert, and strikes out noise. A second column: "what runbook line applies".]**
 
 **(Voiceover):**

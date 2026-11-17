@@ -231,13 +231,13 @@ Recap: CI poora ho gaya. Ab CD: truck ko building mein pahunchao, jaancho, aur z
 
 # 📺 EPISODE 4: Pahunchao, Jaancho, Wapas Lo
 
-### [00:00 – 01:00] Scene 1: Deploy Mein Sabse Zyada Galti
+### [00:00 – 01:10] Scene 1: Deploy Mein Sabse Zyada Galti
 **[VISUAL: A new truck is started. Nobody checks. The truck crashes at startup. For twenty minutes guests see errors. Next: the same release with a health check and an automatic rollback, and guests never notice.]**
 
 **(Voiceover):**
-Deploy wo kadam hai jahan sabse zyada galtiyan hoti hain. Nayi truck chalu ki, kisi ne check nahi kiya, aur bees minute tak guests ko error dikha. Isliye deploy ke baad health check zaroori hai, aur dono, check aur rollback, automatic hone chahiye. Insaan raat ko teen baje se behtar script hai, jo har baar wahi kare.
+Deploy wo kadam hai jahan sabse zyada galtiyan hoti hain. Nayi truck chalu ki, kisi ne check nahi kiya, aur bees minute tak guests ko error dikha. Isliye deploy ke baad health check zaroori hai, jaise naya menu pehle test kitchen mein chakha jaata hai, aur dono, check aur rollback, automatic hone chahiye. Insaan raat ko teen baje se behtar script hai, jo har baar wahi kare.
 
-### [01:00 – 05:30] Scene 2: Deploy Script
+### [01:10 – 05:35] Scene 2: Deploy Script
 **[VISUAL: `deploy.sh` run over SSH. Steps: pull the new truck design, remember the current edition label, start the new truck on a spare port, check `/health`, switch, stop the old, or remove the new and keep the old. A deploy log line appended: time, who, label, result.]**
 
 **(Voiceover):**
@@ -264,37 +264,37 @@ exit 1
 ```
 Pehle purani truck ka label yaad rakhta hai. Naya design pull karta hai. Truck chalata hai. Bees baar, har teen second par, health check. Pass to log mein ek line, fail to purani truck wapas aur script `exit 1`, jisse Jenkins ka station laal ho. Humne ise ek local registry aur ek toote hue release ke saath aazmaya: pehli deploy, upgrade aur rollback teeno sahi chale, aur log mein teeno line aayi. Ek chhoti baat: rollback ke turant baad purani truck ko khud health check mein aane mein kuch second lagte hain, isliye rollback ke baad bhi ek baar health dekho. Ek sachchai: isme kuch second ke liye service ruk jaati hai. Kai buildings ke saath rolling ya blue-green se ye bacha jaata hai, jo Kubernetes ka kaam hai. Ek building ke liye ye saaf aur seekhne layak hai.
 
-### [05:30 – 07:25] Scene 3: Pehle Staging, Phir Manjoori, Phir Production
+### [05:35 – 07:30] Scene 3: Pehle Staging, Phir Manjoori, Phir Production
 **[VISUAL: Jenkins stages: Deploy staging, Smoke test, an `input` step "Deploy to production?" with a timeout (with `agent none` so no workbench is held), then Deploy production. A box: "approval only by the duty manager".]**
 
 **(Voiceover):**
 Asli setup mein pehle staging par deploy, phir ek chhota smoke test, jaise `/rooms` ka jawab. Uske baad manjoori ka station, `input`, jisme "Production par bhejna hai?" poocha jaata hai. Session 19 ki baat: `input` ke samay workbench rok kar mat rakho, yaani `agent none` aur ek timeout. Manjoori sirf duty manager ke group se, aur har manjoori ka naam record mein. Deploy stage mein SSH `sshagent(['app-server-key'])` se, aur script ko `ssh ubuntu@APP_IP 'bash -s' -- "$IMAGE:$TAG" < deploy/deploy.sh` ki tarah chalao, taaki script alag se copy na karni pade. Agar staging aur production alag buildings hain, to bas IP ka farq hai. Wahi checklist, wahi script.
 
-### [07:25 – 09:20] Scene 4: Deploy ke Baad Control Room
+### [07:30 – 09:25] Scene 4: Deploy ke Baad Control Room
 **[VISUAL: Prometheus scraping `/metrics` of the app building. A Grafana panel with request rate, error rate and p95 latency. A vertical line marks the deploy time with the edition label. An alert rule: error rate above one percent for five minutes.]**
 
 **(Voiceover):**
 Deploy khatam hone ka matlab kaam khatam nahi. Control room dekho. Session 26 ka inspector app building ke `/metrics` ko padhta hai. Wall of screens par request rate, errors aur latency. Deploy ke samay ek line lagao, jis par edition label likha ho, taaki graph par dikhe ki kab version badla. Agar errors us line ke baad badhe, to pehla shak naye release par. Ek alarm bhi rakho: errors ek percent se zyada paanch minute tak. Ye script ke health check se alag hai: health check batata hai ki truck zinda hai, aur control room batata hai ki guests ko theek serve ho rahi hai. Dono chahiye.
 
-### [09:20 – 11:15] Scene 5: Jab Rollback bhi Kam Pad Jaye
+### [09:25 – 11:25] Scene 5: Jab Rollback bhi Kam Pad Jaye
 **[VISUAL: A comparison of three rollback layers. 1: the script's automatic rollback to the previous label (seconds). 2: a manual rerun of the deploy with an older label (minutes). 3: a `git revert` through a new pull request (the history stays honest). A note: "database changes cannot be rolled back by changing the truck".]**
 
 **(Voiceover):**
-Rollback ke teen star hain. Pehla: script khud purani truck wapas laati hai, kuch second mein. Doosra: koi release baad mein kharab nikla, to Jenkins se ek purane edition label ko dobara deploy karo. Teesra: kharab badlaav ko vault se bhi hatao, `git revert` se naya pull request, taaki register imaandar rahe, jaisa Session 16B mein dekha. Ek chetavani: truck wapas laana aasaan hai, par agar naye release ne database mein kuch badal diya, to purani truck us database ke saath nahi chal sakti. Isliye database ke badlaav chhote aur peeche ki taraf mel khate hon, pehle database, phir truck, aur kabhi ek saath bada badlaav nahi.
+Rollback ke teen star hain. Pehla: jaise purana menu wapas, script khud purani truck wapas laati hai, kuch second mein. Doosra: koi release baad mein kharab nikla, to Jenkins se ek purane edition label ko dobara deploy karo. Teesra: kharab badlaav ko vault se bhi hatao, `git revert` se naya pull request, taaki register imaandar rahe, jaisa Session 16B mein dekha. Ek chetavani: truck wapas laana aasaan hai, par agar naye release ne database mein kuch badal diya, to purani truck us database ke saath nahi chal sakti. Isliye database ke badlaav chhote aur peeche ki taraf mel khate hon, pehle database, phir truck, aur kabhi ek saath bada badlaav nahi.
 
-### [11:15 – 13:25] Scene 6: Lab: Poora Safar aur Toota Hua Release
+### [11:25 – 13:30] Scene 6: Lab: Poora Safar aur Toota Hua Release
 **[VISUAL: Add a Deploy stage with `sshagent` to the Jenkinsfile. A change to the `/rooms` response goes through pull request, merge, and the new data appears on the app building. Then a deliberately broken release crashes at startup: the health loop fails, the old truck is back, the stage is red, the deploy log shows FAILED and the rollback.]**
 
 **(Voiceover):**
 Lab: Jenkinsfile mein Deploy station jodo, jisme `sshagent(['app-server-key'])` ho. Pehle ek chhota badlaav: `/rooms` mein ek naya room type jodo, pull request, review, merge. Kuch minute mein `curl http://APP_IP:8081/rooms` mein naya data. Ab ek toota hua release: app ke shuru mein jaan-boojh kar ek exception daalo, jisse wo start par crash ho. Pull request par test shayad pass ho jaaye, aur isiliye pehle ye bhi dekho ki kaun sa check is hadse ko nahi pakadta: ek test jodo jo app ko import karke dekhe. Phir bhi, agar release chhoot gaya, to Deploy station health check par laal hoga, script purani truck wapas laayegi, site chalti rahegi, aur `/var/log/atithi-deploys.log` mein FAILED aur rollback ka record rahega. Wahi Fix wala hissa.
 
-### [13:25 – 15:10] Scene 7: Safai aur Post-Incident Review
+### [13:30 – 15:15] Scene 7: Safai aur Post-Incident Review
 **[VISUAL: A cleanup checklist: stop or destroy the two buildings, revoke the depot token, remove the SSH key from the key cabinet, delete test images, check for leftover volumes, public IPs and security groups, budget alert on. Beside it: a short blameless review template: what happened, what the check caught, what it missed, one change.]**
 
 **(Voiceover):**
 Safai ka checklist: dono buildings band ya delete, depot token revoke, SSH key key cabinet se hatao, test images delete, aur console mein dekho ki koi volume, public IP ya security group baaki to nahi. Aur ek chhota post-incident review likho, bina kisi par ilzaam ke: kya hua, kis check ne pakda, kis ne nahi pakda, aur ek badlaav jo agli baar rokega. Ye likhna asli teams ki aadat hai, aur interview mein bhi kaam aati hai. Aur ab pichhe mudo: master lock, bell, foreman, truck, depot, health check, rollback, control room. Atithi ka pehla grand opening poora.
 
-### [15:10 – 16:40] Scene 8: Recap aur Bridge
+### [15:15 – 16:40] Scene 8: Recap aur Bridge
 **[VISUAL: A card: "branch → PR → review → required check → merge → bell → test → truck design → scan → depot → deploy → health → rollback → control room". Then a new figure appears at the head office: a well-read assistant sitting beside a designer.]**
 
 **(Voiceover):**

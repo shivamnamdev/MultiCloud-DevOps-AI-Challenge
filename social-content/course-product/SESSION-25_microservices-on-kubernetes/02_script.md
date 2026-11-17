@@ -20,43 +20,43 @@
 
 # 📺 EPISODE 1: Ek Truck se Truck Park Tak
 
-### [00:00 – 02:40] Scene 1: Ek Bug, Poori Dukaan Band
+### [00:00 – 03:20] Scene 1: Ek Bug, Poori Dukaan Band
 **[VISUAL: Atithi's booking site as one big block: rooms, bookings, payments, photos, notifications. The payment code leaks memory and the whole block turns red. Next frame: separate small boxes, only payments red, the rest green.]**
 
 **(Voiceover):**
-Atithi ki booking site ab ek hi bade program mein hai: rooms, bookings, payments, photos, notifications. Payment ke code mein ek memory leak aaya aur poori site gir gayi, rooms ki list bhi, photos bhi. Microservices ka vichar hai ki ise chhote, alag services mein todo. Ek gire to baaki chalein. Har service ek alag truck, apna design, apna standing order, apna extension number. Mil kar ye ek truck park banta hai. Par pehle ek sachchi baat: ye vichar mushkil bhi hai, aur ye episode utna hi us mushkil ke baare mein hai jitna faayde ke baare mein.
+Atithi ki booking site ab ek hi bade program mein hai: rooms, bookings, payments, photos, notifications. Payment ke code mein ek memory leak aaya aur poori site gir gayi, rooms ki list bhi, photos bhi. Hotel mein reservations, housekeeping, restaurant aur billing alag services hoti hain: billing counter band ho to bhi kamre bukk hote hain. Microservices ka vichar wahi hai: site ko aise todo ki ek gire to baaki chalein. Har service ek alag truck, apna design, apna standing order, apna extension number. Mil kar ye ek truck park banta hai. Par pehle ek sachchi baat: ye vichar mushkil bhi hai, aur ye episode utna hi us mushkil ke baare mein hai jitna faayde ke baare mein.
 
-### [02:40 – 06:00] Scene 2: Faayde aur Keemat
+### [03:20 – 06:00] Scene 2: Faayde aur Keemat
 **[VISUAL: A balanced scale. Plus: independent releases, scale only what is busy, one team owns one service, a failure stays small. Minus: calls over the network that can fail or be slow, debugging across many services, data in many places, more to operate.]**
 
 **(Voiceover):**
-Faayde. Har service alag release ho sakti hai, bina baaki ko chhue. Jo service zyada busy hai use alag scale kar sakte ho: shaadi ke season mein bookings badhe to sirf bookings-service. Ek team ek service ki maalik ho sakti hai. Aur ek ki galti chhoti rehti hai. Keemat. Jo pehle function call tha, ab network call hai, jo fail ho sakta hai aur dheema hai. Ek guest ki request kai services se guzarti hai, to debugging kai jagah. Data kai databases mein baat jaata hai. Aur chalane ko bahut zyada cheezein. Isliye chhoti team ke liye pehle ek achha monolith bhi theek hai. Microservices tab lo jab team aur scale ki zaroorat ho, "kyunki sab karte hain" isliye nahi.
+Faayde. Har service alag release hoti hai. Jo zyada busy hai use alag scale karo: shaadi ke season mein sirf bookings-service. Ek team, ek service, aur ek ki galti chhoti rehti hai. Keemat. Jo function call tha, ab network call hai: dheema, aur fail ho sakta hai. Request kai services se guzarti hai, to debugging kai jagah, aur data kai databases mein. Chalane ko bahut zyada cheezein. Isliye chhoti team ke liye pehle ek achha monolith bhi theek hai. Microservices tab lo jab team aur scale ki zaroorat ho, "kyunki sab karte hain" isliye nahi.
 
-### [06:00 – 07:50] Scene 3: Kahan Todo: Business ke Hisaab se
+### [06:00 – 07:40] Scene 3: Kahan Todo: Business ke Hisaab se
 **[VISUAL: A boundary drawn around business capabilities: Rooms, Bookings, Payments, Photos, Notifications. A wrong split drawn by technical layer (UI, logic, database) crossed out. Each service owns its own data store.]**
 
 **(Voiceover):**
-Kahan todein? Technical layers ke hisaab se nahi, jaise ek UI service, ek logic service, ek database service. Business ke hisaab se: rooms, bookings, payments, photos, notifications. Har service apna data khud rakhti hai. Bookings-service ka database aur rooms-service ka database alag, aur ek doosre ke database ko seedha nahi padhti: unki baat service ke raaste hoti hai. Isse ek ka schema badla to doosre nahi tootte.
+Kahan todein? Hotel ki tarah, business ke hisaab se: rooms (housekeeping), bookings (reservations), payments (billing), photos, notifications. Technical layers ke hisaab se nahi, jaise ek UI service, ek logic, ek database. Har service apna data khud rakhti hai, aur doosre ka database seedha nahi padhti: baat service ke raaste hoti hai. Ek ka schema badle to doosre nahi tootte.
 
-### [07:50 – 10:55] Scene 4: Atithi ka Truck Park
+### [07:40 – 10:35] Scene 4: Atithi ka Truck Park
 **[VISUAL: An architecture. Guest → concierge (Ingress) → `web` → `rooms-service` and `bookings-service`. `bookings-service` → records (Postgres). `rooms-service` → photos in the warehouse (S3). Each service in its own Deployment and Service, all in one wing named `atithi`. A table: Service, Port, Depends on, Stateful?]**
 
 **(Voiceover):**
-Is session ka project: Atithi ka truck park, `atithi` wing mein. `web` jo guests ko page dikhata hai. `rooms-service` jo kamron ki list deta hai, aur photos Session 12 ke warehouse se. `bookings-service` jo bookings likhta hai, aur records ke liye Postgres. Har ek apna Deployment aur apna Service. Kuch trucks stateless hain, jaise web aur rooms. Ek stateful hai: records, jinhe locker room chahiye. Production mein wo records Session 13 ke RDS mein hote hain, par seekhne ke liye hum ek chhoti Postgres truck cluster ke andar chalayenge, taaki locker room ka poora vichar dikhe. Aur sabke upar ek concierge, yaani Ingress, jo guests ko sahi truck tak le jaaye.
+Is session ka project: Atithi ka truck park, `atithi` wing mein. `web`, lobby ki screen, jo guests ko page dikhata hai. `rooms-service`, yaani housekeeping, jo kamron ki list deta hai, aur photos Session 12 ke warehouse se. `bookings-service`, yaani reservations desk, jo bookings likhta hai, aur records ke liye Postgres. Har ek apna Deployment aur apna Service. Kuch trucks stateless hain, jaise web aur rooms. Ek stateful hai: records, jinhe locker room chahiye. Production mein records Session 13 ke RDS mein hote hain; seekhne ke liye hum ek chhoti Postgres truck cluster ke andar chalayenge, taaki locker room dikhe. Sabke upar concierge, yaani Ingress.
 
-### [10:55 – 13:30] Scene 5: 12-Factor ke Teen Niyam
+### [10:35 – 13:15] Scene 5: 12-Factor ke Teen Niyam
 **[VISUAL: A checklist next to each service: "config comes from the environment", "logs go to stdout", "no state kept in the process". A truck whose log goes to a file inside the container, crossed out.]**
 
 **(Voiceover):**
 Trucks Kubernetes par achhi tarah tab chalti hain jab teen niyam pakke hon, jinhe 12-factor soch kehte hain. Ek: config environment se aaye, design ke andar nahi. Do: logs stdout par jaayein, kisi file mein nahi, taaki `kubectl logs` aur logging tools unhe utha sakein. Teen: process stateless ho, yaani koi bhi truck mar kar dobara ban sake bina kuch khoye. Session 21 aur 22 mein humne ye teen niyam pehle hi dekhe the. Ab Kubernetes unka poora faayda uthata hai: ek pod hatao, dusra aa jaata hai, aur guest ko pata bhi nahi chalta.
 
-### [13:30 – 15:00] Scene 6: Lab: Services ko Pehchano
+### [13:15 – 14:50] Scene 6: Lab: Services ko Pehchano
 **[VISUAL: A worksheet with five rows (web, rooms, bookings, payments, notifications) and four columns: port, depends on, stateful, what breaks if it is down. A check against each of the three 12-factor rules.]**
 
 **(Voiceover):**
 Lab (design ka exercise). Paanch services ke liye ek table banao: naam, port, kis par nirbhar, stateful ya nahi, aur ye gir jaaye to kya tootega. Jaise bookings-service ko Postgres chahiye aur wo stateful hai. Payments gire to bookings ko "baad mein payment" ka rasta chahiye. Phir har service par 12-factor ke teen niyam check karo.
 
-### [15:00 – 15:30] Scene 7: Recap aur Bridge
+### [14:50 – 15:20] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "split by business, not by layer · each service owns its data · cost = distributed complexity · config in env, logs to stdout, stateless".]**
 
 **(Voiceover):**
@@ -66,53 +66,53 @@ Recap: microservices ka vichar aur uski keemat. Ab asli kaam: har truck ko confi
 
 # 📺 EPISODE 2: Notice Board, Envelope aur Budget
 
-### [00:00 – 01:35] Scene 1: Ek Design, Teen Wing
+### [00:00 – 01:30] Scene 1: Ek Design, Teen Wing
 **[VISUAL: A truck design with a hard-coded database address. A developer rebuilds it for dev, staging and prod. Next: one design and three sets of settings supplied from outside.]**
 
 **(Voiceover):**
 Agar dev, staging aur production ke liye alag alag design banane pade, to wo galat tareeka hai. Ek hi design, aur settings bahar se. Kubernetes mein iske liye notice board, yaani ConfigMap, aur sealed envelope, yaani Secret. Aur har truck ko ek sahi allowance ki zaroorat hai: kitna CPU aur memory. Aur har wing ko ek budget. Aaj ye sab, aur uske baad trucks aapas mein baat kaise karein.
 
-### [01:35 – 03:20] Scene 2: ConfigMap aur Secret
+### [01:30 – 03:10] Scene 2: ConfigMap aur Secret
 **[VISUAL: A ConfigMap `rooms-config` with `APP_MODE: production` and `ROOMS_PER_PAGE: "20"`. A Secret `bookings-db` with a base64 value. A pod using `envFrom` and a mounted file. A red tag on the Secret: "base64 is encoding, not encryption".]**
 
 **(Voiceover):**
 ConfigMap mein aam settings: `APP_MODE`, ya page par kitne rooms. Secret mein sensitive cheezein, jaise database password. Bahut zaroori: Secret ki value base64 mein hoti hai, jo sirf encoding hai, encryption nahi. Isliye RBAC se access seemit karo, cluster mein secrets ka encryption on rakho, aur bade systems mein cloud ka secret manager, jaise Session 13 mein Secrets Manager. Aur Secret ka YAML kabhi vault mein plain mat daalo, jaise Session 20 ke leak ki kahani.
 
-### [03:20 – 05:10] Scene 3: Config Badla, Pod ko Pata Nahi
+### [03:10 – 05:00] Scene 3: Config Badla, Pod ko Pata Nahi
 **[VISUAL: A ConfigMap changed with `kubectl edit`. A pod using the value through an environment variable still shows the old value. A mounted file shows the new value after a short delay. A fix: `kubectl rollout restart deployment/rooms`.]**
 
 **(Voiceover):**
 Ek jaal: ConfigMap badal diya, par chalti truck ko wahi purani value dikhti hai. Environment variable truck ke start hote waqt padhe jaate hain, isliye un mein badlaav tab tak nahi dikhta jab tak pod dobara na bane. Mounted file ke roop mein diya ho to kuch der mein file badal jaati hai, par app ko use phir se padhna aana chahiye. Roz ka hal: `kubectl rollout restart deployment/rooms`, jo rolling update ki tarah pods ko ek ek karke dobara banata hai.
 
-### [05:10 – 07:45] Scene 4: Requests, Limits aur Budget
+### [05:00 – 07:30] Scene 4: Requests, Limits aur Budget
 **[VISUAL: A container spec with `requests: cpu 100m, memory 128Mi` and `limits: cpu 500m, memory 256Mi`. A node with a fixed shelf space; requests reserve space, limits are the ceiling. CPU past the limit is slowed; memory past the limit is killed with exit code 137.]**
 
 **(Voiceover):**
 Har truck ke do aankde. Request: kam se kam kitna chahiye, aur allocation officer isi ke hisaab se building chunta hai. Limit: upar ki hadd. CPU limit paar karne par truck ko dheema kiya jaata hai, throttle. Memory limit paar karne par truck ko maar diya jaata hai, OOMKilled, exit code 137, jo hum ne Session 24 mein dekha. CPU ki ikai milli-core hai: `100m` ka matlab ek core ka dasva hissa. Request na ho to HPA ko kuch pata nahi chalta, aur building ki planning bhi andhi. Ek aur asar: jab building par jagah kam pade, to jinhone request nahi di, unhe pehle hataya jaata hai. Isliye har truck par request zaroor likho.
 
-### [07:45 – 10:20] Scene 5: LimitRange aur ResourceQuota
+### [07:30 – 10:00] Scene 5: LimitRange aur ResourceQuota
 **[VISUAL: Two panels. LimitRange: per-container defaults (default limit cpu 500m, memory 512Mi; default request cpu 200m, memory 256Mi). ResourceQuota: a total for the wing: requests.cpu 4, requests.memory 8Gi, limits.cpu 10, limits.memory 16Gi, pods 10. A table "applies to / controls".]**
 
 **(Voiceover):**
 Do object, jinhe log mila dete hain. ResourceQuota poori wing ka total budget hai: sab pods milakar kitna CPU, memory aur kitne pods. Notes ki misaal: ek team ko sau rupaye ka budget mila hai, poori team mil kar usse zyada kharch nahi kar sakti. LimitRange har truck ka allowance hai: default request, default limit, aur minimum aur maximum. Ek zaroori jodi: agar wing mein ResourceQuota ho jisme CPU aur memory hain, to har pod ko request aur limit deni hi padti hai, aur LimitRange unhe default de sakta hai. Quota paar hone par pod Pending nahi hota. Pod banta hi nahi: ReplicaSet ke Events mein `FailedCreate... exceeded quota` likha aata hai.
 
-### [10:20 – 13:00] Scene 6: Probes: Truck Taiyaar Hai?
+### [10:00 – 12:30] Scene 6: Probes: Truck Taiyaar Hai?
 **[VISUAL: A timeline for one pod: startup probe → readiness passes → traffic starts. Liveness fails twice → restart. A pod marked not Ready is removed from the Service's endpoints and the marshal skips it. A caution: "a liveness probe that checks the database restarts everyone".]**
 
 **(Voiceover):**
-Probes truck ki sehat ki jaanch hain. Readiness: truck guests ke liye taiyaar hai ya nahi, aur taiyaar na ho to Service us truck ko endpoints se hata deti hai. Liveness: truck atak gayi hai, restart chahiye. Startup: dheere start hone wali truck ke liye. Ye Session 22 ke HEALTHCHECK ka Kubernetes roop hai, aur Session 11 ke marshal ka health check. Probe halka rakho: `/health` jo sirf 200 de. Agar liveness probe database tak jaaye, aur database dheema ho, to saari trucks ek saath restart hongi, aur dikkat aur badh jaayegi. Readiness rolling update ko bhi bachata hai: naya pod tab tak guests ko traffic nahi leta jab tak taiyaar nahi, aur Deployment tab tak purana nahi hatata.
+Probes truck ki sehat ki jaanch hain. Readiness: jaise housekeeping jab tak kamra "ready" mark na kare, guest ko upar nahi bhejte; taiyaar na ho to Service us truck ko endpoints se hata deti hai. Liveness: duty manager ka round, jo jawab na de use badal do. Startup: dheere start hone wali truck ke liye. Ye Session 22 ke HEALTHCHECK aur Session 11 ke marshal ke health check ka Kubernetes roop hai. Probe halka rakho: `/health` jo sirf 200 de. Liveness database tak gayi aur database dheema hua, to saari trucks ek saath restart hongi. Readiness rolling update ko bhi bachata hai: Deployment purana pod tab tak nahi hatata jab tak naya taiyaar na ho.
 
-### [13:00 – 15:05] Scene 7: Service se Service ki Baat
+### [12:30 – 15:15] Scene 7: Service se Service ki Baat
 **[VISUAL: `bookings-service` calling `http://rooms-service:5000/rooms/101` in the same wing. A call from another wing to `rooms-service.atithi.svc.cluster.local`. A chain of three services with a timeout at every hop and a short retry with backoff. A red picture of a slow service holding up the whole chain.]**
 
 **(Voiceover):**
-Services ek doosre ko DNS naam se bulati hain. Same wing mein `http://rooms-service:5000`, alag wing se `rooms-service.atithi.svc.cluster.local`. Ye URL code mein hardcode nahi, ConfigMap se. Ab network par bharosa nahi: har call par timeout lagao, thoda retry karo, ruk ruk ke, aur fail ho to saaf, chhota jawab do. Bina timeout ke ek dheemi service poori chain ko latka sakti hai, jise cascading failure kehte hain. Aur retry sirf wahi karo jo do baar chalaye jaane par bhi nuksaan na kare, yaani idempotent, jaise Session 15 mein Lambda ke saath.
+Services ek doosre ko DNS naam se bulati hain. Same wing mein `http://rooms-service:5000`, alag wing se `rooms-service.atithi.svc.cluster.local`. Ye URL code mein hardcode nahi, ConfigMap se. Ab network par bharosa nahi: har call par timeout lagao, thoda retry karo, ruk ruk ke, aur fail ho to saaf, chhota jawab do. Laundry band ho to front desk "same-day laundry" ka wada rok deta hai, har guest ko intezaar nahi karwata: yahi timeout hai. Bina timeout ke ek dheemi service poori chain ko latka sakti hai, jise cascading failure kehte hain. Retry sirf wahi karo jo do baar chalne par bhi nuksaan na kare, yaani idempotent: do clerk ek hi booking daalein, to reservation number se doosri kuch nahi badalti, jaise Session 15 mein Lambda ke saath.
 
-### [15:05 – 17:30] Scene 8: Lab: Truck Park ko Budget ke Saath Chalao
+### [15:15 – 17:30] Scene 8: Lab: Truck Park ko Budget ke Saath Chalao
 **[VISUAL: Namespace `atithi`. `kubectl create configmap`, `kubectl create secret generic`. A Deployment YAML for `rooms-service` with `envFrom`, `resources`, `readinessProbe` on `/health`. A LimitRange and a ResourceQuota. A test pod calls `rooms-service`. Scaling beyond the quota shows `FailedCreate` in `kubectl describe rs`.]**
 
 **(Voiceover):**
-Lab. `kubectl create namespace atithi`. Phir `kubectl create configmap rooms-config -n atithi --from-literal=APP_MODE=demo` aur ek Secret. `rooms-service` ke Deployment mein Session 22 ka design, `envFrom` se ConfigMap, `resources` mein request aur limit, aur `readinessProbe` `/health` par. Pehle ek LimitRange lagao, phir ek chhoti ResourceQuota, jaise `pods: "4"`. Ek test pod se `wget -qO- http://rooms-service:5000/health` karo. Ab Deployment ko paanch tak scale karo: paanchva pod nahi banega. `kubectl describe rs -n atithi` ke Events mein `FailedCreate` aur "exceeded quota" padho. Phir Deployment ko do replicas par wapas lao, kyunki poori quota bhari ho to rollout atak jaata hai. Ab ConfigMap badlo, aur `kubectl rollout restart` se naya value dikhao.
+Lab. `kubectl create namespace atithi`. Phir `kubectl create configmap rooms-config -n atithi --from-literal=APP_MODE=demo` aur ek Secret. `rooms-service` ke Deployment mein Session 22 ka design, `envFrom` se ConfigMap, `resources` mein request aur limit, aur `readinessProbe` `/health` par. Pehle ek LimitRange lagao, phir ek chhoti ResourceQuota, jaise `pods: "4"`. Ek test pod se `wget -qO- http://rooms-service:5000/health` karo. Ab Deployment ko paanch tak scale karo: paanchva pod nahi banega. `kubectl describe rs -n atithi` ke Events mein `FailedCreate` aur "exceeded quota" padho. Phir do replicas par wapas lao: bhari quota rollout rok deti hai. Ab ConfigMap badlo, `kubectl rollout restart` se naya value dikhao.
 
 ### [17:30 – 18:00] Scene 9: Recap aur Bridge
 **[VISUAL: A card: "ConfigMap + Secret (base64 is not secure) · restart to see new env · requests, limits · LimitRange per truck · ResourceQuota per wing · FailedCreate, not Pending · readiness gates traffic · timeouts + retries".]**

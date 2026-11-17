@@ -227,3 +227,10 @@
 - Session 02 (about 2,502, was 1,426): added what never to paste, chat/editor/terminal assistants, a worked RTCF example, grounding with docs and answers that vary, test-first small tasks, a verification toolbox (shellcheck SC2115 confirmed; `${DIR:?}` vs `set -u`), prompt injection, a team page.
 - Session 01 (about 2,507, was 2,159): container preview, regions and AZs preview, the five DORA metrics (2025 report), handout.
 - Session 16 (about 2,518, was 2,156): setup (name, email, default branch, editor), `.gitignore` and its tracked-file trap, `git rm`, `git mv`, `git blame`; all run on Git 2.43. Handouts added to 01, 02, 03 and 16.
+
+## 2026-11-17: Hotel services in the story (pilot)
+- Added a "Hotel services" section to `ANALOGY_STORY.md` (what each truck carries, how services behave, how they are run) and a settled-choice line: hotel services are named as trucks, never as "departments" (that word is taken by Linux groups and systemd).
+- Kept "truck" for containers and "concierge" for Ingress (author agreed to the recommendation).
+- Pilot: Session 25 scenes 1, 3, 4 (episode 1), probes and service-to-service calls (episode 2) now use reservations, housekeeping, laundry and clerk examples. Technical content unchanged. Word count 2,999 after trimming to stay under the cap.
+- Next, only after author review: apply the same wording to sessions 21-24, 26 and 31-33.
+- Author approved the pilot tone (2026-11-18). Hotel-service wording applied to sessions 21, 22, 23, 24, 26, 31, 32, 33 (one to four small edits each: housekeeping "room ready" status, floor-by-floor renovation, night-duty phone and runbook, test kitchen and old menu, token system, canary menu, billing and reservations alerts). Technical content unchanged; word counts all within 2,470-3,000 (S23 was already under 2,500 and stays on the top-up list).

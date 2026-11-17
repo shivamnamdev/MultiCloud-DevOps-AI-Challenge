@@ -20,37 +20,37 @@
 
 # 📺 EPISODE 1: Truck kyun
 
-### [00:00 – 02:25] Scene 1: Wahi Code, Alag Naseeb
+### [00:00 – 02:40] Scene 1: Wahi Code, Alag Naseeb
 **[VISUAL: A designer's laptop shows the rooms-service running with Python 3.12. The staging server shows an error: "SyntaxError, Python 3.8". A moving truck loads the app with its whole equipment and runs identically on both machines.]**
 
 **(Voiceover):**
-Atithi ka rooms-service designer ke laptop par chalta hai, Python 3.12 ke saath. Staging server par Python 3.8 hai, aur wahi code error deta hai. Code wahi, mashin alag. Isko "mere laptop par to chal raha tha" kehte hain. Jenkins aur Actions ki conveyor ne ek finished unit bana diya, par wo unit ye maanta hai ki server par sahi Python, sahi packages aur sahi settings pehle se hain. Hal: finished unit ke saath poora saaman bhi pack karo, ek sealed service truck mein, jo jis building ke courtyard mein khadi ho, wahan ek jaisi chale.
+Atithi ka rooms-service designer ke laptop par chalta hai, Python 3.12 ke saath. Staging server par Python 3.8 hai, aur wahi code error deta hai. Code wahi, mashin alag. Isko "mere laptop par to chal raha tha" kehte hain. Jenkins aur Actions ki conveyor ne ek finished unit bana diya, par wo unit ye maanta hai ki server par sahi Python, sahi packages aur sahi settings pehle se hain. Hal: finished unit ke saath poora saaman bhi pack karo, ek sealed service truck mein, jo jis building ke courtyard mein khadi ho, wahan ek jaisi chale. Hotel ki har service, reservations, housekeeping, restaurant, billing, aisi hi apni apni truck mein jaayegi.
 
-### [02:25 – 05:15] Scene 2: Truck vs Building
+### [02:40 – 05:25] Scene 2: Truck vs Building
 **[VISUAL: Left: a building stack. Hardware → hypervisor → three full buildings (each with its own management and generator) → apps. Right: a courtyard stack. Hardware → one building with its management → three trucks parked in the courtyard sharing its power and water. Labels: "GB, minutes" and "MB, seconds".]**
 
 **(Voiceover):**
 VM aur container ka farq story se samjho. VM ek poori alag building hai: apna management, apna generator, apna pura operating system, jaise Session 1 mein hypervisor ne ek bade tower ko alag alag buildings mein baanta tha. Container ek truck hai. Wo building ke courtyard mein khadi hoti hai, building ki bijli, paani aur management, yaani kernel, use karti hai, par uska apna saaman, apna stock aur apni privacy hai. Isliye truck MB mein hoti hai aur seconds mein chalu, building GB mein aur minutes mein. Ek dhyaan: truck ki privacy building ki deewar jitni gehri nahi. Isolation VM se kam hai, to security ke liye ek aur soch chahiye, jo hum aage dekhenge.
 
-### [05:15 – 08:15] Scene 3: Truck Asli Mein Ek Process Hai
+### [05:25 – 08:20] Scene 3: Truck Asli Mein Ek Process Hai
 **[VISUAL: A host's `ps aux` output with a `python app.py` process, highlighted. A box drawn around it with two labels: "namespaces: what it can see (processes, network, file system)" and "cgroups: how much it can use (CPU, memory)". A caption: "container ends when its main process ends".]**
 
 **(Voiceover):**
 Truck mein koi jaadu nahi. Ye Linux ke do features ka khel hai, jo aapne Session 5 ke process ke saath dekhe hain. Namespaces tay karte hain ki process kya dekh sakta hai: sirf apne process, apna network, apni file system. Cgroups tay karte hain ki wo kitna use kar sakta hai: kitna CPU aur memory. Docker bas inhe ek aasan interface mein baandh deta hai. Isliye container sach mein ek process hai, jo building ke `ps aux` mein bhi dikhta hai. Aur jis din us truck ka main process khatam hota hai, container khatam hota hai. Truck ke andar ka pehla process, PID 1, aur Session 5 ke signals yahan bahut kaam aate hain, jo hum Episode 3 mein dekhenge.
 
-### [08:15 – 10:55] Scene 4: Kab Truck, Kab Building
+### [08:20 – 10:55] Scene 4: Kab Truck, Kab Building
 **[VISUAL: A decision card. "Truck: one app, quick start, same everywhere, scale by copies, short life". "Building (VM): different operating system or kernel, strong isolation, long-lived, many services together". A third row: "Often both: trucks inside buildings".]**
 
 **(Voiceover):**
 Hamesha truck nahi, hamesha building nahi. Truck tab, jab ek app ko apni dependencies ke saath tez chalana ho, kai copies mein, aur jo kabhi bhi gir kar dobara ban sakti ho. Building tab, jab alag operating system ya alag kernel chahiye, bahut gehra isolation chahiye, ya ek lambi zindagi wali machine jisme kai cheezein saath chalti hain. Aksar dono saath hote hain: truck, building ke andar. Atithi ki EC2 buildings Session 8 se chal rahi hain, aur unke courtyards mein ab trucks khadi hongi. Aur ek baat jo Kubernetes tak jaati hai: truck ko ek aisi cheez maano jo kabhi bhi hat kar dobara ban sakti hai.
 
-### [10:55 – 13:35] Scene 5: Lab: Docker Install aur Pehla Truck
+### [10:55 – 13:30] Scene 5: Lab: Docker Install aur Pehla Truck
 **[VISUAL: Terminal on an Ubuntu building. Install Docker Engine from the official docs. `sudo usermod -aG docker $USER`, log out and in, `docker version` showing Client and Server, `docker run hello-world`, then `docker info | head`.]**
 
 **(Voiceover):**
 Lab. Ubuntu building par Docker Engine ko official documentation ke steps se install karo, kyunki repository ke details badalte rehte hain. Phir `sudo usermod -aG docker $USER`, logout aur login, taaki har command par sudo na lage. Session 4 aur 18 ka sabak yaad rakho: docker group mein hona us building par root jaisa hai. `docker version` mein Client aur Server dono dikhne chahiye, aur `docker info` mein storage driver aur containers ki ginti. Phir `docker run hello-world`. Output dhyaan se padho: Docker ne image dhoondhi, download ki, container chalaya aur message print kiya. Mac par Docker Desktop ek chhoti Linux VM ke andar yahi karta hai.
 
-### [13:35 – 14:15] Scene 6: Recap aur Bridge
+### [13:30 – 14:10] Scene 6: Recap aur Bridge
 **[VISUAL: A card: "truck = app + its equipment · shares the building's kernel · namespaces + cgroups · it is a process · docker group = root".]**
 
 **(Voiceover):**
