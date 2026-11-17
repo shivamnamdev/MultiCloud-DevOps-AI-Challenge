@@ -201,3 +201,6 @@
 ## 2026-11-17 Fact-check round 5: GKE lab run live
 - Ran S24 lab on a real GCP project (Autopilot, us-central1) with an isolated gcloud; all resources deleted and verified gone.
 - Found and fixed: node service account 403 on Artifact Registry, `--cpu-percent` deprecated, plugin/API/registry steps, timings. S24 trimmed to about 2,999 words. See FACT_CHECK_REPORT.md 3e.
+
+## 2026-11-17 Fact-check round 6: Terraform (S27, S28)
+- Ran both sessions' labs for real in Docker against the floci emulator (Terraform 1.17.2, AWS provider 5 and 6); remote state with use_lockfile and the lock collision verified. Only two script edits needed (count wording, provider 6 note). Pins of GitHub Actions flagged as outdated. See FACT_CHECK_REPORT.md 3f.

@@ -96,3 +96,27 @@ Measured:
 Script fixes applied (S24): auth plugin, `--location`, API enable, repo create + configure-docker, node service account role command and the 403 symptom, Autopilot defaults, `--cpu=50%`, timings, LB cleanup check. Trimmed to about 2,999 spoken words.
 
 Not tested: Standard mode, Artifact Registry in another region, the console views, real billing amounts (not visible to me).
+
+## 3f. Terraform (Sessions 27 and 28), run for real against the floci AWS emulator and in Docker
+
+Terraform v1.17.2 (hashicorp/terraform image), AWS provider 5.100.0 and 6.73.0, emulator floci 2.4.0 (fresh container, separate from the author's old ones). No real cloud was used, so nothing billed.
+
+S27 results (all matched the script):
+- `local_file` lab: init, plan, apply; changing content gives `-/+ must be replaced`; deleting the file by hand gives `+ create`; destroy clean.
+- AWS lab (VPC, `cidrsubnet` subnet, IGW, route table + association, security group, `for_each` ingress rules, `data.aws_ami`, instance, `merge` tags): `fmt`, `validate`, `plan -out`, `apply tfplan` (10 resources), second plan "no differences". `terraform console` gives `cidrsubnet("10.0.0.0/16", 8, 2)` = `10.0.2.0/24`.
+- State: `state list`, `state show`; console tag change shows `~ update in-place` in plan; `plan -refresh-only` shows "Objects have changed outside of Terraform"; apply restores.
+- Rename a resource: plan wants destroy + create; with a `moved` block: "has moved", 0 changes.
+- `import` block: plan says "1 to import", apply imports, next plan clean. Variable `validation` error text appears. `lifecycle { prevent_destroy = true }` blocks destroy with "Instance cannot be destroyed". `terraform graph` works (needs Graphviz `dot` for PNG; not installed here).
+- Script fixes: (1) the `count` removal claim was too absolute. Removing the middle item shifted items; for a field that can change in place Terraform updated in place and destroyed the last index; only replace-forcing fields recreate. Reworded. (2) Added that AWS provider is now on 6 and the lab passed on both 5 and 6.
+
+S28 results:
+- Bootstrap bucket with versioning, public access block, encryption: worked. `us-east-1` create-bucket without LocationConstraint worked.
+- `backend "s3"` with `use_lockfile = true` and `-backend-config=file`: `init -migrate-state` moved local state into the bucket.
+- Two concurrent applies: lock object `terraform.tfstate.tflock` appears; second apply fails with "Error acquiring the state lock" (HTTP 412) showing lock ID and Who. No DynamoDB needed. Lock object removed after the first apply. 4 object versions kept; `terraform state pull > backup.json` works.
+- Modules: `modules/network` called twice (dev, staging), `init` loads both, plan 6 to add; bad CIDR stopped by `can(cidrhost(...))` validation. Renaming a resource inside the module planned 6 destroy + 6 add; a `moved` block inside the module made it 0 changes.
+- `validate` passed for aws_db_instance (`manage_master_user_password`, `multi_az`, `deletion_protection`, `prevent_destroy`), ALB, target group, listener, launch template, ASG, EIP + NAT gateway, `assume_role`, `default_tags`, aws_eks_cluster, google_container_cluster (autopilot), azurerm_kubernetes_cluster, helm provider. `init -backend=false` + `validate` as in the pipeline snippet works.
+- Trivy `config --severity HIGH,CRITICAL --exit-code 1` runs and reports findings (e.g. GCP master authorized networks), so the pipeline step works as described.
+
+Open items from this round:
+- GitHub Action pins in the course are behind: checkout v4 (latest v7.0.1), setup-terraform v3 (v4.0.1), aws-actions/configure-aws-credentials v4 (v6.3.0), trivy-action latest v0.36.0 (2026-11-17 check). Also docker/* and setup-python pins. To be handled in the GHCR/Actions round, with a "check the latest version" line.
+- Not tested: real AWS behaviour (public IP, real ALB/RDS/NAT creation and cost), OIDC role trust for the pipeline, cost tools, policy as code, workspaces, `force-unlock`, the real EKS/GKE/AKS creation.

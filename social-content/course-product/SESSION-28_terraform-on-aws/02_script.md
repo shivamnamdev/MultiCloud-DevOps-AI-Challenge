@@ -20,37 +20,37 @@
 
 # 📺 EPISODE 1: Shared Register aur Lock
 
-### [00:00 – 02:10] Scene 1: Do Contractor, Ek Hi Waqt
+### [00:00 – 02:05] Scene 1: Do Contractor, Ek Hi Waqt
 **[VISUAL: Two engineers run `terraform apply` from their laptops at the same time, each with its own local state. Duplicate buildings appear, and one overwrites the other's register. A red collision.]**
 
 **(Voiceover):**
 Atithi mein ab do engineers campus ka master plan sambhalte hain. Dono ne ek hi samay `terraform apply` chalaya, apne apne laptop ke register ke saath. Dono ne alag cheezein banayi, ya ek ne doosre ka register overwrite kar diya. Ab asli duniya aur kisi ke register mein mel nahi. Local state ek akele project ke liye theek hai, team ke liye nahi. Iska hal: register ko ek shared jagah rakho, jise sab padhein, aur jis par ek hi samay mein ek hi apply chale. Isko remote state aur locking kehte hain.
 
-### [02:10 – 04:50] Scene 2: S3 Backend aur Lock
+### [02:05 – 05:05] Scene 2: S3 Backend aur Lock
 **[VISUAL: A backend block: `backend "s3" { bucket = "atithi-tfstate", key = "network/terraform.tfstate", region = "ap-south-1", encrypt = true, use_lockfile = true }`. A warehouse labelled versioning, encryption, public access block. Beside it, an older setup with a DynamoDB table for the lock, marked legacy.]**
 
 **(Voiceover):**
 AWS par aam tareeka warehouse hai, yaani S3 bucket. Backend block mein `bucket`, `key`, `region` aur `encrypt = true`. Bucket par versioning on, taaki register ki purani copy mil sake, Block Public Access on, aur default encryption, jo Session 12 ke saare niyam hain. Lock ka matlab hai ki ek hi samay ek apply chalega. Purane setups mein iske liye DynamoDB table lagti thi. Terraform 1.10 aur uske baad ke versions S3 ka apna lock file option, `use_lockfile = true`, dete hain, aur DynamoDB wala tareeka ab purana, yaani deprecated, maana jaata hai, jo abhi chalta hai par chetavani deta hai. Apne version ke docs dekh kar sahi option chuno. Ek chhoti jaal: backend block mein variables nahi chalte, isliye alag alag environments ke liye `-backend-config` file se values do.
 
-### [04:50 – 07:20] Scene 3: Pehle Bucket, Phir Terraform
+### [05:05 – 07:35] Scene 3: Pehle Bucket, Phir Terraform
 **[VISUAL: A chicken-and-egg diagram: "the register's warehouse must exist before Terraform can use it". A small bootstrap step creates the bucket once; the main project then runs `terraform init -migrate-state`.]**
 
 **(Voiceover):**
 Ek sawaal: register ke liye warehouse Terraform se banaye, to us warehouse ka register kahan? Ye chicken-and-egg hai. Aam hal: bucket ko ek baar, ek chhote bootstrap project se, ya AWS CLI se banao, aur uska apna chhota state ek surakshit jagah rakho. Phir asli project mein backend block likho aur `terraform init -migrate-state` chalao, jo local register ko bucket mein le jaata hai. Bucket ko sambhal kar rakho: usme sirf wahi role likh sake jo Terraform chalata hai, `aws:SecureTransport` ka Deny rule lagao, purane versions ka lifecycle rule rakho, aur access logs on. Register hi sabse keemti file hai, kyunki usme maujooda campus ki poori kahani hai.
 
-### [07:20 – 09:40] Scene 4: Ek Bada Register Nahi: Layers mein Todo
+### [07:35 – 09:50] Scene 4: Ek Bada Register Nahi: Layers mein Todo
 **[VISUAL: One huge state for everything, a typo in the web code putting the database at risk. Next: three registers: `network`, `data`, `app`. Arrows show `app` reading outputs from `network` and `data`.]**
 
 **(Voiceover):**
 Ek hi register mein poora campus rakhoge, to har plan sab kuch dekhega, aur ek galat badlaav sab ko chhoo sakta hai. Isliye layers: network, data aur app ke alag register. Network kam badalta hai, data aur bhi kam, app roz. App wali layer network ke outputs padh sakti hai, jaise `terraform_remote_state` data source se, ya ek shared parameter store se. Isse ek galti ka daayra, yaani blast radius, chhota rehta hai. App ka apply database ko chhue hi nahi. Aur plan chhote aur tez rehte hain. Seedha rule: jo cheezein alag raftaar se badalti hain, unka register alag.
 
-### [09:40 – 12:40] Scene 5: Register Bigad Gaya to
+### [09:50 – 12:50] Scene 5: Register Bigad Gaya to
 **[VISUAL: A bad apply corrupts the register. The warehouse's version history lists earlier copies. A command `terraform state pull > backup.json` taken before risky work. A restore by copying an earlier version back, then `terraform plan` to verify.]**
 
 **(Voiceover):**
 Kabhi register hi bigad jaata hai: koi apply beech mein toot gaya, ya kisi ne `state rm` galat chala diya. Warehouse mein versioning isi din ke liye hai. Pehle dekho ki bucket ki purani versions kaun si hain. Kisi bhi bade kaam, jaise `state mv` ya import, se pehle `terraform state pull > backup.json` se ek copy le lo. Bigad jaaye to pichhla theek version wapas rakho, aur turant `terraform plan` chalao: agar plan saaf aaye, ya sirf wahi badlaav dikhe jo aap jaante ho, to register theek hai. Agar plan mein achanak "sab kuch banana hai" dikhe, to rukna, kyunki Terraform ne apni buildings bhula di hain, aur apply karna sabko doguna bana dega. Lock atke to `force-unlock`, sirf tab jab pakka ho ki koi apply nahi chal raha.
 
-### [12:40 – 15:05] Scene 6: Lab: Register ko Warehouse mein Bhejo
+### [12:50 – 15:10] Scene 6: Lab: Register ko Warehouse mein Bhejo
 **[VISUAL: AWS CLI creating the bucket, enabling versioning, public access block, default encryption. A backend block added. `terraform init -migrate-state`. `aws s3 ls s3://BUCKET/network/`. Two terminals run `terraform apply` at once and the second is told the state is locked.]**
 
 **(Voiceover):**
@@ -64,7 +64,7 @@ aws s3api put-public-access-block --bucket YOUR-STATE-BUCKET \
 ```
 Dhyaan: us-east-1 mein `LocationConstraint` nahi dete. Phir backend block jodo aur `terraform init -migrate-state`. `aws s3 ls s3://YOUR-STATE-BUCKET/` se register dekho. Do terminals mein ek saath `terraform apply` try karo, aur dekho ki doosre ko "state locked" ka error milta hai. Lock atak jaaye to `terraform force-unlock` sirf tab, jab pakka ho ki koi apply chal nahi raha. Aakhir mein bucket ka version history kholkar dekho ki register ki purani copy kaise wapas milti hai.
 
-### [15:05 – 15:35] Scene 7: Recap aur Bridge
+### [15:10 – 15:40] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "remote state in S3 · versioned, encrypted, private · lock (native or DynamoDB) · bootstrap once · -backend-config · split state by layer · protect the register bucket".]**
 
 **(Voiceover):**

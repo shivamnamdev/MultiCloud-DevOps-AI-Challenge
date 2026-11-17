@@ -73,43 +73,43 @@ Recap: IaC, workflow aur plan padhna. Ab master plan ki bhasha: HCL.
 
 # 📺 EPISODE 2: Master Plan ki Bhasha
 
-### [00:00 – 01:50] Scene 1: Bees Line, Ek Building
+### [00:00 – 01:45] Scene 1: Bees Line, Ek Building
 **[VISUAL: A twenty-line Terraform file creating a door guard and a building. After `apply`, the AWS console shows both, tagged `Name: atithi-web`.]**
 
 **(Voiceover):**
 Bees line ki ek file, aur ek building aur ek door guard taiyaar. Session 8 mein humne wahi launch form ke das click kiye the. Ab wo likha hua hai. Terraform ki bhasha HCL hai, jo JSON se zyada padhne layak aur YAML se zyada saaf hai. Aaj hum uske chaar building blocks seekhte hain: provider, resource, variable aur output. Aur teen aur chhoti cheezein jo roz kaam aati hain: locals, count aur for_each.
 
-### [01:50 – 04:30] Scene 2: Provider aur Resource
+### [01:45 – 04:20] Scene 2: Provider aur Resource
 **[VISUAL: A `terraform` block with `required_version` and `required_providers` (aws, version constraint). A `provider "aws" { region = var.region }`. A `resource "aws_instance" "web"` with its parts labelled: block type, resource type, local name, arguments.]**
 
 **(Voiceover):**
-`terraform` block mein Terraform ka version aur required providers, aur unke version constraints, jaise `~> 5.0`, jiska matlab 5 ke andar ke naye versions, par agle major version nahi. Provider docs mein dekho ki aapke time par kaun sa major version chalta hai. `provider "aws"` mein region jaise settings. Credentials code mein nahi, kabhi nahi. Wo environment variables, ek profile, ya ek IAM role se aate hain, jaise Session 9 mein. `resource` block ka format: `resource "TYPE" "NAME" { ... }`, jaise `resource "aws_instance" "web"`. Type batata hai kya banana hai, name sirf Terraform ke andar ka label, aur andar arguments, jaise `instance_type`. Doosre resource ka reference aise: `aws_security_group.web.id`.
+`terraform` block mein Terraform ka version aur required providers, aur unke version constraints, jaise `~> 5.0`, jiska matlab 5 ke andar ke naye versions, par agle major version nahi. Provider docs mein dekho ki aapke time par kaun sa major version chalta hai: AWS provider ab 6 par hai, aur ye lab 5 aur 6 dono par chala. `provider "aws"` mein region jaise settings. Credentials code mein nahi, kabhi nahi. Wo environment variables, ek profile, ya ek IAM role se aate hain, jaise Session 9 mein. `resource` block ka format: `resource "TYPE" "NAME" { ... }`, jaise `resource "aws_instance" "web"`. Type batata hai kya banana hai, name sirf Terraform ke andar ka label, aur andar arguments, jaise `instance_type`. Doosre resource ka reference aise: `aws_security_group.web.id`.
 
-### [04:30 – 07:30] Scene 3: Variable, Local aur Output
+### [04:20 – 07:15] Scene 3: Variable, Local aur Output
 **[VISUAL: `variable "instance_type" { type = string  default = "t3.micro"  description = "Building size" }`. A `validation` block rejecting a bad value. `locals { tags = { Owner = "atithi", Env = var.env } }`. `output "public_ip" { value = aws_instance.web.public_ip }`. A `sensitive = true` variable.]**
 
 **(Voiceover):**
 Variable plan ke inputs hain. Har variable ka `type`, `description` aur kabhi `default`. `validation` block galat input pakadta hai, jaise instance type ki list se bahar. `sensitive = true` log aur plan mein value chhupata hai, par ek dhyaan: wo state mein phir bhi hoti hai, jo hum agle episode mein dekhenge. Values `terraform.tfvars` file, `-var` flag, ya `TF_VAR_naam` environment variable se aati hain. Locals ek plan ke andar ke naam hain, jaise saari tags ek jagah. Output wo cheezein jo apply ke baad dikhani hain, jaise public IP, aur `terraform output` se baad mein bhi mil jaati hain. Aur Session 14 yaad rakho: `cidrsubnet("10.0.0.0/16", 8, 1)` ek function hai jo `10.0.1.0/24` nikaal deta hai, to subnet ka hisaab Terraform khud karta hai.
 
-### [07:30 – 10:00] Scene 4: count aur for_each
+### [07:15 – 10:10] Scene 4: count aur for_each
 **[VISUAL: Three door guard rules written by hand versus one block with `for_each = toset(var.ports)`. A subnet list built with `count = 2`. A warning: removing the middle item of a `count` list shifts everything after it, while `for_each` keeps the names.]**
 
 **(Voiceover):**
-Ek hi cheez kai baar chahiye ho to count ya for_each. `count = 2` do copy banata hai, aur `count.index` se har ek ka number. `for_each = toset(var.ports)` ek ek value ke liye ek copy banata hai, aur har ek ka naam us value se bandh jaata hai. Fark ye hai ki `count` mein list ke beech ki cheez hatao, to uske baad ki saari cheezein khiskengi aur Terraform unhe hatakar dobara banayega. `for_each` mein sirf wohi hatega jo aapne hataya. Isliye aksar for_each behtar hai. Aur ek aur function: `merge(local.tags, { Name = "web" })` do maps ko jod deta hai.
+Ek hi cheez kai baar chahiye ho to count ya for_each. `count = 2` do copy banata hai, aur `count.index` se har ek ka number. `for_each = toset(var.ports)` ek ek value ke liye ek copy banata hai, aur har ek ka naam us value se bandh jaata hai. Fark ye hai ki `count` mein list ke beech ki cheez hatao, to uske baad ki saari cheezein ek number khisak jaati hain. Plan mein un par badlaav dikhta hai, aur jis field ko badalne se resource dobara banta hai, wo hatkar dobara bhi banta hai. `for_each` mein sirf wohi hatega jo aapne hataya. Isliye aksar for_each behtar hai. Aur ek aur function: `merge(local.tags, { Name = "web" })` do maps ko jod deta hai.
 
-### [10:00 – 12:30] Scene 5: Expression aur Condition
+### [10:10 – 12:35] Scene 5: Expression aur Condition
 **[VISUAL: A conditional `instance_type = var.env == "prod" ? "t3.medium" : "t3.micro"`. A `for` expression building a map of subnet names to IDs. `terraform console` evaluating `cidrsubnet("10.0.0.0/16", 8, 2)` and printing `10.0.2.0/24`.]**
 
 **(Voiceover):**
 Master plan mein thodi soch bhi likhi jaati hai. Condition: `var.env == "prod" ? "t3.medium" : "t3.micro"`, yaani production mein bada, baaki mein chhota. `for` expression: ek list se naya map banana, jaise subnet ke naam se unka ID. Aur functions: `cidrsubnet`, `merge`, `lookup`, `length`, `format`. In sab ko aazmane ke liye `terraform console`: ek chhoti shell jahan aap expression likhkar turant jawab dekhte ho, jaise `cidrsubnet("10.0.0.0/16", 8, 2)` ka jawab `10.0.2.0/24`. Seedha niyam: expression ko sasta rakho. Agar ek line samajhne mein ek minute lage, to use locals mein todo ya naam do, kyunki ye bhi code hai jise koi aur review karega.
 
-### [12:30 – 15:00] Scene 6: Lab: Building aur Door Guard
+### [12:35 – 15:00] Scene 6: Lab: Building aur Door Guard
 **[VISUAL: A project with `main.tf`, `variables.tf`, `outputs.tf`, `terraform.tfvars`. A data source for the latest Ubuntu AMI, an `aws_security_group` allowing port 22 from my IP and port 80 from anywhere, and an `aws_instance`. `plan`, `apply`, the public IP in the output, `curl` or SSH, then `destroy`.]**
 
 **(Voiceover):**
 Lab. Teen file banao: `main.tf`, `variables.tf`, `outputs.tf`. Provider aur region ek variable se. Ek door guard `aws_security_group`: port 22 sirf aapke IP se, jo ek variable ho, aur port 80 sabse. Ek `aws_instance` jo us door guard se jude, chhota size, aur tags `merge` se. Ubuntu ka latest AMI ek data source se dhoondho. `terraform fmt`, `validate`, `plan`, aur plan ko Scene 4 ke teen sawaalon se padho. Phir `apply`, aur output mein public IP se SSH karo. Credentials ke liye `AWS_PROFILE` ya environment, code mein nahi. Aakhir mein `terraform destroy` aur console mein check karo ki building aur door guard dono gaye.
 
-### [15:00 – 15:35] Scene 7: Recap aur Bridge
+### [15:00 – 15:30] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "provider (contractor) · resource TYPE NAME · variable (type, validation, sensitive) · local · output · count vs for_each · credentials from env or role, never code".]**
 
 **(Voiceover):**
