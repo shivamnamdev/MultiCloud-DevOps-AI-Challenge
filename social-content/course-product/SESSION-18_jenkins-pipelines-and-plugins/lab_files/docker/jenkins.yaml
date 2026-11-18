@@ -1,0 +1,22 @@
+jenkins:
+  systemMessage: "Atithi practice foreman, session 18 (lab use only)"
+  numExecutors: 2
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "practice"
+  authorizationStrategy: loggedInUsersCanDoAnything
+unclassified:
+  location:
+    url: "http://localhost:8080/"
+  globalLibraries:
+    libraries:
+      - name: "ci-lib"
+        defaultVersion: "main"
+        retriever:
+          modernSCM:
+            scm:
+              git:
+                remote: "/repos/ci-lib"

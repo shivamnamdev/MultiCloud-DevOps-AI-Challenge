@@ -1,0 +1,10 @@
+pipeline {
+  agent any
+  stages {
+    stage('Test') { steps { sh 'mvn -B test' } }
+  }
+  post {
+    failure { sh "aws sns publish --topic-arn 'arn:aws:sns:us-east-1:000000000000:ops-alerts' --message 'FAILED ${env.JOB_NAME} #${env.BUILD_NUMBER} ${env.BUILD_URL}'" }
+    fixed   { sh "aws sns publish --topic-arn 'arn:aws:sns:us-east-1:000000000000:ops-alerts' --message 'FIXED ${env.JOB_NAME} #${env.BUILD_NUMBER} ${env.BUILD_URL}'" }
+  }
+}

@@ -1,0 +1,8 @@
+@Library('ci-lib@v1.0') _
+pipeline {
+  agent any
+  stages { stage('Work') { steps { echo 'hello from the library lab' } } }
+  post {
+    always { notifyBuild(status: currentBuild.currentResult, topic: 'arn:aws:sns:us-east-1:000000000000:ops-alerts') }
+  }
+}

@@ -1,0 +1,21 @@
+# Usage: BOOKING_REPO=~/booking-service CI_LIB_REPO=~/ci-lib docker compose -f docker/compose.yml up -d --build
+# Open http://localhost:8080 (admin / practice, lab only). Remove everything with: docker compose -f docker/compose.yml down -v
+services:
+  jenkins:
+    build: .
+    ports:
+      - "${JENKINS_PORT:-8080}:8080"
+    environment:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+      AWS_ENDPOINT_URL: http://floci:4566
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - ${BOOKING_REPO:-../booking-service}:/repos/booking-service
+      - ${CI_LIB_REPO:-../ci-lib}:/repos/ci-lib
+    depends_on: [floci]
+  floci:
+    image: floci/floci:latest      # a local AWS emulator (SNS and SQS), so no AWS account is needed
+volumes:
+  jenkins_home:

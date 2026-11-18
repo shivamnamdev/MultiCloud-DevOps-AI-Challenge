@@ -1,0 +1,52 @@
+pipeline {
+  agent none                       // no machine is reserved for the whole run
+  parameters { choice(name: 'ENV', choices: ['dev', 'staging'], description: 'Target') }
+  environment { APP_NAME = 'booking-service' }
+  options {
+    timeout(time: 20, unit: 'MINUTES')
+    timestamps()
+    disableConcurrentBuilds()
+    buildDiscarder(logRotator(numToKeepStr: '10'))
+  }
+  stages {
+    stage('Checks') {
+      failFast true
+      parallel {                   // "agent" is not allowed on a stage that has parallel: put it on each branch
+        stage('Unit') {
+          agent any
+          steps {
+            checkout scm           // needed because there is no top-level agent to do it for us
+            sh 'mvn -B test'
+          }
+          post {
+            always  { junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml' }
+            cleanup { cleanWs() }
+          }
+        }
+        stage('Lint') {
+          agent any
+          steps { sh 'echo lint ok' }
+        }
+      }
+    }
+    stage('Approval') {
+      when { expression { params.ENV == 'staging' } }
+      steps {
+        // no agent here: waiting for a person must not hold a machine
+        timeout(time: 1, unit: 'HOURS') { input message: 'Deploy to staging?', ok: 'Deploy' }
+      }
+    }
+    stage('Deploy') {
+      when {
+        beforeAgent true           // decide to skip BEFORE asking for a machine
+        expression { params.ENV == 'staging' }
+      }
+      agent any
+      steps { echo "deploying ${env.APP_NAME} to ${params.ENV}" }
+    }
+  }
+  post {
+    failure { echo 'failure block' }
+    fixed   { echo 'fixed block' }
+  }
+}

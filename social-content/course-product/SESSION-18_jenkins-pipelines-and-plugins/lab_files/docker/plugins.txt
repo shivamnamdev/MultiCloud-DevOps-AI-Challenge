@@ -1,0 +1,10 @@
+git
+workflow-aggregator
+junit
+pipeline-stage-view
+pipeline-input-step
+pipeline-model-definition
+credentials-binding
+configuration-as-code
+timestamper
+ws-cleanup
