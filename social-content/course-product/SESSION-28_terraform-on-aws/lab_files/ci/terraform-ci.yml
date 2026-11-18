@@ -1,0 +1,24 @@
+# Save as .github/workflows/terraform-ci.yml in your repo.
+name: terraform-ci
+on:
+  pull_request:
+    paths: ["**.tf", ".github/workflows/terraform-ci.yml"]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: hashicorp/setup-terraform@v4
+      - run: terraform fmt -check -recursive
+      - run: terraform init -backend=false
+      - run: terraform validate
+      # Check the latest release on the action's page and pin a tag or a full commit SHA.
+      - uses: aquasecurity/trivy-action@v0.36.0
+        with:
+          scan-type: config
+          severity: "HIGH,CRITICAL"
+          exit-code: "1"

@@ -1,0 +1,8 @@
+# Add this AFTER your first local apply (the lab explains why). Rename to backend.tf, then run init -migrate-state.
+terraform {
+  backend "s3" {
+    key          = "network/terraform.tfstate"
+    encrypt      = true
+    use_lockfile = true
+  }
+}

@@ -1,0 +1,4 @@
+# Real AWS: fill in your bucket and region, then run
+#   terraform init -migrate-state -backend-config=backend.hcl
+bucket = "YOUR-STATE-BUCKET"
+region = "YOUR_REGION"
