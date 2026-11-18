@@ -1,6 +1,6 @@
 # Story beat for each session
 
-This file applies the hotel-chain story in [ANALOGY_STORY.md](ANALOGY_STORY.md) to the 33 sessions in [SYLLABUS_BLUEPRINT.md](SYLLABUS_BLUEPRINT.md). Use the story words exactly as written there, so one word never stands for two things.
+This file applies the hotel-chain story in [ANALOGY_STORY.md](ANALOGY_STORY.md) to the 33 numbered sessions (plus 05B, 16B and the optional 31B) in [SYLLABUS_BLUEPRINT.md](SYLLABUS_BLUEPRINT.md). Use the story words exactly as written there, so one word never stands for two things.
 
 - **Zoom** says where the session sits: 1 = inside one building, 2 = the rented campus, 3 = head office.
 - **Story beat** is what happens in the company during that session. It can be the opening of episode 1.

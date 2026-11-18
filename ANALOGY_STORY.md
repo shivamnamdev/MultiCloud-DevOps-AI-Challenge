@@ -3,7 +3,7 @@
 Every session in this course is taught as part of one story: you are building and running a hotel chain. A single hotel explains Linux well but has no place for Git, Jenkins, Docker, Kubernetes or Terraform. A hotel *company* that rents buildings, designs its services at head office and ships them to every building has a place for all of them.
 
 - This file is the master story and the locked vocabulary.
-- [ANALOGY_SESSION_MAP.md](ANALOGY_SESSION_MAP.md) gives the story beat for each of the 33 sessions in [SYLLABUS_BLUEPRINT.md](SYLLABUS_BLUEPRINT.md).
+- [ANALOGY_SESSION_MAP.md](ANALOGY_SESSION_MAP.md) gives the story beat for each of the 33 numbered sessions (plus 05B, 16B and the optional 31B) in [SYLLABUS_BLUEPRINT.md](SYLLABUS_BLUEPRINT.md).
 
 ## The story in one telling
 
@@ -290,7 +290,7 @@ Each session can open with "where are we on this journey, and at which zoom leve
 
 ## Coverage check
 
-Every one of the 33 sessions has a home: 01–02 foundation, 03–06 zoom level 1, 07 the bridge from level 1 to level 2, 08–15 zoom level 2, 16–26 zoom level 3, 27–29 back to zoom level 2, 30 the second landlord, 31–33 grand openings and the assistant.
+Every one of the 33 numbered sessions, and 05B, 16B and 31B, has a home: 01–02 foundation, 03–06 zoom level 1, 07 the bridge from level 1 to level 2, 08–15 zoom level 2, 16–26 zoom level 3, 27–29 back to zoom level 2, 30 the second landlord, 31–33 grand openings and the assistant.
 
 No story term stands for two things: building = server, truck = container, blueprint = code, landlord = cloud provider, staff = system users, guest = end user, assistant = AI only.
 

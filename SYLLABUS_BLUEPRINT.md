@@ -6,7 +6,8 @@
 - Deliverable per session: `02_script.md` only (scripts only; teleprompter text/videos later if wanted).
 - Format "like Python": `social-content/course-product/SESSION-NN_<slug>/02_script.md`, **4 episodes per session**, ~5 scenes per episode, Roman Hinglish, `[VISUAL]` cue + voiceover per scene, ~2,500-3,000 spoken words per session.
 
-## Condensing 60 source sessions (~770k words) into 33 sessions (132 episodes, ~15 h)
+## Condensing 60 source sessions (~770k words) into 33 numbered sessions
+**Counts (as of 2026-11-18):** 33 numbered sessions, plus 05B and 16B = **35 core sessions, 140 episodes, about 35 h of scripted video**. On top of that: Session 00 (kickoff) and the optional Session 31B (GitOps): 37 scripts, 148 episodes, about 37 h. Students are told "35 sessions plus one optional bonus".
 | # | Session (slug) | Maps from source | Core outcome |
 |---|---|---|---|
 | 00 | the-story-of-atithi-hotels | S01 (program kickoff) | The tutorial trap, the course promise, the whole course as one story (guest journey, three zoom levels), Day 0 setup and commitment tasks. Teaches no tool |
@@ -61,6 +62,7 @@
 - Name for the new course (the repo/course folder is still `MultiCloud-DevOps-AI-Challenge`).
 
 ## Change log
+- **2026-11-18:** Counts made consistent. Student-facing wording is "35 sessions plus one optional bonus (31B)"; the numbering stays 01-33. Hours re-estimated from scene timestamps (the old "~15 h" and "132 episodes" were from the first draft). Session 00 (card, voiceover, handout line) and both analogy files updated. The advertisement scripts still say "33 sessions" and are listed for the author to decide.
 - **2026-11-17:** Author decisions applied. New optional Session 31B (GitOps with Argo CD, tested on kind with Argo CD 3.6). One extra scene each: Route 53 in Session 11, GitLab CI in Session 20, Docker Gordon in Session 21. Sessions 01, 02, 03 and 16 to be brought to the 2,500 to 3,000 word standard. Session 00 row added. Git course: all 15 sessions approved, pilot is Session 02.
 - **2026-11-16:** Linux grew by one script. Session 05B (storage, web server, security layers) was added for the part of the author's Linux notes that had no home (disks and swap, LVM, Apache, SELinux, NAT), and sessions 04 and 05 were rewritten to carry the rest. Sessions 03 to 05 stay on Ubuntu and name the Red Hat family equivalent once; 05B runs on a Rocky or AlmaLinux VM. No session was renumbered: 33 numbered sessions, 35 session scripts plus Session 00. Detail: `NOTES_INTEGRATION_MAP_LINUX_K8S.md`.
 - **2026-11-14:** Git split into 16 (Part A) and 16B (Part B), four episodes each, so the author's 16-day Git cohort is covered in brief without renumbering sessions 17-33. The course is still 33 numbered sessions; it now has 34 session scripts plus Session 00. Detail: `GIT_NOTES_INTEGRATION_MAP.md`. The deep version of this material is a separate dedicated course in `courses/Github-Live-Cohort-Transcript`.

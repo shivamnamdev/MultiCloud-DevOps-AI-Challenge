@@ -238,3 +238,9 @@
 ## 2026-11-18: Top-ups to the 2,500-word floor
 - S05 +`nproc` and how to read load average against CPU count (2,523). S07 +`which python`, `deactivate`, `python3 -m pip`, venv/requirements/gitignore habit (2,507). S08 +`Owner`/`Purpose` tags and activating cost allocation tags (2,501). S16B +`--force-with-lease` and when force is acceptable (2,503). S23 +`kubectl explain` and `kubectl api-resources` short names (2,511).
 - All five commands/flags are standard and were checked against known behaviour; no new lab steps were added.
+
+## 2026-11-18: Course counts made consistent
+- Actual state: 37 script folders x 4 episodes = 148 episodes. Core course = 33 numbered sessions + 05B + 16B = 35 sessions, 140 episodes. Plus Session 00 (kickoff) and optional 31B.
+- Hours re-estimated from scene timestamps: about 35 h core, about 37 h with 00 and 31B (the old "~15 h / 132 episodes" was from the first draft).
+- Updated: `SYLLABUS_BLUEPRINT.md` (counts line, change log), `ANALOGY_SESSION_MAP.md`, `ANALOGY_STORY.md`, Session 00 (card, promise, handout line, mentions of 5B and the 31B bonus; 2,623 words).
+- Left unchanged on purpose, for the author: `ADVERTISEMENT/AD-001`, `AD-002` still say "33 sessions / 132 episodes" and `task_plan.md` lines 37-44 record the 2026-11-13 state. The `Session-NN-*` folders are the source notes and are not ours.
