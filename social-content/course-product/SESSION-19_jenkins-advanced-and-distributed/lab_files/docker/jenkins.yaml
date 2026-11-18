@@ -1,0 +1,13 @@
+jenkins:
+  systemMessage: "Atithi practice foreman, session 19 (lab use only)"
+  numExecutors: 2
+  securityRealm:
+    local:
+      allowsSignup: false
+      users:
+        - id: "admin"
+          password: "practice"
+  authorizationStrategy: loggedInUsersCanDoAnything
+unclassified:
+  location:
+    url: "http://localhost:8080/"

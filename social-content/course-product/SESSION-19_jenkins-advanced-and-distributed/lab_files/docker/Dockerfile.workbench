@@ -1,0 +1,13 @@
+# A "workbench": a second building that Jenkins reaches over SSH. Java, Git and Maven are installed; nothing else.
+FROM eclipse-temurin:21-jre
+RUN apt-get update && apt-get install -y --no-install-recommends openssh-server git maven ca-certificates \
+    && rm -rf /var/lib/apt/lists/* && mkdir -p /run/sshd
+RUN useradd -m -s /bin/bash jenkins && mkdir -p /home/jenkins/.ssh && chmod 700 /home/jenkins/.ssh \
+    && chown -R jenkins:jenkins /home/jenkins
+# Java must be on the PATH of an SSH session, not only in Docker's ENV, or Jenkins cannot start its agent there.
+RUN echo 'export PATH=/opt/java/openjdk/bin:$PATH' > /etc/profile.d/java.sh \
+    && echo 'export PATH=/opt/java/openjdk/bin:$PATH' >> /home/jenkins/.bashrc \
+    && git config --system --add safe.directory '*'
+COPY workbench-start.sh /usr/local/bin/workbench-start.sh
+RUN chmod +x /usr/local/bin/workbench-start.sh
+CMD ["/usr/local/bin/workbench-start.sh"]

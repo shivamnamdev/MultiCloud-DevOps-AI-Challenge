@@ -1,0 +1,27 @@
+# Setup, once:   mkdir -p docker/keys && ssh-keygen -t ed25519 -N "" -f docker/keys/agent_key   (the key pair Jenkins uses to reach the workbench)
+# Start:         BOOKING_REPO=~/booking-service docker compose -f docker/compose.yml up -d --build
+# Open http://localhost:8080  (admin / practice, lab only).   Remove everything: docker compose -f docker/compose.yml down -v
+services:
+  jenkins:
+    build: { context: ., dockerfile: Dockerfile.jenkins }
+    ports:
+      - "${JENKINS_PORT:-8080}:8080"
+    environment:
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      AWS_DEFAULT_REGION: us-east-1
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - ${BOOKING_REPO:-../booking-service}:/repos/booking-service
+      - ./keys:/keys:ro
+    depends_on: [workbench, floci]
+  workbench:
+    build: { context: ., dockerfile: Dockerfile.workbench }
+    hostname: workbench
+    volumes:
+      - ./keys/agent_key.pub:/keys/agent_key.pub:ro
+      - ${BOOKING_REPO:-../booking-service}:/repos/booking-service   # practice only: both machines must be able to read the repo
+  floci:
+    image: floci/floci:latest      # a local AWS emulator (S3), so no AWS account is needed
+volumes:
+  jenkins_home:

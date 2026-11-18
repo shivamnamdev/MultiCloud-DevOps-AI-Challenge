@@ -1,0 +1,19 @@
+pipeline {
+  agent any
+  options { timeout(time: 15, unit: 'MINUTES') }
+  stages {
+    stage('Build')   { steps { sh 'mvn -B -DskipTests clean compile' } }
+    stage('Test')    { steps { sh 'mvn -B test' } }
+    stage('Package') {
+      when { branch 'main' }
+      steps { sh 'mvn -B -DskipTests package' }
+    }
+    stage('Deploy') {
+      when { branch 'main' }
+      steps { echo "deploying ${env.BRANCH_NAME} (practice: nothing really deployed)" }
+    }
+  }
+  post {
+    always { junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml' }
+  }
+}
