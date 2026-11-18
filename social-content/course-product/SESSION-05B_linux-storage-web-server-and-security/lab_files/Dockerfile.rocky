@@ -1,0 +1,17 @@
+# A practice Red Hat family "building": Rocky Linux 9 with systemd, plus the tools of Session 5B.
+# For learning only. It runs privileged (systemd, firewalld and loop disks need it).
+FROM rockylinux:9
+RUN dnf install -y --setopt=install_weak_deps=False \
+      systemd sudo util-linux lvm2 e2fsprogs xfsprogs parted gdisk \
+      httpd firewalld policycoreutils policycoreutils-python-utils \
+      iproute procps-ng iputils less vim-minimal passwd which hostname openssh-clients \
+    && dnf clean all
+# The system's own units that make no sense in a container.
+RUN systemctl enable httpd firewalld; \
+    (cd /lib/systemd/system/sysinit.target.wants/ && for i in *; do [ $i = systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+    rm -f /lib/systemd/system/multi-user.target.wants/{getty.target,systemd-logind.service,systemd-user-sessions.service} 2>/dev/null; true
+# A container has no udev. Tell LVM not to wait for it, so lvcreate can make its device nodes itself.
+RUN printf 'activation {\n    udev_sync = 0\n    udev_rules = 0\n}\n' > /etc/lvm/lvmlocal.conf
+RUN useradd -m -G wheel rocky && echo 'rocky:rocky' | chpasswd
+STOPSIGNAL SIGRTMIN+3
+CMD ["/sbin/init"]
