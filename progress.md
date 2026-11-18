@@ -244,3 +244,10 @@
 - Hours re-estimated from scene timestamps: about 35 h core, about 37 h with 00 and 31B (the old "~15 h / 132 episodes" was from the first draft).
 - Updated: `SYLLABUS_BLUEPRINT.md` (counts line, change log), `ANALOGY_SESSION_MAP.md`, `ANALOGY_STORY.md`, Session 00 (card, promise, handout line, mentions of 5B and the 31B bonus; 2,623 words).
 - Left unchanged on purpose, for the author: `ADVERTISEMENT/AD-001`, `AD-002` still say "33 sessions / 132 episodes" and `task_plan.md` lines 37-44 record the 2026-11-13 state. The `Session-NN-*` folders are the source notes and are not ours.
+
+## 2026-11-18: Lab guide pilot, Session 24
+- New `social-content/course-product/SESSION-24_kubernetes-workloads-on-gke/03_lab_guide.md`: four parts matching the four lab scenes, each with goal, exact commands, real expected output, a deliberate break and fix, a self-check and cleanup, plus cost/time table, final checklist and a troubleshooting table.
+- Parts A-C were re-run on a fresh kind 0.34 cluster (Kubernetes 1.37, kubectl 1.36) to capture real output; the cluster was deleted afterwards. Part D uses the live GKE Autopilot run from FACT_CHECK_REPORT 3e (real project ID replaced by placeholders).
+- New findings from the re-run: (1) `kubectl rollout status` waits forever on a stuck rollout, and macOS has no `timeout`, so the guide uses `--timeout=`. (2) After `rollout undo`, revision 1 is re-labelled as revision 3 (history showed 2, 3, 4). (3) `kubectl logs --previous` can fail on kind with "unable to retrieve container logs" while plain `kubectl logs` works. (4) The Endpoints deprecation warning appears on Kubernetes 1.33+. (5) Exit codes confirmed: ErrImagePull has none, `exit 1` gives 1, OOM gives 137, `nosuchcmd` gives 127, 100-CPU request gives Pending with "Insufficient cpu".
+- Not run: `kubectl annotate ... change-cause` (labelled as such), the exact load-generator pod on GKE (the busybox pod was only checked on kind), GKE Standard mode.
+- Script `02_script.md` was not changed. The earlier `PRACTICAL_AUDIT.md` (2026-11-13) is out of date and not yet re-run.
