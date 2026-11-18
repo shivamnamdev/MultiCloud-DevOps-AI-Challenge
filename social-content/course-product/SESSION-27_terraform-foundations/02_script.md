@@ -125,37 +125,37 @@ Recap: HCL ke blocks. Ab ek chhupi hui cheez: Terraform ko kaise pata hai ki usn
 **(Voiceover):**
 Aapne ek building banayi. Dobara `terraform apply` karte ho, to wo doosri building kyun nahi banata? Kyunki contractor ek as-built register rakhta hai: state file. Usme likha hai ki master plan ka har resource asli duniya ki kaun si cheez hai: `aws_instance.web` ka matlab `i-0abc...`. Plan chalate waqt Terraform plan, register aur asli duniya teeno ko milata hai. Isliye state Terraform ki yaadashta hai, aur use samajhna sabse zaroori cheezon mein se ek hai.
 
-### [01:45 – 04:25] Scene 2: State ke Khatre
+### [01:45 – 04:20] Scene 2: State ke Khatre
 **[VISUAL: Three jobs of state: mapping, dependency metadata, performance. Three dangers: secrets in plain text inside the file, a lost file means Terraform forgets its buildings, two people applying at the same time corrupt it.]**
 
 **(Voiceover):**
 State teen kaam karti hai: plan aur asli resources ka mapping, dependencies ki jaankari, aur performance. Par khatre bhi hain. Ek: state mein sensitive values, jaise database ka password, plain text mein ho sakti hain, chahe aapne `sensitive = true` likha ho. Isliye state ko Git mein kabhi commit mat karo, jaise Session 20 ka secrets wala sabak. Do: state kho jaye to Terraform bhool jaata hai ki kya banaya tha, aur dobara sab banane ki koshish karega. Teen: do log ek saath apply karein to state bigad sakti hai. Isliye team ke saath state ko remote backend mein, versioning aur locking ke saath rakhte hain, jo agle session mein hai.
 
-### [04:25 – 06:55] Scene 3: Drift
+### [04:20 – 06:50] Scene 3: Drift
 **[VISUAL: An engineer changes a door guard rule in the console. `terraform plan` shows `~ update in-place` for the rule. A choice: bring the code back as truth with `apply`, or update the code to match the change.]**
 
 **(Voiceover):**
 Agar koi console mein jaakar resource badal de, to asli duniya aur register alag ho jaate hain. Isko drift kehte hain. `terraform plan` ise pakad leta hai: wo dikhata hai ki wapas code jaisa kar dega. Ab do raaste. Agar console wala badlaav galat tha, to `apply` use mita dega. Agar sahi tha, to code ko badlo, pull request se, aur phir apply. Seedha niyam: jo cheez Terraform se bani hai, use console se mat badlo. Kabhi emergency mein badalna pade, to turant code mein wahi badlaav likho. Nahi to agle apply par wo badlaav chupchap mit jaayega, aur kisi ko pata bhi nahi chalega kyun.
 
-### [06:55 – 09:40] Scene 4: State ke Commands aur Import
+### [06:50 – 09:35] Scene 4: State ke Commands aur Import
 **[VISUAL: Commands. `terraform state list`, `terraform state show aws_instance.web`, `terraform plan -refresh-only`, `terraform state mv`, `terraform state rm`. An `import { to = aws_s3_bucket.photos  id = "atithi-photos-123" }` block. A `moved { from = aws_instance.web  to = aws_instance.app }` block.]**
 
 **(Voiceover):**
 State ko dekhne ke liye `terraform state list` aur `terraform state show aws_instance.web`. `terraform plan -refresh-only` sirf register ko asli duniya ke hisaab se update dikhata hai, bina kuch badle. Ek purani cheez, jo haath se bani thi, ab master plan mein laani ho, to import: ek `import` block jisme `to` aur asli `id`, ya purani command `terraform import`. Import ke baad plan mein koi badlaav nahi dikhna chahiye, nahi to code asli cheez se milta nahi. Ek aur jaal: kisi resource ka naam badal do, to Terraform use hatakar naya banayega. Isse bachne ke liye `moved` block ya `terraform state mv`. State ko haath se edit mat karo, aur `state rm` jaisi commands bahut sochkar.
 
-### [09:40 – 12:25] Scene 5: Secret ko State se Door Rakho
+### [09:35 – 12:20] Scene 5: Secret ko State se Door Rakho
 **[VISUAL: A database definition with a `password` argument in plain text that appears in the state file. Two safer paths: the cloud's managed password option that never passes through the plan, and a reference to a secret read at run time. A caution on `sensitive = true`: hides output, not the state.]**
 
 **(Voiceover):**
 State mein secret ka sabse aam raasta database ka password hai. Agar plan mein `password = "..."` likha, to wo state mein plain text mein jaayega, aur `sensitive = true` sirf screen par chhupata hai. Do behtar raaste. Ek: cloud ka managed password option, jaise RDS ka, jisme password Secrets Manager mein khud bante hain aur Terraform ke paas kabhi aate hi nahi. Do: password ko ek secret store mein rakho aur code mein sirf uska naam. Aur ek aur niyam: state ko wahi samjho jo ek key cabinet hota hai, yaani use ek remote backend mein, encryption aur kam logon ki pahunch ke saath rakho. Jo secret kabhi state mein gaya, usse badal do.
 
-### [12:25 – 15:00] Scene 6: Lab: Register Dekho aur Drift Banao
+### [12:20 – 15:10] Scene 6: Lab: Register Dekho aur Drift Banao
 **[VISUAL: After `apply`, `terraform state list`, `terraform state show`. A tag changed by hand in the console. `terraform plan` shows the drift. `.gitignore` with `*.tfstate`, `*.tfstate.*`, `.terraform/`. `.terraform.lock.hcl` committed.]**
 
 **(Voiceover):**
-Lab. Pichhle lab ki building dobara banao. `terraform state list`, aur `terraform state show aws_instance.web`. `terraform.tfstate` ko sirf padho, haath se edit mat karo, aur dekho ki usme kya kya likha hai: ID, AMI, IP, aur agar koi password variable ho to wo bhi. Ab console mein jaakar building ka ek tag badal do, aur `terraform plan` chalao: drift dikhega. `apply` se wapas code jaisa hoga. Phir resource ka local name badlo, `web` se `app`, aur plan padho: `-/+`. Ek `moved` block lagao aur plan phir dekho: ab koi replace nahi. Repo ke `.gitignore` mein `*.tfstate`, `*.tfstate.*` aur `.terraform/` daalo, aur `.terraform.lock.hcl` commit karo, taaki provider versions tay rahein.
+Lab. Pichhle lab ki building dobara banao. `terraform state list`, aur `terraform state show aws_instance.web`. `terraform.tfstate` ko sirf padho, haath se edit mat karo, aur dekho ki usme kya kya likha hai: ID, AMI, IP, aur agar koi password variable ho to wo bhi. Ab console mein jaakar building ka ek tag badal do, aur `terraform plan` chalao: drift dikhega. `apply` se wapas code jaisa hoga. Phir resource ka local name badlo, `web` se `app`, aur plan padho: ek destroy aur ek create, `1 to add, 1 to destroy`. Ek `moved` block lagao aur plan phir dekho: ab koi replace nahi. Repo ke `.gitignore` mein `*.tfstate`, `*.tfstate.*` aur `.terraform/` daalo, aur `.terraform.lock.hcl` commit karo, taaki provider versions tay rahein.
 
-### [15:00 – 15:30] Scene 7: Recap aur Bridge
+### [15:10 – 15:40] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "state = mapping + secrets · never in Git · drift: console change shows up in plan · import brings old buildings in · rename needs `moved` · lock file in Git".]**
 
 **(Voiceover):**
@@ -165,37 +165,37 @@ Recap: state, drift, import aur moved. Ab dependencies, data sources, aur ek sur
 
 # 📺 EPISODE 4: Pehle Kaun, Phir Kaun
 
-### [00:00 – 02:20] Scene 1: Dependency Graph
+### [00:00 – 02:15] Scene 1: Dependency Graph
 **[VISUAL: A graph: campus → wing → door guard → building. Terraform builds from left to right and destroys in reverse. Two independent branches built side by side.]**
 
 **(Voiceover):**
 Building banane se pehle wing chahiye, aur wing se pehle campus. Terraform ye order khud tay karta hai, kyunki jab aap ek resource ka reference doosre mein dete ho, wo ek dependency graph banata hai. Aapko "pehle ye, phir wo" likhna nahi padta. Jo cheezein ek doosre par nirbhar nahi, wo ek saath banti hain, to apply tez hota hai. Aur hatate waqt ulta kram chalta hai: pehle building, phir wing, phir campus. Ye Session 14 ka wahi kram hai jo cleanup mein hum haath se likhte the.
 
-### [02:20 – 04:40] Scene 2: Implicit, Explicit aur Data Source
+### [02:15 – 04:35] Scene 2: Implicit, Explicit aur Data Source
 **[VISUAL: `subnet_id = aws_subnet.public.id` (implicit). `depends_on = [aws_iam_role_policy.app]` (explicit). A data source `data "aws_vpc" "default" { default = true }` reading an existing item, and a note "resource creates and owns; data only reads".]**
 
 **(Voiceover):**
 Reference dene se implicit dependency banti hai: `subnet_id = aws_subnet.public.id`. Kabhi dependency code mein dikhti nahi, jaise IAM policy attach hone ke baad hi building ka kaam shuru ho, to `depends_on` explicit likhte hain. Data source pehle se maujud cheez ki jaankari padhta hai, use banata nahi: `data "aws_vpc" "default"` default campus dhoondhta hai, aur `data "aws_ami"` Session 10 ka latest AMI. Resource banata aur sambhalta hai, data source sirf padhta hai. Ye dono mix mat karo, aur data source mein filter itna saaf rakho ki ek hi jawab aaye.
 
-### [04:40 – 07:15] Scene 3: lifecycle ke Taale
+### [04:35 – 07:10] Scene 3: lifecycle ke Taale
 **[VISUAL: A resource with `lifecycle { prevent_destroy = true }` and a plan that refuses. Other options: `create_before_destroy`, `ignore_changes = [tags]`, `replace_triggered_by`. A database icon marked "never by accident".]**
 
 **(Voiceover):**
 Kuch resources galti se bhi nahi hatne chahiye, jaise records office ka database. Unke `lifecycle` block mein `prevent_destroy = true`: ab `terraform destroy` ya replace wali koi bhi plan error degi. `create_before_destroy` naya pehle banata hai aur purana baad mein hatata hai, jo tab kaam aata hai jab downtime nahi chahiye. `ignore_changes` un fields ko chhod deta hai jinhe koi aur badalta hai, jaise Auto Scaling ki desired count. Ye taale bhi code hain, isliye pull request mein dikhte hain. Aur ek aur: terraform ko apply karne wale role ko bhi sirf zaroori ijaazat do, Session 9 ka least privilege.
 
-### [07:15 – 10:05] Scene 4: Surakshit Workflow ki Aadatein
+### [07:10 – 09:55] Scene 4: Surakshit Workflow ki Aadatein
 **[VISUAL: A checklist: `terraform fmt`, `terraform validate`, plan reviewed in a pull request, `plan -out` then `apply` of that exact plan, avoid `-target`, pin provider and Terraform versions, tags on everything, no secrets in code.]**
 
 **(Voiceover):**
 Surakshit workflow ki aadatein. `terraform fmt` code saaf karta hai, `terraform validate` galtiyan pakadta hai. Plan ko pull request mein review karo. Production mein `terraform plan -out=tfplan` aur phir `terraform apply tfplan`, taaki jo review hua wahi lage. `-target` se bacho, kyunki wo state ko adhoora bana sakta hai. `-auto-approve` sirf pipeline mein, jahan pehle se review ho chuka ho. Provider aur Terraform ke versions pin karo. Har resource par tags, jaise `Owner`, `Env` aur `Project`, taaki cost aur maalik pata chale. Aur secrets code mein nahi: database password ke liye, jaise Session 13 mein, Secrets Manager ka managed option, taaki password state mein bhi na ho.
 
-### [10:05 – 13:20] Scene 5: Lab: Session 14 ka Public Wing, Code Mein
+### [09:55 – 13:20] Scene 5: Lab: Session 14 ka Public Wing, Code Mein
 **[VISUAL: A project with a VPC, a public subnet from `cidrsubnet`, an internet gateway, a route table with `0.0.0.0/0 → igw` and an association, a door guard, and an EC2. `terraform graph | dot -Tpng` showing the dependency picture. `plan`, `apply`, SSH, then `destroy` removing things in reverse.]**
 
 **(Voiceover):**
-Lab. Session 14 ka public wing ab master plan mein likho. Campus `aws_vpc`, `10.0.0.0/16`. Ek public subnet, `cidrsubnet(aws_vpc.main.cidr_block, 8, 1)`. Internet gateway. Route table jisme `0.0.0.0/0` gateway ki taraf jaaye, aur use subnet se `aws_route_table_association` se jodo. Ek door guard, aur ek building jisme public IP ho. Sab kuch references se jodo, aur tags `merge` se. `terraform fmt`, `validate`, `plan`: chhe se aath resources dikhne chahiye. Ek hi `apply`. Agar `graphviz` hai to `terraform graph | dot -Tpng > graph.png` se dependency ki tasveer dekho. Phir SSH karo. Aakhir mein `terraform destroy`: dekho ki cheezein ulte kram mein hatti hain. Ye wahi campus hai jo Session 14 mein dus se zyada click mein bana tha. Ab ek command mein banta aur hatta hai.
+Lab. Session 14 ka public wing ab master plan mein likho. Campus `aws_vpc`, `10.0.0.0/16`. Ek public subnet, `cidrsubnet(aws_vpc.main.cidr_block, 8, 1)`. Internet gateway. Route table jisme `0.0.0.0/0` gateway ki taraf jaaye, aur use subnet se `aws_route_table_association` se jodo. Ek door guard, aur ek building jisme public IP ho. Sab kuch references se jodo, aur tags `merge` se. `terraform fmt`, `validate`, `plan`: saat se das resources dikhne chahiye, kyunki security group ke har rule ko alag resource banao to das. Ek hi `apply`. Agar `graphviz` hai to `terraform graph | dot -Tpng > graph.png` se dependency ki tasveer dekho. Phir SSH karo. Aakhir mein `terraform destroy`: dekho ki cheezein ulte kram mein hatti hain. Ye wahi campus hai jo Session 14 mein dus se zyada click mein bana tha. Ab ek command mein banta aur hatta hai.
 
-### [13:20 – 14:20] Scene 6: Recap aur Bridge
+### [13:20 – 14:15] Scene 6: Recap aur Bridge
 **[VISUAL: A card: "references = dependencies · depends_on when hidden · data reads, resource owns · lifecycle prevent_destroy · plan -out then apply that plan · tags, pins, no secrets in code". Then a stack of standard blueprints and a locked register book appear.]**
 
 **(Voiceover):**
