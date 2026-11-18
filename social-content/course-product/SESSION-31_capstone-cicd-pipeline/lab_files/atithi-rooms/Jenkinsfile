@@ -1,0 +1,31 @@
+pipeline {
+  agent any
+  options { timeout(time: 20, unit: 'MINUTES') }
+  environment {
+    // Practice depot. For GitHub's depot use  'ghcr.io/YOUR_ORG'  and  docker login ghcr.io  below.
+    REGISTRY = 'registry:5000/atithi'
+    IMAGE    = "${REGISTRY}/rooms-service"
+    TAG      = "${env.GIT_COMMIT.take(7)}"
+  }
+  stages {
+    stage('Test') {
+      steps {
+        sh 'python3 -m venv .venv && . .venv/bin/activate && pip install -r requirements.txt && pytest -q'
+      }
+    }
+    stage('Build image') { steps { sh 'docker build -t $IMAGE:$TAG .' } }
+    stage('Scan') {
+      steps { sh 'trivy image --ignore-unfixed --severity HIGH,CRITICAL --exit-code 1 $IMAGE:$TAG' }
+    }
+    stage('Push') {
+      when { branch 'main' }
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'ghcr', usernameVariable: 'U', passwordVariable: 'P')]) {
+          sh 'echo "$P" | docker login registry:5000 -u "$U" --password-stdin'
+          sh 'docker push $IMAGE:$TAG'
+        }
+      }
+    }
+  }
+  post { failure { echo "FAILED: ${env.BUILD_URL}" } }
+}

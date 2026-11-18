@@ -1,0 +1,36 @@
+# Setup, once (from lab_files/docker):
+#   mkdir -p keys auth && ssh-keygen -t ed25519 -N "" -f keys/app_key
+#   docker run --rm --entrypoint htpasswd httpd:2 -Bbn atithi practice-pass > auth/htpasswd
+# Start:   ATITHI_REPO=~/atithi-rooms docker compose up -d --build        then open http://localhost:8080 (admin / practice)
+# Remove everything:   docker compose down -v
+services:
+  jenkins:
+    build: { context: ., dockerfile: Dockerfile.jenkins }
+    ports: ["${JENKINS_PORT:-8080}:8080"]
+    environment:
+      DOCKER_HOST: tcp://builder:2375        # the build machine's Docker engine (not your own Docker)
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - ${ATITHI_REPO:-../atithi-rooms}:/repos/atithi-rooms
+      - ./keys:/keys:ro
+    depends_on: [builder, registry, app]
+  builder:                                    # the build machine: its own Docker engine (Docker-in-Docker)
+    image: docker:27-dind
+    privileged: true
+    environment: { DOCKER_TLS_CERTDIR: "" }
+    command: ["--insecure-registry", "registry:5000"]
+  registry:                                   # the depot (stand-in for GHCR), protected by a user and password
+    image: registry:2
+    environment:
+      REGISTRY_AUTH: htpasswd
+      REGISTRY_AUTH_HTPASSWD_REALM: atithi
+      REGISTRY_AUTH_HTPASSWD_PATH: /auth/htpasswd
+    volumes: ["./auth:/auth:ro"]
+  app:                                        # the app building that Jenkins deploys to over SSH
+    build: { context: ., dockerfile: Dockerfile.app }
+    hostname: app
+    privileged: true
+    ports: ["${APP_PORT:-8081}:8081"]
+    volumes: ["./keys/app_key.pub:/keys/app_key.pub:ro"]
+volumes:
+  jenkins_home:

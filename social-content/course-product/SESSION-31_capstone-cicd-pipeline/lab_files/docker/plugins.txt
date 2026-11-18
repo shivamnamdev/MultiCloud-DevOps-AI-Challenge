@@ -1,0 +1,12 @@
+git
+workflow-aggregator
+junit
+pipeline-stage-view
+credentials-binding
+configuration-as-code
+timestamper
+ws-cleanup
+branch-api
+cloudbees-folder
+workflow-multibranch
+ssh-agent

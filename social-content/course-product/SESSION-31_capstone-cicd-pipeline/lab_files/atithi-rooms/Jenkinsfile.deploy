@@ -1,0 +1,40 @@
+// The same conveyor with a Deploy station added after Push. Copy it over Jenkinsfile for Part D.
+pipeline {
+  agent any
+  options { timeout(time: 20, unit: 'MINUTES') }
+  environment {
+    REGISTRY = 'registry:5000/atithi'
+    IMAGE    = "${REGISTRY}/rooms-service"
+    TAG      = "${env.GIT_COMMIT.take(7)}"
+  }
+  stages {
+    stage('Test') {
+      steps {
+        sh 'python3 -m venv .venv && . .venv/bin/activate && pip install -r requirements.txt && pytest -q'
+      }
+    }
+    stage('Build image') { steps { sh 'docker build -t $IMAGE:$TAG .' } }
+    stage('Scan') {
+      steps { sh 'trivy image --ignore-unfixed --severity HIGH,CRITICAL --exit-code 1 $IMAGE:$TAG' }
+    }
+    stage('Push') {
+      when { branch 'main' }
+      steps {
+        withCredentials([usernamePassword(credentialsId: 'ghcr', usernameVariable: 'U', passwordVariable: 'P')]) {
+          sh 'echo "$P" | docker login registry:5000 -u "$U" --password-stdin'
+          sh 'docker push $IMAGE:$TAG'
+        }
+      }
+    }
+    stage('Deploy') {
+      when { branch 'main' }
+      steps {
+        sshagent(['app-server-key']) {
+          // accept-new: trust the building's host key the first time (a build cannot answer a prompt)
+          sh 'ssh -o StrictHostKeyChecking=accept-new ubuntu@app "bash -s" -- "$IMAGE:$TAG" < deploy/deploy.sh'
+        }
+      }
+    }
+  }
+  post { failure { echo "FAILED: ${env.BUILD_URL}" } }
+}
