@@ -1,0 +1,23 @@
+# A practice "building": Ubuntu 24.04 with systemd, an SSH door and the tools the labs use.
+# For learning only. It runs privileged so that systemd works inside Docker.
+FROM ubuntu:24.04
+ENV DEBIAN_FRONTEND=noninteractive
+# The Ubuntu image filters man pages out; allow them back so that `man ls` works in the labs.
+RUN rm -f /etc/dpkg/dpkg.cfg.d/excludes
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      systemd systemd-sysv sudo openssh-server openssh-client ca-certificates \
+      iproute2 iputils-ping curl dnsutils procps psmisc less vim-tiny nano man-db manpages \
+      ufw iptables logrotate rsyslog python3 git file tree \
+    && rm -rf /var/lib/apt/lists/*
+# Ubuntu's container image also diverts `man` and strips the pages of core tools. Undo both.
+RUN rm -f /usr/bin/man && dpkg-divert --quiet --remove --rename /usr/bin/man \
+ && apt-get update && apt-get install -y --reinstall coreutils grep findutils sed \
+ && rm -rf /var/lib/apt/lists/*
+# A practice staff member with a practice password (never do this on a real server).
+RUN id ubuntu >/dev/null 2>&1 || useradd -m -s /bin/bash ubuntu; \
+    echo 'ubuntu:ubuntu' | chpasswd; usermod -aG sudo ubuntu
+# The stock image blocks services from starting after apt install (policy-rc.d). A VM does not.
+RUN rm -f /usr/sbin/policy-rc.d
+RUN systemctl enable ssh rsyslog
+STOPSIGNAL SIGRTMIN+3
+CMD ["/sbin/init"]

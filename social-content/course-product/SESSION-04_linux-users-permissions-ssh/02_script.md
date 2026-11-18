@@ -19,31 +19,31 @@
 
 # 📺 EPISODE 1: Users, Groups aur sudo
 
-### [00:00 – 01:40] Scene 1: Sabke Paas Master Key Ho To?
+### [00:00 – 01:35] Scene 1: Sabke Paas Master Key Ho To?
 **[VISUAL: The Atithi Hotels building. Ten staff members, each holding the same master key. One of them empties the records room by mistake. Cut to a shared server: 10 developers logged in as "root", one deletes a config folder, every terminal flashes red.]**
 
 **(Voiceover):**
 Pichhle session mein Atithi Hotels ko apni pehli building mili thi. Ab socho is building mein dus staff hain, aur sabke paas master key hai. Ek ne galti se records room khaali kar diya. Ab pata nahi kisne kiya, aur rok bhi koi nahi sakta tha. Server par bilkul yahi hota hai jab dus developers root se login karte hain aur ek galti se zaroori folder hata deta hai. Linux ka user system isi problem ke liye hai: har staff ki apni pehchaan, aur utni hi power jitni kaam ke liye zaroori hai. Is session mein hum building mein staff rakhenge aur kamron par taale lagayenge. Is episode mein: users, groups aur sudo.
 
-### [01:40 – 04:45] Scene 2: Chaar Tarah ka Staff, UID aur Staff Register
+### [01:35 – 04:35] Scene 2: Chaar Tarah ka Staff, UID aur Staff Register
 **[VISUAL: Inside the building. Four ID cards in a row: "root, UID 0", "local user, UID 1000+", "system user, no login", "sudo user". The general manager (root) holds the master key. On the desk: a staff register labelled `/etc/passwd` with one line split into seven boxes (`asha : x : 1001 : 1001 : Asha Verma : /home/asha : /bin/bash`), and a locked safe labelled `/etc/shadow`. Guests walk through the lobby with no ID card.]**
 
 **(Voiceover):**
 Pehle ek rule yaad rakho: Linux ke users hotel ka staff hain, guests nahi. Guest yaani website ka end user, aur use kabhi staff ID card nahi milta. Staff chaar tarah ka hota hai. Root is building ka general manager hai, jiske paas master key hai. Uska UID, yaani ID card ka number, 0 hota hai, aur wo kuch bhi kar sakta hai. Local user aam staff hai, jise root ne rakha hai: uska apna quarter, yaani home directory, aur limited rights. Inke UID aam taur par 1000 se shuru hote hain. System user insaan hota hi nahi. Wo ek hi kaam wala service staff hai, jaise web server ka user, aur wo login nahi karta. Aur sudo user wo local user hai jise zaroorat par master key udhaar milti hai. Isiliye rule ye hai: roz ka kaam normal user se, aur zaroorat padne par hi power uthao. Staff ki jaankari staff register mein hoti hai, yaani `/etc/passwd`. Uski har line mein saat khaane hote hain: naam, password ki jagah ek `x`, UID, group ka ID, ek comment, home directory aur default shell. Wo `x` batata hai ki password yahan nahi hai. Uska hash ek band tijori mein rehta hai, yaani `/etc/shadow`, jise aam staff padh nahi sakta.
 
-### [04:45 – 07:45] Scene 3: Naya Staff, Home Department aur Extra Cards
+### [04:35 – 07:30] Scene 3: Naya Staff, Home Department aur Extra Cards
 **[VISUAL: A new staff member "asha" gets an ID card and a quarter. Her card shows one "home department" stamp and a slot for extra department cards; a card marked "devs" slides in. Terminal: `sudo useradd -m -s /bin/bash -c "Asha Verma" asha`, `tail -1 /etc/passwd`, `sudo passwd asha`, `sudo groupadd devs`, `sudo usermod -aG devs asha`, `id asha`, `sudo gpasswd -d asha devs`.]**
 
 **(Voiceover):**
 Naya staff rakhte hain. `sudo useradd -m -s /bin/bash asha` ek naya user banata hai. `-m` uska quarter yaani home directory banata hai, aur `-s` uska shell tay karta hai. Do aur options kaam ke hain: `-u` se UID aap khud dete ho, aur `-c` se comment, jaise poora naam. UID na do to Linux pichhle user ke baad wala number de deta hai. `tail -1 /etc/passwd` se register ki aakhri line dekho, asha wahin milegi. `sudo passwd asha` password set karta hai. Ab departments. Group ek department ki tarah hota hai. Har staff ka ek home department hota hai, yaani primary group, aur ye sirf ek ho sakta hai. Uske upar kitne bhi extra department cards mil sakte hain, yaani secondary groups. `useradd` mein chhota `-g` primary group deta hai aur bada `-G` secondary. `sudo groupadd devs` department banata hai, aur `sudo usermod -aG devs asha` asha ko us department ka card deta hai. Yahan `-a` ka matlab append hai, aur use bhoolna khatarnaak hai, kyunki tab asha ke baaki department cards chhin jaate hain, yaani baaki secondary groups hat jaate hain. Card wapas lena ho to `sudo gpasswd -d asha devs`. `id asha` batata hai ki user kis kis group mein hai.
 
-### [07:45 – 10:40] Scene 4: ID Card ki Expiry: Password Policy
+### [07:30 – 10:45] Scene 4: ID Card ki Expiry: Password Policy
 **[VISUAL: An ID card with an expiry date and a small "renew before" stamp. A timeline: last change → expiry → inactive period ends → account locked. Terminal: `sudo chage -l asha`, `sudo chage -M 90 -m 1 -W 7 asha`. Then a second staff member "ravi": `sudo usermod -L ravi`, `sudo usermod -U ravi`, `sudo userdel -r ravi`.]**
 
 **(Voiceover):**
-Atithi mein ID card hamesha ke liye nahi banta. Uski expiry hoti hai aur renewal ke rules hote hain. Linux mein yahi password policy hai. `sudo chage -l asha` asha ki policy dikhata hai. `sudo chage -M 90 asha` ka matlab: nabbe din mein password badalna hi hoga. Chhota `-m` do badlaav ke beech kam se kam din tay karta hai, aur `-W` batata hai expiry se kitne din pehle warning shuru ho. Naye users ke liye default numbers `/etc/login.defs` file mein likhe hote hain. Ek shabd aur: inactive period. Password expire hone ke baad itne din tak user purane password se login karke naya bana sakta hai. Uske baad account band, aur admin ko beech mein aana padta hai. Ab maan lo ravi naam ka staff lambi chhutti par hai. `sudo usermod -L ravi` uska password lock karta hai, aur `-U` kholta hai. Tijori mein lock hua password ek `!` se shuru hota hai. Dhyaan rahe, ye sirf password ko rokta hai. SSH key se login tab bhi chal sakta hai. Aur jab staff company chhod de, `sudo userdel -r ravi` user ko hata deta hai, aur `-r` uska quarter bhi khaali kar deta hai.
+Atithi mein ID card hamesha ke liye nahi banta. Uski expiry hoti hai aur renewal ke rules hote hain. Linux mein yahi password policy hai. `sudo chage -l asha` asha ki policy dikhata hai. `sudo chage -M 90 asha` ka matlab: nabbe din mein password badalna hi hoga. Chhota `-m` do badlaav ke beech kam se kam din tay karta hai, aur `-W` batata hai expiry se kitne din pehle warning shuru ho. Naye users ke liye default numbers `/etc/login.defs` file mein likhe hote hain. Ek shabd aur: inactive period. Password expire hone ke baad itne din tak user purane password se login karke naya bana sakta hai. Uske baad account band, aur admin ko beech mein aana padta hai. Ab maan lo ravi naam ka staff lambi chhutti par hai. `sudo usermod -L ravi` uska password lock karta hai, aur `-U` kholta hai. Tijori mein lock hua password ek `!` se shuru hota hai. Dhyaan: jis user ka password kabhi set hi nahi hua, use `-U` se kholne par Ubuntu mana kar deta hai, "passwordless account" ke darr se, isliye pehle `passwd` se password do. Dhyaan rahe, ye sirf password ko rokta hai. SSH key se login tab bhi chal sakta hai. Aur jab staff company chhod de, `sudo userdel -r ravi` user ko hata deta hai, aur `-r` uska quarter bhi khaali kar deta hai.
 
-### [10:40 – 13:20] Scene 5: Lab: sudo ka Sahi Use
+### [10:45 – 13:20] Scene 5: Lab: sudo ka Sahi Use
 **[VISUAL: A duty manager signs a register, borrows the master key, returns it. Terminal: user "asha" runs `apt update` and gets "Permission denied", then `sudo apt update` works. `visudo` shown with a caution sign and three sample lines: `asha ALL=(ALL) ALL`, `asha ALL=(ALL) /usr/bin/systemctl`, `%devs ALL=(ALL) ALL`.]**
 
 **(Voiceover):**
@@ -99,31 +99,31 @@ Recap: teen ring, teen haq, number ka hisaab, chmod aur chown, default taala yaa
 
 # 📺 EPISODE 3: SSH Keys
 
-### [00:00 – 02:40] Scene 1: Password ki Problem
+### [00:00 – 02:25] Scene 1: Password ki Problem
 **[VISUAL: The building's staff entrance, door number 22, facing a public road. Strangers keep punching random codes into its keypad. Cut to a server log showing thousands of failed login attempts from random IPs; a counter ticks fast: "password guesses".]**
 
 **(Voiceover):**
 Hamari building public road par hai, aur uska staff entrance, yaani SSH ka darwaza number 22, road se dikhta hai. Road se guzarne wala koi bhi keypad par code try kar sakta hai. Internet par jo bhi server khula hai, uspar kuch hi minute mein anjaan logon ke password guess karne ke attempts shuru ho jaate hain. Password kitna bhi accha ho, guess ya leak ho sakta hai. SSH keys is problem ka ek bahut behtar jawab hain: ek lambi jodi jise guess karna lagbhag namumkin hai, aur jiska ek hissa kabhi network par jaata hi nahi.
 
-### [02:40 – 05:30] Scene 2: Public aur Private Key: Taala aur Chaabi
+### [02:25 – 04:55] Scene 2: Public aur Private Key: Taala aur Chaabi
 **[VISUAL: A padlock (public key) fitted on the staff entrance of several buildings (servers). One physical key (private key) stays with the staff member's laptop. Authentication: server challenges, laptop proves with key.]**
 
 **(Voiceover):**
 Ise taale aur chaabi se samjho. Public key ek taala hai, jo aap building ke staff entrance par lagwa dete ho. Wahi taala aap kitni bhi buildings par laga sakte ho, yaani kitne bhi servers par, aur use sabko dikhane mein koi dikkat nahi. Private key wo chaabi hai, jo sirf aapke paas rehti hai. Jab aap login karte ho, server ek chunauti bhejta hai, aapka laptop private key se use hal karta hai, aur server public key se verify kar leta hai. Chaabi kabhi network par nahi jaati. Isliye private key ko kabhi share mat karo, aur uspar ek passphrase bhi lagao.
 
-### [05:30 – 08:50] Scene 3: Key Banana aur Server par Lagana
+### [04:55 – 07:55] Scene 3: Key Banana aur Server par Lagana
 **[VISUAL: Terminal: `ssh-keygen -t ed25519 -C "asha@laptop"`, files `~/.ssh/id_ed25519` and `.pub`; `ssh-copy-id user@server`; `ssh user@server`. A list on the staff entrance labelled `authorized_keys`.]**
 
 **(Voiceover):**
 `ssh-keygen -t ed25519 -C "asha@laptop"` ek modern key jodi banata hai: `id_ed25519` private hai aur `id_ed25519.pub` public. Public key server par `~/.ssh/authorized_keys` file mein jaati hai. Ye staff entrance par lage taalon ki list hai. `ssh-copy-id user@server` ye kaam aapke liye kar deta hai. Uske baad `ssh user@server` bina password ke login karta hai. Yahi key jodi aage Git wale session mein GitHub par bhi kaam aayegi: aap `cat ~/.ssh/id_ed25519.pub` ka text GitHub ke settings mein rakhoge, aur head office ka vault aapko is chaabi se pehchanega. Public hissa hi jaata hai, private kabhi nahi. Aur pichhle episode ke taale yahan bhi kaam aate hain: `~/.ssh` folder 700 aur private key 600 honi chahiye, warna SSH khud mana kar deta hai.
 
-### [08:50 – 11:40] Scene 4: Lab: Password Login Band Karo
+### [07:55 – 11:45] Scene 4: Lab: Password Login Band Karo
 **[VISUAL: The keypad on the staff entrance is removed; only the key lock remains. `/etc/ssh/sshd_config` open with `PasswordAuthentication no` and `PermitRootLogin no`; then `sudo systemctl reload ssh`, with a warning banner "Keep one session open!".]**
 
 **(Voiceover):**
-Ab keypad hi hata dete hain, taaki staff entrance sirf chaabi se khule. Lab: pehle key se login kaam karta hai ye pakka karo. Phir `/etc/ssh/sshd_config` mein `PasswordAuthentication no` aur `PermitRootLogin no` karo, aur `sudo systemctl reload ssh` chalao. Doosri setting ka matlab: general manager seedha staff entrance se nahi aata. Har koi apne naam se aata hai, aur zaroorat par sudo se master key udhaar leta hai. Bahut zaroori: ek SSH session khula rakho, aur doosre terminal se naya login test karo. Agar kuch galat hua to aap bahar nahi hoge. Ye chhoti si setting server ko brute-force se kaafi bacha leti hai.
+Ab keypad hi hata dete hain, taaki staff entrance sirf chaabi se khule. Lab: pehle key se login kaam karta hai ye pakka karo. Phir `/etc/ssh/sshd_config` mein `PasswordAuthentication no` aur `PermitRootLogin no` karo, aur `sudo systemctl reload ssh` chalao. Phir `sudo sshd -T | grep -i passwordauthentication` se asli value dekho. `/etc/ssh/sshd_config.d/` ke chhote files pehle padhe jaate hain aur pehli value jeet jaati hai, aur kai cloud images wahan `PasswordAuthentication yes` rakhte hain. Humne ek aisi file banakar dekha: main file mein `no` hote hue bhi password login chalta raha. Doosri setting ka matlab: general manager seedha staff entrance se nahi aata. Har koi apne naam se aata hai, aur zaroorat par sudo se master key udhaar leta hai. Bahut zaroori: ek SSH session khula rakho, aur doosre terminal se naya login test karo. Agar kuch galat hua to aap bahar nahi hoge. Ye chhoti si setting server ko brute-force se kaafi bacha leti hai.
 
-### [11:40 – 13:05] Scene 5: Recap aur Bridge
+### [11:45 – 13:00] Scene 5: Recap aur Bridge
 **[VISUAL: A card: "ed25519 · .pub on server · private stays home · 700/600 · no password".]**
 
 **(Voiceover):**
@@ -133,31 +133,31 @@ Recap: key jodi, public server par, private aapke paas, permissions sahi, passwo
 
 # 📺 EPISODE 4: Packages aur Boot Process
 
-### [00:00 – 02:00] Scene 1: Software Kahan se Aata Hai?
+### [00:00 – 01:55] Scene 1: Software Kahan se Aata Hai?
 **[VISUAL: The hotel's purchase desk with an approved vendor catalogue. A staff member orders an oven; it arrives with every fitting it needs. The desk transforms into a terminal with `apt install nginx` and a progress bar.]**
 
 **(Voiceover):**
 Atithi ki building mein koi staff bazaar se apni marzi ka saaman utha kar nahi laata. Sab kuch purchase department se aata hai, approved vendor catalogue se, aur saath mein uski zaroori fittings bhi. Linux mein yahi kaam package manager karta hai. Catalogue yaani repository, fittings yaani dependencies. Wo software ko dhoondhta hai, dependencies ke saath download karta hai, aur install, update, remove sab sambhalta hai. Server par kabhi kisi website se installer download karke nahi chalate. Hamesha package manager se.
 
-### [02:00 – 04:05] Scene 2: apt aur dnf
+### [01:55 – 03:55] Scene 2: apt aur dnf
 **[VISUAL: Two columns. Ubuntu: `sudo apt update`, `sudo apt install nginx`, `apt search`, `sudo apt remove`. RHEL family: `sudo dnf install nginx`, `dnf search`, `dnf remove`.]**
 
 **(Voiceover):**
 Ubuntu aur Debian mein `apt`. `sudo apt update` catalogue ki taaza copy laata hai, yaani package list ka naya version. `sudo apt install nginx` software install karta hai, `apt search` dhoondhta hai, `sudo apt remove` hatata hai. Red Hat family mein `dnf`, yaani `sudo dnf install nginx`. Wahan purana naam `yum` tha, aur aaj bhi `yum` likho to wo `dnf` hi chalata hai. Tool alag hai, idea ek. Security ke liye regular updates zaroori hain, aur production par update karne se pehle test environment mein try karo.
 
-### [04:05 – 08:40] Scene 3: Linux Boot Process
+### [03:55 – 08:20] Scene 3: Linux Boot Process
 **[VISUAL: The hotel at dawn, opening in order: power check (Firmware: BIOS/UEFI) → picking the day's playbook (Bootloader: GRUB) → management office wakes up (Kernel + initramfs) → shift supervisor arrives (systemd) → departments open (Services) → staff entrance opens (Login prompt). A side card: "run level 3 = multi-user.target · run level 5 = graphical.target". Terminal: `systemctl get-default`.]**
 
 **(Voiceover):**
 Computer ON kaise hota hai? Hotel ke subah ke opening routine ki tarah, ek tay kram mein. Pehle bijli aur building ki jaanch: firmware, BIOS ya UEFI, hardware check karta hai. Phir bootloader, GRUB, tay karta hai kaun sa kernel uthana hai aur use memory mein load karta hai. Kernel ke saath ek chhota temporary root bhi load hota hai, initramfs, jisme disk tak pahunchne ke drivers hote hain. Phir management office jaagta hai: kernel hardware chalu karta hai aur pehla process, systemd, start karta hai. systemd hamara shift supervisor hai, jo baaki departments ko sahi kram mein kholta hai, yaani services, jaise networking aur SSH. Aakhir mein staff entrance khulta hai, yaani login aata hai. Purane systems mein supervisor ka naam init tha, aur wo run levels se kaam karta tha: 3 yaani bina graphics ke poora multi-user mode, 5 yaani graphical. systemd mein inhe targets kehte hain: `multi-user.target` aur `graphical.target`. `systemctl get-default` batata hai ki aapka server kis target tak boot hota hai. Jab server boot nahi hota, to is routine ka kaun sa kadam atka hai ye pehchaan kar hi aap sahi jagah dekh paate ho.
 
-### [08:40 – 11:30] Scene 4: Lab: nginx Install aur Check
+### [08:20 – 11:30] Scene 4: Lab: nginx Install aur Check
 **[VISUAL: Terminal: `sudo apt update && sudo apt install -y nginx`, `systemctl status nginx`, `curl -I localhost`. Browser tab shows the nginx welcome page. A small inset: a front desk opening at door number 80.]**
 
 **(Voiceover):**
-Lab: purchase department se ek naya department mangwate hain. `sudo apt update && sudo apt install -y nginx` chalao. nginx building ka front desk hai, jo darwaza number 80 par guests ko jawab deta hai. `systemctl status nginx` se shift supervisor se poochho ki ye service chal rahi hai ya nahi. `curl -I localhost` se HTTP response header aayega, 200 OK. `systemctl get-default` bhi chala kar dekho: server par aam taur par `multi-user.target` milega. Agar aapka VM cloud mein hai to uska public IP browser mein kholo aur nginx ka welcome page dekho. Agar na dikhe to gate ka guard rok raha ho sakta hai, yaani firewall ya security group, jo hum cloud sessions mein detail se dekhenge.
+Lab: purchase department se ek naya department mangwate hain. `sudo apt update && sudo apt install -y nginx` chalao. nginx building ka front desk hai, jo darwaza number 80 par guests ko jawab deta hai. `systemctl status nginx` se shift supervisor se poochho ki ye service chal rahi hai ya nahi. `curl -I localhost` se HTTP response header aayega, 200 OK. `systemctl get-default` bhi chala kar dekho: Ubuntu par aksar `graphical.target` dikhta hai, humare test mein wahi tha, aur `multi-user.target` bhi aam hai; dono mein server bina screen ke bhi chalta hai. Agar aapka VM cloud mein hai to uska public IP browser mein kholo aur nginx ka welcome page dekho. Agar na dikhe to gate ka guard rok raha ho sakta hai, yaani firewall ya security group, jo hum cloud sessions mein detail se dekhenge.
 
-### [11:30 – 13:00] Scene 5: Recap aur Bridge
+### [11:30 – 12:55] Scene 5: Recap aur Bridge
 **[VISUAL: A card: "apt/dnf · systemd boots services · targets · know the boot chain".]**
 
 **(Voiceover):**
