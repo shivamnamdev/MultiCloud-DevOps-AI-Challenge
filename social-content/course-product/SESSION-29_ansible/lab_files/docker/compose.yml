@@ -1,0 +1,20 @@
+# Usage: docker compose -f docker/compose.yml up -d --build
+# Then:  docker compose -f docker/compose.yml exec control bash
+services:
+  control:
+    build: { context: ., dockerfile: Dockerfile.control }
+    hostname: control
+    depends_on: [web1, web2, db1]
+    volumes:
+      - ../project:/home/ubuntu/atithi-ansible
+  web1: &target
+    build: { context: ., dockerfile: Dockerfile.target }
+    hostname: web1
+    privileged: true          # systemd needs this inside Docker (practice only)
+    tmpfs: [/run, /run/lock]
+  web2:
+    <<: *target
+    hostname: web2
+  db1:
+    <<: *target
+    hostname: db1

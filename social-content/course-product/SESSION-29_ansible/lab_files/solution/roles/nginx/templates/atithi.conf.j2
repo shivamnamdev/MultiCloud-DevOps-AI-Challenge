@@ -1,0 +1,6 @@
+server {
+    listen {{ nginx_app_port }};
+    server_name {{ nginx_server_name }};
+    root /var/www/html;
+    location /health { return 200 "ok\n"; }
+}

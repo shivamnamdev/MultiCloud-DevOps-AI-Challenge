@@ -1,0 +1,37 @@
+- name: Install nginx
+  ansible.builtin.apt:
+    name: nginx
+    state: present
+    update_cache: true
+    cache_valid_time: 3600
+
+- name: Remove the default nginx site
+  ansible.builtin.file:
+    path: /etc/nginx/sites-enabled/default
+    state: absent
+  notify: Reload nginx
+
+- name: Render the site config
+  ansible.builtin.template:
+    src: atithi.conf.j2
+    dest: /etc/nginx/conf.d/atithi.conf
+    mode: "0644"
+  notify: Reload nginx
+
+- name: Deploy the welcome page
+  ansible.builtin.copy:
+    content: "Atithi Hotels, served by {{ inventory_hostname }}\n"
+    dest: /var/www/html/index.html
+    mode: "0644"
+
+- name: Allow the public door
+  community.general.ufw:
+    rule: allow
+    port: "{{ nginx_app_port }}"
+    proto: tcp
+
+- name: Keep nginx running
+  ansible.builtin.service:
+    name: nginx
+    state: started
+    enabled: true

@@ -1,0 +1,37 @@
+- name: Furnish the web buildings
+  hosts: web
+  become: true
+  vars:
+    app_port: 80
+  tasks:
+    - name: Install nginx
+      ansible.builtin.apt:
+        name: nginx
+        state: present
+        update_cache: true
+        cache_valid_time: 3600
+
+    - name: Deploy the welcome page
+      ansible.builtin.copy:
+        content: "Atithi Hotels, served by {{ inventory_hostname }}\n"
+        dest: /var/www/html/index.html
+        mode: "0644"
+      notify: Reload nginx
+
+    - name: Allow the public door
+      community.general.ufw:
+        rule: allow
+        port: "{{ app_port }}"
+        proto: tcp
+
+    - name: Keep nginx running
+      ansible.builtin.service:
+        name: nginx
+        state: started
+        enabled: true
+
+  handlers:
+    - name: Reload nginx
+      ansible.builtin.service:
+        name: nginx
+        state: reloaded

@@ -119,13 +119,13 @@ Recap: list, groups, variables, ad-hoc. Ad-hoc command chhote kaam ke liye theek
 
 # 📺 EPISODE 3: Checklist
 
-### [00:00 – 01:45] Scene 1: Pandrah Command Ek File Mein
+### [00:00 – 01:40] Scene 1: Pandrah Command Ek File Mein
 **[VISUAL: A scroll of fifteen ad-hoc commands in a shell history. They become one YAML file with named tasks. The file is committed to the Atithi repo; a Git log shows who changed what.]**
 
 **(Voiceover):**
 Ad-hoc commands shell history mein rah jaate hain, aur kal koi nahi jaanta ki kaun si building par kya chala tha. Asli setup, yaani nginx lagana, user banana, firewall kholna, page rakhna, ek file mein likha hona chahiye, jo Git mein jaaye aur jis par pull request mein review ho. Is file ko playbook, yaani checklist, kehte hain: ek YAML jisme kaamon ki list hoti hai, jo ek ya zyada groups par chalti hai. Ab Atithi ka setup bhi Git ke register mein hai, Session 16 jaisa.
 
-### [01:45 – 04:30] Scene 2: Checklist ka Dhancha
+### [01:40 – 04:25] Scene 2: Checklist ka Dhancha
 **[VISUAL: An annotated playbook. `- name`, `hosts: web`, `become: true`, `vars`, `tasks` each with a name, module and arguments; a `notify`; a `handlers` section. Callouts: "play = which buildings", "task = one step", "module = how".]**
 
 **(Voiceover):**
@@ -171,37 +171,37 @@ Checklist:
 ```
 Upar play hai, yaani kin buildings par. Har task ka naam, ek module, aur uske arguments. Ufw ka rule tabhi lagao jab `ufw` ko sach mein use kar rahe ho, aur dhyaan rakho ki SSH ka door pehle khula ho, warna crew apne hi staff entrance par taala laga degi.
 
-### [04:30 – 07:05] Scene 3: Idempotency aur Handlers
+### [04:25 – 06:55] Scene 3: Idempotency aur Handlers
 **[VISUAL: First run summary: `changed=4`. Second run: `changed=0`. A handler box that lights up only when the page task shows "changed". A caution: handlers run at the end of the play; `meta: flush_handlers` runs them earlier.]**
 
 **(Voiceover):**
 Idempotency ka matlab: checklist jitni baar chalao, natija ek jaisa. Pehli baar `changed=4`, doosri baar `changed=0`. Crew ne dekha ki sab pehle se theek hai, to haath nahi lagaya. Isliye Ansible ko roz, ya har deploy par, chalana safe hai. Handler ek khaas task hai jo tabhi chalta hai jab usse notify karne wala task sach mein kuch badle. Page badla, to nginx reload. Page nahi badla, to reload nahi. Do baatein yaad rakho. Handler play ke aakhir mein chalte hain, beech mein nahi, aur agar beech mein koi task fail ho jaye, to handler chalne se pehle hi play ruk sakti hai. Zaroorat ho to `meta: flush_handlers`. Aur `notify` mein naam bilkul wahi likhna padta hai jo handler ka hai, ek akshar bhi alag to kuch nahi chalega.
 
-### [07:05 – 09:45] Scene 4: Variables, Conditions aur Loops
+### [06:55 – 09:30] Scene 4: Variables, Conditions aur Loops
 **[VISUAL: A precedence ladder from weakest to strongest: role defaults, group_vars, host_vars, play vars, `-e` extra vars. Code: `when: ansible_facts['os_family'] == "Debian"`; `loop: [ops1, ops2]` creating users; `register: result` then `debug: var=result.stdout`.]**
 
 **(Voiceover):**
 Variables kai jagah se aa sakte hain. Role ke defaults sabse kamzor, phir `group_vars`, phir `host_vars`, phir play ke `vars`, aur command line ka `-e` sabse upar. Seedha yaad rakhne ka tareeka: jo jitna specific, wo utna upar. Agar ek hi variable do jagah mila, to ladder dekho. `when` se task sirf tab chalta hai jab shart sach ho, jaise `when: ansible_facts['os_family'] == "Debian"`, taaki ek hi checklist `apt` aur `dnf` dono ke liye chale. `loop` se ek task kai cheezon par chalta hai: do ya teen duty staff ke users ek hi task se. `register` se kisi task ka result variable mein rakh lo aur aage use karo. Linux session ki duty staff, `user` module aur `authorized_key` module se banti hai, aur wahi `sudo` group, jo hum Session 04 mein jaante hain.
 
-### [09:45 – 12:00] Scene 5: Pehle Dekho, Phir Karo: check, diff, tags
+### [09:30 – 11:40] Scene 5: Pehle Dekho, Phir Karo: check, diff, tags
 **[VISUAL: `ansible-playbook site.yml --check --diff`: lines removed in red, added in green, tasks marked "changed". `--limit web1`. `--tags page`. `--start-at-task`. A warning: check mode can skip `command` tasks.]**
 
 **(Voiceover):**
 Production par seedha chalane se pehle dry run: `ansible-playbook site.yml --check --diff`. Ye batata hai ki kya badlega, aur file ka diff bhi dikhata hai, bina kuch badle. Ek chhoti sachchai: jo tasks `command` ya `shell` hain, wo check mode mein aksar skip hote hain, isliye dry run poori kahani nahi batata. `--limit web1` se sirf ek building par chalao, jo pehle ek building par aazmane ke kaam aata hai. Tasks par `tags` laga do, jaise `page`, to `--tags page` se sirf wahi chalega. Aur jab checklist beech mein ruk jaye, to log mein dekho kaun sa task fail hua. Ansible ke error aksar saaf hote hain, bas upar se poora padho.
 
-### [12:00 – 14:15] Scene 6: Drift ka Ilaaj aur Galti Sambhalna
+### [11:40 – 13:55] Scene 6: Drift ka Ilaaj aur Galti Sambhalna
 **[VISUAL: Someone edits `/var/www/html/index.html` by hand on web2. The next run shows `changed=2` on web2 only (the page and the nginx reload), with the diff restoring the page. Then `ignore_errors`, `failed_when`, `block` and `rescue` shown briefly.]**
 
 **(Voiceover):**
 Ab drift ka ilaaj dekhte hain. Kisi ne web2 par haath se page badal diya. Checklist dobara chalao: sirf web2 par `changed=2`, yaani page aur nginx reload, aur page wapas theek. Jis building par kuch nahi badla, wahan kuch nahi hua. Yahi crew ki sabse badi taaqat hai. Kabhi kisi task ka fail hona normal ho sakta hai. `ignore_errors` har galti ko dabata hai, isliye kam use karo. Behtar hai `failed_when` ya `changed_when` se bataana ki asli naakaami kya hai. Aur `block` ke saath `rescue` se wahi try aur recover ka pattern milta hai jo Bash mein tha. Rule: crew ko aise likho ki wo kam bole aur jo bole, wo sach ho.
 
-### [14:15 – 16:10] Scene 7: Lab: Web Fleet Ko Ek Checklist se Sajao
+### [13:55 – 16:00] Scene 7: Lab: Web Fleet Ko Ek Checklist se Sajao
 **[VISUAL: `ansible-playbook site.yml --check --diff`, then a real run with `changed=4` on both buildings, then a second run with `changed=0`. Browser shows each building's name on its page. A manual stop of nginx on web2 fixed by the next run. The playbook committed to Git.]**
 
 **(Voiceover):**
-Lab: upar wali checklist `site.yml` mein rakho. Pehle `ansible-playbook site.yml --check --diff`, dekho ki kya badlega. Phir asli run. Dono IP browser mein kholo: har ek par apni building ka naam. Wahi checklist dobara: `changed=0`. Ab web2 par haath se `sudo systemctl stop nginx` aur page ki file badal do. Checklist phir chalao: crew dono cheezein wapas theek karti hai, aur sirf web2 par. Ek task mein jaan-boojh kar galat package ka naam do aur dekho ki error kaisa dikhta hai. Aakhir mein `site.yml` aur inventory Git mein commit karo, taaki setup ka bhi register ban jaye.
+Lab: upar wali checklist `site.yml` mein rakho. Pehle `ansible-playbook site.yml --check --diff`, dekho ki kya badlega. Taaza building par ye service wale task par ruk sakta hai: nginx abhi laga nahi. Phir asli run. Dono IP browser mein kholo: har ek par apni building ka naam. Wahi checklist dobara: `changed=0`. Ab web2 par haath se `sudo systemctl stop nginx` aur page ki file badal do. Checklist phir chalao: crew dono cheezein wapas theek karti hai, aur sirf web2 par. Ek task mein jaan-boojh kar galat package ka naam do aur dekho ki error kaisa dikhta hai. Aakhir mein `site.yml` aur inventory Git mein commit karo.
 
-### [16:10 – 16:55] Scene 8: Recap aur Bridge
+### [16:00 – 16:40] Scene 8: Recap aur Bridge
 **[VISUAL: A card: "playbook = play + tasks + handlers · idempotent: second run changed=0 · handlers on change · vars precedence · when / loop / register · --check --diff · --limit and tags".]**
 
 **(Voiceover):**

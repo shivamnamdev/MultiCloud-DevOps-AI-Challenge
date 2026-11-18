@@ -1,0 +1,12 @@
+# Shows why no_log matters: even a vault-encrypted value is printed when a task echoes it.
+# Run:  ansible-playbook leak_demo.yml --vault-password-file .vault_pass -v
+- hosts: db
+  gather_facts: false
+  tasks:
+    - name: vaulted var, no no_log (leaks)
+      ansible.builtin.command: echo "{{ db_password }}"
+      changed_when: false
+    - name: vaulted var, with no_log (hidden)
+      ansible.builtin.command: echo "{{ db_password }}"
+      changed_when: false
+      no_log: true

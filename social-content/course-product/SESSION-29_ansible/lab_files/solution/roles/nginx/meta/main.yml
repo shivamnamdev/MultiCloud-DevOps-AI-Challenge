@@ -1,0 +1,11 @@
+galaxy_info:
+  author: Atithi Hotels
+  description: Installs nginx and serves the Atithi welcome page
+  company: Atithi Hotels
+  license: MIT
+  min_ansible_version: "2.14"
+  platforms:
+    - name: Ubuntu
+      versions: [noble]
+  galaxy_tags: [nginx, web]
+dependencies: []

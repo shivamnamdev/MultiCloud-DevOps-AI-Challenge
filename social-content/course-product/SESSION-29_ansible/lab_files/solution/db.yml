@@ -1,0 +1,10 @@
+- name: Set up the database building
+  hosts: db
+  become: true
+  tasks:
+    - name: Write the database password file
+      ansible.builtin.copy:
+        content: "{{ db_password }}\n"
+        dest: /etc/atithi-db-password
+        mode: "0600"
+      no_log: true

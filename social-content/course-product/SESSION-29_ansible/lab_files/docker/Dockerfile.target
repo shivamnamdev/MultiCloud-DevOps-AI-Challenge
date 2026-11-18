@@ -1,0 +1,15 @@
+# A tiny "building": Ubuntu with systemd and an SSH door. For practice only.
+FROM ubuntu:24.04
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y --no-install-recommends \
+      systemd systemd-sysv openssh-server python3 sudo ca-certificates iproute2 curl ufw \
+    && rm -rf /var/lib/apt/lists/*
+# Ubuntu 24.04 already has an "ubuntu" user. Practice password: ubuntu (so ssh-copy-id works).
+RUN id ubuntu >/dev/null 2>&1 || useradd -m -s /bin/bash ubuntu; \
+    echo 'ubuntu:ubuntu' | chpasswd; \
+    echo 'ubuntu ALL=(ALL) NOPASSWD:ALL' > /etc/sudoers.d/ubuntu; \
+    mkdir -p /home/ubuntu/.ssh && chown ubuntu:ubuntu /home/ubuntu/.ssh && chmod 700 /home/ubuntu/.ssh; \
+    printf 'PasswordAuthentication yes\n' > /etc/ssh/sshd_config.d/10-lab.conf
+RUN systemctl enable ssh
+STOPSIGNAL SIGRTMIN+3
+CMD ["/sbin/init"]

@@ -1,0 +1,11 @@
+# The control node: Ansible, an SSH client, and nothing else.
+FROM python:3.12-slim
+ENV DEBIAN_FRONTEND=noninteractive PIPX_HOME=/opt/pipx PIPX_BIN_DIR=/usr/local/bin
+RUN apt-get update && apt-get install -y --no-install-recommends openssh-client sshpass git curl vim-tiny less \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir pipx \
+    && pipx install ansible-core && pipx install ansible-lint
+RUN useradd -m -s /bin/bash ubuntu
+USER ubuntu
+WORKDIR /home/ubuntu/atithi-ansible
+CMD ["sleep", "infinity"]
