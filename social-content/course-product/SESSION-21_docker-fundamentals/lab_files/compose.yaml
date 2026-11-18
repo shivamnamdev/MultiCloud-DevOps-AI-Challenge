@@ -1,0 +1,28 @@
+name: atithi-lab
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_PASSWORD: secret
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    networks: [appnet]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -h 127.0.0.1 -U postgres"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+  app:
+    image: postgres:16
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      PGPASSWORD: secret
+    command: ["sh", "-c", "psql -h $$DB_HOST -U postgres -c 'create table if not exists bookings(id serial, guest text); insert into bookings(guest) values (now()::text);' && psql -h $$DB_HOST -U postgres -c 'select count(*) from bookings;' && sleep 3600"]
+    networks: [appnet]
+networks:
+  appnet:
+volumes:
+  pgdata:
