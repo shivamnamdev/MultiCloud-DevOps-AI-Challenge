@@ -234,3 +234,7 @@
 - Pilot: Session 25 scenes 1, 3, 4 (episode 1), probes and service-to-service calls (episode 2) now use reservations, housekeeping, laundry and clerk examples. Technical content unchanged. Word count 2,999 after trimming to stay under the cap.
 - Next, only after author review: apply the same wording to sessions 21-24, 26 and 31-33.
 - Author approved the pilot tone (2026-11-18). Hotel-service wording applied to sessions 21, 22, 23, 24, 26, 31, 32, 33 (one to four small edits each: housekeeping "room ready" status, floor-by-floor renovation, night-duty phone and runbook, test kitchen and old menu, token system, canary menu, billing and reservations alerts). Technical content unchanged; word counts all within 2,470-3,000 (S23 was already under 2,500 and stays on the top-up list).
+
+## 2026-11-18: Top-ups to the 2,500-word floor
+- S05 +`nproc` and how to read load average against CPU count (2,523). S07 +`which python`, `deactivate`, `python3 -m pip`, venv/requirements/gitignore habit (2,507). S08 +`Owner`/`Purpose` tags and activating cost allocation tags (2,501). S16B +`--force-with-lease` and when force is acceptable (2,503). S23 +`kubectl explain` and `kubectl api-resources` short names (2,511).
+- All five commands/flags are standard and were checked against known behaviour; no new lab steps were added.

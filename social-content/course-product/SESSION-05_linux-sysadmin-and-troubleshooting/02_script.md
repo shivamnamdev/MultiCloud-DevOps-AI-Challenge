@@ -19,31 +19,31 @@
 
 # 📺 EPISODE 1: Server ki Sehat
 
-### [00:00 – 02:10] Scene 1: "Server Slow Hai"
+### [00:00 – 02:05] Scene 1: "Server Slow Hai"
 **[VISUAL: The Atithi Hotels building at 9 am. A phone buzzes: "Website bahut slow hai!!". A panicked hand reaches for the building's main power switch. The manager stops the hand, picks up a clipboard and starts walking the floors. Cut to a terminal opening on a server.]**
 
 **(Voiceover):**
 Pichhle session mein Atithi ki building mein staff aaya, taale lage aur pehla guest serve hua. Aaj subah subah message aaya: website slow hai. Sabse aasaan lagta hai poori building ki bijli band karke dobara chalu kar dena, yaani server restart. Par isse wajah kabhi pata nahi chalti, aur kal wahi problem phir aayegi. Achha manager pehle round lagata hai: kitna staff kaam mein laga hai, desks bhari hain ya khaali, jagah bachi hai ya nahi. Server par yahi round chaar cheezon ka hai: CPU, memory, disk aur network. Is session mein hum ye round seekhenge, aur phir ek kharab din ko sambhalna. Is episode mein: server ki sehat aur processes.
 
-### [02:10 – 04:50] Scene 2: Round ki Chaar Commands: uptime, top, free, df
+### [02:05 – 05:15] Scene 2: Round ki Chaar Commands: uptime, top, free, df
 **[VISUAL: The manager's clipboard with four rows: workforce (CPU), work desks (RAM), overflow room (swap), floor space (disk). Each row turns into a terminal panel: `uptime` with load average, `top` with the process list, `free -h` with the "available" column highlighted, `df -h` with one line at 96%.]**
 
 **(Voiceover):**
-Round ki pehli command `uptime`. Ye batati hai server kitni der se chal raha hai, aur load average, yaani kitna kaam workforce ka intezaar kar raha hai. Workforce yaani CPU. `top` ek live board hai: kaun sa kaam sabse zyada CPU ya memory kha raha hai, wo sabse upar dikhta hai. `free -h` desks ka hisaab hai, yaani RAM. Yahan "available" asli aankda hai, sirf "free" nahi. Usi mein swap ki line bhi hai: swap wo dheema overflow room hai jahan kaam tab bheja jaata hai jab saari desks bhar jaayein. Swap bharne lage to samjho RAM kam pad rahi hai. `df -h` batata hai building mein jagah kitni bachi hai, yaani disk. Aur `du -sh *` dikhata hai kaun sa folder bhaari hai. Disk 100% bhar jaye to bahut saari cheezein ek saath toot jaati hain.
+Round ki pehli command `uptime`. Ye batati hai server kitni der se chal raha hai, aur load average, yaani kitna kaam workforce ka intezaar kar raha hai. Workforce yaani CPU. `top` ek live board hai: kaun sa kaam sabse zyada CPU ya memory kha raha hai, wo sabse upar dikhta hai. `free -h` desks ka hisaab hai, yaani RAM. Yahan "available" asli aankda hai, sirf "free" nahi. Usi mein swap ki line bhi hai: swap wo dheema overflow room hai jahan kaam tab bheja jaata hai jab saari desks bhar jaayein. Swap bharne lage to samjho RAM kam pad rahi hai. `df -h` batata hai building mein jagah kitni bachi hai, yaani disk. Aur `du -sh *` dikhata hai kaun sa folder bhaari hai. `nproc` batata hai kitne CPU hain: load average ko isse milao, kyunki chaar CPU par load chaar ka matlab poora bhara, par ek CPU par wahi load chaar ka matlab teen kaam intezaar mein. Disk 100% bhar jaye to bahut saari cheezein ek saath toot jaati hain.
 
-### [04:50 – 09:05] Scene 3: Process: Work Order, Token Number aur Uski Zindagi
+### [05:15 – 09:15] Scene 3: Process: Work Order, Token Number aur Uski Zindagi
 **[VISUAL: A work-order slip with a token number (PID) and the token of the supervisor who issued it (PPID). A tree: systemd (1) → sshd → bash → python app. Terminal: `ps -ef` with the PID and PPID columns highlighted, then `ps aux` with the STAT column highlighted. A small legend: R running, S sleeping, T stopped, Z zombie. One slip stamped "done" still lying on the supervisor's desk, labelled "zombie".]**
 
 **(Voiceover):**
 Server par har chalti cheez ek process hai. Hotel ki bhasha mein, ek work order jo abhi chal raha hai. Har work order ka ek token number hota hai, yaani PID, aur us supervisor ka token bhi, jisne ye kaam diya, yaani PPID, parent process ID. `ps -ef` mein dono columns dikhte hain. Aapka `bash` bhi ek process hai, aur usme chalayi har command uska child banti hai. Zindagi aisi chalti hai: parent ek child banata hai, child kaam karta hai, khatm hone par apna nateeja parent ko deta hai, aur parent use register se hata deta hai. `ps aux` mein `STAT` column haalat batata hai: `R` yaani chal raha hai, `S` yaani so raha hai aur kisi cheez ka intezaar kar raha hai, `T` yaani roka gaya hai, aur `Z` yaani zombie. Zombie wo work order hai jo poora ho chuka hai, par supervisor ne abhi uska nateeja uthaya nahi. Wo CPU ya memory nahi khaata, bas register mein ek line ghere rehta hai. Use kill nahi kar sakte, kyunki wo pehle hi khatm ho chuka hai; theek uske parent ko karna padta hai. Aur agar parent pehle khatm ho jaye to child anaath nahi rehta: use shift supervisor, yaani PID 1 wala systemd, god le leta hai. Ye saari jaankari kernel `/proc` folder mein rakhta hai.
 
-### [09:05 – 11:15] Scene 4: Kaam Rokna: Signals
+### [09:15 – 11:20] Scene 4: Kaam Rokna: Signals
 **[VISUAL: The manager first taps a worker on the shoulder (SIGTERM, 15), and only if ignored, pulls the plug on the machine (SIGKILL, 9). Terminal: `ps aux | grep nginx`, `kill 4321`, `kill -9 4321`, `killall yes`.]**
 
 **(Voiceover):**
 Kisi kaam ko rokna ho to use signal bheja jaata hai. `ps aux | grep nginx` se process dhoondho aur PID lo. `kill PID` SIGTERM bhejta hai, yaani kandhe par haath rakh kar kehna ki kaam samet lo, taaki wo saaf-safai karke band ho. Agar na maane to `kill -9 PID`, SIGKILL, yaani machine ka plug kheench dena. Isme kaam adhoora chhoot sakta hai. Pehle polite, phir force, ye order yaad rakho. PID ki jagah naam se rokna ho to `killall` aur command ka naam. Aur `ps` ki `TTY` column batati hai kaam kis terminal se juda hai. Wahan sawaaliya nishaan ho to wo background ka kaam hai, jiska koi terminal nahi.
 
-### [11:15 – 13:40] Scene 5: Lab: CPU Chadhao, Pakdo, Roko
+### [11:20 – 13:40] Scene 5: Lab: CPU Chadhao, Pakdo, Roko
 **[VISUAL: Terminal 1 runs `yes > /dev/null &`. Terminal 2 shows `top` with `yes` at ~100% CPU, then `ps -o pid,ppid,stat,cmd -C yes`. User runs `kill -STOP <PID>` (STAT becomes T), `kill -CONT <PID>` (R again), then `kill <PID>`; CPU drops.]**
 
 **(Voiceover):**

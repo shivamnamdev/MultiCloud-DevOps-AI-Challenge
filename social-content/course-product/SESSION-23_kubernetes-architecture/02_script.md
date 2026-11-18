@@ -100,43 +100,43 @@ Recap: control plane, node, pod, aur ek order ka safar. Ab Kubernetes ka sabse b
 
 # 📺 EPISODE 3: Likha Hua Sach
 
-### [00:00 – 01:50] Scene 1: Thermostat ki Tarah
+### [00:00 – 01:40] Scene 1: Thermostat ki Tarah
 **[VISUAL: A thermostat set to 24 degrees. The room warms to 28 and the AC turns on until it is back to 24. Two labels: "desired" and "actual". A second picture: a standing board "5 rooms-service trucks always".]**
 
 **(Voiceover):**
 Thermostat ko aap bolte ho 24 degree. Wo ye nahi poochta ki kaise. Garmi ho to AC chalata hai, thand ho to band. Kubernetes bhi yahi karta hai. Aap batate ho ki aap kya chahte ho, jaise paanch rooms-service trucks, aur command lagataar use sach banaye rakhta hai. Isi ko desired state kehte hain, aur jo asli mein chal raha hai use actual state. Command ka poora kaam in dono ka farq mitana hai.
 
-### [01:50 – 04:30] Scene 2: Declarative vs Imperative aur Loop
+### [01:40 – 04:10] Scene 2: Declarative vs Imperative aur Loop
 **[VISUAL: Left: imperative steps "start a truck, start another, if one dies start again". Right: declarative file "replicas: 3". A loop in the centre: observe → compare → act → observe.]**
 
 **(Voiceover):**
 Imperative mein aap steps batate ho: ye karo, phir ye karo, aur agar wo mare to phir ye karo. Declarative mein aap end result likhte ho: "mujhe rooms-service ki teen trucks chahiye." Controllers ek loop chalate hain: dekho abhi kya hai, tulna karo ki kya hona chahiye, farq ho to sudharo. Isi ko reconciliation loop kehte hain. Isi liye ek pod mara to controller dekhta hai ki do hain aur teen chahiye, aur ek naya bana deta hai, bina kisi ke kahe. Ye wahi aadat hai jo Session 7 ke boto3 mein aur aage Terraform mein dikhegi: pehle batao ki kya chahiye, phir tool ko farq nikaalne do.
 
-### [04:30 – 07:00] Scene 3: Object ke Chaar Hisse
+### [04:10 – 06:30] Scene 3: Object ke Chaar Hisse
 **[VISUAL: A YAML on screen with four coloured parts: `apiVersion`, `kind`, `metadata` (name, labels, namespace), `spec`. A fifth part, `status`, shown in grey, "written by the command, not by you". Tools: `kubectl explain pod.spec.containers` and `kubectl api-resources | grep replicaset`.]**
 
 **(Voiceover):**
 Kubernetes mein har cheez ek object hai, aur har object ke YAML mein chaar hisse. `apiVersion`: kaun si API ka hissa, jaise pod ke liye `v1` aur Deployment ke liye `apps/v1`. `kind`: object ka type. `metadata`: naam, labels, namespace. `spec`: aap kya chahte ho. Ek paanchva hissa `status` hai, jo command khud likhta hai: actual kya hai. Ise aap nahi likhte. Agar kisi kind ka `apiVersion` yaad na ho, to `kubectl api-resources | grep replicaset` batata hai `apps/v1`. Aur har field ka matlab `kubectl explain pod.spec.containers` se built-in milta hai, bina Google kiye. Ye do commands YAML likhte waqt sabse bade dost hain.
 
-### [07:00 – 09:30] Scene 4: Labels aur Selectors
+### [06:30 – 08:50] Scene 4: Labels aur Selectors
 **[VISUAL: Pods with labels `app=rooms` and `tier=web`. A Service and a ReplicaSet each with a selector `app=rooms` pulling in only matching pods. A pod with a mismatched label left out.]**
 
 **(Voiceover):**
 Labels chhote key-value tag hain, jaise `app: rooms`. Selector un labels ke zariye objects ko chunta hai. Isi tarah ReplicaSet apne pods ko pehchanta hai, aur Service apne pods ko, naam se nahi, label se. Ye design bahut flexible hai: pods badalte rehte hain, par label wahi rehta hai. Ek chhota jaal bhi hai. Agar selector aur pod ke label mein ek akshar ka bhi farq ho, to Service ya ReplicaSet use dekh hi nahi paata, aur koi error bhi nahi aata. Wo sirf chupchap khaali rehta hai. Isliye "kuch nahi ho raha" wale haalat mein pehle labels mila kar dekho.
 
-### [09:30 – 12:25] Scene 5: create, apply, replace
+### [08:50 – 12:25] Scene 5: create, apply, replace
 **[VISUAL: A table. `create -f`: fails if the object exists. `apply -f`: creates or updates, remembers your intent. `replace -f`: swaps the object for the file, fails if it does not exist. `delete -f`: removes what the file describes. A "diff" preview: `kubectl diff -f`.]**
 
 **(Voiceover):**
-YAML ko cluster tak pahunchane ke teen tareeke. `kubectl create -f` naya object banata hai, aur wo pehle se ho to error deta hai. `kubectl apply -f` banata bhi hai aur update bhi karta hai, aur ye aapke likhe hue ko yaad rakhta hai, isliye roz ke kaam ke liye wahi sahi hai. `kubectl replace -f` purane object ko file se badal deta hai, aur object na ho to fail hota hai. Hatane ke liye `kubectl delete -f file.yaml`, jo wahi object hatata hai jo file mein likha hai. Aur kuch badalne se pehle `kubectl diff -f file.yaml` dikha deta hai ki kya badlega. File vault mein hogi, aur badlaav pull request se, jaise Session 17 ki Jenkinsfile.
+YAML ko cluster tak pahunchane ke teen tareeke. `kubectl create -f` naya object banata hai, aur wo pehle se ho to error deta hai. `kubectl apply -f` banata bhi hai aur update bhi karta hai, aur ye aapke likhe hue ko yaad rakhta hai, isliye roz ke kaam ke liye wahi sahi hai. `kubectl replace -f` purane object ko file se badal deta hai, aur object na ho to fail hota hai. Hatane ke liye `kubectl delete -f file.yaml`, jo wahi object hatata hai jo file mein likha hai. Aur kuch badalne se pehle `kubectl diff -f file.yaml` dikha deta hai ki kya badlega. File vault mein hogi, aur badlaav pull request se, jaise Session 17 ki Jenkinsfile. Field ka matlab bhool jao to `kubectl explain pod.spec.containers` cluster se seedha batata hai, aur `kubectl api-resources` har object ka naam aur short form, jaise `po`, `deploy`, `svc`. Ye dono commands lab aur interview, dono mein kaam aate hain.
 
-### [12:25 – 15:05] Scene 6: Lab: Pod Mara, Naya Aaya
+### [12:25 – 14:55] Scene 6: Lab: Pod Mara, Naya Aaya
 **[VISUAL: `kubectl create deployment rooms --image=nginx:alpine --replicas=3`; `kubectl get pods -w` in one terminal; `kubectl delete pod POD` in another; a new pod appears within seconds. Then `kubectl scale deployment rooms --replicas=5` and `kubectl get deployment rooms`.]**
 
 **(Voiceover):**
 Lab. `kubectl create deployment rooms --image=nginx:alpine --replicas=3`. Ek terminal mein `kubectl get pods -w` chalaye rakho. Doosre mein ek pod ka naam lekar `kubectl delete pod POD_NAME`. Dekho: ek pod Terminating hota hai, ek naya Pending se Running hota hai, aur total teen hi rehte hain. Ye self-healing hai, aur ye wahi loop hai jo abhi samjha. Ab `kubectl scale deployment rooms --replicas=5` aur dekho ki do aur aaye. Phir pod ke labels dekhne ke liye `kubectl get pods --show-labels`, aur ek pod ka label `kubectl label pod POD app=other --overwrite` se badalo: Deployment use apna maanna chhod dega, aur ek naya bana dega. Safai: `kubectl delete deployment rooms`.
 
-### [15:05 – 15:35] Scene 7: Recap aur Bridge
+### [14:55 – 15:25] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "desired vs actual · observe, compare, act · apiVersion / kind / metadata / spec (+ status) · labels and selectors · apply for daily use · diff before apply".]**
 
 **(Voiceover):**

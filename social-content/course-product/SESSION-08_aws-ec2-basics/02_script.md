@@ -19,37 +19,37 @@
 
 # 📺 EPISODE 1: Landlord se Pehla Samjhauta
 
-### [00:00 – 02:25] Scene 1: Ek Bhoola Hua Building, Ek Bada Bill
+### [00:00 – 02:15] Scene 1: Ek Bhoola Hua Building, Ek Bada Bill
 **[VISUAL: Aerial view of three giant real-estate towers labelled AWS, Azure, GCP. A student signs a lease for a large building and walks away. A calendar flips through a month. A bill counter climbs to a scary number. A face-palm.]**
 
 **(Voiceover):**
 Ab tak Atithi Hotels ne ek hi building ke andar kaam seekha: staff, taale, logbooks, parchiyan. Par building thi kiraye ki, aur jis landlord se mili, usse hum ab milenge. Ek student ne seekhne ke liye ek bahut badi building kiraye par li, aur wapas dena bhool gaya. Mahine ke ant mein bill aaya to hosh ud gaye. Cloud mein ye sabse aam galti hai. Isliye aaj hum pehle lease surakshit karte hain, phir kuch banate hain. Teen cheezein pehle din ki hain: root user ka sahi use, MFA, aur billing alert. Landlord ka naam hai AWS, Amazon Web Services, aur Atithi ka pehla lease isi se hoga.
 
-### [02:25 – 05:20] Scene 2: Root User aur MFA
+### [02:15 – 05:00] Scene 2: Root User aur MFA
 **[VISUAL: A diagram. On the left, the owner who signed the lease holding the master key in a vault: "root user, the email you signed up with". On the right, daily staff each with a limited badge: "IAM users and roles". A second lock appears on the vault door: an authenticator-app code.]**
 
 **(Voiceover):**
 AWS account banate hi aapko ek root user milta hai: wahi email jisse aapne lease par dastakhat kiye. Wo owner hai, jiske paas poora control hai, aur use kuch rok nahi sakta. Wo chaabi jitni kaam ki hai, utni hi khatarnaak. Isliye root par turant MFA lagao, yaani multi-factor authentication, ek doosra taala. Authenticator app se, jo aapke phone par ek badalta hua code deta hai. Aur ek rule: root se roz ka kaam nahi karte. Roz ke kaam ke liye alag staff, yaani IAM user ya role, jo hum agle session mein detail se banayenge. Root ko sirf wo kaam do jo sirf owner hi kar sakta hai, jaise account band karna. Ek aur baat: root ki access keys, yaani code se phone karne wali chaabiyan, kabhi mat banao.
 
-### [05:20 – 08:25] Scene 3: Billing aur Free Tier
+### [05:00 – 08:40] Scene 3: Billing aur Free Tier
 **[VISUAL: The AWS Billing console. Budgets → "Create budget" → monthly cost budget → an email alert at 80% of the amount. A free-tier usage page with progress bars. A side card: "read your own account's terms".]**
 
 **(Voiceover):**
-Landlord ke office mein sabse pehle meter lagwao: Billing mein Budgets. Ek mahine ka budget tay karo, aur jab wo eighty percent tak pahunche to email aaye. Alert se pehle bhi, kharch ka naksha dekhne ke liye Cost Explorer hai. Free tier ke rules aaj kal badalte rehte hain: kuch accounts ko credits milte hain, kuch ko purane tareeke se kuch ghante ka free usage. Isliye course ka koi number mat maano, wahi padho jo aapke apne account ke billing page par likha hai. Ek aur baat: kuch cheezein sirf chalti rehne par paise leti hain, jaise running building, ek aisa public address jo kisi se juda nahi, ya bade storerooms. AWS ab public IPv4 address par bhi ghante ke hisaab se charge karta hai, aur rate pricing page par hai. Alert lagao, aur kaam khatam hote hi safai karo.
+Landlord ke office mein sabse pehle meter lagwao: Billing mein Budgets. Ek mahine ka budget tay karo, aur jab wo eighty percent tak pahunche to email aaye. Alert se pehle bhi, kharch ka naksha dekhne ke liye Cost Explorer hai. Har resource par `Owner` aur `Purpose` tag lagao, aur billing mein un tags ko cost allocation ke liye ek baar activate karo, taaki Cost Explorer mein dikhe ki kharch kiska hai. Free tier ke rules aaj kal badalte rehte hain: kuch accounts ko credits milte hain, kuch ko purane tareeke se kuch ghante ka free usage. Isliye course ka koi number mat maano, wahi padho jo aapke apne account ke billing page par likha hai. Ek aur baat: kuch cheezein sirf chalti rehne par paise leti hain, jaise running building, ek aisa public address jo kisi se juda nahi, ya bade storerooms. AWS ab public IPv4 address par bhi ghante ke hisaab se charge karta hai, aur rate pricing page par hai. Alert lagao, aur kaam khatam hote hi safai karo.
 
-### [08:25 – 11:30] Scene 4: Kiski Zimmedari: Landlord ya Aapki?
+### [08:40 – 11:35] Scene 4: Kiski Zimmedari: Landlord ya Aapki?
 **[VISUAL: A building cut in half horizontally. Below the line, in the landlord's colour: land, power, towers, the machines that run many buildings. Above the line, in the tenant's colour: the operating system and its updates, the door guard list, the staff accounts, the guests' data. A caption: "of the cloud / in the cloud".]**
 
 **(Voiceover):**
 Lease par dastakhat karne se pehle ek sawaal: agar kuch toota to kiski zimmedari hai? Landlord ki zimmedari hai zameen, bijli, towers aur wo bade machines jo kai buildings ek saath chalate hain. Is hisse ko cloud ka hissa kehte hain. Aapki zimmedari hai building ke andar ki cheezein: operating system aur uske updates, darwaze ke guard ki list yaani security group, staff ke accounts, aur guests ka data. Is hisse ko cloud ke andar ka hissa kehte hain. Ye batwara AWS khud shared responsibility model kehta hai. Isliye jis building mein aapne Ubuntu rakha, uske security updates aapko chalane hain, landlord nahi chalayega. Aur jis building mein guard ki list mein poori duniya ko aane diya, uska dosh landlord ka nahi. Aage RDS aur S3 mein ye line thodi upar khiskegi, par ye batwara hamesha rahega.
 
-### [11:30 – 13:30] Scene 5: Lab: Lease ki Checklist
+### [11:35 – 13:30] Scene 5: Lab: Lease ki Checklist
 **[VISUAL: A checklist with ticks appearing one by one: MFA on root, budget alert created, Cost Explorer on, Region selected, account alias set. A browser tab showing the account alias in the sign-in URL.]**
 
 **(Voiceover):**
 Lab: apne account par ye checklist poori karo. Ek: root user par MFA. Do: ek monthly budget banao jo eighty percent par email bheje. Teen: Cost Explorer chalu karo. Chaar: ek Region chuno jisme aap kaam karoge, aur har console page ke upar kone mein wahi dikh raha hai ye confirm karo. Paanch: account ka ek alias banao, taaki login URL yaad rakhna aasaan ho. Ye dus minute ka kaam hai. Har kadam ka screenshot apni notebook mein rakho. Ye aapko bade bill aur bade risk, dono se bachata hai.
 
-### [13:30 – 14:20] Scene 6: Recap aur Bridge
+### [13:30 – 14:15] Scene 6: Recap aur Bridge
 **[VISUAL: A card: "Root + MFA · no daily root use · no root keys · budget alert · clean up". Under it, small: "owner · second lock · meter".]**
 
 **(Voiceover):**

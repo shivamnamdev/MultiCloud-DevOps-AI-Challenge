@@ -53,31 +53,31 @@ Recap: Git aapka tool hai, GitHub vault. `origin` vault ka naam, push bhejta hai
 
 # 📺 EPISODE 2: Pull Request
 
-### [00:00 – 02:10] Scene 1: Shukravaar ki Shaam ka Push
+### [00:00 – 02:00] Scene 1: Shukravaar ki Shaam ka Push
 **[VISUAL: Friday 6 PM. A designer pushes straight to `main`. The live booking page shows an error. Five phones ring. Then a rule goes up on the vault door: "Master mein seedha kuch nahi. Pehle review."]**
 
 **(Voiceover):**
 Shukravaar, shaam chhah baje. Ek designer jaldi mein apna kaam seedha `main` mein push kar deta hai. Kisi ne dekha nahi, kisi ne jaancha nahi. Booking page par error, aur paanch phone ek saath bajte hain. Us din Atithi ka design studio ek rule banata hai: master mein seedha kuch nahi jaayega. Har kaam apne draft par hoga, vault mein jayega, aur chief architect ke review ke baad hi master mein milega. GitHub par is review ka naam hai pull request. Is episode mein poora safar, aur wo do rukawatein jo har nayi team ko pehle hafte milti hain.
 
-### [02:10 – 05:10] Scene 2: Draft se Master tak ka Safar
+### [02:00 – 04:45] Scene 2: Draft se Master tak ka Safar
 **[VISUAL: A flow strip: `git switch main` + `git pull` → `git switch -c feature/offers-page` → commits → `git push -u origin feature/offers-page` → "Compare & pull request" → Files changed (red/green) → review comment → new commit pushed to the same branch → Approve → Merge → `git switch main`, `git pull`, `git branch -d`.]**
 
 **(Voiceover):**
 Safar aise chalta hai. Hamesha taaza master se shuru karo: `git switch main`, `git pull`. Phir apna draft: `git switch -c feature/offers-page`. Kaam karo, commit karo, aur draft ko vault mein bhejo: `git push -u origin feature/offers-page`. GitHub turant ek button dikhata hai, "Compare and pull request". Title saaf likho, description mein batao kya badla aur kyun. Ab reviewer "Files changed" mein har line dekhta hai, kisi line par comment karta hai, aur ya to approve karta hai ya badlaav maangta hai. Badlaav maange gaye to naya PR nahi banta: usi draft par ek aur commit karo aur push karo, PR khud update ho jaata hai. Approve ke baad merge. Merge ke teen tareeke hain, merge commit, squash aur rebase; team ek chun leti hai. Pull request sirf merge ka button nahi, baatcheet aur jaanch hai.
 
-### [05:10 – 08:25] Scene 3: Do Rukawatein, aur Master par Taala
+### [04:45 – 08:55] Scene 3: Do Rukawatein, aur Master par Taala
 **[VISUAL: Terminal 1: `git push` → "rejected ... fetch first". Fix: `git pull`, then `git push`. Screen 2: a PR page saying "This branch is out-of-date with the base branch" with an "Update branch" button; terminal alternative `git switch feature/...`, `git merge main`, `git push`. Screen 3: Settings → Branches → rule on `main`: "Require a pull request before merging".]**
 
 **(Voiceover):**
-Pehli rukawat: aap push karte ho aur Git kehta hai "rejected, fetch first". Matlab vault ka register aage badh chuka hai, kisi ne aapse pehle push kar diya. Hal: pehle `git pull`, zaroorat ho to conflict suljhao, phir `git push`. Agar pull poochhe ki milana kaise hai, to ek baar `git config --global pull.rebase false` set kar do, yaani merge. Zabardasti mat karo. Doosri rukawat: aapka draft purane master se nikla tha, aur PR par likha aata hai ki branch out-of-date hai. Hal: apne draft par `git merge main` karo aur push karo, ya conflict na ho to GitHub ka "Update branch" button. Aur ab taala: repo ki settings mein `main` par rule lagao, "Require a pull request before merging". Ab Shukravaar wali galti ho hi nahi sakti. Is chhote, seedhe tareeke ka naam GitHub Flow hai: `main` hamesha chalne layak, har kaam ek chhote draft par.
+Pehli rukawat: aap push karte ho aur Git kehta hai "rejected, fetch first". Matlab vault ka register aage badh chuka hai, kisi ne aapse pehle push kar diya. Hal: pehle `git pull`, zaroorat ho to conflict suljhao, phir `git push`. Agar pull poochhe ki milana kaise hai, to ek baar `git config --global pull.rebase false` set kar do, yaani merge. Zabardasti mat karo. Agar apne hi draft par force karna pade, to `git push --force-with-lease` use karo: wo tabhi push karta hai jab vault par kisi aur ka naya kaam na aaya ho, jabki seedha `--force` doosre ka kaam mita sakta hai. `main` par force push ko to taale ne hi rok diya hai. Yaani force wahi, jahan sirf aapka apna kaam daanv par ho. Doosri rukawat: aapka draft purane master se nikla tha, aur PR par likha aata hai ki branch out-of-date hai. Hal: apne draft par `git merge main` karo aur push karo, ya conflict na ho to GitHub ka "Update branch" button. Aur ab taala: repo ki settings mein `main` par rule lagao, "Require a pull request before merging". Ab Shukravaar wali galti ho hi nahi sakti. Is chhote, seedhe tareeke ka naam GitHub Flow hai: `main` hamesha chalne layak, har kaam ek chhote draft par.
 
-### [08:25 – 11:25] Scene 4: Lab: Pehla Pull Request
+### [08:55 – 11:40] Scene 4: Lab: Pehla Pull Request
 **[VISUAL: Terminal: `git switch main`, `git pull`, `git switch -c feature/offers-page`, create `offers.html`, commit, `git push -u origin feature/offers-page`. Browser: open PR, write description, add a review comment on one line, push a fix commit, merge, delete branch. Terminal: `git switch main`, `git pull`, `git branch -d feature/offers-page`. Then a direct `git push` to `main` is refused by the rule.]**
 
 **(Voiceover):**
 Lab. `atithi-booking` mein `git switch main`, `git pull`, phir `git switch -c feature/offers-page`. Ek `offers.html` banao, commit karo, aur `git push -u origin feature/offers-page`. Browser mein PR kholo. Description mein teen line: kya badla, kyun, aur kaise jaancha. "Files changed" mein apni hi ek line par comment likho, jaise "heading mein hotel ka naam jodo". Terminal mein wo sudhaar karo, commit, push, aur dekho PR mein naya commit aa gaya. Merge karo aur draft hata do. Local mein `git switch main`, `git pull`, `git branch -d feature/offers-page`. Ab `main` par taala lagao, saath mein "Do not allow bypassing the above settings" bhi chuno taaki rule owner par bhi lage, aur seedha `main` mein push karke dekho: vault mana kar dega. Review ko zaroori banane ke liye doosra account chahiye, isliye ek dost ko collaborator bana lo.
 
-### [11:25 – 13:00] Scene 5: Recap aur Bridge
+### [11:40 – 13:05] Scene 5: Recap aur Bridge
 **[VISUAL: A card: "taaza main → draft → push → PR → review → merge → sync · rejected? pehle pull · out-of-date? `merge main`".]**
 
 **(Voiceover):**

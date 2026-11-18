@@ -18,25 +18,25 @@
 
 # 📺 EPISODE 1: Slip se Officer Tak
 
-### [00:00 – 03:00] Scene 1: Do Sau Line ki Slip ka Dard
+### [00:00 – 02:40] Scene 1: Do Sau Line ki Slip ka Dard
 **[VISUAL: A 200-line bash slip pinned to the Atithi back-office wall: nested quotes, `awk`, `sed`, a JSON file being parsed with `grep`. Two staff stand in front of it, confused. A red stamp: "nobody dares touch this". Beside it, a trained operations officer with a 20-line, neatly typed page.]**
 
 **(Voiceover):**
 Pichhle session mein humne bash ki parchiyan likhi, aur wo chhote kaam ke liye zabardast hain. Par Atithi ab badi ho rahi hai. Ek din parchi mein booking ka JSON data padhna pada, phir landlord ke office ko poochna pada, aur logic mein teen jagah faisle aaye. Parchi do sau line ki ho gayi, quotes ka jaal, `awk` aur `sed` ki chainein, aur ek jagah typo ho to poori behak jaati hai. Aisi parchi ko koi haath nahi lagata. Is jagah par chahiye ek trained operations officer, yaani Python. Wahi kaam kam lines mein, saaf tareeke se, aur jise baad mein koi bhi padh sake. Is session mein hum Python ko DevOps ka ek aujaar banate dekhenge. Is episode mein: slip se officer tak.
 
-### [03:00 – 05:55] Scene 2: Kab Slip, Kab Officer?
+### [02:40 – 05:15] Scene 2: Kab Slip, Kab Officer?
 **[VISUAL: A decision tree on the wall: "A few commands glued together?" → slip (Bash). "Need JSON, APIs, data structures, tests?" → officer (Python). "Must run on every Linux box with nothing installed?" → slip (Bash). A small Venn: both tools overlapping in the middle.]**
 
 **(Voiceover):**
 Thumb rule seedha hai. Agar kaam kuch commands ko jodne ka hai, jaise log mein search ya folder ka backup, to slip, yaani bash, theek hai. Agar aapko data structures chahiye, JSON ya YAML padhna hai, API se baat karni hai, ya parchi ka test likhna hai, to officer, yaani Python. Python har jagah pehle se installed nahi hoti, isliye bahut chhote bootstrap kaam bash mein hi rakhte hain, jaise naye server par Python install karna. Dono dushman nahi hain. DevOps mein aap dono ko jodte ho: bash ek kaam shuru karta hai, Python uska dimaag chalata hai. Aur jo parchi aapne Session 5 aur 6 mein likhi, wahi kaam aaj hum Python mein dekhenge, taaki farq saamne ho.
 
-### [05:55 – 09:30] Scene 3: Virtual Environment aur pip
+### [05:15 – 09:55] Scene 3: Virtual Environment aur pip
 **[VISUAL: Terminal: `sudo apt install python3-venv`, `python3 -m venv .venv`, `source .venv/bin/activate`, the prompt changes to `(.venv)`, `pip install requests boto3 pyyaml`, `pip freeze > requirements.txt`. A project folder with `.venv` listed in `.gitignore`. A message "externally-managed-environment" greyed out beside a system-wide pip install.]**
 
 **(Voiceover):**
-Pehla rule: har project ke liye alag virtual environment. Ye project ka apna chhota workshop hai, jisme sirf uske aujaar rakhe jaate hain. Ubuntu par pehle `sudo apt install python3-venv` ho sakta hai. Phir `python3 -m venv .venv` workshop banata hai, aur `source .venv/bin/activate` usme ghusa deta hai. Prompt ke aage `(.venv)` aa jayega. Ab `pip install requests boto3 pyyaml` sirf is project ke liye install hoga. Naye Ubuntu par agar aap bina venv ke seedha system mein pip chalane ki koshish karoge, to wo mana kar dega, kyunki system ke apne Python packages kharab ho sakte hain. `pip freeze > requirements.txt` se aujaaron ki list saved ho jaati hai, taaki doosra insaan ya pipeline wahi versions install kar sake: `pip install -r requirements.txt`. `.venv` folder ko git mein commit nahi karte, use `.gitignore` mein daalte hain, jaise Session 16 mein `.env` ke saath kiya tha.
+Pehla rule: har project ke liye alag virtual environment. Ye project ka apna chhota workshop hai, jisme sirf uske aujaar rakhe jaate hain. Ubuntu par pehle `sudo apt install python3-venv` ho sakta hai. Phir `python3 -m venv .venv` workshop banata hai, aur `source .venv/bin/activate` usme ghusa deta hai. Prompt ke aage `(.venv)` aa jayega. `which python` batata hai ki aap venv ka Python chala rahe ho ya system ka, aur bahar nikalne ke liye `deactivate`. `python3 -m pip install` likho to pakka rehta hai ki wahi Python install kar raha hai jo aap chala rahe ho; galat pip se install ho jaana ek aam dikkat hai. Ye teen cheezein har naye project ki pehli aadat banao. Venv, requirements aur gitignore: tino ek saath. Ab `pip install requests boto3 pyyaml` sirf is project ke liye install hoga. Naye Ubuntu par agar aap bina venv ke seedha system mein pip chalane ki koshish karoge, to wo mana kar dega, kyunki system ke apne Python packages kharab ho sakte hain. `pip freeze > requirements.txt` se aujaaron ki list saved ho jaati hai, taaki doosra insaan ya pipeline wahi versions install kar sake: `pip install -r requirements.txt`. `.venv` folder ko git mein commit nahi karte, use `.gitignore` mein daalte hain, jaise Session 16 mein `.env` ke saath kiya tha.
 
-### [09:30 – 12:15] Scene 4: Lab: Pehli Officer wali Report
+### [09:55 – 12:25] Scene 4: Lab: Pehli Officer wali Report
 **[VISUAL: A Python file `sysinfo.py` in an editor. Terminal prints the building name, the OS and the disk percentage. A second run with a low limit prints "FAIL: disk almost full" and `echo $?` shows 1.]**
 
 **(Voiceover):**
@@ -54,7 +54,7 @@ if pct > 90:
 ```
 `python sysinfo.py` chalao. `raise SystemExit("...")` ek message print karta hai aur non-zero exit code se band hota hai. Pichhle session wala wahi niyam: cron ya pipeline ko exit code se pata chalta hai ki kuch galat hai. Dekhne ke liye `if pct > 90` ko `if pct > 1` kar do, phir chalao aur `echo $?` dekho. Ye wahi health-check hai jo bash mein likhi thi, par ab data aur logic ke saath, aur aage badhne ke liye taiyaar.
 
-### [12:15 – 13:00] Scene 5: Recap aur Bridge
+### [12:25 – 13:05] Scene 5: Recap aur Bridge
 **[VISUAL: A card: "bash = glue · Python = logic · venv · pip · requirements.txt · exit code".]**
 
 **(Voiceover):**
