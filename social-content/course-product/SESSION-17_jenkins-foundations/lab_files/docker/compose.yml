@@ -1,0 +1,12 @@
+# Usage: docker compose -f docker/compose.yml up -d --build      then open http://localhost:8080
+# Log in as admin / practice (lab only). Stop and delete everything with: docker compose -f docker/compose.yml down -v
+services:
+  jenkins:
+    build: .
+    ports:
+      - "${JENKINS_PORT:-8080}:8080"
+    volumes:
+      - jenkins_home:/var/jenkins_home
+      - ${BOOKING_REPO:-../booking-service}:/repos/booking-service
+volumes:
+  jenkins_home:

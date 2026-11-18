@@ -1,0 +1,14 @@
+pipeline {
+  agent any
+  options { timeout(time: 15, unit: 'MINUTES') }
+  stages {
+    stage('Build')   { steps { sh 'mvn -B -DskipTests clean compile' } }
+    stage('Test')    { steps { sh 'mvn -B test' } }
+    stage('Package') { steps { sh 'mvn -B -DskipTests package' } }
+  }
+  post {
+    always  { junit allowEmptyResults: true, testResults: 'target/surefire-reports/*.xml' }
+    success { archiveArtifacts artifacts: 'target/*.jar', fingerprint: true }
+    failure { echo 'Build failed. Look at the red stage first.' }
+  }
+}

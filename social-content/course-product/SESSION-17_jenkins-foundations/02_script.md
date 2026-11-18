@@ -170,8 +170,8 @@ Ab pipeline job banao, aur Definition mein "Pipeline script from SCM" chuno. Vau
 **(Voiceover):**
 Pipeline mein ek chhota jaal hai, jise sab seekhte waqt pakadte hain. Jenkinsfile Groovy mein hai, aur Groovy mein double quote wali string ke andar `$` ka matlab Jenkins ka apna substitution hota hai. Isliye `sh "echo $TOKEN"` mein Jenkins khud secret ko command mein likh deta hai, aur wo log mein aa sakta hai. Single quote mein, `sh 'echo $TOKEN'`, Jenkins kuch nahi badalta aur shell variable ko sambhalta hai. Isliye secrets hamesha single quotes ke saath, aur `credentials()` ya `withCredentials` se lo, plain text mein kabhi nahi. Ye hum Session 19 mein Jenkins ki security ke saath poori tarah dekhenge. Aaj bas yaad rakho: secret ek, quote ek, aur kabhi print nahi.
 
-### [09:05 – 12:10] Scene 5: Lab: Build, Test, Package aur Archive
-**[VISUAL: The `Jenkinsfile` in the repo root. Stage View: Build, Test, Package all green, with timing. A failing test turns the Test stage red; Package is skipped (grey). Archived jar visible on the build page.]**
+### [09:05 – 12:15] Scene 5: Lab: Build, Test, Package aur Archive
+**[VISUAL: The `Jenkinsfile` in the repo root. Stage View: Build, Test, Package all green, with timing. A failing test turns the Test stage red; Package is skipped. Archived jar visible on the build page.]**
 
 **(Voiceover):**
 Lab. Apne `booking-service` repo ke root mein ye `Jenkinsfile` rakho:
@@ -191,15 +191,15 @@ pipeline {
   }
 }
 ```
-Commit karke vault mein push karo. Pipeline job banao, "Pipeline script from SCM" ke saath, aur chalao. Stage View mein har station dekho. Phir ek test tod kar dekho: Test laal hoga, Package grey, aur `post failure` ka message chalega. Ek test ko theek karke push karo aur dekho ki naya build hara hota hai.
+Commit karke vault mein push karo. Pipeline job banao, "Pipeline script from SCM" ke saath, aur chalao. Stage View mein har station dekho. Phir ek test tod kar dekho: Test laal hoga, Package skip hoga, aur `post failure` ka message chalega. Ek test ko theek karke push karo aur dekho ki naya build hara hota hai.
 
-### [12:10 – 14:15] Scene 6: Pull Request ke Saath Jenkinsfile
+### [12:15 – 14:20] Scene 6: Pull Request ke Saath Jenkinsfile
 **[VISUAL: A pull request that changes `Jenkinsfile` to add a lint stage. The chief architect reviews it in the vault like any other file. A merged commit and a build using the new conveyor. A history list of `Jenkinsfile` changes with authors and dates.]**
 
 **(Voiceover):**
 Ab Jenkinsfile bhi blueprint ka hissa hai, to wahi niyam. Ek nayi station jodni ho, jaise lint, to ek branch banao, `Jenkinsfile` badlo, aur pull request kholo. Chief architect use review karta hai, jaise kisi bhi file ko. Merge hone ke baad agla build nayi conveyor se chalega. Aur agar nayi station ne sab toda, to Session 16 ki aadat: `git revert` se purani halat wapas. Har badlaav ka register hai: kisne, kab, kyun. Ye wahi cheez hai jo freestyle ke form mein nahi thi. Isi ko pipeline as code kehte hain, aur ye agle sessions ki neev hai.
 
-### [14:15 – 15:25] Scene 7: Recap aur Bridge
+### [14:20 – 15:30] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "Jenkinsfile lives in the vault · pipeline / agent / stages / post · Script from SCM · single quotes for secrets · change it by pull request". Then a vault building with a bell on its roof fades in.]**
 
 **(Voiceover):**
