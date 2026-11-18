@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Pod
+metadata: {name: two}
+spec:
+  containers:
+  - {name: web, image: "nginx:alpine"}
+  - {name: bad, image: "busybox:1.36", command: ["sh","-c","exit 1"]}

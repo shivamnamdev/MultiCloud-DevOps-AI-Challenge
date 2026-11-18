@@ -20,31 +20,31 @@
 
 # 📺 EPISODE 1: Sau Trucks, Ek Insaan
 
-### [00:00 – 02:50] Scene 1: Sau Trucks, Das Buildings
+### [00:00 – 02:40] Scene 1: Sau Trucks, Das Buildings
 **[VISUAL: An admin at a desk with a wall of one hundred truck icons spread over ten buildings. Some trucks crash, one building is overloaded, one truck needs the new design. A phone buzzes and a "manual" counter overflows.]**
 
 **(Voiceover):**
 Pichhle do sessions mein humne rooms-service ki truck design likhi, usse chhota aur surakshit banaya, aur depot mein rakha. Ek truck chalana aasaan hai. Ab Atithi ke paas dus services hain, har ek ki kai trucks, aur das buildings. Koi truck mari to dobara chalao. Kisi building par zyada bojh ho to trucks doosri building mein bhejo. Naya design aaya to bina guests ko roke ek ek karke badlo. Raat ke teen baje koi building gir jaaye, to uski saari trucks ka kya hoga? Insaan ye sab haath se nahi kar sakta. Is kaam ke liye head office ka operations command hai: Kubernetes.
 
-### [02:50 – 06:05] Scene 2: Operations Command Kya Sambhalta Hai
+### [02:40 – 05:45] Scene 2: Operations Command Kya Sambhalta Hai
 **[VISUAL: Six cards around a command room: Scheduling, Self-healing, Scaling, Rolling updates and rollbacks, Discovery and load balancing, Config and secrets. A small note: "from Google's Borg, now open source under the CNCF".]**
 
 **(Voiceover):**
 Operations command chhe kaam sambhalta hai. Placement: kaun si truck kis building ke courtyard mein khadi hogi. Self-healing: truck mari to nayi. Scaling: shaadi ke season mein zyada trucks, baad mein kam. Rolling updates: naya design ek ek karke, jaise hotel khula rakh kar floor by floor renovation, aur galat nikla to rollback. Discovery aur load balancing: trucks ek doosre ko dhoondh sakein aur traffic baante. Aur config aur secrets ka prabandh. Ye sab Session 11 ke marshal, Session 10 ke Auto Scaling aur Session 15 ke alarms ke vichar hain, jo ab trucks ke liye ek hi jagah mil gaye. Kubernetes ka vichar Google ke andar ke Borg system se aaya, aur ab ye CNCF ke under open source hai.
 
-### [06:05 – 09:35] Scene 3: Docker, Compose aur Kubernetes
+### [05:45 – 09:05] Scene 3: Docker, Compose aur Kubernetes
 **[VISUAL: A three-row comparison. Docker: build and run one truck. Compose: describe a small park of trucks in one building. Kubernetes: run and keep alive trucks across many buildings. An honest tag: "small project? Kubernetes can be too much".]**
 
 **(Voiceover):**
 Docker ek truck banata aur chalata hai. Compose ek building mein kai trucks ka chhota park define karta hai, development ke liye mast. Kubernetes kai buildings ke cluster par trucks ko chalata, badhata aur zinda rakhta hai. Ye competitors nahi, alag star ke tool hain. Aur sach ye bhi hai ki ek chhoti team ke ek service ke liye Kubernetes bahut bhari cheez ho sakti hai: ek ya do buildings, ek Auto Scaling Group aur ek marshal kaafi ho sakte hain. Hum Kubernetes isliye seekh rahe hain ki jahan scale aur bharose ki zaroorat hai, wahan ye kaise kaam karta hai. Aur ek aur baat: control plane khud chalana mushkil hai, isliye zyadatar log GKE, EKS ya AKS jaisi managed service lete hain, jahan landlord command ka dimaag chalata hai.
 
-### [09:35 – 12:20] Scene 4: Lab: Dard Mehsoos Karo
-**[VISUAL: Terminal. Start five containers with a loop, `docker kill w3`, `docker ps` shows only four, and no one brings w3 back. A second take: `docker run --restart unless-stopped` brings it back on the same building, but not after the building is down.]**
+### [09:05 – 12:25] Scene 4: Lab: Dard Mehsoos Karo
+**[VISUAL: Terminal. Start five containers with a loop, `docker kill w3`, `docker ps` shows only four, and no one brings w3 back. A second take: `docker run --restart unless-stopped` brings back a truck that crashes, on the same building only; a truck stopped with `docker kill` stays down.]**
 
 **(Voiceover):**
-Lab. Pehle problem mehsoos karo. `for i in 1 2 3 4 5; do docker run -d --name w$i nginx:alpine; done`. Phir `docker kill w3` aur `docker ps`: chaar hi bachi, aur koi use wapas nahi laayega. `--restart unless-stopped` ke saath ye ek hi building par ho jaata hai. Ab socho ki poori building band ho jaaye, ya trucks sau hon aur buildings das. Docker ke paas us building ke bahar ki koi khabar hi nahi. Isi khali jagah ko operations command bharta hai. Safai: `docker rm -f w1 w2 w3 w4 w5`. Agle episode mein hum command ke andar jhaankenge.
+Lab. Pehle problem mehsoos karo. `for i in 1 2 3 4 5; do docker run -d --name w$i nginx:alpine; done`. Phir `docker kill w3` aur `docker ps`: chaar hi bachi, aur koi use wapas nahi laayega. `--restart unless-stopped` crash par truck wapas laata hai: humne `sh -c 'sleep 3; exit 1'` wali truck ko do baar wapas aate dekha. Par `docker kill` se roki hui truck wapas nahi aati, aur ye sab sirf usi ek building par hota hai. Ab socho ki poori building band ho jaaye, ya trucks sau hon aur buildings das. Docker ke paas us building ke bahar ki koi khabar hi nahi. Isi khali jagah ko operations command bharta hai. Safai: `docker rm -f w1 w2 w3 w4 w5`. Agle episode mein hum command ke andar jhaankenge.
 
-### [12:20 – 13:00] Scene 5: Recap aur Bridge
+### [12:25 – 13:00] Scene 5: Recap aur Bridge
 **[VISUAL: A card: "place · self-heal · scale · roll out · discover · config · across many buildings · managed control plane in the cloud".]**
 
 **(Voiceover):**
@@ -54,41 +54,41 @@ Recap: orchestration ka matlab, aur Kubernetes ke chhe kaam. Ab command ke andar
 
 # 📺 EPISODE 2: Operations Command ke Hisse
 
-### [00:00 – 01:55] Scene 1: Airport ka Control Tower
+### [00:00 – 01:45] Scene 1: Airport ka Control Tower
 **[VISUAL: An airport. A control tower (control plane) sending instructions to gates and runways (nodes) where planes (trucks) wait. A flight-plan board labelled "desired state".]**
 
 **(Voiceover):**
 Cluster ko ek airport ki tarah socho. Control tower tay karta hai ki kaun sa jahaz kahan utrega aur kahan jayega. Runway aur gate asli kaam karte hain. Control tower control plane hai, aur runway worker nodes. Hamari story mein control plane operations command ka daftar hai, aur node ek building, jiske courtyard mein parking bays hain. Dono ko alag alag samajhna Kubernetes ki neev hai, kyunki jab kuch toote, sabse pehla sawaal yahi hota hai: gadbad daftar mein hai ya building mein?
 
-### [01:55 – 04:35] Scene 2: Control Plane ke Chaar Mukhya Hisse
+### [01:45 – 04:10] Scene 2: Control Plane ke Chaar Mukhya Hisse
 **[VISUAL: A control-plane box with four parts: kube-apiserver (reception), etcd (master ledger), kube-scheduler (allocation officer), kube-controller-manager (supervisors). An optional fifth: cloud-controller-manager. Arrows show everyone talking only to the API server.]**
 
 **(Voiceover):**
 Daftar mein chaar mukhya hisse. kube-apiserver, jo reception hai: kubectl se lekar saare components isi se baat karte hain, aur koi bhi seedha ledger tak nahi jaata. etcd, master ledger: ek database jisme cluster ki poori sachchai rehti hai, kaun si trucks chahiye, kaun si chal rahi hain. Ledger gaya to command andha ho gaya, isliye uska backup sabse zaroori hai, jaise Session 19 mein foreman ke records ka. kube-scheduler, allocation officer: naye bay ke liye sahi building chunta hai. Aur kube-controller-manager, supervisors: kai controllers ek saath chalte hain, jo ledger ko asliyat se milate rehte hain. Cloud par ek cloud-controller-manager bhi hota hai, jo cloud ke load balancers aur disks se baat karta hai.
 
-### [04:35 – 07:05] Scene 3: Node ke Hisse aur Pod
+### [04:10 – 06:30] Scene 3: Node ke Hisse aur Pod
 **[VISUAL: A worker node with kubelet (resident manager), a container runtime (containerd), kube-proxy (network rules), and several pods. A pod drawn as a small parking bay with one or two trucks sharing one address and one locker.]**
 
 **(Voiceover):**
 Har building, yaani worker node, mein teen cheezein. kubelet, resident manager: wo daftar ka agent hai, jo bay ki list leta hai, trucks chalwata hai aur daftar ko haalat batata hai. Container runtime, jaise containerd, jo asli mein truck chalata hai. Aur kube-proxy, jo Services ke network rules sambhalta hai. Kubernetes seedha truck nahi chalata, wo parking bay chalata hai, jise pod kehte hain. Ek pod mein ek ya kuch tight truck hote hain, jo ek address aur storage share karte hain. Pod sabse chhota deployable unit hai, aur asthayi hai: wo mar sakta hai aur naya ban sakta hai. Isliye kabhi pod ke IP par bharosa mat karo.
 
-### [07:05 – 10:00] Scene 4: Ek Order ka Safar
+### [06:30 – 09:10] Scene 4: Ek Order ka Safar
 **[VISUAL: A flow diagram. `kubectl create deployment` → API server (authenticate, validate) → master ledger records the order → the Deployment controller creates a ReplicaSet → ReplicaSet controller creates pod objects → scheduler picks a node for each → kubelet on that node tells the runtime to start the truck → kubelet reports status back. Each step numbered.]**
 
 **(Voiceover):**
 Ek order ka poora safar dekho. Aap `kubectl create deployment` likhte ho. Ek: reception aapko pehchanta hai, jaanchta hai, aur order master ledger mein likh deta hai. Do: supervisors ledger padhte hain, aur Deployment ke liye ek ReplicaSet banate hain, phir ReplicaSet ke liye pod objects. Teen: allocation officer har naye bay ke liye ek building chunta hai, resources dekhkar. Chaar: us building ka resident manager dekhta hai ki mere naam ka ek naya bay hai, aur runtime se truck chalwata hai. Paanch: wo ledger mein status wapas likhta hai. Ek baat dhyaan dene wali: koi bhi ek doosre ko seedha order nahi deta. Sab reception ke raaste ledger se baat karte hain. Isi liye debugging mein "kis step par atka?" ka jawab events se milta hai.
 
-### [10:00 – 12:55] Scene 5: Jab Daftar Girta Hai
+### [09:10 – 12:35] Scene 5: Jab Daftar Girta Hai
 **[VISUAL: A split picture. Left: the control plane goes down; existing trucks keep running but nothing new is placed and a dead truck is not replaced. Right: a node goes down; the supervisors notice its resident manager has gone quiet and recreate its pods on other nodes.]**
 
 **(Voiceover):**
-Do alag haadse alag asar rakhte hain. Agar control plane gir jaaye, to jo trucks chal rahi hain wo chalti rehti hain, kyunki resident manager apna kaam jaanta hai. Par nayi truck ke liye bay nahi ban sakta, scaling ruk jaati hai, aur mari hui truck wapas nahi aati. Isliye production mein control plane ke kai copies chalte hain, aksar teen, aur managed service mein landlord ye sambhalta hai. Agar ek building gir jaaye, to supervisors dekhte hain ki uske resident manager ki awaaz aani band ho gayi, kuch der intezaar karte hain, aur phir us building ke bays ko doosri buildings mein dobara banate hain. Ye tabhi chalega jab doosri buildings mein jagah ho, jo Session 11 ke "tower" ki soch hai: do towers mein phailao.
+Do alag haadse alag asar rakhte hain. Agar control plane gir jaaye, to jo trucks chal rahi hain wo chalti rehti hain, kyunki resident manager apna kaam jaanta hai. Par nayi truck ke liye bay nahi ban sakta, scaling ruk jaati hai, aur mari hui truck wapas nahi aati. Isliye production mein control plane ke kai copies chalte hain, aksar teen, aur managed service mein landlord ye sambhalta hai. Agar ek building gir jaaye, to supervisors dekhte hain ki uske resident manager ki awaaz aani band ho gayi, kuch der intezaar karte hain, aur phir us building ke bays ko doosri buildings mein dobara banate hain. Humne lab mein building band ki: lagbhag pachaas second baad node NotReady dikhi, aur naye pods lagbhag chhe minute baad doosri building par aaye. Tab tak purane pods Running hi dikhte rahe. Ye tabhi chalega jab doosri buildings mein jagah ho, jo Session 11 ke "tower" ki soch hai: do towers mein phailao.
 
-### [12:55 – 15:00] Scene 6: Lab: Apne Cluster mein Command ko Dekho
+### [12:35 – 15:00] Scene 6: Lab: Apne Cluster mein Command ko Dekho
 **[VISUAL: Terminal on a running cluster: `kubectl get nodes -o wide`, `kubectl get pods -n kube-system`, highlighting kube-apiserver, etcd, kube-scheduler, kube-controller-manager, coredns, kube-proxy. `kubectl describe node NODE` showing capacity, allocatable, conditions, and non-terminated pods.]**
 
 **(Voiceover):**
-Lab. Ye episode agle episode ke cluster ke baad bhi kar sakte ho. `kubectl get nodes -o wide` mein nodes, unka IP aur version. `kubectl get pods -n kube-system` mein control plane aur system ke pods: `kube-apiserver`, `etcd`, `kube-scheduler`, `kube-controller-manager`, `coredns`, `kube-proxy`. `kubectl describe node NODE_NAME` mein capacity, allocatable, conditions, aur node par chalte pods dekho. Allocatable aur capacity ka farq: kuch hissa system ke liye rakha jaata hai. GKE jaise managed cluster mein control plane ke pods aapko dikhenge hi nahi, kyunki wo landlord ke daftar mein hain.
+Lab. Ye episode agle episode ke cluster ke baad bhi kar sakte ho. `kubectl get nodes -o wide` mein nodes, unka IP aur version. `kubectl get pods -n kube-system` mein control plane aur system ke pods: `kube-apiserver`, `etcd`, `kube-scheduler`, `kube-controller-manager`, `coredns`, `kube-proxy`. `kubectl describe node NODE_NAME` mein capacity, allocatable, conditions, aur node par chalte pods dekho. Allocatable aur capacity ka farq: kuch hissa system ke liye rakha jaata hai, par kind mein dono barabar dikhte hain. Aur kind mein `kindnet` ka bhi ek pod har node par hai, jo network ka plugin hai. GKE jaise managed cluster mein control plane ke pods aapko dikhenge hi nahi, kyunki wo landlord ke daftar mein hain.
 
 ### [15:00 – 15:30] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "reception (apiserver) · master ledger (etcd) · allocation officer (scheduler) · supervisors (controllers) | resident manager (kubelet) · runtime · kube-proxy | pod = parking bay · everyone talks through the reception".]**

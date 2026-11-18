@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  labels:
+    run: rooms
+  name: rooms
+spec:
+  containers:
+  - image: rooms:slim
+    imagePullPolicy: IfNotPresent
+    name: rooms
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
