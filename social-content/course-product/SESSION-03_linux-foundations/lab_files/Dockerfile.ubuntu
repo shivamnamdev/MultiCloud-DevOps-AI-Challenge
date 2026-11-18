@@ -5,7 +5,7 @@ ENV DEBIAN_FRONTEND=noninteractive
 # The Ubuntu image filters man pages out; allow them back so that `man ls` works in the labs.
 RUN rm -f /etc/dpkg/dpkg.cfg.d/excludes
 RUN apt-get update && apt-get install -y --no-install-recommends \
-      systemd systemd-sysv sudo openssh-server openssh-client ca-certificates \
+      systemd systemd-sysv dbus sudo openssh-server openssh-client ca-certificates \
       iproute2 iputils-ping curl dnsutils procps psmisc less vim-tiny nano man-db manpages \
       ufw iptables logrotate rsyslog python3 git file tree \
     && rm -rf /var/lib/apt/lists/*

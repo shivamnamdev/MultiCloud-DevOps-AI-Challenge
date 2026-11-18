@@ -59,31 +59,31 @@ Recap: round ki chaar commands, work order yaani process, token yaani PID, uski 
 
 # 📺 EPISODE 2: Services aur Logs
 
-### [00:00 – 02:05] Scene 1: Reboot ke Baad Website Gayab
+### [00:00 – 02:00] Scene 1: Reboot ke Baad Website Gayab
 **[VISUAL: The hotel reopens after a power cut. Every department lights up except the front desk, which stays dark. The shift supervisor's morning list is shown: the front desk is not on it. Cut to a server after reboot: the website returns "connection refused". Text: "Service not enabled at boot".]**
 
 **(Voiceover):**
 Raat ko bijli gayi, subah building dobara khuli, par front desk band pada hai. Wajah: kal kisi ne use haath se khola tha, par shift supervisor ki subah wali list mein uska naam likha hi nahi. Server par yahi hota hai: reboot hua aur website wapas nahi aayi, kyunki service haath se start hui thi, boot par chalne ke liye enable nahi thi. Service wo department hai jo hamesha khula rehta hai. Unhe shift supervisor sambhalta hai, yaani systemd, aur usse baat karne ka tareeka hai `systemctl`.
 
-### [02:05 – 04:55] Scene 2: systemctl ki Commands
+### [02:00 – 04:45] Scene 2: systemctl ki Commands
 **[VISUAL: Terminal: `systemctl status nginx`, `start`, `stop`, `restart`, `reload`, `enable`, `disable`, `is-active`. Status shows "active (running)" in green and "enabled" highlighted on the Loaded line. A side note: "start = open now · enable = on the morning list".]**
 
 **(Voiceover):**
 `systemctl status nginx` batata hai service chal rahi hai ya nahi, uska main PID kya hai, aur neeche uske aakhri kuch log lines. `start` aur `stop` chalu aur band. `restart` band karke chalu karta hai. `reload` bina band kiye nayi config padhwata hai, jo production ke liye behtar hai kyunki guests ka connection nahi tootta. Aur do alag cheezein yaad rakho: `start` department ko abhi kholta hai, `enable` uska naam subah ki list mein likhta hai. Dono alag hain, isliye aksar `sudo systemctl enable --now nginx` ek saath use hota hai. Yahi tareeka har service par chalta hai: `sudo systemctl restart ssh` staff entrance wali service ko dobara chalata hai. Red Hat family mein usi service ka naam `sshd` hai.
 
-### [04:55 – 09:45] Scene 3: Logbook Room: journalctl, /var/log aur logrotate
+### [04:45 – 09:20] Scene 3: Logbook Room: journalctl, /var/log aur logrotate
 **[VISUAL: A room full of logbooks labelled `/var/log`. One shelf: `syslog`, `auth.log`, `nginx/error.log`. A clerk (rsyslog) writing in books; a second clerk (journald) writing in a sealed binder that only opens through a window labelled `journalctl`. On the top shelf, four dated old registers; a fifth arrives and the oldest goes to the bin. Terminal: `journalctl -u nginx -n 50`, `journalctl -u nginx -f`, `journalctl -p err --since "1 hour ago"`, `ls /var/log`, `cat /etc/logrotate.conf`.]**
 
 **(Voiceover):**
 Har department apni logbook likhta hai, aur saari logbooks ek hi kamre mein rakhi hain: `/var/log`. Yahan do clerk kaam karte hain. Pehla `rsyslog`, jo seedhi text files likhta hai. Kaun si baat kis file mein jaati hai, ye `/etc/rsyslog.conf` mein likha hai. Ubuntu par login ki entries `auth.log` mein milti hain, Red Hat family mein `secure` mein. Doosra clerk `systemd-journald` hai. Uska register text nahi hota, isliye use `cat` se nahi, `journalctl` se padhte hain. `journalctl -u nginx -n 50` us service ki aakhri pachaas lines dikhata hai, `-f` live follow karta hai, `-p err` sirf errors, aur `--since "1 hour ago"` samay ka filter hai. Ek baat aur: journal agar `/run/log/journal` mein likha ja raha hai to reboot par chala jaata hai. `/var/log/journal` folder ho to disk par bachta hai, aur Ubuntu par aam taur par aisa hi hota hai. Ab sawaal: logbooks bharti rahin to kamra bhar jayega. Isliye purane register archive hote hain, yaani `logrotate`. Uski config `/etc/logrotate.conf` mein do lines dekho: `weekly`, yaani har hafte naya register, aur `rotate 4`, yaani chaar purane rakho. Paanchwa bante hi sabse purana hat jaata hai. Pehle service ka status, phir uska log: ye jodi aapko zyadatar problems ka jawab degi.
 
-### [09:45 – 12:05] Scene 4: Lab: Service ko Todo aur Theek Karo
+### [09:20 – 12:10] Scene 4: Lab: Service ko Todo aur Theek Karo
 **[VISUAL: Config edited to remove a `;`. `sudo nginx -t` reports a syntax error with a line number. `sudo systemctl restart nginx` fails; `systemctl status nginx` shows "failed" in red; `journalctl -u nginx -n 20` shows the same error; the typo is fixed; `nginx -t` passes; the service starts.]**
 
 **(Voiceover):**
-Lab: nginx ki config mein jaan-boojh kar ek galti karo, jaise `/etc/nginx/nginx.conf` mein ek line ke aakhir ka `;` hata do. `sudo nginx -t` se config test karo, wo file aur line number ke saath error batayega. Ab `sudo systemctl restart nginx` chalao, fail hoga. `systemctl status nginx` mein laal "failed" dikhega, aur `journalctl -u nginx -n 20` mein wajah. Galti theek karo, `nginx -t` pass hoga, aur restart chalega. Seekh: pehle config test, phir restart, aur production mein `reload` ko prefer karo. Aur `systemctl is-enabled nginx` se pakka kar lo ki ye department subah ki list mein hai.
+Lab: nginx ki config mein jaan-boojh kar ek galti karo, jaise `/etc/nginx/nginx.conf` mein ek line ke aakhir ka `;` hata do. `sudo nginx -t` se config test karo, wo file aur line number ke saath error batayega. Dhyaan: line number aksar us line ke agli line ka hota hai jahan `;` chhoota; humare test mein doosri line toot-i to error teesri line par aaya. Ab `sudo systemctl restart nginx` chalao, fail hoga. `systemctl status nginx` mein laal "failed" dikhega, aur `journalctl -u nginx -n 20` mein wajah. Galti theek karo, `nginx -t` pass hoga, aur restart chalega. Seekh: pehle config test, phir restart, aur production mein `reload` ko prefer karo. Aur `systemctl is-enabled nginx` se pakka kar lo ki ye department subah ki list mein hai.
 
-### [12:05 – 12:55] Scene 5: Recap aur Bridge
+### [12:10 – 13:00] Scene 5: Recap aur Bridge
 **[VISUAL: A card: "status → logs → fix → test config → reload · enable for boot · logrotate keeps the room from filling".]**
 
 **(Voiceover):**
