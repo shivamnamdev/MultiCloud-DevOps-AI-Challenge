@@ -1,0 +1,18 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PrometheusRule
+metadata:
+  name: rooms-alerts
+  namespace: atithi
+  labels:
+    release: monitoring
+spec:
+  groups:
+  - name: rooms
+    rules:
+    - alert: RoomsHighErrorRate
+      expr: sum(rate(http_requests_total{job="rooms",status=~"5.."}[5m])) / sum(rate(http_requests_total{job="rooms"}[5m])) > 0.05
+      for: 2m
+      labels: {severity: page}
+      annotations:
+        summary: "rooms errors above 5%"
+        runbook_url: "https://example.com/runbooks/rooms-high-error-rate"

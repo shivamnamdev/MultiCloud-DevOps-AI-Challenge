@@ -1,0 +1,1 @@
+{"title":"Atithi rooms (as code)","uid":"atithi-rooms","schemaVersion":39,"panels":[{"id":1,"type":"timeseries","title":"Requests per second by status","gridPos":{"x":0,"y":0,"w":12,"h":8},"datasource":{"type":"prometheus","uid":"prometheus"},"targets":[{"refId":"A","expr":"sum by (status)(rate(http_requests_total{namespace=\"atithi\"}[5m]))"}]}]}

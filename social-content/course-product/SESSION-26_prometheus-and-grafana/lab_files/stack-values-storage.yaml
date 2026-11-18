@@ -1,0 +1,10 @@
+# Add this file with -f to keep Prometheus' data on a volume claim (the default is an emptyDir).
+prometheus:
+  prometheusSpec:
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 2Gi

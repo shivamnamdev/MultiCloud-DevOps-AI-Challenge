@@ -1,0 +1,41 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: atithi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rooms
+  namespace: atithi
+spec:
+  replicas: 2
+  selector:
+    matchLabels: {app: rooms}
+  template:
+    metadata:
+      labels: {app: rooms}
+    spec:
+      containers:
+      - name: rooms
+        image: atithi-rooms-metrics:1.0
+        imagePullPolicy: IfNotPresent
+        ports:
+        - {name: http, containerPort: 5000}
+        resources:
+          requests: {cpu: 50m, memory: 64Mi}
+          limits: {cpu: 200m, memory: 128Mi}
+        readinessProbe:
+          httpGet: {path: /health, port: http}
+---
+# The Service is named "rooms" on purpose: Prometheus builds the job label from it.
+apiVersion: v1
+kind: Service
+metadata:
+  name: rooms
+  namespace: atithi
+  labels: {app: rooms}
+spec:
+  selector: {app: rooms}
+  ports:
+  - {name: http, port: 5000, targetPort: http}

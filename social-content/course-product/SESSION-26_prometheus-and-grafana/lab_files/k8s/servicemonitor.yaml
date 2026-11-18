@@ -1,0 +1,12 @@
+apiVersion: monitoring.coreos.com/v1
+kind: ServiceMonitor
+metadata:
+  name: rooms
+  namespace: atithi
+  labels:
+    release: monitoring        # without this label the operator ignores the monitor
+spec:
+  selector:
+    matchLabels: {app: rooms}  # matches the Service's labels, not the pod's
+  endpoints:
+  - {port: http, path: /metrics, interval: 15s}
