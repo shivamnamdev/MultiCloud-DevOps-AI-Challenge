@@ -1,0 +1,7 @@
+# Install with: crontab crontab.example   (replace the paths with your own). Remove with: crontab -r
+*/2 * * * * /home/ubuntu/backup.sh /home/ubuntu/atithi-booking >> /tmp/backup.log 2>&1
+# The traps from the script, one line each:
+*/2 * * * * /home/ubuntu/envprobe.sh >> /tmp/env.log 2>&1
+*/2 * * * * /home/ubuntu/s06/relative.sh >> /tmp/rel.log 2>&1
+*/2 * * * * echo "unescaped: $(date +%F)" >> /tmp/pct.log 2>&1
+*/2 * * * * echo "escaped: $(date +\%F)" >> /tmp/pct2.log 2>&1

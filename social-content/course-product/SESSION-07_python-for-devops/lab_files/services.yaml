@@ -1,0 +1,7 @@
+services:
+  - name: booking-home
+    url: https://example.com
+  - name: booking-api
+    url: https://example.com/missing
+  - name: not-a-site
+    url: https://this-site-does-not-exist.invalid
