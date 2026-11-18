@@ -1,0 +1,7 @@
+image: atithi-demo:1.0
+appMode: demo
+services:
+  rooms:
+    replicas: 2
+  bookings:
+    replicas: 1

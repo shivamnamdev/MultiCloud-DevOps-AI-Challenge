@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: ResourceQuota
+metadata:
+  name: wing-budget
+  namespace: atithi
+spec:
+  hard:
+    pods: "4"

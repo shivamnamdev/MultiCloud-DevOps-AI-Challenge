@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bookings-service
+  namespace: atithi
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: bookings}
+  template:
+    metadata:
+      labels: {app: bookings}
+    spec:
+      serviceAccountName: bookings-sa
+      containers:
+      - name: bookings
+        image: atithi-demo:1.0
+        imagePullPolicy: IfNotPresent
+        env:
+        - {name: SERVICE_NAME, value: bookings}
+        - {name: ROOMS_URL, value: "http://rooms-service:5000"}
+        envFrom:
+        - configMapRef: {name: rooms-config}
+        ports:
+        - {name: http, containerPort: 5000}
+        resources:
+          requests: {cpu: 50m, memory: 64Mi}
+          limits: {cpu: 200m, memory: 128Mi}
+        readinessProbe:
+          httpGet: {path: /health, port: http}
+          periodSeconds: 5
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: bookings-service
+  namespace: atithi
+spec:
+  selector: {app: bookings}
+  ports:
+  - {name: http, port: 5000, targetPort: http}

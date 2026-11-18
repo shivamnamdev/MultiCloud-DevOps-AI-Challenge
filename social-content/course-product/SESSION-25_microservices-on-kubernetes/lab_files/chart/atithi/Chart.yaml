@@ -1,0 +1,6 @@
+apiVersion: v2
+name: atithi
+description: Atithi truck park, one franchise kit for any wing
+type: application
+version: 0.1.0
+appVersion: "1.0"

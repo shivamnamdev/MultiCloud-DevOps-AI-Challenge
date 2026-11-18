@@ -1,0 +1,6 @@
+appMode: production
+services:
+  rooms:
+    replicas: 3
+  bookings:
+    replicas: 2

@@ -1,0 +1,60 @@
+# Practice records truck. In production this is RDS (Session 13).
+# Create the Secret first:
+#   kubectl create secret generic bookings-db -n atithi --from-literal=POSTGRES_PASSWORD=practice-only
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-data
+  namespace: atithi
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: atithi
+spec:
+  replicas: 1
+  strategy: {type: Recreate}
+  selector:
+    matchLabels: {app: postgres}
+  template:
+    metadata:
+      labels: {app: postgres}
+    spec:
+      containers:
+      - name: postgres
+        image: postgres:16
+        env:
+        - name: POSTGRES_PASSWORD
+          valueFrom:
+            secretKeyRef: {name: bookings-db, key: POSTGRES_PASSWORD}
+        - {name: PGDATA, value: /var/lib/postgresql/data/pgdata}
+        ports:
+        - {containerPort: 5432}
+        volumeMounts:
+        - {name: data, mountPath: /var/lib/postgresql/data}
+        resources:
+          requests: {cpu: 50m, memory: 128Mi}
+          limits: {cpu: 500m, memory: 384Mi}
+        readinessProbe:
+          exec:
+            command: ["pg_isready", "-h", "127.0.0.1", "-U", "postgres"]
+          periodSeconds: 5
+      volumes:
+      - name: data
+        persistentVolumeClaim: {claimName: postgres-data}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: atithi
+spec:
+  selector: {app: postgres}
+  ports:
+  - {port: 5432}

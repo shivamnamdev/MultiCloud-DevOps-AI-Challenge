@@ -1,0 +1,64 @@
+# 1. default deny for everything arriving in the wing
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: default-deny-ingress, namespace: atithi}
+spec:
+  podSelector: {}
+  policyTypes: [Ingress]
+---
+# 2. the concierge (Traefik, in its own wing) may reach web, rooms and bookings
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: allow-from-concierge, namespace: atithi}
+spec:
+  podSelector:
+    matchExpressions:
+    - {key: app, operator: In, values: [web, rooms, bookings]}
+  policyTypes: [Ingress]
+  ingress:
+  - from:
+    - namespaceSelector:
+        matchLabels: {kubernetes.io/metadata.name: traefik}
+---
+# 3. web and bookings may call rooms
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: allow-rooms-from-web-and-bookings, namespace: atithi}
+spec:
+  podSelector:
+    matchLabels: {app: rooms}
+  policyTypes: [Ingress]
+  ingress:
+  - from:
+    - podSelector: {matchLabels: {app: web}}
+    - podSelector: {matchLabels: {app: bookings}}
+    ports:
+    - {port: 5000}
+---
+# 4. web may call bookings
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: allow-bookings-from-web, namespace: atithi}
+spec:
+  podSelector:
+    matchLabels: {app: bookings}
+  policyTypes: [Ingress]
+  ingress:
+  - from:
+    - podSelector: {matchLabels: {app: web}}
+    ports:
+    - {port: 5000}
+---
+# 5. only bookings may reach the records
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
+metadata: {name: allow-postgres-from-bookings, namespace: atithi}
+spec:
+  podSelector:
+    matchLabels: {app: postgres}
+  policyTypes: [Ingress]
+  ingress:
+  - from:
+    - podSelector: {matchLabels: {app: bookings}}
+    ports:
+    - {port: 5432}

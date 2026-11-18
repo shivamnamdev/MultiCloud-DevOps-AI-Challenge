@@ -1,0 +1,48 @@
+{{- range $name, $svc := .Values.services }}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ $name }}-service
+  labels:
+    app: {{ $name }}
+spec:
+  replicas: {{ $svc.replicas }}
+  selector:
+    matchLabels:
+      app: {{ $name }}
+  template:
+    metadata:
+      labels:
+        app: {{ $name }}
+    spec:
+      containers:
+      - name: {{ $name }}
+        image: {{ $.Values.image }}
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: SERVICE_NAME
+          value: {{ $name }}
+        - name: APP_MODE
+          value: {{ $.Values.appMode | quote }}
+        ports:
+        - name: http
+          containerPort: 5000
+        resources:
+          requests: {cpu: 50m, memory: 64Mi}
+          limits: {cpu: 200m, memory: 128Mi}
+        readinessProbe:
+          httpGet: {path: /health, port: http}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ $name }}-service
+spec:
+  selector:
+    app: {{ $name }}
+  ports:
+  - name: http
+    port: 5000
+    targetPort: http
+{{- end }}
