@@ -1,0 +1,27 @@
+# Practice repo URL is the in-cluster Git server. With GitHub, replace repoURL / sourceRepos with your own repo URL.
+apiVersion: argoproj.io/v1alpha1
+kind: ApplicationSet
+metadata:
+  name: rooms
+  namespace: argocd
+spec:
+  generators:
+    - list:
+        elements:
+          - {env: dev}
+          - {env: prod}
+  template:
+    metadata:
+      name: 'rooms-{{env}}'
+    spec:
+      project: atithi
+      source:
+        repoURL: http://gitserver.default.svc/config.git
+        targetRevision: main
+        path: 'overlays/{{env}}'
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: 'atithi-{{env}}'
+      syncPolicy:
+        automated: {prune: true, selfHeal: true}
+        syncOptions: [CreateNamespace=true]

@@ -1,0 +1,9 @@
+resources:
+  - ../../base
+namespace: atithi-prod
+replicas:
+  - name: rooms
+    count: 3
+images:
+  - name: nginx
+    newTag: "1.27-alpine"

@@ -1,0 +1,67 @@
+# A tiny Git server inside the cluster, for practice without GitHub.
+# Serves one repository over HTTP: http://gitserver.default.svc/config.git  (no login: practice only)
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: gitserver-conf
+data:
+  nginx.conf: |
+    events {}
+    http {
+      server {
+        listen 80;
+        location ~ ^/.*\.git/(HEAD|info/refs|objects/info/.*|git-(upload|receive)-pack)$ {
+          fastcgi_pass unix:/var/run/fcgiwrap.socket;
+          include /etc/nginx/fastcgi_params;
+          fastcgi_param SCRIPT_FILENAME /usr/libexec/git-core/git-http-backend;
+          fastcgi_param GIT_HTTP_EXPORT_ALL "";
+          fastcgi_param GIT_PROJECT_ROOT /srv/git;
+          fastcgi_param PATH_INFO $uri;
+          fastcgi_param REMOTE_USER practice;
+        }
+      }
+    }
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gitserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels: {app: gitserver}
+  template:
+    metadata:
+      labels: {app: gitserver}
+    spec:
+      containers:
+        - name: git
+          image: nginx:1.27-alpine
+          command: ["/bin/sh", "-c"]
+          args:
+            - |
+              set -e
+              apk add --no-cache git git-daemon fcgiwrap spawn-fcgi >/dev/null
+              git config --system safe.directory '*'
+              mkdir -p /srv/git && git init -q --bare /srv/git/config.git
+              git -C /srv/git/config.git config http.receivepack true
+              git -C /srv/git/config.git symbolic-ref HEAD refs/heads/main
+              spawn-fcgi -s /var/run/fcgiwrap.socket -M 666 -- /usr/bin/fcgiwrap
+              exec nginx -g 'daemon off;' -c /etc/gitserver/nginx.conf
+          ports: [{containerPort: 80}]
+          readinessProbe:
+            tcpSocket: {port: 80}
+            initialDelaySeconds: 5
+          volumeMounts:
+            - {name: conf, mountPath: /etc/gitserver}
+      volumes:
+        - name: conf
+          configMap: {name: gitserver-conf}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gitserver
+spec:
+  selector: {app: gitserver}
+  ports: [{port: 80, targetPort: 80}]

@@ -187,7 +187,7 @@ Recap: conveyor sirf label likhti hai. Base aur overlay, promotion pull request 
 
 # 📺 EPISODE 4: Guard Rails
 
-### [00:00 – 02:30] Scene 1: AppProject: Supervisor ki Hadd
+### [00:00 – 02:20] Scene 1: AppProject: Supervisor ki Hadd
 **[VISUAL: An `AppProject` card: allowed source repos, allowed destination wings `atithi-*`, allowed object kinds. An Application trying to deploy into `kube-system` is stopped at the gate with the error text.]**
 
 **(Voiceover):**
@@ -208,7 +208,7 @@ spec:
 ```
 Is project mein koi Application `kube-system` mein lagana chahe, to Argo CD mana karta hai: `application destination ... do not match any of the allowed destinations in project 'atithi'`. Default project sab kuch allow karta hai, isliye asli kaam ke liye apna project banao.
 
-### [02:30 – 04:45] Scene 2: ApplicationSet: Ek Template, Kai Application
+### [02:20 – 04:30] Scene 2: ApplicationSet: Ek Template, Kai Application
 **[VISUAL: An `ApplicationSet` with a list generator of two elements, `dev` and `prod`, feeding one template. Two Applications appear in the UI. A note: "other generators: Git folders, clusters".]**
 
 **(Voiceover):**
@@ -243,31 +243,31 @@ spec:
 ```
 Hamare test mein `rooms-dev` aur `rooms-prod` is ek file se khud ban gaye. List ke alawa folders ya clusters par bhi generator hota hai.
 
-### [04:45 – 07:30] Scene 3: Kaun Andar Aa Sakta Hai, aur Private Vault
+### [04:30 – 07:10] Scene 3: Kaun Andar Aa Sakta Hai, aur Private Vault
 **[VISUAL: The Argo CD login page with SSO through Dex. A read-only deploy key added to the config vault, and the private half in the `argocd` wing as a repository credential. A webhook from the vault to the Argo CD API. A padlock on the API server, not exposed to the internet.]**
 
 **(Voiceover):**
 Argo CD ka apna darwaza bhi surakshit rakho. `admin` account sirf shuruat ke liye hai: SSO se login, role ke hisaab se access, aur `admin` ko band karo. UI aur API ko seedha internet par mat kholo; ingress aur HTTPS ke peeche, jaise Session 25 ke concierge mein. Agar config vault private hai, to supervisor ko ek read-only deploy key do, wahi Session 17 ka sabak: sirf padhne ki chaabi, aur wo Argo CD ke repository credential mein. Instant sync chahiye to vault ka webhook Argo CD ke API ko bhejo. Exact steps apne version ke docs mein dekho, kyunki settings badalti rehti hain. Aur Argo CD ki apni settings aur Applications bhi config vault mein rakho, taaki supervisor par bhi wahi review lage jo trucks par lagta hai.
 
-### [07:30 – 09:35] Scene 4: Capstone Mein Kahan Baithta Hai
+### [07:10 – 09:10] Scene 4: Capstone Mein Kahan Baithta Hai
 **[VISUAL: The Session 31 conveyor. The old last station, `deploy.sh` over SSH to an app building, is replaced by "update config vault", then the supervisor syncs and the Health badge confirms. The inspector (Prometheus) and the control room remain unchanged.]**
 
 **(Voiceover):**
 Session 31 mein aakhir ka station `deploy.sh` tha: SSH se building par jaao, truck badlo, health check karo. Kubernetes par wahi station config vault ka update ban jaata hai. Conveyor config vault ko clone karta hai, `overlays/dev/kustomization.yaml` mein `newTag` ko naye edition label se badalta hai, commit aur push karta hai. Baaki kaam supervisor ka: naya label lagana, aur health batana. Health check aur rollback ab Argo CD ke Health aur `git revert` mein hain. Control room, yaani Prometheus aur Grafana, jaise the waise rehte hain. Pehle dev par aazmao, aur prod ke liye pull request zaroori rakho.
 
-### [09:35 – 11:55] Scene 5: Kab Nahi, aur Kya Alag Hai
+### [09:10 – 11:25] Scene 5: Kab Nahi, aur Kya Alag Hai
 **[VISUAL: A two-column board. Left "Argo CD is good at": Kubernetes manifests, many environments, audit by Git. Right "it is not": building trucks, infrastructure like Terraform's campus, instant deploys without a webhook. Small tags: Flux (another GitOps tool), Argo Rollouts (canary and blue-green).]**
 
 **(Voiceover):**
 Argo CD sab kaam ka tool nahi hai. Wo Kubernetes ke manifests lagane mein achha hai, kai environments ke saath, aur har badlaav Git mein record hota hai. Wo truck banata nahi, wo foreman ka kaam hai. Wo campus ki infrastructure, yaani Terraform ka kaam, nahi karta. Aur pull ka matlab hai thodi der: webhook ke bina kuch minute. Do naam jo aap sunoge: Flux, ek aur GitOps tool jo isi vichar par chalta hai, aur Argo Rollouts, jo dheere dheere ya canary rollout deta hai, jaise Session 11 ke weighted target groups, par Kubernetes ke andar. Pehle Argo CD ke yeh basics seekho, phir aage ke tools dekhna.
 
-### [11:55 – 13:40] Scene 6: Lab: Project aur ApplicationSet
+### [11:25 – 13:55] Scene 6: Lab: Project aur ApplicationSet
 **[VISUAL: Apply the `AppProject`. An Application aimed at `kube-system` shows `InvalidSpecError`. Delete the two hand-made Applications and apply the `ApplicationSet`. Two Applications appear, both Synced and Healthy. `kind delete cluster --name argo`.]**
 
 **(Voiceover):**
-Lab. Upar wala `AppProject` apply karo. Ek Application banao jo `kube-system` mein lagana chahe, aur dekho ki wo `InvalidSpecError` ke saath ruk jaata hai. Phir do haath se banaye Application hata do, `ApplicationSet` apply karo, aur dekho ki `rooms-dev` aur `rooms-prod` khud ban gaye, dono Synced aur Healthy. Ek aakhri sawaal: prod mein `selfHeal` ke saath aap emergency mein `kubectl edit` karo to kya hoga? Aazma kar dekho, kyunki asli raat ke teen baje yahi sawaal aayega. Safai: `kind delete cluster --name argo`.
+Lab. Upar wala `AppProject` apply karo. Ek Application banao jo `kube-system` mein lagana chahe, aur dekho ki wo `InvalidSpecError` ke saath ruk jaata hai. Phir do haath se banaye Application hata do, `ApplicationSet` apply karo, aur dekho ki `rooms-dev` aur `rooms-prod` khud ban gaye, dono Synced aur Healthy. Ek aakhri sawaal: prod mein `selfHeal` ke saath aap emergency mein `kubectl edit` karo to kya hoga? Aazma kar dekho, kyunki asli raat ke teen baje yahi sawaal aayega. Hamare test mein hath ka badlaav do second mein wapas ho gaya, aur ApplicationSet wale Application par `argocd app set --sync-policy none` bhi kaam nahi karta, kyunki set use wapas likh deta hai. Emergency ka rasta Git commit hai. Safai: `kind delete cluster --name argo`.
 
-### [13:40 – 15:20] Scene 7: Recap aur Bridge
+### [13:55 – 15:30] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "vault = truth · supervisor pulls · Sync ≠ Health · rollback = git revert · project limits the supervisor · ApplicationSet = template · no plain secrets". Then a well-read assistant appears beside a designer at head office.]**
 
 **(Voiceover):**

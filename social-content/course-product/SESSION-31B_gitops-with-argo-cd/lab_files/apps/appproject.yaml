@@ -1,0 +1,14 @@
+# Practice repo URL is the in-cluster Git server. With GitHub, replace repoURL / sourceRepos with your own repo URL.
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: atithi
+  namespace: argocd
+spec:
+  description: Atithi services
+  sourceRepos:
+    - http://gitserver.default.svc/config.git
+  destinations:
+    - server: https://kubernetes.default.svc
+      namespace: atithi-*
+  clusterResourceWhitelist: []
