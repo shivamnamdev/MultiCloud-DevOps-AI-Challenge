@@ -20,37 +20,37 @@
 
 # 📺 EPISODE 1: Records Office kyun
 
-### [00:00 – 02:25] Scene 1: Register Bhar Gaya, Do Log Ek Saath
+### [00:00 – 02:15] Scene 1: Register Bhar Gaya, Do Log Ek Saath
 **[VISUAL: Atithi's front desk with a paper register. Two receptionists write the same room number for two different guests at the same moment; a red "double booking" stamp lands. Then an Excel sheet with five lakh rows freezes.]**
 
 **(Voiceover):**
 Atithi ki booking site ab roz saikdon booking leti hai. Shuru mein ek spreadsheet kaafi lagti thi. Ab do problems hain. Do receptionists ek hi kamra do alag guests ko ek saath de dete hain. Aur sheet itni bhaari ho gayi hai ki khulne mein minute lagte hain. Photos aur invoices ka ghar humne pichhle session mein banaya tha, par booking ki jankari box mein nahi rakhi jaa sakti, kyunki usme rishte hote hain: kaun guest, kaun kamra, kaun si date. Ismein ek ruled ledger chahiye, jahan har line ke columns tay hon, aur jahan ek saath likhne wale ek doosre ko galat na kar saken. Isi ka naam database hai.
 
-### [02:25 – 04:55] Scene 2: Ruled Ledger: Tables aur Rishte
+### [02:15 – 04:35] Scene 2: Ruled Ledger: Tables aur Rishte
 **[VISUAL: Three tables drawn as ledger pages: `guests(id, name, phone)`, `rooms(id, number, rate)`, `bookings(id, guest_id, room_id, check_in, check_out)`. Arrows from `guest_id` and `room_id` back to the other tables. A SQL line `SELECT g.name, r.number FROM bookings b JOIN guests g ON ...`.]**
 
 **(Voiceover):**
 Relational database data ko tables mein rakhta hai, jinke beech rishte hote hain. Atithi mein teen tables: `guests`, `rooms` aur `bookings`. `bookings` ki har line mein `guest_id` aur `room_id` hota hai, jo doosre tables ki line ki taraf ishaara karta hai. Isse guest ka naam har booking mein dobara nahi likhna padta. Sawaal poochne ki bhasha SQL hai, aur `JOIN` se teeno tables ek saath padhe jaate hain. Har table ki ek primary key hoti hai, jo har line ko akela pehchaanti hai, aur foreign key wo ishaara hai jo bataata hai ki ye line kis doosre table se judi hai. Ye wahi ruled ledger hai: har column ka naam aur type pehle se tay.
 
-### [04:55 – 07:15] Scene 3: ACID: Poora Ya Kuch Nahi
+### [04:35 – 06:50] Scene 3: ACID: Poora Ya Kuch Nahi
 **[VISUAL: A transaction box with two steps: "create booking row" and "mark room as reserved". A power cut after step 1 shows both rolled back, with the label ROLLBACK. Four letters appear one by one: Atomicity, Consistency, Isolation, Durability.]**
 
 **(Voiceover):**
 Booking karne mein do kaam hote hain: ek line `bookings` mein likhna aur kamre ko reserve mark karna. Agar beech mein bijli chali jaaye to kya hoga? Aadhi booking: guest ka paisa gaya, par kamra khaali dikhta hai. Relational database iska jawab transaction se deta hai. Ek transaction mein kai kaam hote hain, aur ya to sab hote hain ya kuch bhi nahi. Ise ACID kehte hain. Atomicity: poora ya kuch nahi. Consistency: rules kabhi nahi tootte. Isolation: do transaction ek doosre ko beech mein nahi dekhte. Durability: commit ke baad data khoya nahi. Yahi wajah hai ki bookings, payments aur inventory ke liye relational database hi pehli pasand hai.
 
-### [07:15 – 09:35] Scene 4: Rules Ledger Ke Andar
+### [06:50 – 09:05] Scene 4: Rules Ledger Ke Andar
 **[VISUAL: A `bookings` table with a rule badge on each column: NOT NULL, a foreign key, a CHECK `check_out > check_in`. A second booking for room 101 on overlapping dates is rejected with an error message.]**
 
 **(Voiceover):**
 Rules sirf application ki parchi mein rakhne se kaam nahi chalta, kyunki kal koi doosri parchi aayegi aur wo bhool jaayegi. Behtar hai ki rule ledger ke andar hi ho. `NOT NULL`: ye column khaali nahi ho sakta. `FOREIGN KEY`: `room_id` ek asli kamre ki taraf hi ishaara kare. `CHECK (check_out > check_in)`: nikalne ki date aane ki date ke baad ho. Aur `UNIQUE`: ek hi kamra ek hi raat ke liye do baar nahi. Jab rule ledger khud lagata hai, to koi bhi parchi, koi bhi developer, koi bhi galat jaldbaazi use tod nahi sakta. Ye database ka sabse bada faayda hai, aur Excel mein ye nahi milta.
 
-### [09:35 – 12:05] Scene 5: Loose Forms: NoSQL, aur Kab Kya
+### [09:05 – 11:30] Scene 5: Loose Forms: NoSQL, aur Kab Kya
 **[VISUAL: A cabinet of loose forms, each a different shape: one guest preference card with 3 fields, another with 12. Four icons: key-value, document, wide-column, graph. A decision card: "relations, rules, transactions → SQL; one key, huge scale, flexible shape → NoSQL".]**
 
 **(Voiceover):**
 Doosri tarah ka records office hai: loose forms ki almari. NoSQL mein har form ka shape alag ho sakta hai, aur zyadatar ek hi key se dhoondha jaata hai. Ye kai tarah ke hote hain: key-value, document, wide-column, graph. AWS mein DynamoDB iska bada udaharan hai. Atithi ke liye: bookings ledger mein jayengi, kyunki rishte aur rules chahiye. Par har guest ke "pasandida pillow ka type" jaise bahut alag shape ke notes loose forms mein bhi rakhe jaa sakte hain. Seedha rule: rishte aur transactions zaroori hain to SQL, aur bahut bade scale par ek key se kaam chalta hai to NoSQL. Aur "NoSQL naya hai, isliye behtar" wali soch galat hai. Pehle sawaal dekho, phir ledger chuno.
 
-### [12:05 – 14:45] Scene 6: Lab: Laptop par Ledger
+### [11:30 – 14:55] Scene 6: Lab: Laptop par Ledger
 **[VISUAL: Terminal with `sqlite3 atithi.db`. Tables created, three INSERTs, a JOIN with GROUP BY, then a failing INSERT for a double booking and a `BEGIN; ... ROLLBACK;` block that undoes two statements.]**
 
 **(Voiceover):**
@@ -60,9 +60,9 @@ CREATE TABLE guests(id INTEGER PRIMARY KEY, name TEXT NOT NULL);
 CREATE TABLE rooms(id INTEGER PRIMARY KEY, number TEXT UNIQUE NOT NULL, rate INT);
 CREATE TABLE bookings(id INTEGER PRIMARY KEY, guest_id INT REFERENCES guests(id), room_id INT REFERENCES rooms(id), night TEXT, UNIQUE(room_id, night));
 ```
-Do guests, do kamre aur kuch bookings daalo. Phir `SELECT g.name, COUNT(*) FROM bookings b JOIN guests g ON g.id=b.guest_id GROUP BY g.name;` chalao. Ab wahi kamra wahi raat dobara book karne ki koshish karo: `UNIQUE` use rok dega. Aakhir mein `BEGIN;`, do inserts, phir `ROLLBACK;` likho, aur `SELECT` se dekho ki dono gayab hain. Ye wahi ledger hai jo agle episodes mein landlord ke records office mein jaayega.
+Do guests, do kamre aur kuch bookings daalo. Phir `SELECT g.name, COUNT(*) FROM bookings b JOIN guests g ON g.id=b.guest_id GROUP BY g.name;` chalao. Ab wahi kamra wahi raat dobara book karne ki koshish karo: `UNIQUE` use rok dega. Ek chhoti baat: SQLite mein foreign key ki jaanch default mein band hoti hai. `PRAGMA foreign_keys=ON;` likho tabhi galat `guest_id` par booking rukti hai; humne bina iske guest 99 ki booking ghus jaate dekhi. Postgres mein ye jaanch hamesha on hai. Aakhir mein `BEGIN;`, do inserts, phir `ROLLBACK;` likho, aur `SELECT` se dekho ki dono gayab hain. Ye wahi ledger hai jo agle episodes mein landlord ke records office mein jaayega.
 
-### [14:45 – 15:30] Scene 7: Recap aur Bridge
+### [14:55 – 15:40] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "table + key + rules · SQL asks the question · transaction = all or nothing · NoSQL = loose forms, one key · pick by the question".]**
 
 **(Voiceover):**
@@ -164,41 +164,41 @@ Recap: PITR galti ke liye, Multi-AZ failover ke liye, read replica padhne ke liy
 
 # 📺 EPISODE 4: Ledger ko Surakshit Rakho aur Connect Karo
 
-### [00:00 – 01:45] Scene 1: Khula Records Office
+### [00:00 – 01:40] Scene 1: Khula Records Office
 **[VISUAL: A scanner map showing an open database port on the internet with the default user `admin` and the password `admin123`. A red breach banner and a caption "found within hours".]**
 
 **(Voiceover):**
 Internet par khula database, aur uska password saral. Scanners ye kuch hi ghanton mein dhoondh lete hain. Records office mein sabse zyada sensitive jankari hoti hai: guests ke naam, phone number, tareekhein. Isliye uski suraksha ek tale se nahi, kai parton mein hoti hai. Network, access, encryption aur secrets. Session 12 mein hum ne ek bucket ko private rakhna seekha tha. Database ke liye wahi niyam aur bhi sakht hai: koi bhi khula darwaza ya khali password sidha nuksaan hai.
 
-### [01:45 – 04:05] Scene 2: Door Guard Zanjeer, Dobara
+### [01:40 – 03:55] Scene 2: Door Guard Zanjeer, Dobara
 **[VISUAL: A chain: Laptop → (no path) → Database. Booking building → (port 5432 from `booking-sg` only) → Database in the private wing. A second arrow: the database security group lists `booking-sg` as the source, not an IP range.]**
 
 **(Voiceover):**
 Session 11 ki door guard ki zanjeer yahan dobara kaam aati hai. Database ka security group port 5432 sirf `booking-sg` se allow kare, kisi IP ki list se nahi. Isse aap booking buildings badho ya ghatao, rule apne aap kaam karta rahega. Database private wing ke subnet group mein rakho, jaisa hum Session 14 mein banayenge, taaki uske liye internet se koi raasta ho hi nahi. Laptop se kaam karna ho to bastion ya Session Manager se jaao, public access se nahi. Aur ek pakki aadat: pehle woh chhote saalon ke tutorials jisme sab ke liye `0.0.0.0/0` kholne ko kaha jaata hai, unhe kabhi follow mat karo.
 
-### [04:05 – 06:50] Scene 3: Encryption aur Secrets
+### [03:55 – 06:30] Scene 3: Encryption aur Secrets
 **[VISUAL: A sealed envelope on the connection (TLS) and a locked cabinet around the storage (encryption at rest with KMS). A vault labelled "Secrets Manager" holding the password. The booking building, wearing a duty badge, asks the vault for it.]**
 
 **(Voiceover):**
 Teen aur parton. Ek, encryption at rest: ledger ka storage tale mein, KMS key ke saath, jo creation ke samay hi on hota hai. Do, in transit: connection par sealed envelope, yaani TLS, aur database ko aisa bana sakte ho ki bina TLS ke connection na le. Teen, secrets. Password code mein ya git mein nahi, Secrets Manager mein, aur booking building apne duty badge, yaani Session 9 ke role, se use maangti hai. Isse password kisi file mein baitha hi nahi, aur use ghumaya, yaani rotate, ja sakta hai. Secrets Manager ka bhi alag chhota kharcha hai, jo live pricing page par hai. Aur ledger ke andar bhi least privilege: application ke liye alag user, jise sirf zaroori tables par ijaazat ho.
 
-### [06:50 – 09:40] Scene 4: Connection Pool aur Limits
+### [06:30 – 09:15] Scene 4: Connection Pool aur Limits
 **[VISUAL: Three booking buildings each opening ten connections to the database; the ledger has a limit of 100 and a "too many connections" error appears when a hundred small workers join. A pool box in front of the database, and RDS Proxy shown as a managed pool.]**
 
 **(Voiceover):**
 Ek database ek saath sirf kuch hi connections sambhal sakta hai, aur ye seema instance class se judi hoti hai. Agar har request par naya connection khole, to wo seema jaldi toot sakti hai, aur "too many connections" aata hai. Isliye application ek pool rakhti hai: kuch connections pehle se khule, jinhe requests baari baari use karti hain. Agar bahut saari chhoti parchiyan, jaise Lambda jo hum Session 15 mein dekhenge, ek saath aati hain, to har ek apna connection kholti hai. Tab RDS Proxy jaisi service beech mein pool ka kaam karti hai. Aur ek aur aadat: sawal ko hamesha parameter ke saath bhejo, jodkar nahi. Text jodne se SQL injection hota hai, jisme koi guest ke naam mein `; DROP TABLE` likh kar ledger bigaad sakta hai.
 
-### [09:40 – 12:05] Scene 5: Connect Nahi Ho Raha? Teen Sawaal
+### [09:15 – 11:35] Scene 5: Connect Nahi Ho Raha? Teen Sawaal
 **[VISUAL: A decision tree. "Timeout → check door guard and route". "Connection refused → wrong port or database not ready". "Password authentication failed → wrong user or password". "Database does not exist → wrong database name". A terminal shows `nc -vz ENDPOINT 5432`.]**
 
 **(Voiceover):**
 Jab connection nahi bana, to Session 5 ka troubleshooting method yaad karo: error ka shabd padho. Timeout ka matlab aksar raaste mein door guard ya route hai: `nc -vz ENDPOINT 5432` chalao, aur check karo ki database ke security group mein booking building ka group hai ya nahi. Connection refused matlab ya to galat port ya database abhi tayyar nahi. "Password authentication failed" matlab user ya password galat, ya Secrets Manager ka naya password abhi application tak nahi pahunchaya. "Database does not exist" matlab database ka naam galat likha, jo instance ke naam se alag hota hai. Har ek ka ilaaj alag hai, isliye pehle shabd padho, phir kuch badlo.
 
-### [12:05 – 14:20] Scene 6: Lab: Building se Ledger tak
+### [11:35 – 14:20] Scene 6: Lab: Building se Ledger tak
 **[VISUAL: SSH to the booking building. `sudo apt install -y postgresql-client`. A secret fetched with `aws secretsmanager get-secret-value`. `psql -h ENDPOINT -U atithi_admin -d postgres`. A Python snippet with `psycopg2`, `os.environ["DB_PASSWORD"]`, and a parameterised `INSERT`.]**
 
 **(Voiceover):**
-Lab. Session 11 ki booking building mein SSH karo. `sudo apt install -y postgresql-client`. Phir `psql -h YOUR-RDS-ENDPOINT -U atithi_admin -d postgres`. Password Secrets Manager se `aws secretsmanager get-secret-value --secret-id YOUR-SECRET --query SecretString --output text` se lo, aur check karo ki building ke role ko ye padhne ki ijaazat hai. Connect hone par Episode 1 ke teen tables banao aur ek `SELECT`. Ab Python mein `psycopg2` se wahi query chalao: password `os.environ["DB_PASSWORD"]` se aaye, aur insert mein `%s` parameter ho, text jodna nahi. Agar timeout aaye to pichhle scene ka nuskha chalao. Aakhir mein safai: database aur lab ke snapshots delete.
+Lab. Session 11 ki booking building mein SSH karo. `sudo apt install -y postgresql-client`. Phir `psql -h YOUR-RDS-ENDPOINT -U atithi_admin -d postgres`. Password Secrets Manager se `aws secretsmanager get-secret-value --secret-id YOUR-SECRET --query SecretString --output text` se lo, aur check karo ki building ke role ko ye padhne ki ijaazat hai. Connect hone par Episode 1 ke teen tables banao, par Postgres mein `id INTEGER PRIMARY KEY` apne aap number nahi deta: `id SERIAL PRIMARY KEY` likho, warna insert `null value in column "id"` ka error deta hai. Phir ek `SELECT`. Ab Python mein `psycopg2` se wahi query chalao: password `os.environ["DB_PASSWORD"]` se aaye, aur insert mein `%s` parameter ho, text jodna nahi. Agar timeout aaye to pichhle scene ka nuskha chalao. Aakhir mein safai: database aur lab ke snapshots delete.
 
 ### [14:20 – 15:25] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "private wing · SG chain from booking-sg · encrypt at rest and in transit · Secrets Manager + role · pool · parameters, not text join". Then the campus map appears with a thick line around two wings.]**
