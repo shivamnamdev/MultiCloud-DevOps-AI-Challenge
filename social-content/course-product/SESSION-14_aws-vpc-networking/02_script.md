@@ -156,43 +156,43 @@ Recap: NAT, endpoint, SG aur NACL. Ab sab ko jodkar ek poora campus banate hain,
 
 # 📺 EPISODE 4: Poora Campus
 
-### [00:00 – 01:50] Scene 1: Ek Hi Gatehouse
+### [00:00 – 01:40] Scene 1: Ek Hi Gatehouse
 **[VISUAL: A campus with one small guarded gatehouse in the public wing. Staff walk through it to reach private rooms. The private building has no public address. A guard checks a list at the gatehouse.]**
 
 **(Voiceover):**
 Private building ka koi public address nahi. To admin uske andar jaaye kaise? Ek tareeka gatehouse hai, jise bastion host kehte hain: public wing mein ek chhoti, bahut surakshit building, jiske through staff andar ke buildings tak pahunchta hai. Ek hi darwaza, ek hi jagah jahan nigrani rakhi jaati hai, aur wahi jagah jahan har andar aane ki entry logbook mein likhi jaati hai. Ye wahi SSH key wali baat hai jo Session 4 mein humne sikhi thi: chaabi laptop par rahegi, gatehouse par copy nahi hogi.
 
-### [01:50 – 04:00] Scene 2: Gatehouse ke Rules aur ProxyJump
+### [01:40 – 04:40] Scene 2: Gatehouse ke Rules aur ProxyJump
 **[VISUAL: Laptop → (port 22 from my IP) → gatehouse `bastion-sg` → (port 22 from `bastion-sg`) → private building `app-sg`. A command: `ssh -i atithi.pem -J ubuntu@GATEHOUSE_PUBLIC_IP ubuntu@PRIVATE_IP`. A cross over `scp key.pem bastion:`.]**
 
 **(Voiceover):**
-Gatehouse ke door guard ki list mein port 22 sirf aapke apne IP se. Private building ke door guard mein port 22 sirf `bastion-sg` se, kisi IP list se nahi. Ab ek hi command mein andar: `ssh -i atithi.pem -J ubuntu@GATEHOUSE_PUBLIC_IP ubuntu@PRIVATE_IP`. `-J` ka matlab hai ProxyJump: aapka laptop gatehouse ke through ek surakshit raasta kholta hai aur aapki chaabi kabhi gatehouse par nahi jaati. Isliye chaabi ki copy `scp` se gatehouse par daalna galat hai, aur ek aur khatarnak tareeka `ssh -A` agent forwarding hai, jise bhi bachana behtar hai. Gatehouse ko chhota rakho, usme kuch aur mat chalao, aur uska logbook dhyaan se dekho.
+Gatehouse ke door guard ki list mein port 22 sirf aapke apne IP se. Private building ke door guard mein port 22 sirf `bastion-sg` se, kisi IP list se nahi. Ab ek hi command mein andar: `ssh -i atithi.pem -J ubuntu@GATEHOUSE_PUBLIC_IP ubuntu@PRIVATE_IP`. `-J` ka matlab hai ProxyJump: aapka laptop gatehouse ke through ek surakshit raasta kholta hai aur aapki chaabi kabhi gatehouse par nahi jaati. Ek jaal: `-i atithi.pem` sirf aakhri building ke liye lagta hai, gatehouse wale pehle hop ko bhi chaabi chahiye. Humne sirf `-i` aur `-J` chalaya to gatehouse par `Permission denied` mila. Do tareeke kaam kiye: `~/.ssh/config` mein dono hosts par `IdentityFile` aur `ProxyJump`, ya pehle `ssh-add atithi.pem`. Isliye chaabi ki copy `scp` se gatehouse par daalna galat hai, aur ek aur khatarnak tareeka `ssh -A` agent forwarding hai, jise bhi bachana behtar hai. Gatehouse ko chhota rakho, usme kuch aur mat chalao, aur uska logbook dhyaan se dekho.
 
-### [04:00 – 06:40] Scene 3: Gatehouse ke Bina: Session Manager
+### [04:40 – 07:10] Scene 3: Gatehouse ke Bina: Session Manager
 **[VISUAL: A staff laptop talking to the landlord's Systems Manager service, which opens a shell on the private building. The building wears a duty badge `AmazonSSMManagedInstanceCore`. No port 22 anywhere. A line from the building to the service through the NAT desk or interface endpoints.]**
 
 **(Voiceover):**
 Ek aur tareeka hai, jo aajkal aur behtar maana jaata hai: Systems Manager ka Session Manager. Isme gatehouse hi nahi, port 22 bhi nahi kholna padta. Staff landlord ki service se shell maangta hai, aur landlord uske badle private building ke andar ek surakshit raasta kholta hai. Iske liye teen cheezein chahiye. Ek, building par SSM agent, jo kai AMIs mein pehle se hota hai. Do, building par Session 9 ka ek duty badge, yaani role, jisme `AmazonSSMManagedInstanceCore` policy ho. Teen, building ko landlord ki SSM service tak pahunchne ka raasta: NAT desk ya VPC endpoints se. Isse har session ka logbook aur kaun andar gaya, ye sab landlord ke paas rehta hai. Hum gatehouse isliye sikha rahe hain ki bahut jagah aaj bhi wahi chalta hai.
 
-### [06:40 – 09:25] Scene 4: Skywalk: VPC Peering
+### [07:10 – 09:45] Scene 4: Skywalk: VPC Peering
 **[VISUAL: Two campuses, `10.0.0.0/16` and `10.1.0.0/16`, joined by a covered skywalk. Each side's direction board gets a row to the other campus. A warning: "A to B and B to C does not give A to C" and a second warning "overlapping numbers cannot be joined".]**
 
 **(Voiceover):**
 Maan lo Atithi ek doosra campus banata hai, `10.1.0.0/16`, analytics ke liye. Dono campuses ko seedha private raaste se jodna ho to skywalk lagta hai: VPC peering. Isme internet ka koi hissa nahi, aur dono ke number range alag hone chahiye, nahi to raasta kahan jaayega ye tay nahi hoga. Peering banane ke baad teen kaam: request accept karo, dono taraf ke direction boards mein doosre campus ke CIDR ki row jodo, aur dono taraf ke door guards mein doosri taraf ko allow karo. Ek hi kaam chhoot jaaye, to skywalk dikhta hai par kaam nahi karta. Aur peering transitive nahi: A se B aur B se C jude hon, to A se C apne aap nahi. Bahut saare campuses ho to Transit Gateway ek hub ki tarah kaam karta hai.
 
-### [09:25 – 11:55] Scene 5: "Time Out Ho Raha Hai": Khoj ka Kram
+### [09:45 – 12:10] Scene 5: "Time Out Ho Raha Hai": Khoj ka Kram
 **[VISUAL: A checklist drawn as a path from source to destination: "1 Destination listening? (service, port) 2 Door guard at destination 3 Door guard outbound at source 4 Wing guard (NACL) both directions 5 Direction boards on both sides 6 Public IP and IGW, or NAT 7 Peering routes". A tool tag: Reachability Analyzer and Flow Logs.]**
 
 **(Voiceover):**
 Jab kuch connect nahi hota, to Session 5 ka tarika yahan bhi chalta hai: ek ek kadi se raasta dekho. Pehle, kya destination par service sun rahi hai aur sahi port par? Phir destination ka door guard. Phir source ka door guard, jo aam taur par sab bahar jaane deta hai. Phir NACL, dono taraf. Phir dono taraf ke direction boards. Phir public IP aur IGW, ya private wing ke liye NAT. Aur peering ke liye dono taraf ki routes. Landlord do madadgaar bhi deta hai: Reachability Analyzer, jo bina packet bheje batata hai ki raasta kahan atakta hai, aur Flow Logs, jo har accept aur reject ka record rakhte hain. Isse "kahin kuch band hai" ka andaza nahi, jawab milta hai.
 
-### [11:55 – 14:15] Scene 6: Lab: Poora Campus
+### [12:10 – 14:20] Scene 6: Lab: Poora Campus
 **[VISUAL: Launch a gatehouse in a public subnet and an app building in a private subnet with the security groups described. `ssh -J` into the private building. `curl` through NAT. A second VPC `10.1.0.0/16` with one building. A peering connection, accept, routes added on both sides, `ping` between private IPs.]**
 
 **(Voiceover):**
 Lab. Public wing mein ek chhoti building launch karo, naam gatehouse, `bastion-sg` ke saath. Private wing mein ek building, `app-sg` ke saath. `ssh -i atithi.pem -J ubuntu@GATEHOUSE_IP ubuntu@PRIVATE_IP` se andar jaao, aur check karo ki wahan se `curl -sI https://example.com` NAT ke raaste chalta hai. Ab doosra VPC `10.1.0.0/16` banao, usme ek building daalo. Peering request banao aur accept karo. Dono direction boards mein doosre ka CIDR jodo, dono door guards mein ICMP allow karo, aur ek building se doosri ka private IP ping karo. Phir ek row hata kar dekho ki ping rukti hai ya nahi. Safai ka kram: peering, NAT gateway aur Elastic IP, buildings, subnets, IGW, aur aakhir mein VPCs.
 
-### [14:15 – 15:30] Scene 7: Recap aur Bridge
+### [14:20 – 15:30] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "gatehouse: 22 from my IP, then 22 from bastion-sg · -J, never copy the key · Session Manager needs role + agent + path · peering: accept, two routes, two SGs, no overlap · debug one link at a time". Then a control room with meters and alarms fades in over the campus map.]**
 
 **(Voiceover):**

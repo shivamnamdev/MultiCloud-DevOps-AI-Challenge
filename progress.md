@@ -396,3 +396,10 @@
 - Emulator (floci, not AWS): db-sg allowing 5432 from booking-sg, `create-db-instance` with a managed master password in Secrets Manager (host, port, username, password JSON), deletion protection refusing a delete, a read replica record. Not working in floci: snapshots and restore, Multi-AZ did not take effect, and no database listens at the endpoint (connection refused).
 - Script defects found and fixed (S13, now 2,756 words): SQLite foreign keys are off by default; Postgres needs `SERIAL` (the script's DDL fails there with a not-null error on id).
 - Not run: a real RDS instance, snapshots, PITR, Multi-AZ failover, the role reading the secret, encryption, console.
+
+## 2026-11-19: Lab guide, Session 14 (AWS VPC networking): real CIDR and SSH, emulator API
+- New `SESSION-14_aws-vpc-networking/03_lab_guide.md` plus `lab_files/` (`cidr_lab.py`, `vpc_demo.sh` and `gatehouse_demo.sh`, both run end to end, `emulator/`).
+- Real: the CIDR arithmetic (five blocks, overlaps, `host bits set`, the Atithi plan, 5 reserved addresses), and a three-container gatehouse (laptop, bastion on two networks, private app) with real SSH and ProxyJump.
+- Emulator (floci, not AWS): VPC, four subnets (251 available each), the AWS range rules (outside, overlapping, /29 and /30 refused, /28 accepted, VPC /8 and /29 refused), internet gateway, route tables (main has only local), NAT gateway, security group rules including a group reference, a peering connection (pending-acceptance to active, a route each way), DependencyViolation on delete. Emulator leniency recorded: a route to a deleted NAT stays `active` (AWS: blackhole), overlapping VPC peering was accepted (AWS refuses), an attached internet gateway could be deleted. No traffic flows.
+- Script defect found and fixed (S14, now 2,581 words): `ssh -i key.pem -J ubuntu@gatehouse ubuntu@private` fails on the first hop with OpenSSH 9.6 because `-i` is not used for the jump host; `~/.ssh/config` with IdentityFile and ProxyJump, or `ssh-add`, works. The key never reached the gatehouse.
+- Not run: real traffic, NACLs, Session Manager, `ssh -A`, macOS or Windows ssh, the console.
