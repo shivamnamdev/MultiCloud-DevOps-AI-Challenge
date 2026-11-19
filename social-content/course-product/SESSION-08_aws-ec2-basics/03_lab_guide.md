@@ -9,6 +9,15 @@ Companion to `02_script.md`. The script teaches the ideas; this guide is the han
 > - **Tested for real, locally:** the four SSH error messages, in a practice container.
 > Use this guide to practise the commands for free, then do the console parts on a real account, and tell us where reality differs.
 
+> **Update, tested on real AWS (ap-south-1, one t3.micro, Ubuntu, same day deleted).** The following were run for real and matched the script:
+> - Key pair, security group from your own IP only, launch with `userdata.sh`: nginx was serving the page about 36 seconds after the instance was running. SSH worked with the key.
+> - **IMDSv2:** no token gives `401`, with a token it answers, and with no role attached the role path gives `404`.
+> - **SSH errors:** revoking port 22 in the security group gives `Operation timed out` within seconds (exit 255); re-authorizing fixes it. With nginx stopped, `curl` to port 80 gives **connection refused** (curl exit 7), while a port the security group does not allow (8080) just **hangs** (curl exit 28). Refused means "someone answered: nobody home"; timed out means "the guard dropped you".
+> - **Stop/start:** the public IP is gone while stopped and **a new one is assigned on start**.
+> - **Elastic IP:** it stayed the same through stop/start; after release the instance got a new ordinary public IP. Unattached Elastic IPs and public IPv4 addresses bill, so release it.
+> - Cleanup with `_lab_tools/aws/aws_cleanup_atithi.sh --yes` then `aws_leftovers.sh` printed "NOTHING LEFT". The whole lab cost a few cents of the credits.
+> Still not tested: root user and MFA, budgets, console screens, CloudShell.
+
 | | |
 |---|---|
 | **Time** | Part A 20 min, Part B 20 min, Part C 40 min, Part D 40 min |
