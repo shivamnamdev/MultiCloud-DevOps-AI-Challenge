@@ -161,32 +161,32 @@ Recap: Lambda, handler, role aur resource policy. Ab asli maza: freelancer ko gh
 
 # 📺 EPISODE 4: Ghanti Bajte Hi Kaam
 
-### [00:00 – 01:45] Scene 1: Photo Aayi, Thumbnail Ban Gaya
+### [00:00 – 01:40] Scene 1: Photo Aayi, Thumbnail Ban Gaya
 **[VISUAL: A room photo is dropped into the warehouse. A bell rings; a freelancer produces a small thumbnail in another prefix, and the public-address says "processed". No building is shown.]**
 
 **(Voiceover):**
 Atithi ka staff warehouse mein ek room ki photo daalta hai, aur kuch hi second mein uska thumbnail ban jaata hai, aur kisi ne kuch nahi chalaya. Ye event-driven architecture hai: ek ghatna doosre kaam ko ghanti ki tarah bulaati hai. Koi server baar baar poochta nahi, "kuch aaya?" Kaam tab hota hai jab zaroorat ho. Aur isme ek aur faayda hai: jab raat ko koi photo nahi aati, to Atithi ko ek paisa nahi lagta.
 
-### [01:45 – 04:05] Scene 2: Ghanti ke Sources
+### [01:40 – 03:55] Scene 2: Ghanti ke Sources
 **[VISUAL: A hub with arrows into a function: S3 event, SNS message, API Gateway request, SQS queue, EventBridge rule. EventBridge is drawn with two kinds of rules: "schedule" and "when something happens in the account".]**
 
 **(Voiceover):**
 Lambda ko kai tarah ki ghantiyan bula sakti hain. S3 ka event, jaise "naya box aaya". SNS ka message. API Gateway ke zariye ek HTTP request. SQS queue ka message. Aur EventBridge, jo events ko rules se route karta hai. EventBridge ek schedule par chala sakta hai, jaise cron ki tarah "roz raat", ya kisi ghatna par, jaise "koi building band hui". Yaad hai Session 6 ka cron? EventBridge schedule uska cloud wala roop hai, jisme server ki zaroorat nahi. Ek dhyaan: EventBridge ka cron UTC mein chalta hai, India ke samay mein nahi, isliye ghante ka hisaab sahi karo.
 
-### [04:05 – 06:25] Scene 3: Do Khatarnak Jaal
+### [03:55 – 06:10] Scene 3: Do Khatarnak Jaal
 **[VISUAL: Left: an upload to the warehouse triggers a function that writes its output into the same prefix, which triggers it again, drawn as a spiral with a rising bill. Right: an S3 event key `rooms%2F101%2Ffront+photo.jpg` and the decoded `rooms/101/front photo.jpg`.]**
 
 **(Voiceover):**
 Do jaal yaad rakho. Pehla: S3 upload par Lambda chalta hai, aur wo apna output usi bucket aur usi prefix mein likhta hai. Naya box aaya, to ghanti phir bajti hai, phir naya box, aur ye chakkar ghoomta rehta hai, aur bill badhta rehta hai. Hal: output alag bucket ya alag prefix mein likho, aur trigger par prefix aur suffix ka filter lagao, jaise sirf `uploads/` aur `.jpg`. Doosra jaal: S3 event mein key URL-encoded aati hai. Space plus ban jaata hai, aur slash `%2F`. Isliye Python mein `urllib.parse.unquote_plus` se decode karo, nahi to function ko box milega hi nahi.
 
-### [06:25 – 08:55] Scene 4: Failure Ke Liye Taiyar
+### [06:10 – 08:35] Scene 4: Failure Ke Liye Taiyar
 **[VISUAL: An async failure path: function error → two retries → dead-letter queue → an alarm on queue length → a message to `ops-alerts`. A second panel: a function log filtered for `Task timed out`.]**
 
 **(Voiceover):**
 Freelancer fail ho sakta hai: timeout, galat input, ya koi aur service dheema. Isliye teen cheezein pehle se lagao. Ek, dead-letter queue ya failure destination, taaki asafal events khoyein nahi. Do, us queue ya function ke errors par alarm, jo Episode 2 ke `ops-alerts` topic par jaaye. Teen, timeout ko soch kar rakho, na bahut chhota, na maximum. Aur ek puraani aadat ka yahan bhi faayda: function ko chhota rakho, ek hi kaam karo, aur uske logs mein "event kya tha, kya kiya, kitna time laga" teen cheezein hamesha likho. Kal subah jab koi poochega ki ek photo ka thumbnail kyun nahi bana, to jawab logs mein hona chahiye.
 
-### [08:55 – 11:30] Scene 5: Lab: Raat ko Dev Buildings Soti Hain
-**[VISUAL: A Lambda `stop-dev` with a role that allows only `ec2:DescribeInstances` and `ec2:StopInstances`. Code using `boto3`, filter `tag:Env=dev`, `instance-state-name=running`. An EventBridge schedule `cron(30 15 * * ? *)` with a note "UTC".]**
+### [08:35 – 11:45] Scene 5: Lab: Raat ko Dev Buildings Soti Hain
+**[VISUAL: A Lambda `stop-dev` with a role that allows only `ec2:DescribeInstances` and `ec2:StopInstances`. Code using `boto3`, filter `tag:Env=dev`, `instance-state-name=running`. An EventBridge schedule `cron(0 20 * * ? *)` with a note "UTC, 01:30 in India".]**
 
 **(Voiceover):**
 Lab 1. Session 7 ka boto3 wapas. Ek Lambda `stop-dev` banao:
@@ -203,9 +203,9 @@ def lambda_handler(event, context):
     print(f"stopped: {ids}")
     return {"stopped": ids}
 ```
-Role mein sirf `ec2:DescribeInstances` aur `ec2:StopInstances`. Pehle haath se test karo, phir EventBridge mein ek schedule banao, jaise `cron(30 15 * * ? *)`, jo UTC ke hisaab se raat ke ek bajke tees minute hota hai. Dhyaan: sirf Env equals dev wali buildings band hongi, production ki nahi. Ye tag ka hi kaam hai jo Session 8 mein shuru kiya tha.
+Role mein sirf `ec2:DescribeInstances` aur `ec2:StopInstances`. Pehle haath se test karo, phir EventBridge mein ek schedule banao, jaise `cron(0 20 * * ? *)`. Ye time hamesha UTC mein hota hai: bees baje UTC India mein raat ke ek bajke tees minute hote hain. Pehle yahan `cron(30 15 * * ? *)` likha tha, jo India mein raat ke nau baje banta hai; humne ghadi se jodkar dekha. Dhyaan: sirf Env equals dev wali buildings band hongi, production ki nahi. Ye tag ka hi kaam hai jo Session 8 mein shuru kiya tha.
 
-### [11:30 – 13:50] Scene 6: Lab: Warehouse ki Ghanti
+### [11:45 – 14:00] Scene 6: Lab: Warehouse ki Ghanti
 **[VISUAL: S3 → Properties → Event notifications → prefix `uploads/`, suffix `.jpg`, destination the function `photo-logger`. The function code prints the decoded key. Upload `uploads/room 101.jpg`; CloudWatch Logs shows `room 101.jpg`.]**
 
 **(Voiceover):**
@@ -220,7 +220,7 @@ def lambda_handler(event, context):
 ```
 Session 12 ke bucket par event notification lagao: prefix `uploads/`, suffix `.jpg`, destination yahi function. `uploads/room 101.jpg` naam ki file upload karo, jisme space hai, aur CloudWatch Logs mein dekho ki naam sahi decode hua hai. Ab dekho ki function ko resource policy ne kaise ijaazat di. Aakhir mein safai: dono schedule aur triggers, functions, alarm, topic aur budget alert. Lab ke baad `stop-dev` ka schedule zaroor hata do, nahi to wo chalta rahega.
 
-### [13:50 – 15:25] Scene 7: Recap aur Bridge
+### [14:00 – 15:35] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "sources: S3, SNS, API, SQS, EventBridge · UTC cron · no output into the trigger prefix · decode the key · DLQ + alarm · clean up schedules". Then a blueprint roll appears over the campus map.]**
 
 **(Voiceover):**
