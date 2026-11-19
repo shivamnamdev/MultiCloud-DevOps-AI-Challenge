@@ -1,0 +1,7 @@
+#!/bin/bash
+# Runs the AWS CLI (v2, in Docker) against the floci emulator on the "awslab" network.
+exec docker run --rm -i --network awslab -v "${AWSLAB_DIR:-$PWD}:/work" -w /work \
+  -e AWS_ENDPOINT_URL=http://floci-lab:4566 \
+  -e AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID:-test}" -e AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY:-test}" \
+  -e AWS_SESSION_TOKEN -e AWS_DEFAULT_REGION="${AWS_DEFAULT_REGION:-us-east-1}" -e AWS_PAGER= \
+  amazon/aws-cli "$@"

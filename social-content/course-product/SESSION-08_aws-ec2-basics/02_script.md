@@ -99,37 +99,37 @@ Recap: sheher, tower aur pickup counter. Ab asli kaam: Atithi apni pehli buildin
 
 # 📺 EPISODE 3: Pehli Building
 
-### [00:00 – 01:30] Scene 1: Kiraye ki Building, Do Minute Mein
+### [00:00 – 01:25] Scene 1: Kiraye ki Building, Do Minute Mein
 **[VISUAL: A "Launch instance" button being pressed. A progress bar. A building rises on the Atithi campus plot and its lights turn green. Text: "about two minutes".]**
 
 **(Voiceover):**
 EC2, yaani Elastic Compute Cloud, landlord ki wo service hai jisse aap ek virtual server, yaani ek kiraye ki building, leti ho. Ek button dabao aur kuch minute mein ek Linux machine aapke saamne hoti hai, bilkul waisi jisse aap pichhle kai sessions mein khelte aaye ho. Aaj hum use ek ek faisle ke saath launch karenge, taaki aap sirf next-next dabate na jao.
 
-### [01:30 – 04:05] Scene 2: Launch Form ke Paanch Faisle
+### [01:25 – 04:45] Scene 2: Launch Form ke Paanch Faisle
 **[VISUAL: The EC2 launch wizard with five sections highlighted in turn: Name and tags, AMI, instance type, key pair, network and security group. A side table for the instance type name `t3.micro`: "t = family, 3 = generation, micro = size".]**
 
 **(Voiceover):**
-Paanch faisle. Ek, naam aur tags, taaki baad mein pata chale ki ye building kiski hai: ek `Name` aur ek `Owner`. Do, AMI, yaani Amazon Machine Image: wo poori furnished model hotel jise copy karke building banti hai. Jaise Ubuntu ya Amazon Linux. Teen, instance type, yaani building ka size, jaise `t3.micro`. Naam ko ek line mein padho: `t` family hai, `3` generation hai, aur `micro` size hai. Isse CPU aur RAM tay hoti hai. Chaar, key pair, yaani building ki chaabi, jisse aap SSH se andar aaoge. Paanch, network aur security group, yaani darwaze par guard. Seekhne ke liye wo type chuno jis par console khud "free tier eligible" likhta hai.
+Paanch faisle. Ek, naam aur tags, taaki baad mein pata chale ki ye building kiski hai: ek `Name` aur ek `Owner`. Do, AMI, yaani Amazon Machine Image: wo poori furnished model hotel jise copy karke building banti hai. Jaise Ubuntu ya Amazon Linux. Teen, instance type, yaani building ka size, jaise `t3.micro`. Naam ko ek line mein padho: `t` family hai, `3` generation hai, aur `micro` size hai. Isse CPU aur RAM tay hoti hai. Chaar, key pair, yaani building ki chaabi, jisse aap SSH se andar aaoge. Paanch, network aur security group, yaani darwaze par guard. Seekhne ke liye wo type chuno jis par console khud "free tier eligible" likhta hai. Ek jodi ka dhyaan: AMI ki architecture aur instance type ki architecture milni chahiye. `t3` x86 hai aur `t4g` ARM (Graviton). ARM wali AMI ko `t3.micro` par chalane ki koshish karo to error aata hai; humne emulator mein yahi dekha.
 
-### [04:05 – 06:55] Scene 3: Security Group: Darwaze ka Guard
+### [04:45 – 07:25] Scene 3: Security Group: Darwaze ka Guard
 **[VISUAL: A guard card at a building door with an inbound list: SSH port 22 from "My IP" only, HTTP port 80 from anywhere. A red cross on "SSH from 0.0.0.0/0". An arrow shows a request going in and the reply coming out automatically.]**
 
 **(Voiceover):**
 Security group building ke darwaze par khada guard hai, aur uske paas ek list hai. Inbound rules batate hain ki andar kaun aa sakta hai. SSH ke liye darwaza number 22, jo sirf aapke apne IP ke liye kholo. Console mein ek option hai "My IP", use chuno, poori duniya ke liye nahi. Web ke liye 80 ya 443 sabke liye khola ja sakta hai. Jo darwaza list mein nahi hai, wo by default band hai. Bahar jaane wale raaste, yaani outbound, by default khule hote hain. Aur is guard ki ek khaas aadat: wo stateful hai. Jo request andar aane di, uska jawab bahar jaane ke liye alag se likhna nahi padta. Guard use apne register mein yaad rakhta hai.
 
-### [06:55 – 10:55] Scene 4: Building ke Kiraye ke Tareeke
+### [07:25 – 11:10] Scene 4: Building ke Kiraye ke Tareeke
 **[VISUAL: Four lease cards: On-Demand (pay by the second or hour, leave any time), Savings Plan or Reserved (commit for one or three years, lower price), Spot (spare buildings at a big discount, but the landlord can take it back with two minutes' notice), Dedicated Host (a whole tower for you). Beside the cards, family tags: `t` burstable, `m` general, `c` compute, `r` memory.]**
 
 **(Voiceover):**
 Building ka size jaise tay hota hai, waise hi kiraya dene ke tareeke bhi alag hain. On-Demand: jab chaho lo, jab chaho chhodo, aur sirf us samay ka kiraya do. Seekhne aur naye kaam ke liye yahi theek hai. Savings Plan ya Reserved: aap ek ya teen saal ka vaada karte ho, aur kiraya kam ho jaata hai. Ye tab sahi hai jab aapko pakka pata ho ki building hamesha chalegi. Spot: landlord ki wo khaali buildings jo abhi bike nahi, badi chhoot par. Par landlord kabhi bhi unhe wapas le sakta hai, do minute ki notice par. To Spot un kaamon ke liye hai jo beech mein rukne par bhi kharab nahi hote. Aur Dedicated Host mein poora tower sirf aapka hota hai, jo kuch kanooni ya license ki zaroorat mein kaam aata hai. Size ka family wala naam bhi dekho: `t` kabhi kabhi tez chalne wale chhote kaam ke liye, `m` aam kaam ke liye, `c` zyada CPU ke liye, `r` zyada memory ke liye. Seekhne mein `t` family kaafi hai.
 
-### [10:55 – 13:40] Scene 5: Lab: Launch aur Andar Jao
+### [11:10 – 13:45] Scene 5: Lab: Launch aur Andar Jao
 **[VISUAL: The final launch screen → instance state "Running" → copy the public IPv4 address → terminal: `chmod 400 atithi-key.pem`, `ssh -i atithi-key.pem ubuntu@<IP>`; inside: `uname -a`, `df -h`.]**
 
 **(Voiceover):**
 Lab. Ek Ubuntu ya Amazon Linux building launch karo. Naam `atithi-web-1`, tag Owner mein apna naam. Key pair banao, aur `.pem` file download hogi. Wo chaabi sirf ek hi baar milti hai, use surakshit rakho. Laptop par `chmod 400 atithi-key.pem`, warna SSH khud mana kar dega. Security group mein 22 sirf My IP ke liye. Building Running hote hi public IPv4 address copy karo aur `ssh -i atithi-key.pem ubuntu@IP` chalao. Amazon Linux par user ka naam `ec2-user` hota hai. Andar pahunch kar `uname -a` aur `df -h` chalao. Ye wahi Linux hai jise Session 3 se Session 5B tak aapne seekha, bas ab ye landlord ki building mein hai. Aapne abhi cloud mein ek asli server banaya.
 
-### [13:40 – 14:20] Scene 6: Recap aur Bridge
+### [13:45 – 14:20] Scene 6: Recap aur Bridge
 **[VISUAL: A card: "AMI · type · key pair · security group · SSH". Under it, small: "model hotel · size · key · door guard".]**
 
 **(Voiceover):**
