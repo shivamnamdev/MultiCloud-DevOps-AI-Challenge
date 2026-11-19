@@ -1,0 +1,73 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ManageAtithiRoles",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateRole", "iam:DeleteRole", "iam:GetRole", "iam:TagRole", "iam:UntagRole",
+        "iam:UpdateAssumeRolePolicy", "iam:UpdateRoleDescription",
+        "iam:DetachRolePolicy", "iam:ListAttachedRolePolicies", "iam:ListRolePolicies"
+      ],
+      "Resource": "arn:aws:iam::*:role/atithi-*"
+    },
+    {
+      "Sid": "AttachOnlyKnownPoliciesToAtithiRoles",
+      "Effect": "Allow",
+      "Action": "iam:AttachRolePolicy",
+      "Resource": "arn:aws:iam::*:role/atithi-*",
+      "Condition": {
+        "ArnLike": {
+          "iam:PolicyARN": [
+            "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
+            "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess",
+            "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole",
+            "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy",
+            "arn:aws:iam::*:policy/atithi-*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "ManageAtithiInstanceProfiles",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateInstanceProfile", "iam:DeleteInstanceProfile", "iam:GetInstanceProfile",
+        "iam:AddRoleToInstanceProfile", "iam:RemoveRoleFromInstanceProfile"
+      ],
+      "Resource": "arn:aws:iam::*:instance-profile/atithi-*"
+    },
+    {
+      "Sid": "ManageAtithiPolicies",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreatePolicy", "iam:DeletePolicy", "iam:GetPolicy", "iam:GetPolicyVersion",
+        "iam:ListPolicyVersions", "iam:CreatePolicyVersion", "iam:DeletePolicyVersion"
+      ],
+      "Resource": "arn:aws:iam::*:policy/atithi-*"
+    },
+    {
+      "Sid": "PassAtithiRolesOnlyToLabServices",
+      "Effect": "Allow",
+      "Action": "iam:PassRole",
+      "Resource": "arn:aws:iam::*:role/atithi-*",
+      "Condition": {
+        "StringEquals": {
+          "iam:PassedToService": [
+            "ec2.amazonaws.com", "lambda.amazonaws.com", "events.amazonaws.com",
+            "monitoring.rds.amazonaws.com"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "ReadIAMForLabs",
+      "Effect": "Allow",
+      "Action": [
+        "iam:Get*", "iam:List*",
+        "iam:GenerateCredentialReport", "iam:SimulatePrincipalPolicy", "iam:SimulateCustomPolicy"
+      ],
+      "Resource": "*"
+    }
+  ]
+}
