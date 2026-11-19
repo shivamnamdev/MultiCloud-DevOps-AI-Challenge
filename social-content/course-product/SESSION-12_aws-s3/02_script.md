@@ -20,43 +20,43 @@
 
 # 📺 EPISODE 1: Anant Godown
 
-### [00:00 – 02:15] Scene 1: Building ka Storeroom Bhar Gaya
+### [00:00 – 02:00] Scene 1: Building ka Storeroom Bhar Gaya
 **[VISUAL: Atithi's booking building with a small storeroom (EBS volume) filling with room photos until the door will not close. A manager points beyond the campus wall to an endless warehouse with labelled boxes, and a dotted line from the building to it.]**
 
 **(Voiceover):**
-Atithi ki booking site chal padi hai, aur ab har room ki das das photos, har booking ki PDF invoice, aur har raat ka database backup aa raha hai. Session 10 mein humne buildings ke storeroom, yaani EBS, dekhe the. Wo ek building se juda hota hai, aur uski jagah tay hoti hai. Photos wahan rakhne ka matlab hai ki jab building badhegi ya badlegi, photos bhi saath ghoomengi. Landlord ke paas iska ek aur jawab hai: campus ke bahar ek anant godown. Ismein aap kisi bhi cheez ko ek label ke saath rakh dete ho, aur kahin se bhi wapas maang lete ho. Is godown ka naam Simple Storage Service hai, yaani S3.
+Atithi ki booking site chal padi hai, aur ab har room ki das das photos, har booking ki PDF invoice, aur har raat ka database backup aa raha hai. Session 10 mein humne buildings ke storeroom, yaani EBS, dekhe the. Wo ek building se juda hota hai, aur uski jagah tay hoti hai. Landlord ke paas iska ek aur jawab hai: campus ke bahar ek anant godown. Ismein aap kisi bhi cheez ko ek label ke saath rakh dete ho, aur kahin se bhi wapas maang lete ho. Is godown ka naam Simple Storage Service hai, yaani S3.
 
-### [02:15 – 04:20] Scene 2: Warehouse, Box aur Label
+### [02:00 – 04:10] Scene 2: Warehouse, Box aur Label
 **[VISUAL: A warehouse sign `atithi-room-photos-2026`. Inside, boxes. Each box carries a label: `rooms/101/front.jpg`. The slashes in the label glow as part of the text, while a drawing of folders is crossed out.]**
 
 **(Voiceover):**
 S3 mein teen shabd yaad rakho. Bucket matlab warehouse, jiska naam poori duniya mein sirf ek ka ho sakta hai, kyunki naam address ka hissa banta hai. Object matlab box: aapki file aur uske saath kuch jankari, jaise uska type aur kab bana. Aur key matlab box ka label, jaise `rooms/101/front.jpg`. Dhyaan do: ye slash asli folder nahi hain. Pura `rooms/101/front.jpg` ek hi naam hai, aur `rooms/101/` sirf us naam ka shuruaati hissa, jise prefix kehte hain. Console aapko folders dikhata hai, kyunki wo prefix ke hisaab se dikhata hai, par godown mein koi almari nahi hoti, sirf label wale box hote hain.
 
-### [04:20 – 07:05] Scene 3: File System Nahi, Box Store
+### [04:10 – 07:00] Scene 3: File System Nahi, Box Store
 **[VISUAL: A split card. Left, Linux disk: open a file, change one line in the middle, save. Right, S3: the whole box is taken out and a whole new box with the same label is put back. A small ruler shows a single box can be huge.]**
 
 **(Voiceover):**
 S3 aur Linux ke disk mein ek bada fark hai. Disk par aap file kholte ho, beech ki ek line badalte ho, aur save karte ho. S3 mein aisa nahi hota. Aap poora box daalte ho, ya poora box nikalte ho. Badalna ho, to naya box wahi label lagakar rakh do, jo purane ko badal deta hai. Ek box paanch terabyte tak bada ho sakta hai, par ek hi baar mein daalne ki seema paanch gigabyte hai. Isliye bade box tukdon mein bheje jaate hain, jise multipart upload kehte hain, aur AWS CLI ye khud kar leta hai. Isi wajah se S3 par database ya wo files nahi rakhte jo har second badalti hain. Wahan EBS sahi hai. S3 un cheezon ke liye hai jo ek baar likhi jaati hain aur baar baar padhi jaati hain.
 
-### [07:05 – 09:30] Scene 4: Durability, Availability aur Backup: Teen Alag Cheezein
+### [07:00 – 09:30] Scene 4: Durability, Availability aur Backup: Teen Alag Cheezein
 **[VISUAL: A box being copied automatically into three towers (AZs) of one city. Three labels beneath: "Durability: box does not get lost", "Availability: warehouse door open right now", "Backup: someone can bring back what I deleted". Only the first is lit for plain S3 Standard.]**
 
 **(Voiceover):**
 S3 ke baare mein ek line sunoge: "gyarah nau ki durability." Matlab landlord aapke box ki copy ek city ke kai towers mein rakhta hai, aur box ke kho jaane ka khatra bahut hi kam hai. Teen alag baatein: Durability: box khoya nahi. Availability: godown ka darwaza abhi khula hai ya nahi. Backup: agar aapne galti se box phenk diya, to kya wapas milega. S3 Standard pehli baat ka vaada karta hai. Teesri baat aapko khud banani padti hai, versioning se, jo hum agle episode mein dekhenge. Ek aur rule: aapka data usi region mein rehta hai jo aapne chuna, jab tak aap khud use kahin aur na bhejo. Aur ab S3 mein naya box likhte hi turant padha ja sakta hai.
 
-### [09:30 – 11:40] Scene 5: Teen Tarah ka Kharcha
+### [09:30 – 11:30] Scene 5: Teen Tarah ka Kharcha
 **[VISUAL: A bill with three lines: "Storage: boxes sitting in the godown, per GB per month", "Requests: every put and get, per thousand", "Data out: boxes leaving the godown to the internet, per GB". Data coming in is marked free, and a small arrow shows traffic to a building in the same region as cheap.]**
 
 **(Voiceover):**
-S3 ka bill teen hisson mein aata hai. Ek, storage: kitne box kitne din rakhe. Do, requests: har daalna aur har padhna, jiska rate bahut kam hai par lakhon baar mein ginti ban jaata hai. Teen, data out: box godown se bahar internet par jaaye to uska paisa. Box andar daalna aam taur par free hai. Isi wajah se bada bill aksar teesre hisse se aata hai, jab koi bada video lakhon bar download hota hai. Isiliye brochure aur photos ke liye aage CloudFront aayega. Exact rates region ke hisaab se badalte hain, aur free tier ki shartein bhi badalti rehti hain, isliye sab kuch live pricing page par dekhna.
+S3 ka bill teen hisson mein aata hai. Ek, storage: kitne box kitne din rakhe. Do, requests: har daalna aur har padhna, jiska rate bahut kam hai par lakhon baar mein ginti ban jaata hai. Teen, data out: box godown se bahar internet par jaaye to uska paisa. Box andar daalna aam taur par free hai. Isi wajah se bada bill aksar teesre hisse se aata hai, jab koi bada video lakhon bar download hota hai. Isiliye brochure aur photos ke liye aage CloudFront aayega. Rates aur free tier badalte rehte hain, to live pricing page dekhna.
 
-### [11:40 – 14:30] Scene 6: Lab: Pehla Warehouse
+### [11:30 – 14:25] Scene 6: Lab: Pehla Warehouse
 **[VISUAL: Console: Create bucket, unique name, region matching the lab building, Block Public Access ON. Terminal: `echo "room 101" > front.txt`, `aws s3 cp front.txt s3://YOUR-BUCKET/rooms/101/front.txt`, `aws s3 ls s3://YOUR-BUCKET/ --recursive`, `aws s3 sync ./photos s3://YOUR-BUCKET/rooms/ `. Then the object URL opened in a browser: "AccessDenied".]**
 
 **(Voiceover):**
 Lab. Console mein ek bucket banao. Naam unique rakho, jaise `atithi-photos-` ke baad apna naam aur ek number. Region wahi jo aapki lab buildings ka hai. Block Public Access on rehne do. Terminal mein `echo "room 101" > front.txt`, phir `aws s3 cp front.txt s3://YOUR-BUCKET/rooms/101/front.txt`, aur `aws s3 ls s3://YOUR-BUCKET/ --recursive` se check karo. Ab ek folder ki kuch photos banao aur `aws s3 sync ./photos s3://YOUR-BUCKET/rooms/` chalao. Sync sirf wo cheezein bhejta hai jo naye ya badli hui hain. Ek box ki jankari, bina use utaare, `aws s3api head-object --bucket YOUR-BUCKET --key rooms/101/front.txt` se dekho: `aws s3` roz ka aasaan aujaar hai, aur `s3api` S3 ki har call seedhi chalata hai. Aakhir mein console se ek object ka URL browser mein kholo. AccessDenied aayega, aur wahi sahi hai: S3 ka default jawab "nahi" hai, aur hum use jaan boojh kar badalenge.
 
-### [14:30 – 15:30] Scene 7: Recap aur Bridge
+### [14:25 – 15:25] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "bucket = unique name · object = file + info · key = label, not folder · put whole box · durability ≠ availability ≠ backup · bill = storage + requests + data out".]**
 
 **(Voiceover):**
@@ -164,49 +164,49 @@ Recap: Block Public Access sabse upar, phir policies, tale aur nigrani, aur dikh
 
 # 📺 EPISODE 4: Display Window aur Brochure Stand
 
-### [00:00 – 02:10] Scene 1: Bina Staff ki Website
+### [00:00 – 02:05] Scene 1: Bina Staff ki Website
 **[VISUAL: Atithi's brochure page with a hero photo, a rooms list and a "Book now" button, built from `index.html`, `style.css`, `app.js`. No building in the picture, just the warehouse with a glass display window facing the road.]**
 
 **(Voiceover):**
 Atithi ka brochure page sirf HTML, CSS aur JavaScript hai: kamre ki photos, rate ki list, aur ek "Book now" button jo booking site par le jaata hai. Is page ko chalane ke liye building ki zaroorat nahi, kyunki isme koi guest ka data nahi badalta, aur koi staff kaam nahi karta. Landlord ke godown mein ek display window hai: boxes ko is tarah rakho ki raaste se guest unhe dekh sakein, bina andar aaye. Landing page, portfolio, documentation, sab ke liye ye sasta aur sahi hai. Par ye window bina kisi suraksha ke khulti hai, aur yahan se kahani mod leti hai.
 
-### [02:10 – 04:10] Scene 2: S3 Static Hosting aur uski Seema
+### [02:05 – 04:00] Scene 2: S3 Static Hosting aur uski Seema
 **[VISUAL: Console: Properties → Static website hosting → index document `index.html`, error document `error.html`. The generated endpoint `http://BUCKET.s3-website-REGION.amazonaws.com`. Beside it, two red marks: "HTTP only" and "bucket must be public".]**
 
 **(Voiceover):**
 Bucket par static website hosting on karo, aur do naam batao: index document, jo `index.html` hai, aur error document. Landlord ek website endpoint deta hai. Is raaste mein do kamzoriyan hain. Ek, ye endpoint sirf HTTP deta hai, HTTPS nahi, to guest ka browser "not secure" dikhayega. Do, ise chalane ke liye bucket ke box public padhne ke liye kholne padte hain, matlab Block Public Access band karna padta hai. Pichhle episode ke baad ye khatarnak lagna chahiye. Isliye aaj ka sahi tareeka ye hai: bucket private rakho, aur uske saamne ek brochure stand lagao.
 
-### [04:10 – 05:50] Scene 3: Brochure Stand: CloudFront
+### [04:00 – 05:35] Scene 3: Brochure Stand: CloudFront
 **[VISUAL: A world map. Without a stand: every guest drives to the single warehouse city. With a stand: copies of the brochure sit at stands in many cities, and guests pick up the nearest one. A line from the stand back to the warehouse marked "only on a miss".]**
 
 **(Voiceover):**
 CloudFront ek brochure stand hai. Landlord ke duniya bhar mein chhote chhote stands hain, jinhe edge location kehte hain. Aapka original warehouse origin kehlata hai. Pehli baar koi guest brochure maangta hai, to stand warehouse se copy mangata hai, aur apne paas rakh leta hai. Agle guests ko wahin se mil jaata hai: tez, paas se, aur origin par kam bojh. Isi ko cache kehte hain. Stand HTTPS bhi deta hai, aur aapka apna domain naam bhi.
 
-### [05:50 – 07:55] Scene 4: Stand aur Godown ke Beech ka Pass: OAC
+### [05:35 – 07:35] Scene 4: Stand aur Godown ke Beech ka Pass: OAC
 **[VISUAL: A private warehouse with a bucket policy that allows only the principal `cloudfront.amazonaws.com` when the request comes from distribution `d-xxxx`. A guest tries the warehouse's direct URL and gets AccessDenied, but the stand's URL works.]**
 
 **(Voiceover):**
 Ab sawaal: bucket private hai, to stand box kaise padhe? Isliye Origin Access Control, OAC. Stand ko ek khaas pass milta hai, aur bucket policy kehti hai: "sirf CloudFront, aur sirf ye distribution, mere boxes padh sakta hai." Console aapko ye policy ka text khud deta hai, aur aapko use bucket par lagana hota hai. Ab guest seedha godown ka URL maange to AccessDenied, aur stand ka URL maange to brochure dikhta hai. Aur ek chhota jaal: console ya CLI se "S3 bucket" ko origin banana hai, "static website endpoint" ko nahi, jab OAC use kar rahe ho.
 
-### [07:55 – 09:55] Scene 5: HTTPS aur Apna Naam
+### [07:35 – 09:30] Scene 5: HTTPS aur Apna Naam
 **[VISUAL: Left, a padlock icon with "ACM certificate" and a label "region: us-east-1 for CloudFront". Middle, an alternate domain name `brochure.atithi.example` attached to the distribution. Right, a DNS box with an alias record pointing to `dxxxx.cloudfront.net`.]**
 
 **(Voiceover):**
 Stand ko apna naam aur sealed envelope, yaani HTTPS, dena ho to teen kaam hote hain. Ek, AWS Certificate Manager mein ek certificate, aur CloudFront ke liye wo certificate hamesha us-east-1 region mein banta hai. Do, distribution mein alternate domain name likho, jaise `brochure.atithi.example`. Teen, DNS mein us naam ko stand ke `dxxxx.cloudfront.net` par point karo. Route 53 mein ise alias record kehte hain, kisi aur DNS mein CNAME. Domain khareedna zaroori nahi hai: bina domain ke bhi `dxxxx.cloudfront.net` par HTTPS chalta hai, aur lab ke liye wahi kaafi hai. Domain wali baat optional hai.
 
-### [09:55 – 12:25] Scene 6: Purani Copy aur Achanak 403
+### [09:30 – 11:55] Scene 6: Purani Copy aur Achanak 403
 **[VISUAL: A guest's browser shows yesterday's brochure while the warehouse has today's. A clock with "TTL". Beside it, a terminal: `aws cloudfront create-invalidation --distribution-id ID --paths "/*"`. A second panel: a missing file gives a 403 page instead of 404, with a note "no list permission".]**
 
 **(Voiceover):**
 Stand par kuch cheezein sabko pareshan karti hain. Pehli: aapne warehouse mein naya brochure rakha, par guest ko kal wala dikh raha hai. Wajah cache hai: stand purani copy tab tak deta hai jab tak uski meyaad, TTL, khatam na ho. Do upaay hain. Ek, invalidation: `aws cloudfront create-invalidation --distribution-id ID --paths "/*"`, jo stand ko purani copy phenkne ko kehta hai. Doosra aur behtar: file ke naam mein version rakho, jaise `app.3f2a.js`, taaki naya naam naya box ho. Dusri pareshani: koi box maango jo hai hi nahi, aur 404 ki jagah 403 aaye. Private bucket par jab stand ko list karne ki ijaazat nahi hoti, to landlord "nahi mila" aur "ijaazat nahi" mein farq nahi batata.
 
-### [12:25 – 15:00] Scene 7: Lab: Brochure Deploy
+### [11:55 – 15:05] Scene 7: Lab: Brochure Deploy
 **[VISUAL: A simple `index.html` with the hotel name and one photo. Terminal: `aws s3 sync . s3://YOUR-BUCKET/site/ --delete`. Console: Create distribution, origin = bucket, OAC created, default root object `index.html`, Block Public Access still ON, bucket policy pasted. The page opens at `https://dxxxx.cloudfront.net`.]**
 
 **(Voiceover):**
-Lab. Ek `index.html` banao: Atithi ka naam, ek photo, aur ek line. `aws s3 sync . s3://YOUR-BUCKET/site/ --delete` se upload karo. `--delete` ka matlab: jo box local folder mein nahi hai, use godown se bhi hata do. Ab CloudFront mein distribution banao: origin aapka bucket, `/site` origin path, OAC chuno, default root object `index.html`, aur Block Public Access on hi rehne do. Console ek bucket policy ka text dega, use bucket ki Permissions tab mein paste karo. Distribution deploy hone mein kuch minute lagte hain. Phir `https://dxxxx.cloudfront.net` kholo. Ek line badlo, sync karo, aur dekho ki purani copy kitni der dikhti hai, phir invalidation chalao. Safai: distribution ko pehle disable karo aur phir delete karo, bucket ko khaali karke delete karo.
+Lab. Ek `index.html` banao: Atithi ka naam, ek photo, aur ek line. `aws s3 sync . s3://YOUR-BUCKET/site/ --delete` se upload karo. `--delete` ka matlab: jo box local folder mein nahi hai, use godown se bhi hata do, chahe aapne use kisi aur tareeke se hi kyun na daala ho. Humne yahi dekha: ek alag se daala hua box chala gaya. Pehle `--dryrun` lagao, wo batata hai kya hatega. Ab CloudFront mein distribution banao: origin aapka bucket, `/site` origin path, OAC chuno, default root object `index.html`, aur Block Public Access on hi rehne do. Console ek bucket policy ka text dega, use bucket ki Permissions tab mein paste karo. Distribution deploy hone mein kuch minute lagte hain. Phir `https://dxxxx.cloudfront.net` kholo. Ek line badlo, sync karo, aur dekho ki purani copy kitni der dikhti hai, phir invalidation chalao. Safai: distribution ko pehle disable karo aur phir delete karo, bucket ko khaali karke delete karo.
 
-### [15:00 – 16:40] Scene 8: Recap aur Bridge
+### [15:05 – 16:40] Scene 8: Recap aur Bridge
 **[VISUAL: A card: "private bucket + CloudFront + OAC · HTTPS from ACM (us-east-1) · TTL, invalidate or version names · 403 on a missing key · clean up". Then a thick ledger book with ruled columns fades in over the warehouse.]**
 
 **(Voiceover):**

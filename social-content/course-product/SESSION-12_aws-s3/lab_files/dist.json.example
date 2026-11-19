@@ -1,0 +1,3 @@
+{"CallerReference":"atithi-1","Comment":"atithi brochure","Enabled":true,"DefaultRootObject":"index.html",
+ "Origins":{"Quantity":1,"Items":[{"Id":"s3-site","DomainName":"BUCKET.s3.amazonaws.com","OriginPath":"/site","OriginAccessControlId":"OAC_ID","S3OriginConfig":{"OriginAccessIdentity":""}}]},
+ "DefaultCacheBehavior":{"TargetOriginId":"s3-site","ViewerProtocolPolicy":"redirect-to-https","CachePolicyId":"658327ea-f89d-4fab-a63d-7e88639e58f6"}}
