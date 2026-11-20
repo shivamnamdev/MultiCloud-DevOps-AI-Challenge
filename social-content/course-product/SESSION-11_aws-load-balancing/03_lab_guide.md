@@ -9,6 +9,13 @@ Companion to `02_script.md`. The script teaches the ideas; this guide is the han
 > - **Paper** for the ALB-or-NLB quiz.
 > **Not tested:** a real ALB's DNS name and routing, real health checks against real web servers, the "unhealthy target is replaced by the Auto Scaling group" loop (the emulator marked targets unhealthy but its group did not react), TLS, listener rules, NLB, and the console.
 
+> **Update, tested on real AWS (ap-south-1, two towers, deleted the same day).** A real Application Load Balancer in front of an Auto Scaling group of nginx buildings (from the Session 10 image):
+> - **Target group defaults on real AWS:** `HTTP / 5 2 30` and a 5 second timeout (healthy after 5 passes, unhealthy after 2 failures, every 30 s), the same as the emulator.
+> - **Timing:** the load balancer was `active` in about 2 minutes; the targets went `initial` to `healthy` about 2 minutes after that. 10 requests to its DNS name gave **5 and 5** across the two hostnames (round robin).
+> - **Security group chain:** the building group allowed port 80 **only from the load balancer's group**. A direct request to a building's public address then **timed out** (curl exit 28), while the load balancer still worked.
+> - **Failure:** we stopped nginx on one building. For about **40 seconds** some requests got **502** (the marshal still sent guests there), then the target turned `unhealthy` and every request was `200` from the other building. The group's **ELB health check** then replaced the building (about 90 seconds after the stop): the old target went `draining`, a new one `initial` then `healthy`. This needs `--health-check-type ELB` and a grace period on the group, as the script says.
+> - Not tested: TLS and certificates, listener rules, NLB, stickiness.
+
 | | |
 |---|---|
 | **Time** | Part A 20 min, Part B 20 min, Part C 40 min, Part D 20 min |

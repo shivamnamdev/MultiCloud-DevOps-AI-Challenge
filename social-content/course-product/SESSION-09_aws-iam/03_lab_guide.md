@@ -11,6 +11,11 @@ Companion to `02_script.md`. The script teaches the ideas; this guide is the han
 > - Not tested at all: the console, MFA, sign-in with an account alias, IAM Identity Center, the real EC2 role lab, CloudTrail, Access Analyzer, `decode-authorization-message`.
 > So: practise the commands and the policy logic here for free, then do the real-enforcement parts on a real account with a throwaway user.
 
+> **Update, tested on real AWS (ap-south-1), roles part only.** Run for real, with roles named `atithi-*`:
+> - **Trust policy:** a role that trusts only `ec2.amazonaws.com` **refuses** you when you try `aws sts assume-role` (`AccessDenied ... not authorized to perform: sts:AssumeRole`). A role whose trust policy names your user works, and gives a key id starting **`ASIA`** that expires in **1 hour**. This is the lesson the emulator could not show.
+> - **Keyless EC2:** launched an instance with the instance profile. On it, no `~/.aws` folder exists, the metadata service lists the role name, and its credentials (`ASIA...`, expiry about **6 hours** after the last refresh) rotate by themselves. `aws sts get-caller-identity` answers `assumed-role/atithi-s3-read/<instance id>`, `aws s3 ls` works with no keys, and `aws ec2 run-instances --dry-run` is refused with `UnauthorizedOperation`. (Ubuntu 24.04 has no AWS CLI: `sudo snap install aws-cli --classic`.)
+> - **Not yet run on real AWS:** users, groups, access keys, the credential report and the console password parts. The lab IAM user cannot create users. Attach the second inline policy `lab_files/atithi-lab-iam-users-policy.json` (names must start with `atithi-`, so use `atithi-developers` and `atithi-asha`), then run Parts A, B and D with those names.
+
 | | |
 |---|---|
 | **Time** | Part A 20 min, Part B 40 min, Part C 30 min, Part D 30 min |

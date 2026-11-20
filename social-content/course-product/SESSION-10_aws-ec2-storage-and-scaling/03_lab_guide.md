@@ -9,6 +9,14 @@ Companion to `02_script.md`. The script teaches the ideas; this guide is the han
 > - **Linux for real:** format, mount, `fstab` with `nofail`, and a copy-and-restore test, on a file standing in for the disk.
 > - **Not tested at all:** the console, real device names (`nvme1n1`), CloudWatch metrics, `stress` pushing CPU over 40% so the group scales out on its own, real timing, real prices.
 
+> **Update, tested on real AWS (ap-south-1, t3.micro, Ubuntu 24.04, deleted the same day).** What the emulator could not do, now run for real:
+> - **Same-tower rule:** `InvalidVolume.ZoneMismatch ... is not in the same availability zone as instance`. A new gp3 volume came with **3000 IOPS and 125 MB/s** by default. The new volume showed as `nvme1n1`; `blkid` on it printed nothing and exited `2` (empty, safe to format). Then `mkfs -t ext4`, mount, an `fstab` line with `nofail`, `umount` and `mount -a` brought the file back.
+> - **Snapshot and restore:** an 8 GB nearly empty volume took about **1 minute** to reach `completed`. A volume made from it in the same zone mounted at `/restore` with the file and the **same UUID**.
+> - **AMI:** `create-image` took about **3 minutes** to become `available`. An instance launched from it with **no user data** served the page. **But the page is baked into the image, so it still said the builder's hostname.** If you want each building to show its own name, rewrite the page at boot (`lab_files/userdata_asg.sh`). Before you deregister an AMI, its snapshot cannot be deleted (`InvalidSnapshot.InUse`); **after deregistering, the snapshot stays** and keeps billing until you delete it.
+> - **Auto Scaling:** the first group in an account creates a service-linked role: our scaling policy call failed once (`ServiceLinkedRoleFailure`) and the group launched nothing for about 2 minutes until we set the desired capacity again, so allow for a slow first start. After terminating one building by hand, the group noticed and started a replacement in about **1 min 45 s**. `desired 3` above `max 2` is refused (`New SetDesiredCapacity value 3 is above max value 2`), deleting a group with instances fails (`ResourceInUse`). The **target tracking policy at 40% CPU** (load from `stress-ng`) added a building about **6.5 minutes** after the load started, and later removed one when the load was gone (alarm `AlarmLow`).
+> - **Max size is 2, not 3, in our run**, because a new account has a 5 vCPU limit and a t3.micro uses 2.
+> - Not tested: the console screens, real prices.
+
 | | |
 |---|---|
 | **Time** | Part A 30 min, Part B 30 min, Part C 40 min |

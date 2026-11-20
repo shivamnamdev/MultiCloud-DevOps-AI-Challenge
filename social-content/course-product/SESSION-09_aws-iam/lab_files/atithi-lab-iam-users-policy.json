@@ -1,0 +1,48 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "ManageAtithiUsersAndGroups",
+      "Effect": "Allow",
+      "Action": [
+        "iam:CreateUser", "iam:DeleteUser", "iam:TagUser",
+        "iam:CreateGroup", "iam:DeleteGroup",
+        "iam:AddUserToGroup", "iam:RemoveUserFromGroup",
+        "iam:CreateAccessKey", "iam:DeleteAccessKey", "iam:UpdateAccessKey",
+        "iam:CreateLoginProfile", "iam:DeleteLoginProfile",
+        "iam:PutUserPolicy", "iam:DeleteUserPolicy"
+      ],
+      "Resource": [
+        "arn:aws:iam::*:user/atithi-*",
+        "arn:aws:iam::*:group/atithi-*"
+      ]
+    },
+    {
+      "Sid": "AttachOnlyKnownPoliciesToAtithiUsersAndGroups",
+      "Effect": "Allow",
+      "Action": [
+        "iam:AttachUserPolicy", "iam:DetachUserPolicy",
+        "iam:AttachGroupPolicy", "iam:DetachGroupPolicy"
+      ],
+      "Resource": [
+        "arn:aws:iam::*:user/atithi-*",
+        "arn:aws:iam::*:group/atithi-*"
+      ],
+      "Condition": {
+        "ArnLike": {
+          "iam:PolicyARN": [
+            "arn:aws:iam::aws:policy/AmazonS3ReadOnlyAccess",
+            "arn:aws:iam::aws:policy/AmazonEC2ReadOnlyAccess",
+            "arn:aws:iam::*:policy/atithi-*"
+          ]
+        }
+      }
+    },
+    {
+      "Sid": "CredentialReport",
+      "Effect": "Allow",
+      "Action": ["iam:GenerateCredentialReport", "iam:GetCredentialReport"],
+      "Resource": "*"
+    }
+  ]
+}
