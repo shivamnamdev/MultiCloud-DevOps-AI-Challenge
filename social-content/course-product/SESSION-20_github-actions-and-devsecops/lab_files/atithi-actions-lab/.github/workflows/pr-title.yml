@@ -1,0 +1,13 @@
+name: pr-title
+on: pull_request
+
+permissions:
+  contents: read
+
+jobs:
+  safe:     # the right way: outside text goes into an environment variable, the shell only sees data
+    runs-on: ubuntu-latest
+    steps:
+      - env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: echo "title is $TITLE"

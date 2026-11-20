@@ -1,0 +1,17 @@
+name: aws-oidc
+on: workflow_dispatch
+
+# id-token: write lets the job ask GitHub for a short-lived identity token. No AWS key is stored anywhere.
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  whoami:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
+          aws-region: ap-south-1
+      - run: aws sts get-caller-identity
