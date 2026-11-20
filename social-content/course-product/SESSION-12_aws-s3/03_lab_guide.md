@@ -8,6 +8,13 @@ Companion to `02_script.md`. The script teaches the ideas; this guide is the han
 > - **Did NOT behave like S3:** it did **not** refuse a request for a private object without a signature (we got `200`, the script expects `AccessDenied`), it did **not** enforce the HTTPS-only Deny, and the default encryption did not show on objects. CloudFront deployed and invalidated **instantly**, not in minutes.
 > - **Not tested at all:** the console, real durability and availability (an idea, not a command), costs, replication, an EC2 role reading a bucket, OAC with a real bucket policy, the CloudFront URL in a browser, a custom domain, certificates, static website hosting served over HTTP.
 
+> **Update, tested on real AWS (ap-south-1, a new bucket `atithi-s12-<random>`, deleted the same day).** What the emulator got wrong or could not do:
+> - **Private by default:** an unsigned request for an object gets **`403 AccessDenied`**, as the script says. A new bucket has **Block Public Access on (`True True True True`)** and **default encryption `AES256`**, and the object itself shows `ServerSideEncryption AES256`. `head-object` prints **nothing** for the storage class of a `STANDARD` object (the field is simply absent); it prints `STANDARD_IA` when you chose it.
+> - **sync, versioning, delete markers, lifecycle, `rb`/`rb --force`** behaved exactly as in this guide, including `BucketNotEmpty` after `--force` and `empty_versioned_bucket.sh` working with the real CLI. A saved lifecycle rule printed `TransitionDefaultMinimumObjectSize: all_storage_classes_128K`: **objects under 128 KB are not moved** to cheaper classes by default.
+> - **HTTPS-only Deny, real:** with the policy saved, a valid presigned link over **https** returned the file (`200`), the same signed link over **http** returned `AccessDenied`. A 3-second link after 6 seconds: `AccessDenied ... Request has expired`.
+> - **CloudFront, real:** a distribution with an origin access control (OAC) and the bucket policy "allow `cloudfront.amazonaws.com` only when `AWS:SourceArn` is this distribution" became `Deployed` in about **3 minutes**. The CloudFront URL served the page (`200`); a missing page gave **`403`** (not 404, because OAC has no list permission); `http://` redirected (`301`) to https; the direct S3 address gave `403`. An invalidation starts `InProgress`. Deleting an enabled distribution fails with `DistributionNotDisabled`; disabling took about **3 more minutes**, then the delete worked, and the OAC had to be deleted separately.
+> - Not tested: a custom domain and certificate, replication, KMS, Object Lock, S3 website hosting with public access.
+
 | | |
 |---|---|
 | **Time** | Part A 25 min, Part B 35 min, Part C 35 min, Part D 30 min |

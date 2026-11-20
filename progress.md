@@ -433,3 +433,9 @@
 - Cleanup and leftovers scripts now cover IAM users and groups, and **protect every IAM name starting `atithi-lab`** (the user's own user, group and policies would otherwise have been deleted).
 - S09 real run: A1/A2, B1-B3 and D1/D2 matched the script. Inactive key gives `InvalidClientTokenId` after ~5 s. Last-used still `N/A` right after. Leftovers check clean.
 - Sessions 8 to 11 are now tested on real AWS. Next: 12 to 15 (S3, RDS, VPC, monitoring and serverless); extend cleanup per resource type.
+
+## 2026-11-20: Real AWS runs of Sessions 12 and 15
+- Cleanup script extended: EventBridge rules, S3 buckets named `atithi-*` (all versions and markers), Lambda, alarms, SNS, SQS, log groups, CloudFront distributions whose Comment starts with `atithi` (disable on the first run, delete on the second) and OAC. Verified the plan never lists the user's four existing buckets or distribution E2RXVOTPHG2SRH. Final leftovers check clean; those four buckets and the distribution still exist.
+- S12 real: 403 on private object, Block Public Access and AES256 by default, versioning/delete marker/lifecycle/rb as written, https-only Deny and presigned expiry, CloudFront with OAC (~3 min to deploy, ~3 min to disable, 403 for missing page).
+- S15 real: Lambda ran (cold/warm, 128 vs 512 MB), S3 trigger (permission order, several minutes before it fires, filters, plus decoding), SNS to SQS needs a queue policy, alarms (93 s to ALARM, CPU alarm ~2m45s), Logs Insights, `stop-dev` (only the running dev building), five-field cron rejected, rate rule fired. Added `functions/stopdev-policy.json`.
+- Credits still show 99.99 USD (billing lags).

@@ -3,10 +3,9 @@
 # nothing unless you pass --yes.   ./aws_cleanup_atithi.sh          (plan only)
 #                                  ./aws_cleanup_atithi.sh --yes    (really delete)
 # PROTECTED: any IAM user, group, role or policy whose name starts with atithi-lab (your lab user, its group, its policies).
-# Handles today: Auto Scaling groups and launch templates, load balancers (+listeners) and target groups, EC2 instances,
+# Handles today: EventBridge rules, S3 buckets (all versions), Lambda, alarms, SNS, SQS, log groups, CloudFront (disable, then delete on a second run), Auto Scaling groups and launch templates, load balancers (+listeners) and target groups, EC2 instances,
 # Elastic IPs, EBS volumes, EBS snapshots, AMIs, key pairs, security groups, IAM users/groups/roles/instance profiles/policies atithi-*.
-# NOT handled yet (added when each session's lab has been tested): NAT gateways, RDS, Lambda, alarms, topics, S3,
-# CloudFront, VPCs. aws_leftovers.sh lists those if they exist.
+# NOT handled yet (added when each session's lab has been tested): NAT gateways, RDS, VPCs. aws_leftovers.sh lists those if they exist.
 set -u
 P="${AWS_PROFILE:-atithi-lab}"; R="${LAB_REGION:-ap-south-1}"
 export AWS_PAGER=
@@ -15,6 +14,38 @@ YES=0; [ "${1:-}" = "--yes" ] && YES=1
 TAG="Name=tag:Project,Values=atithi-lab"
 say() { if [ $YES -eq 1 ]; then echo "DELETE  $*"; else echo "would delete  $*"; fi; }
 echo "== Cleanup ($([ $YES -eq 1 ] && echo REAL || echo PLAN ONLY)): profile=$P region=$R"
+# --- Session 12/15 resources: schedules first (they keep firing), then triggers, functions, alarms, topics, queues, logs, S3, CloudFront
+for r in $(a events list-rules --name-prefix atithi- --query 'Rules[].Name' --output text); do
+  say "EventBridge rule $r"
+  [ $YES -eq 1 ] && { ids=$(a events list-targets-by-rule --rule $r --query 'Targets[].Id' --output text); [ -n "$ids" ] && a events remove-targets --rule $r --ids $ids >/dev/null; a events delete-rule --name $r; }
+done
+for b in $(a s3api list-buckets --query "Buckets[?starts_with(Name,'atithi-')].Name" --output text); do
+  say "S3 bucket $b (every version and delete marker, then the bucket)"
+  [ $YES -eq 1 ] && {
+    a s3api put-bucket-notification-configuration --bucket $b --notification-configuration '{}' >/dev/null 2>&1
+    for kind in Versions DeleteMarkers; do
+      while :; do
+        a s3api list-object-versions --bucket $b --max-items 500 --query "{Objects: ${kind}[].{Key:Key,VersionId:VersionId}, Quiet: \`true\`}" --output json > /tmp/.atithi-del.json 2>/dev/null
+        python3 -c "import json,sys;d=json.load(open('/tmp/.atithi-del.json'));sys.exit(0 if d.get('Objects') else 1)" || break
+        a s3api delete-objects --bucket $b --delete file:///tmp/.atithi-del.json >/dev/null
+      done
+    done
+    rm -f /tmp/.atithi-del.json; a s3 rb s3://$b; }
+done
+for fn in $(a lambda list-functions --query "Functions[?starts_with(FunctionName,'atithi-')].FunctionName" --output text); do say "Lambda function $fn"; [ $YES -eq 1 ] && a lambda delete-function --function-name $fn; done
+for al in $(a cloudwatch describe-alarms --alarm-name-prefix atithi- --query 'MetricAlarms[].AlarmName' --output text); do say "alarm $al"; [ $YES -eq 1 ] && a cloudwatch delete-alarms --alarm-names $al; done
+for t in $(a sns list-topics --query "Topics[?contains(TopicArn,':atithi-')].TopicArn" --output text); do say "SNS topic $t"; [ $YES -eq 1 ] && a sns delete-topic --topic-arn $t; done
+for q in $(a sqs list-queues --queue-name-prefix atithi- --query 'QueueUrls[]' --output text); do say "SQS queue $q"; [ $YES -eq 1 ] && a sqs delete-queue --queue-url $q; done
+for lg in $(a logs describe-log-groups --log-group-name-prefix /atithi/ --query 'logGroups[].logGroupName' --output text) $(a logs describe-log-groups --log-group-name-prefix /aws/lambda/atithi- --query 'logGroups[].logGroupName' --output text); do say "log group $lg"; [ $YES -eq 1 ] && a logs delete-log-group --log-group-name $lg; done
+# CloudFront: only distributions whose Comment starts with "atithi". Disable first; deleting needs it to be Deployed+disabled (a few minutes): run again.
+for d in $(a cloudfront list-distributions --query "DistributionList.Items[?starts_with(Comment,'atithi')].Id" --output text 2>/dev/null | tr '\t' '\n' | grep -v '^None$'); do
+  en=$(a cloudfront get-distribution --id $d --query 'Distribution.DistributionConfig.Enabled' --output text); stt=$(a cloudfront get-distribution --id $d --query 'Distribution.Status' --output text)
+  if [ "$en" = "True" ]; then say "CloudFront distribution $d (disable now; run again in ~5 min to delete)"
+    [ $YES -eq 1 ] && { a cloudfront get-distribution-config --id $d --output json > /tmp/.atithi-cf.json; et=$(python3 -c "import json;print(json.load(open('/tmp/.atithi-cf.json'))['ETag'])"); python3 -c "import json;d=json.load(open('/tmp/.atithi-cf.json'))['DistributionConfig'];d['Enabled']=False;json.dump(d,open('/tmp/.atithi-cf-off.json','w'))"; a cloudfront update-distribution --id $d --if-match $et --distribution-config file:///tmp/.atithi-cf-off.json >/dev/null; rm -f /tmp/.atithi-cf*.json; }
+  elif [ "$stt" = "Deployed" ]; then say "CloudFront distribution $d (delete)"; [ $YES -eq 1 ] && a cloudfront delete-distribution --id $d --if-match "$(a cloudfront get-distribution --id $d --query ETag --output text)"
+  else echo "CloudFront distribution $d is still updating; run again in a few minutes"; fi
+done
+for o in $(a cloudfront list-origin-access-controls --query "OriginAccessControlList.Items[?starts_with(Name,'atithi-')].Id" --output text 2>/dev/null | tr '\t' '\n' | grep -v '^None$'); do say "CloudFront origin access control $o"; [ $YES -eq 1 ] && a cloudfront delete-origin-access-control --id $o --if-match "$(a cloudfront get-origin-access-control --id $o --query ETag --output text)" 2>&1 | tail -1; done
 for g in $(a autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[?starts_with(AutoScalingGroupName,'atithi-')].AutoScalingGroupName" --output text); do
   say "auto scaling group $g (with its instances)"; [ $YES -eq 1 ] && a autoscaling delete-auto-scaling-group --auto-scaling-group-name $g --force-delete
 done
