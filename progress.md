@@ -446,3 +446,10 @@
 - S13: RDS create ~10 min; managed secret has only username and password; CLI default `StorageEncrypted False`; TLS 1.3; wrong password FATAL, wrong port times out, local nothing-listening refused; snapshot ~3 min, restore ~8 min (older data), PITR ~10 min (older data); deletion protection as written. Not completed: Multi-AZ (capacity error, then still `modifying` after 27 min) and read replica (refused with a managed master password). Without a NAT the private building cannot reach the Secrets Manager API.
 - Cleanup script now covers RDS (instances, manual snapshots, subnet groups) and VPCs (peering, NAT, IGW, subnets, route tables, NACLs, SGs); bugs found and fixed while running it (peering as accepter, failed peering state, `None` from empty SQS/CloudFront lists).
 - All of Sessions 8 to 15 are now tested on real AWS. Credits still show 99.99 USD (billing lags).
+
+## 2026-11-20: Real AWS runs of Sessions 27 and 28 (Terraform)
+- Ran Terraform 1.17.2 in Docker (`~/.aws` mounted read-only, profile `atithi-lab`, region ap-south-1, provider `default_tags` Project=atithi-lab).
+- S27: campus of 10 resources applied in ~26 s, second plan clean, size rule, SSH to the real public IP, drift (`~ Owner`), rename (1 add 1 destroy) and `moved` (0 changes, same instance id), destroy of 10 in ~35 s. Nothing left.
+- S28: state bucket (the `us-east-1` LocationConstraint error reproduced), `init -migrate-state`, S3 lockfile error 412 with `.tflock` object, versions, cleanup; modules: 6 resources, validation messages, rename 6/6 and `moved`; an overlapping staging CIDR is accepted by the plan.
+- S28 Part C was an untested exercise: wrote and tested `lab_files/envs/dev` (network with NAT, ALB, ASG in private wings, private encrypted PostgreSQL with a managed password): 29 resources, apply ~8 min (NAT 1.5, ALB 2.5, RDS 7.5), page served through the ALB from a private building, second plan clean, destroy ~6 min. Cleanup script found nothing left.
+- Remaining AWS-related guide work: S20 (GitHub Actions + OIDC to AWS) needs GitHub and an IAM OIDC provider (not allowed by the lab policy yet); S01, S02, S16, S16B guides; then S30/S32/S33.

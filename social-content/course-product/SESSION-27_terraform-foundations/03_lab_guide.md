@@ -2,6 +2,12 @@
 
 Companion to `02_script.md`. The script teaches the ideas; this guide is the hands-on sheet to keep next to your terminal. Commands and outputs below come from real runs (Terraform 1.17.2, AWS provider 6.73, local provider 2.9.1). Your IDs, IPs and timings will differ.
 
+> **Update, tested on real AWS (ap-south-1, Terraform 1.17.2 in Docker with `~/.aws` mounted read-only, provider 6.73).** Parts B to D ran for real, with `region = "ap-south-1"` and a key pair in `terraform.tfvars`:
+> - **Part B:** `Plan: 10 to add`, then `Apply complete! Resources: 10 added` in **about 26 seconds** (the building took 12 s). `subnet_cidr = "10.0.1.0/24"`, the second plan said `No changes`, the size rule `Use t3.micro, t3.small or t3.medium.` stopped `m5.24xlarge`, and **SSH to the real public IP worked** (`connected to ip-10-0-1-79`).
+> - **Part C:** `terraform state list` showed 11 entries. A tag changed outside Terraform (`aws ec2 create-tags`) showed as `~ "Owner" = "someone-else" -> "atithi"` and one apply put it back. The rename plan was `1 to add, 1 to destroy`; with the `moved` block it was `has moved to` and **0 changes, and the state kept the same instance id**.
+> - **Part D:** `terraform destroy` removed all 10 in **about 35 seconds**; the instance and the internet gateway were the slowest (30 s and 16 s, destroyed side by side). `terraform state list` printed nothing, and no tagged VPC or instance was left.
+> - Add `default_tags { tags = { Project = "..." } }` to the provider, as we did, so a cleanup script can always find what Terraform made.
+
 | | |
 |---|---|
 | **Time** | Part A 15 min, Part B 30 min, Part C 30 min, Part D 20 min |

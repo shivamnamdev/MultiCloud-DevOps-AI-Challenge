@@ -2,6 +2,12 @@
 
 Companion to `02_script.md`. The script teaches the ideas; this guide is the hands-on sheet to keep next to your terminal. Commands and outputs below come from real runs (Terraform 1.17.2, AWS provider 6.73, Trivy 0.76.2, actionlint, a local AWS emulator). Your IDs and timings will differ.
 
+> **Update, tested on real AWS (ap-south-1, Terraform 1.17.2 in Docker, AWS provider 6.73).** Everything below ran for real except the CI workflow on GitHub:
+> - **A. State in S3:** in `us-east-1` a `LocationConstraint` gives `InvalidLocationConstraint` (the gotcha, seen); elsewhere the bucket was created and `init -migrate-state` moved the register (714 bytes). **Two applies at once:** the second one failed with the exact error shown here (`StatusCode: 412 ... PreconditionFailed`, `Lock Info` with ID, `Who`, `Created`), a `terraform.tfstate.tflock` object (233 bytes) existed while the first ran and was gone after. `list-object-versions` showed four versions. Destroying and deleting every version, then the bucket, worked.
+> - **B. Modules:** 6 resources planned and applied, the `Invalid value for variable` message for `banana` and `10.20.0.0`, `Plan: 6 to add, 0 to change, 6 to destroy` after the rename, and `0 to change` with the `moved` block inside the module. **A staging range that overlaps dev (`10.10.0.0/16`) is accepted by the plan** (it shows 3 to add and 3 to destroy: the staging campus would be replaced), as the guide warns.
+> - **C. A whole environment:** now built and destroyed for real, see Part C.
+> - Not tested: the CI workflow on GitHub, OIDC (see Session 20).
+
 | | |
 |---|---|
 | **Time** | Part A 35 min, Part B 30 min, Part C 20 min, Part D 30 min |
@@ -242,16 +248,29 @@ terraform destroy         # expect: Destroy complete! Resources: 6 destroyed.
 
 **Goal:** compose an environment from modules, feed it sizes from `terraform.tfvars`, and learn to read the plan before spending anything.
 
-What we tested: the network module and the composition pattern from Part B (two calls, per-environment inputs, outputs). What we did not run: a full dev environment with the ALB, compute and database modules. Resource syntax for those pieces (RDS with `manage_master_user_password`, `multi_az`, `deletion_protection`, an ALB, target group, listener, launch template, autoscaling group and a NAT gateway with an Elastic IP) passed `terraform validate`, but we did not plan or apply them as one environment. Treat the steps below as an exercise.
+**Tested for real (ap-south-1, one dev environment, built and destroyed the same day).** `lab_files/envs/dev/` calls four modules: `network` (a campus with two public and two private wings, an internet gateway and **one NAT gateway**), `alb` (load balancer, target group, listener, its own security group), `compute` (a launch template and an Auto Scaling group in the private wings, port 80 open **only from the load balancer's group**) and `database` (PostgreSQL `db.t4g.micro`, private, encrypted, `manage_master_user_password = true`, port 5432 open only from the app's group). The smallest sizes are in `terraform.tfvars.example`.
 
-1. Create `envs/dev/` with a `main.tf` that calls four modules: `network`, `alb`, `compute`, `database`. Wire them with outputs, for example `module.network.public_subnet_ids` into the `alb` and `compute` modules.
-2. Put the sizes in `envs/dev/terraform.tfvars`: smallest instance size, `multi_az = false`, one NAT gateway.
-3. Give it its own backend key, `dev/terraform.tfstate`, in the bucket from Part A (`-backend-config` as before).
-4. Run **only** `terraform plan`.
+```bash
+cd lab_files/envs/dev
+cp terraform.tfvars.example terraform.tfvars
+terraform init
+terraform validate
+terraform plan -out=tfplan
+```
 
-Read the plan with the three questions from Session 27: does anything get destroyed, is anything changed that you did not expect, and does the count match your estimate? Write down how many resources of each kind will be created.
+Read the plan with the three questions from Session 27. Expected: **`Plan: 29 to add, 0 to change, 0 to destroy.`** By module: network 14 (VPC, internet gateway, 2 public and 2 private subnets, 2 route tables, 4 route table associations, an Elastic IP, the NAT gateway), alb 6 (load balancer, target group, listener, security group and its 2 rules), compute 5 (security group and its 2 rules, launch template, Auto Scaling group), database 4 (security group and its rule, subnet group, the instance). 14 + 6 + 5 + 4 = 29: count them yourself from the plan, and know the number before you spend anything. The three that bill while idle are the **NAT gateway, the load balancer and the database**.
 
-**Do not `apply` unless you accept the cost.** A NAT gateway, an application load balancer and an RDS instance each bill by the hour, even when idle. If you do apply: set a budget alert first (Session 15), use the smallest sizes, and run `terraform destroy` immediately after, then check the console for leftovers.
+```bash
+terraform apply tfplan          # about 8 minutes: NAT 1.5 min, load balancer 2.5 min, database 7.5 min
+terraform output
+curl http://$(terraform output -raw alb_dns_name)/
+terraform plan                  # No changes
+terraform destroy               # about 6 minutes: the Auto Scaling group is the slowest
+```
+
+What we saw: `Apply complete! Resources: 29 added`, the page `Atithi Hotels: Book Now ... Served by ip-10-30-...` from a **private** building through the load balancer on the first try (the building installs nginx through the NAT), a second plan with no changes, the database `available`, encrypted, not public, and **no password in the Terraform state** (it lives in Secrets Manager). `terraform destroy` removed all 29 and the cleanup script then found nothing left.
+
+Things to know before you run it: `deletion_protection = false` and `skip_final_snapshot = true` are **for practice only** (otherwise `destroy` stops, as in Session 13); the Auto Scaling group is capped at 2 instances because a new account allows only 5 vCPUs; and the load balancer needs two zones, so the campus has two.
 
 ### Check yourself
 
@@ -345,4 +364,4 @@ Optional, for real AWS: add a `plan` step that signs in with an OIDC role instea
 
 ## What we did not test
 
-Parts A, B and D ran against a local AWS emulator (floci) and in Docker, not against real AWS. We did not run: real S3 behaviour and billing, the `us-east-1`-versus-other-region error in practice, a full ALB, compute and database environment (Part C), the CI workflow on GitHub, OIDC, or the Trivy action itself (we ran the Trivy CLI). Check your own AWS billing for true costs.
+Parts A, B and C ran against real AWS (and Part D's scan in Docker). We did not run: the CI workflow on GitHub, OIDC, or the Trivy action itself (we ran the Trivy CLI). Real costs: check your own AWS billing, the NAT gateway, load balancer and database bill by the hour.
