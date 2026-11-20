@@ -67,8 +67,9 @@ The session introduced Docker from first principles, covering the motivation beh
 ### Three-Part Architecture 
 
 1. **Docker Client** — the terminal/CLI where commands are typed
-2. **Docker Host (Daemon)** — background service (`dockerd`) that processes all commands; runs as a daemon (constantly running in the background) 
-3. **Docker Registry (Docker Hub)** — centralized image storage; 3.5 million+ publicly available images 
+2. **Docker Host (Daemon)** — background service (`dockerd`) that processes all commands; runs as a daemon (constantly running in the background)
+3. The Docker daemon (dockerd) is the persistent background service that acts as the core engine of Docker on a host machine. 
+4. **Docker Registry (Docker Hub)** — centralized image storage; 3.5 million+ publicly available images 
 
 ### Command Flow (Hello World Walkthrough) 
 
@@ -125,7 +126,7 @@ Dockerfile  →  docker build  →  Docker Image  →  docker run  →  Containe
 
 |    Aspect    |                                   Docker                                    |                    Kubernetes                    |
 |--------------|-----------------------------------------------------------------------------|--------------------------------------------------|
-| Primary role | **Containerization** — build, ship, run containers                          | **Orchestration** — manage containers at scale   |
+| Primary role | **Containerization** — build, ship, run containers                          | **Orchestration** — manage containers at scale orchestration is the automated arrangement, coordination, and management of multiple computer systems, servers, applications, and services so they work together as a single, cohesive workflow  |
 | Scale        | Suitable for small/dev environments (up to ~50 containers managed manually) | Required for hundreds/thousands of containers    |
 | Management   | Manual CLI commands                                                         | Automated deployment, scaling, self-healing      |
 | Use case     | Image creation, single-host container runs                                  | Multi-node clusters, microservices in production |
