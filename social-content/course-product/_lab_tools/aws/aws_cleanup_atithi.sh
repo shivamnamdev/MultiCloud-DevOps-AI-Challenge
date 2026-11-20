@@ -2,8 +2,9 @@
 # Deletes lab resources that are TAGGED Project=atithi-lab (or named atithi-*). Shows a plan first and changes
 # nothing unless you pass --yes.   ./aws_cleanup_atithi.sh          (plan only)
 #                                  ./aws_cleanup_atithi.sh --yes    (really delete)
+# PROTECTED: any IAM user, group, role or policy whose name starts with atithi-lab (your lab user, its group, its policies).
 # Handles today: Auto Scaling groups and launch templates, load balancers (+listeners) and target groups, EC2 instances,
-# Elastic IPs, EBS volumes, EBS snapshots, AMIs, key pairs, security groups, IAM roles/instance profiles/policies atithi-*.
+# Elastic IPs, EBS volumes, EBS snapshots, AMIs, key pairs, security groups, IAM users/groups/roles/instance profiles/policies atithi-*.
 # NOT handled yet (added when each session's lab has been tested): NAT gateways, RDS, Lambda, alarms, topics, S3,
 # CloudFront, VPCs. aws_leftovers.sh lists those if they exist.
 set -u
@@ -48,11 +49,26 @@ for ip in $(a iam list-instance-profiles --query "InstanceProfiles[?starts_with(
   say "instance profile $ip"
   [ $YES -eq 1 ] && { for r in $(a iam get-instance-profile --instance-profile-name $ip --query 'InstanceProfile.Roles[].RoleName' --output text); do a iam remove-role-from-instance-profile --instance-profile-name $ip --role-name $r; done; a iam delete-instance-profile --instance-profile-name $ip; }
 done
-for r in $(a iam list-roles --query "Roles[?starts_with(RoleName,'atithi-')].RoleName" --output text); do
+for r in $(a iam list-roles --query "Roles[?starts_with(RoleName,'atithi-') && !starts_with(RoleName,'atithi-lab')].RoleName" --output text); do
   say "IAM role $r"
   [ $YES -eq 1 ] && { for pa in $(a iam list-attached-role-policies --role-name $r --query 'AttachedPolicies[].PolicyArn' --output text); do a iam detach-role-policy --role-name $r --policy-arn $pa; done; a iam delete-role --role-name $r; }
 done
-for pa in $(a iam list-policies --scope Local --query "Policies[?starts_with(PolicyName,'atithi-')].Arn" --output text); do
+for u in $(a iam list-users --query "Users[?starts_with(UserName,'atithi-') && !starts_with(UserName,'atithi-lab')].UserName" --output text); do
+  say "IAM user $u (keys, password, policies, group memberships)"
+  [ $YES -eq 1 ] && {
+    for k in $(a iam list-access-keys --user-name $u --query 'AccessKeyMetadata[].AccessKeyId' --output text); do a iam delete-access-key --user-name $u --access-key-id $k; done
+    a iam delete-login-profile --user-name $u >/dev/null 2>&1
+    for pa in $(a iam list-attached-user-policies --user-name $u --query 'AttachedPolicies[].PolicyArn' --output text); do a iam detach-user-policy --user-name $u --policy-arn $pa; done
+    for gr in $(a iam list-groups-for-user --user-name $u --query 'Groups[].GroupName' --output text); do a iam remove-user-from-group --user-name $u --group-name $gr; done
+    a iam delete-user --user-name $u; }
+done
+for gr in $(a iam list-groups --query "Groups[?starts_with(GroupName,'atithi-') && !starts_with(GroupName,'atithi-lab')].GroupName" --output text); do
+  say "IAM group $gr"
+  [ $YES -eq 1 ] && {
+    for pa in $(a iam list-attached-group-policies --group-name $gr --query 'AttachedPolicies[].PolicyArn' --output text); do a iam detach-group-policy --group-name $gr --policy-arn $pa; done
+    a iam delete-group --group-name $gr; }
+done
+for pa in $(a iam list-policies --scope Local --query "Policies[?starts_with(PolicyName,'atithi-') && !starts_with(PolicyName,'atithi-lab')].Arn" --output text); do
   say "IAM policy $pa"
   [ $YES -eq 1 ] && { for v in $(a iam list-policy-versions --policy-arn $pa --query 'Versions[?!IsDefaultVersion].VersionId' --output text); do a iam delete-policy-version --policy-arn $pa --version-id $v; done; a iam delete-policy --policy-arn $pa; }
 done

@@ -427,3 +427,9 @@
 - S11: ALB, target group, listener, SG-to-SG rule, round robin 5/5, direct access times out, 502 for ~40 s then healthy-only, ELB health check replacement ~90 s.
 - S09 (roles only): trust policy refusal and success, `ASIA` key with 1 h expiry, keyless EC2 with instance profile, role denied RunInstances. Users/groups/keys/credential report need `atithi-lab-iam-users-policy.json` (new, validated JSON only, not yet attached or simulated).
 - Credits still show 99.99 USD (billing lags).
+
+## 2026-11-20: Real AWS run of Session 9 (users, groups, keys, credential report)
+- Policy `atithi-lab-iam-users` (managed, because the inline-policy total limit is 2048 characters) attached by the user. The simulator found a hole in my first draft (`user/atithi-*` matches the lab user itself, and inline user policies could grant admin); fixed by removing inline user policies and adding an explicit Deny on `atithi-lab-user`. 16 of 16 simulator cases and a real create/delete test passed.
+- Cleanup and leftovers scripts now cover IAM users and groups, and **protect every IAM name starting `atithi-lab`** (the user's own user, group and policies would otherwise have been deleted).
+- S09 real run: A1/A2, B1-B3 and D1/D2 matched the script. Inactive key gives `InvalidClientTokenId` after ~5 s. Last-used still `N/A` right after. Leftovers check clean.
+- Sessions 8 to 11 are now tested on real AWS. Next: 12 to 15 (S3, RDS, VPC, monitoring and serverless); extend cleanup per resource type.

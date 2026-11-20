@@ -23,7 +23,7 @@ show "NAT gateways (active)" a ec2 describe-nat-gateways --filter Name=state,Val
 show "VPC endpoints" a ec2 describe-vpc-endpoints --query 'VpcEndpoints[].[VpcEndpointId,VpcEndpointType]' --output text
 show "VPC peering connections" a ec2 describe-vpc-peering-connections --filters Name=status-code,Values=active,pending-acceptance --query 'VpcPeeringConnections[].[VpcPeeringConnectionId,Status.Code]' --output text
 show "VPCs other than the default" a ec2 describe-vpcs --filters Name=is-default,Values=false --query 'Vpcs[].[VpcId,CidrBlock]' --output text
-show "Security groups named atithi-*" a ec2 describe-security-groups --query "SecurityGroups[?starts_with(GroupName,'atithi-')].[GroupId,GroupName]" --output text
+show "Security groups named atithi-*" a ec2 describe-security-groups --query "SecurityGroups[?starts_with(GroupName,'atithi-') && !starts_with(GroupName,'atithi-lab')].[GroupId,GroupName]" --output text
 show "Key pairs named atithi-*" a ec2 describe-key-pairs --query "KeyPairs[?starts_with(KeyName,'atithi-')].[KeyName]" --output text
 show "Launch templates" a ec2 describe-launch-templates --query 'LaunchTemplates[].[LaunchTemplateName]' --output text
 show "Auto Scaling groups" a autoscaling describe-auto-scaling-groups --query 'AutoScalingGroups[].[AutoScalingGroupName,DesiredCapacity]' --output text
@@ -41,9 +41,11 @@ show "Secrets Manager secrets" a secretsmanager list-secrets --query 'SecretList
 show "S3 buckets named atithi-*" a s3api list-buckets --query "Buckets[?starts_with(Name,'atithi-')].[Name]" --output text
 # Only distributions whose comment starts with "atithi" (others in the account are not ours and are never listed or touched).
 show "CloudFront distributions with comment atithi*" aws --profile "$P" --region us-east-1 cloudfront list-distributions --query "DistributionList.Items[?starts_with(Comment,'atithi')].[Id,Status,Enabled]" --output text
-show "IAM roles named atithi-*" aws --profile "$P" iam list-roles --query "Roles[?starts_with(RoleName,'atithi-')].[RoleName]" --output text
+show "IAM roles named atithi-*" aws --profile "$P" iam list-roles --query "Roles[?starts_with(RoleName,'atithi-') && !starts_with(RoleName,'atithi-lab')].[RoleName]" --output text
+show "IAM users named atithi-* (not the lab user itself)" aws --profile "$P" iam list-users --query "Users[?starts_with(UserName,'atithi-') && !starts_with(UserName,'atithi-lab')].[UserName]" --output text
+show "IAM groups named atithi-*" aws --profile "$P" iam list-groups --query "Groups[?starts_with(GroupName,'atithi-') && !starts_with(GroupName,'atithi-lab')].[GroupName]" --output text
 show "IAM instance profiles named atithi-*" aws --profile "$P" iam list-instance-profiles --query "InstanceProfiles[?starts_with(InstanceProfileName,'atithi-')].[InstanceProfileName]" --output text
-show "IAM customer policies named atithi-*" aws --profile "$P" iam list-policies --scope Local --query "Policies[?starts_with(PolicyName,'atithi-')].[PolicyName]" --output text
+show "IAM customer policies named atithi-*" aws --profile "$P" iam list-policies --scope Local --query "Policies[?starts_with(PolicyName,'atithi-') && !starts_with(PolicyName,'atithi-lab')].[PolicyName]" --output text
 echo "-- credits:"; aws --profile "$P" --region us-east-1 freetier get-account-plan-state --query 'accountPlanRemainingCredits.[amount,unit]' --output text 2>/dev/null | sed 's/^/     remaining: /'
 if [ "$total" -eq 0 ]; then echo "== NOTHING LEFT. Clean."; else echo "== $total thing(s) left. Delete them, or run ./aws_cleanup_atithi.sh (shows a plan first)."; fi
 exit $(( total > 0 ))
