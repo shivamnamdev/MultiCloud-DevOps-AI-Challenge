@@ -5,12 +5,18 @@
       "Sid": "ManageAtithiUsersAndGroups",
       "Effect": "Allow",
       "Action": [
-        "iam:CreateUser", "iam:DeleteUser", "iam:TagUser",
-        "iam:CreateGroup", "iam:DeleteGroup",
-        "iam:AddUserToGroup", "iam:RemoveUserFromGroup",
-        "iam:CreateAccessKey", "iam:DeleteAccessKey", "iam:UpdateAccessKey",
-        "iam:CreateLoginProfile", "iam:DeleteLoginProfile",
-        "iam:PutUserPolicy", "iam:DeleteUserPolicy"
+        "iam:CreateUser",
+        "iam:DeleteUser",
+        "iam:TagUser",
+        "iam:CreateGroup",
+        "iam:DeleteGroup",
+        "iam:AddUserToGroup",
+        "iam:RemoveUserFromGroup",
+        "iam:CreateAccessKey",
+        "iam:DeleteAccessKey",
+        "iam:UpdateAccessKey",
+        "iam:CreateLoginProfile",
+        "iam:DeleteLoginProfile"
       ],
       "Resource": [
         "arn:aws:iam::*:user/atithi-*",
@@ -21,8 +27,10 @@
       "Sid": "AttachOnlyKnownPoliciesToAtithiUsersAndGroups",
       "Effect": "Allow",
       "Action": [
-        "iam:AttachUserPolicy", "iam:DetachUserPolicy",
-        "iam:AttachGroupPolicy", "iam:DetachGroupPolicy"
+        "iam:AttachUserPolicy",
+        "iam:DetachUserPolicy",
+        "iam:AttachGroupPolicy",
+        "iam:DetachGroupPolicy"
       ],
       "Resource": [
         "arn:aws:iam::*:user/atithi-*",
@@ -41,8 +49,17 @@
     {
       "Sid": "CredentialReport",
       "Effect": "Allow",
-      "Action": ["iam:GenerateCredentialReport", "iam:GetCredentialReport"],
+      "Action": [
+        "iam:GenerateCredentialReport",
+        "iam:GetCredentialReport"
+      ],
       "Resource": "*"
+    },
+    {
+      "Sid": "NeverTouchTheLabUserItself",
+      "Effect": "Deny",
+      "Action": "iam:*",
+      "Resource": "arn:aws:iam::405087531224:user/atithi-lab-user"
     }
   ]
 }
