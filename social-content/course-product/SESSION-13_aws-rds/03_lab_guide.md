@@ -9,6 +9,17 @@ Companion to `02_script.md`. The script teaches the ideas; this guide is the han
 > - **Did not work in the emulator:** `create-db-snapshot` and restoring a snapshot, so the script's snapshot-and-restore lab was **not** run.
 > **Not tested at all:** the console, real RDS timing, Multi-AZ failover, point-in-time restore, a real `db-sg` doing its job, encryption, parameter groups, real costs.
 
+> **Update, tested on real AWS (ap-south-1, PostgreSQL on `db.t4g.micro`, deleted the same day).** The database sat in the private wings of the Session 14 campus, reached only from a private building through the gatehouse:
+> - **Creating it took about 10 minutes** (`creating`, `configuring-enhanced-monitoring`, `backing-up`, `available`). The endpoint is a DNS name on port **5432**, `PubliclyAccessible False`, deletion protection on, 7 days of backups. **`StorageEncrypted` was `False`** when created from the CLI with default options (the console's default is different: tick encryption yourself). The default engine was PostgreSQL 18.3.
+> - **The managed secret holds only `username` and `password`**, not host, port or engine (the emulator showed more). Keep the endpoint in your app's settings. The instance's role (policy: `GetSecretValue` on that one secret) read it; `ListSecrets` was `AccessDenied`.
+> - **The security group reference works:** from the private building port 5432 was open; from the gatehouse (not in the database's group) it was blocked. The connection used **TLS 1.3** (`ssl on`).
+> - **SQL on real PostgreSQL** behaved as in Part D (`Asha 2`, `Ravi 1`, the unique and foreign key errors, `4 3` for the rollback, and the psycopg2 hostile-text lab: `0` matches as a parameter, all guests when glued).
+> - **The three failures, against RDS:** wrong password gave `FATAL: password authentication failed`; a **wrong port (5433) gave `timeout expired`, not "refused"** (the door guard drops it); nothing listening on the machine itself (`127.0.0.1`) gave `Connection refused`.
+> - **Snapshots and restore, real:** a manual snapshot took about **3 minutes**. After I added a guest, a restore of the snapshot as a **new instance with a new endpoint** took about **8 minutes** and held the older data (**3 guests, the original 4**). It had no deletion protection and no managed secret (it uses the original password). **Point-in-time restore** to a moment before my insert took about **10 minutes** and also gave **3 guests**.
+> - **Deletion protection** refused `delete-db-instance` exactly as written; deleting needs it switched off first. Deleting an RDS instance took several minutes.
+> - **Multi-AZ:** the first conversion attempts failed with `InsufficientDBInstanceCapacity` (no room for `db.t4g.micro` in the second zone at that time); a later try was accepted but was **still `modifying` after 27 minutes**, so **we did not see a standby or a failover**. A **read replica** of an instance that uses a managed master password was **refused** (`... where ManageMasterUserPassword is enabled is not supported`) on this engine. Test those two on your own account, with plenty of time.
+> - Not tested: MySQL, Aurora, DynamoDB, parameter groups, encryption behaviour, real costs.
+
 | | |
 |---|---|
 | **Time** | Part A 30 min, Part B 25 min, Part C 25 min, Part D 35 min |

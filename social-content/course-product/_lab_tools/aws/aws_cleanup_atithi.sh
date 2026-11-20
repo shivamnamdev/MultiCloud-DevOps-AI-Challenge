@@ -3,9 +3,9 @@
 # nothing unless you pass --yes.   ./aws_cleanup_atithi.sh          (plan only)
 #                                  ./aws_cleanup_atithi.sh --yes    (really delete)
 # PROTECTED: any IAM user, group, role or policy whose name starts with atithi-lab (your lab user, its group, its policies).
-# Handles today: EventBridge rules, S3 buckets (all versions), Lambda, alarms, SNS, SQS, log groups, CloudFront (disable, then delete on a second run), Auto Scaling groups and launch templates, load balancers (+listeners) and target groups, EC2 instances,
+# Handles today: RDS instances/snapshots/subnet groups, VPCs (peering, NAT, IGW, subnets, route tables, NACLs), EventBridge rules, S3 buckets (all versions), Lambda, alarms, SNS, SQS, log groups, CloudFront (disable, then delete on a second run), Auto Scaling groups and launch templates, load balancers (+listeners) and target groups, EC2 instances,
 # Elastic IPs, EBS volumes, EBS snapshots, AMIs, key pairs, security groups, IAM users/groups/roles/instance profiles/policies atithi-*.
-# NOT handled yet (added when each session's lab has been tested): NAT gateways, RDS, VPCs. aws_leftovers.sh lists those if they exist.
+# NOT handled yet (added when each session's lab has been tested): Transit Gateway, VPN, VPC endpoints. aws_leftovers.sh lists those if they exist.
 set -u
 P="${AWS_PROFILE:-atithi-lab}"; R="${LAB_REGION:-ap-south-1}"
 export AWS_PAGER=
@@ -35,7 +35,7 @@ done
 for fn in $(a lambda list-functions --query "Functions[?starts_with(FunctionName,'atithi-')].FunctionName" --output text); do say "Lambda function $fn"; [ $YES -eq 1 ] && a lambda delete-function --function-name $fn; done
 for al in $(a cloudwatch describe-alarms --alarm-name-prefix atithi- --query 'MetricAlarms[].AlarmName' --output text); do say "alarm $al"; [ $YES -eq 1 ] && a cloudwatch delete-alarms --alarm-names $al; done
 for t in $(a sns list-topics --query "Topics[?contains(TopicArn,':atithi-')].TopicArn" --output text); do say "SNS topic $t"; [ $YES -eq 1 ] && a sns delete-topic --topic-arn $t; done
-for q in $(a sqs list-queues --queue-name-prefix atithi- --query 'QueueUrls[]' --output text); do say "SQS queue $q"; [ $YES -eq 1 ] && a sqs delete-queue --queue-url $q; done
+for q in $(a sqs list-queues --queue-name-prefix atithi- --query 'QueueUrls[]' --output text | tr '\t' '\n' | grep -v '^None$'); do say "SQS queue $q"; [ $YES -eq 1 ] && a sqs delete-queue --queue-url $q; done
 for lg in $(a logs describe-log-groups --log-group-name-prefix /atithi/ --query 'logGroups[].logGroupName' --output text) $(a logs describe-log-groups --log-group-name-prefix /aws/lambda/atithi- --query 'logGroups[].logGroupName' --output text); do say "log group $lg"; [ $YES -eq 1 ] && a logs delete-log-group --log-group-name $lg; done
 # CloudFront: only distributions whose Comment starts with "atithi". Disable first; deleting needs it to be Deployed+disabled (a few minutes): run again.
 for d in $(a cloudfront list-distributions --query "DistributionList.Items[?starts_with(Comment,'atithi')].Id" --output text 2>/dev/null | tr '\t' '\n' | grep -v '^None$'); do
@@ -46,6 +46,14 @@ for d in $(a cloudfront list-distributions --query "DistributionList.Items[?star
   else echo "CloudFront distribution $d is still updating; run again in a few minutes"; fi
 done
 for o in $(a cloudfront list-origin-access-controls --query "OriginAccessControlList.Items[?starts_with(Name,'atithi-')].Id" --output text 2>/dev/null | tr '\t' '\n' | grep -v '^None$'); do say "CloudFront origin access control $o"; [ $YES -eq 1 ] && a cloudfront delete-origin-access-control --id $o --if-match "$(a cloudfront get-origin-access-control --id $o --query ETag --output text)" 2>&1 | tail -1; done
+# --- Session 13: RDS first (it bills by the hour). Deletion protection is switched off on purpose here: it is YOUR lab database.
+for db in $(a rds describe-db-instances --query "DBInstances[?starts_with(DBInstanceIdentifier,'atithi-')].DBInstanceIdentifier" --output text); do
+  say "RDS instance $db (no final snapshot, automated backups deleted)"
+  [ $YES -eq 1 ] && { a rds modify-db-instance --db-instance-identifier $db --no-deletion-protection --apply-immediately >/dev/null 2>&1; a rds delete-db-instance --db-instance-identifier $db --skip-final-snapshot --delete-automated-backups --query 'DBInstance.DBInstanceStatus' --output text; }
+done
+[ $YES -eq 1 ] && for db in $(a rds describe-db-instances --query "DBInstances[?starts_with(DBInstanceIdentifier,'atithi-')].DBInstanceIdentifier" --output text); do echo "waiting for $db to be deleted (about 5 minutes)..."; a rds wait db-instance-deleted --db-instance-identifier $db; done
+for sn in $(a rds describe-db-snapshots --snapshot-type manual --query "DBSnapshots[?starts_with(DBSnapshotIdentifier,'atithi-')].DBSnapshotIdentifier" --output text); do say "RDS snapshot $sn"; [ $YES -eq 1 ] && a rds delete-db-snapshot --db-snapshot-identifier $sn >/dev/null; done
+for sg in $(a rds describe-db-subnet-groups --query "DBSubnetGroups[?starts_with(DBSubnetGroupName,'atithi-')].DBSubnetGroupName" --output text); do say "DB subnet group $sg"; [ $YES -eq 1 ] && a rds delete-db-subnet-group --db-subnet-group-name $sg; done
 for g in $(a autoscaling describe-auto-scaling-groups --query "AutoScalingGroups[?starts_with(AutoScalingGroupName,'atithi-')].AutoScalingGroupName" --output text); do
   say "auto scaling group $g (with its instances)"; [ $YES -eq 1 ] && a autoscaling delete-auto-scaling-group --auto-scaling-group-name $g --force-delete
 done
@@ -75,6 +83,20 @@ for pass in 1 2; do
     [ $pass -eq 1 ] && say "security group $g"
     [ $YES -eq 1 ] && a ec2 delete-security-group --group-id $g >/dev/null 2>&1
   done
+done
+# --- Session 14: campuses (VPCs tagged Project=atithi-lab, never the default VPC). Order: peering, NAT, elastic IPs, gateway, wings, boards, guards, campus.
+for v in $(a ec2 describe-vpcs --filters "$TAG" Name=is-default,Values=false --query 'Vpcs[].VpcId' --output text); do
+  say "VPC $v (peering, NAT gateways, internet gateway, subnets, route tables, NACLs, security groups, then the VPC)"
+  [ $YES -eq 1 ] && {
+    for pc in $(a ec2 describe-vpc-peering-connections --filters Name=requester-vpc-info.vpc-id,Values=$v --query 'VpcPeeringConnections[?Status.Code==`active` || Status.Code==`pending-acceptance` || Status.Code==`provisioning`].VpcPeeringConnectionId' --output text) $(a ec2 describe-vpc-peering-connections --filters Name=accepter-vpc-info.vpc-id,Values=$v --query 'VpcPeeringConnections[?Status.Code==`active` || Status.Code==`pending-acceptance` || Status.Code==`provisioning`].VpcPeeringConnectionId' --output text); do a ec2 delete-vpc-peering-connection --vpc-peering-connection-id $pc >/dev/null 2>&1; done
+    for ng in $(a ec2 describe-nat-gateways --filter Name=vpc-id,Values=$v Name=state,Values=pending,available --query 'NatGateways[].NatGatewayId' --output text); do a ec2 delete-nat-gateway --nat-gateway-id $ng >/dev/null; echo "waiting for NAT gateway $ng..."; for i in $(seq 1 40); do [ "$(a ec2 describe-nat-gateways --nat-gateway-ids $ng --query 'NatGateways[0].State' --output text)" = deleted ] && break; sleep 10; done; done
+    for al in $(a ec2 describe-addresses --filters "$TAG" --query 'Addresses[?AssociationId==null].AllocationId' --output text); do a ec2 release-address --allocation-id $al; done
+    for ig in $(a ec2 describe-internet-gateways --filters Name=attachment.vpc-id,Values=$v --query 'InternetGateways[].InternetGatewayId' --output text); do a ec2 detach-internet-gateway --internet-gateway-id $ig --vpc-id $v; a ec2 delete-internet-gateway --internet-gateway-id $ig; done
+    for sb in $(a ec2 describe-subnets --filters Name=vpc-id,Values=$v --query 'Subnets[].SubnetId' --output text); do a ec2 delete-subnet --subnet-id $sb; done
+    for rt in $(a ec2 describe-route-tables --filters Name=vpc-id,Values=$v --query 'RouteTables[?length(Associations[?Main==`true`])==`0`].RouteTableId' --output text); do a ec2 delete-route-table --route-table-id $rt; done
+    for na in $(a ec2 describe-network-acls --filters Name=vpc-id,Values=$v --query 'NetworkAcls[?IsDefault==`false`].NetworkAclId' --output text); do a ec2 delete-network-acl --network-acl-id $na; done
+    for pass in 1 2; do for sg in $(a ec2 describe-security-groups --filters Name=vpc-id,Values=$v --query 'SecurityGroups[?GroupName!=`default`].GroupId' --output text); do a ec2 delete-security-group --group-id $sg >/dev/null 2>&1; done; done
+    a ec2 delete-vpc --vpc-id $v; }
 done
 for ip in $(a iam list-instance-profiles --query "InstanceProfiles[?starts_with(InstanceProfileName,'atithi-')].InstanceProfileName" --output text); do
   say "instance profile $ip"
