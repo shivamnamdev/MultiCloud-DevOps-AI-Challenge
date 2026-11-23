@@ -14,4 +14,5 @@ jobs:
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_ARN }}
           aws-region: ap-south-1
-      - run: aws sts get-caller-identity
+      # Print only the role session id. The full output also contains the account number, and this repo's logs are public.
+      - run: aws sts get-caller-identity --query UserId --output text

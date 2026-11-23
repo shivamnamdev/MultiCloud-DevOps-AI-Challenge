@@ -44,6 +44,9 @@ show "CloudFront distributions with comment atithi*" aws --profile "$P" --region
 show "IAM roles named atithi-*" aws --profile "$P" iam list-roles --query "Roles[?starts_with(RoleName,'atithi-') && !starts_with(RoleName,'atithi-lab')].[RoleName]" --output text
 show "IAM users named atithi-* (not the lab user itself)" aws --profile "$P" iam list-users --query "Users[?starts_with(UserName,'atithi-') && !starts_with(UserName,'atithi-lab')].[UserName]" --output text
 show "IAM groups named atithi-*" aws --profile "$P" iam list-groups --query "Groups[?starts_with(GroupName,'atithi-') && !starts_with(GroupName,'atithi-lab')].[GroupName]" --output text
+for op in $(aws --profile "$P" iam list-open-id-connect-providers --query 'OpenIDConnectProviderList[].Arn' --output text 2>/dev/null); do
+  if [ "$(aws --profile "$P" iam list-open-id-connect-provider-tags --open-id-connect-provider-arn $op --query "Tags[?Key=='Project'&&Value=='atithi-lab'] | length(@)" --output text 2>/dev/null)" = "1" ]; then echo "!! IAM OIDC provider tagged atithi-lab: ${op##*/}"; total=$((total+1)); fi
+done
 show "IAM instance profiles named atithi-*" aws --profile "$P" iam list-instance-profiles --query "InstanceProfiles[?starts_with(InstanceProfileName,'atithi-')].[InstanceProfileName]" --output text
 show "IAM customer policies named atithi-*" aws --profile "$P" iam list-policies --scope Local --query "Policies[?starts_with(PolicyName,'atithi-') && !starts_with(PolicyName,'atithi-lab')].[PolicyName]" --output text
 echo "-- credits:"; aws --profile "$P" --region us-east-1 freetier get-account-plan-state --query 'accountPlanRemainingCredits.[amount,unit]' --output text 2>/dev/null | sed 's/^/     remaining: /'

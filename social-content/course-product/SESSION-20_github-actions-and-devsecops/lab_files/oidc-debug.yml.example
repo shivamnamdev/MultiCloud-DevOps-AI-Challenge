@@ -1,0 +1,20 @@
+# Put this on a branch of your repo as .github/workflows/oidc-debug.yml and push the branch.
+# It prints the CLAIMS of the identity token (not the token). Copy the real `sub` into your role's trust policy.
+name: oidc-debug
+on:
+  push:
+    branches: [oidc-debug]
+permissions:
+  id-token: write
+  contents: read
+jobs:
+  claims:
+    runs-on: ubuntu-latest
+    steps:
+      - run: |
+          TOKEN=$(curl -sH "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=sts.amazonaws.com" | python3 -c "import sys,json;print(json.load(sys.stdin)['value'])")
+          echo "$TOKEN" | cut -d. -f2 | python3 -c "
+          import sys,base64,json
+          s=sys.stdin.read().strip(); s+='='*(-len(s)%4)
+          d=json.loads(base64.urlsafe_b64decode(s))
+          print(json.dumps({k:d.get(k) for k in ('iss','aud','sub','repository','ref','event_name','environment')},indent=1))"

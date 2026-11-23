@@ -121,6 +121,11 @@ for gr in $(a iam list-groups --query "Groups[?starts_with(GroupName,'atithi-') 
     for pa in $(a iam list-attached-group-policies --group-name $gr --query 'AttachedPolicies[].PolicyArn' --output text); do a iam detach-group-policy --group-name $gr --policy-arn $pa; done
     a iam delete-group --group-name $gr; }
 done
+for op in $(a iam list-open-id-connect-providers --query 'OpenIDConnectProviderList[].Arn' --output text); do
+  if [ "$(a iam list-open-id-connect-provider-tags --open-id-connect-provider-arn $op --query "Tags[?Key=='Project'&&Value=='atithi-lab'] | length(@)" --output text 2>/dev/null)" = "1" ]; then
+    say "IAM OIDC provider ${op##*/} (tagged Project=atithi-lab)"; [ $YES -eq 1 ] && a iam delete-open-id-connect-provider --open-id-connect-provider-arn $op
+  fi
+done
 for pa in $(a iam list-policies --scope Local --query "Policies[?starts_with(PolicyName,'atithi-') && !starts_with(PolicyName,'atithi-lab')].Arn" --output text); do
   say "IAM policy $pa"
   [ $YES -eq 1 ] && { for v in $(a iam list-policy-versions --policy-arn $pa --query 'Versions[?!IsDefaultVersion].VersionId' --output text); do a iam delete-policy-version --policy-arn $pa --version-id $v; done; a iam delete-policy --policy-arn $pa; }
