@@ -1,0 +1,14 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: rooms}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: rooms}}
+  template:
+    metadata: {labels: {app: rooms}}
+    spec:
+      containers:
+      - name: rooms
+        image: nginx:1.27
+        resources:
+          limits: {memory: "256Mi", cpu: "500m"}

@@ -45,7 +45,7 @@ Virtualization ke baad ek aur idea: container. VM ek poori alag building hai, ap
 **[VISUAL: Two stacks side by side. Left: Hardware → Hypervisor → VMs (Type 1). Right: Hardware → Host OS → Hypervisor app → VMs (Type 2). Then a screen recording of VirtualBox creating a VM.]**
 
 **(Voiceover):**
-Hypervisor do tarah ke hote hain. Type-1 seedha hardware par chalta hai, jaise KVM ya VMware ESXi, aur data center mein yahi use hota hai. Type-2 aapke laptop ke OS ke upar app ki tarah chalta hai, jaise VirtualBox. Seekhne ke liye Type-2 kaafi hai. Aaj ka lab: VirtualBox install karo, ek naya VM banao, 2 GB RAM aur 20 GB disk do, aur dekho ki aapke laptop ke andar ek alag computer boot ho raha hai. Cloud mein jab aap ek server launch karte ho, peeche ye hi idea bade scale par chal raha hota hai.
+Hypervisor do tarah ke hote hain. Type-1 seedha hardware par chalta hai, jaise KVM ya VMware ESXi, aur data center mein yahi use hota hai. Type-2 aapke laptop ke OS ke upar app ki tarah chalta hai, jaise VirtualBox. Seekhne ke liye Type-2 kaafi hai. Aaj ka lab: VirtualBox install karo, ek naya VM banao, 2 GB RAM aur 20 GB disk do (Apple chip wale Mac par VirtualBox sirf ARM Linux chalata hai, to ARM wali ISO lo), aur dekho ki aapke laptop ke andar ek alag computer boot ho raha hai. Cloud mein jab aap ek server launch karte ho, peeche ye hi idea bade scale par chal raha hota hai.
 
 ### [12:30 – 14:20] Scene 6: Recap aur Bridge
 **[VISUAL: Three-line recap card: "Problem: slow, costly servers → Fix: virtualization → Next: rent them over the internet".]**
