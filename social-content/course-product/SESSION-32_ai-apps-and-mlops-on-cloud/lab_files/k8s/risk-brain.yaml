@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: risk-brain, labels: {app: risk-brain}}
+spec:
+  replicas: 2
+  selector: {matchLabels: {app: risk-brain}}
+  template:
+    metadata: {labels: {app: risk-brain}}
+    spec:
+      containers:
+        - name: risk-brain
+          image: risk-brain:v1               # a version tag, never :latest
+          imagePullPolicy: IfNotPresent
+          ports: [{containerPort: 8000}]
+          readinessProbe: {httpGet: {path: /ready, port: 8000}, initialDelaySeconds: 3, periodSeconds: 5}
+          livenessProbe: {httpGet: {path: /health, port: 8000}, initialDelaySeconds: 10, periodSeconds: 10}
+          resources:
+            requests: {cpu: 100m, memory: 256Mi}
+            limits: {cpu: 500m, memory: 512Mi}
+---
+apiVersion: v1
+kind: Service
+metadata: {name: risk-brain}
+spec:
+  selector: {app: risk-brain}
+  ports: [{port: 80, targetPort: 8000}]
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata: {name: risk-brain}
+spec:
+  scaleTargetRef: {apiVersion: apps/v1, kind: Deployment, name: risk-brain}
+  minReplicas: 2
+  maxReplicas: 4
+  metrics:
+    - type: Resource
+      resource: {name: cpu, target: {type: Utilization, averageUtilization: 50}}

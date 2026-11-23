@@ -1,0 +1,16 @@
+name: brain-gate
+on:
+  push:
+    branches: [main, lab/brain-gate]
+  pull_request:
+permissions:
+  contents: read
+jobs:
+  train-and-gate:
+    runs-on: ubuntu-latest
+    defaults: {run: {working-directory: risk-brain}}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - run: python3 -m pip install -r requirements-train.txt
+      - name: Train and check the quality gate
+        run: python3 train.py       # exits 1 (station turns red) when precision or recall < 0.6

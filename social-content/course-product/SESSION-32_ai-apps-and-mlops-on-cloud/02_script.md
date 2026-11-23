@@ -87,7 +87,7 @@ def summarize(req: Req):
         raise HTTPException(502, "unexpected reply shape")
     return {"summary": bullets}
 ```
-`real_expert.py` mein apne provider ke official SDK ka call, jisme timeout, `max_tokens`, aur retry sirf 429 aur 5xx par. Provider ke docs se model ka naam aur SDK ka tareeka dekho, kyunki wo badalta rehta hai. Tests mein sirf `FakeExpert`: ek test jisme review mein "ignore all instructions" ho, aur dekho ki jawab ka shape abhi bhi teen bullets hai. Bina asli key ke saare tests chalte hain.
+`real_expert.py` mein apne provider ke official SDK ka call, jisme timeout, `max_tokens`, aur retry sirf 429 aur 5xx par. Provider ke docs se model ka naam aur SDK ka tareeka dekho, kyunki wo badalta rehta hai. Tests mein sirf `FakeExpert`: ek test jisme review mein "ignore all instructions" ho, aur dekho ki jawab ka shape abhi bhi teen bullets hai. Bina asli key ke saare tests chalte hain. Ek dhyaan: ye `scrub` sirf bina space aur dash wale 10 ya 12 se zyada ank pakadta hai; "98765 43210", "4111-1111-1111-1111", email aur naam nahi pakadta. Isliye ise shuruaat samjho, aur sach mein guest ka data hatane ke liye behtar tareeka lagao.
 
 ### [13:55 – 14:25] Scene 6: Recap aur Bridge
 **[VISUAL: A card: "backend in the middle · timeout · retry 429/5xx with jitter · max_tokens · shared rate limit · guest text = untrusted · no personal data out · fake expert in tests".]**
@@ -127,7 +127,7 @@ Phone karne se pehle ek hisaab. Roz kitne reviews, har review ke kitne tokens, i
 **[VISUAL: `prometheus_client` counters `expert_requests_total{outcome}` and `expert_tokens_total{direction}`, a histogram for latency, and `/metrics` mounted in FastAPI. A shared limit sketched with a small Redis container. A Grafana panel and an alert rule on tokens per hour.]**
 
 **(Voiceover):**
-Lab: `review-helper` mein `prometheus_client` jodo: ek counter `expert_requests_total` jisme label `outcome` ho, jaise `ok`, `timeout` ya `bad_shape`, ek `expert_tokens_total` jisme label `direction` ho, input ya output, aur ek latency histogram. `app.mount("/metrics", make_asgi_app())`. Label mein kabhi guest ka naam ya review ki ID nahi, wahi cardinality ka sabak. Ek rate limit likho: pehle in-memory, aur phir dekho ki do copies chalane par wo kaam kyun nahi karta, aur uske baad Redis ke ek chhote container se shared counter. Session 26 ke inspector ko is service par point karo, `rate(expert_requests_total[5m])` ka graph dekho, aur ek alert rule likho jo tokens per hour ek seema se upar jaane par bajega. Poora lab `FakeExpert` par, taaki paisa na lage.
+Lab: `review-helper` mein `prometheus_client` jodo: ek counter `expert_requests_total` jisme label `outcome` ho, jaise `ok`, `timeout` ya `bad_shape`, ek `expert_tokens_total` jisme label `direction` ho, input ya output, aur ek latency histogram. `app.mount("/metrics", make_asgi_app())`; Prometheus ko `/metrics/` (aakhir mein slash) par point karo, kyunki bina slash ke FastAPI redirect karta hai. Label mein kabhi guest ka naam ya review ki ID nahi, wahi cardinality ka sabak. Ek rate limit likho: pehle in-memory, aur phir dekho ki do copies chalane par wo kaam kyun nahi karta, aur uske baad Redis ke ek chhote container se shared counter. Session 26 ke inspector ko is service par point karo, `rate(expert_requests_total[5m])` ka graph dekho, aur ek alert rule likho jo tokens per hour ek seema se upar jaane par bajega. Poora lab `FakeExpert` par, taaki paisa na lage.
 
 ### [13:25 – 14:15] Scene 6: Recap aur Bridge
 **[VISUAL: A card: "truck design with no key · sealed envelope from a secret manager · rotate and revoke · five bill guards · tokens on the wall of screens · calculate before you call".]**
@@ -191,7 +191,8 @@ p, r = precision_score(yte, pred), recall_score(yte, pred)
 joblib.dump(model, "risk.joblib")
 json.dump({"version": "v1", "precision": p, "recall": r, "sklearn": sklearn.__version__,
            "data_hash": hashlib.sha256(X.tobytes()).hexdigest()[:12],
-           "train_means": X.mean(axis=0).tolist()}, open("risk.json", "w"))
+           "train_means": X.mean(axis=0).tolist(),
+           "train_stds": X.std(axis=0).tolist()}, open("risk.json", "w"))
 print("precision", p, "recall", r)
 assert r >= 0.6 and p >= 0.6, "brain below the quality gate"
 ```
@@ -257,7 +258,7 @@ Naya brain utaarna truck badalne se thoda alag hai, kyunki code sahi ho kar bhi 
 **[VISUAL: Two histograms of `lead_days`: training (spread across 0 to 120) and this week's production (bunched near 0 to 10 after a last-minute sale). A gauge shows the mean shift in units of the training standard deviation. An alert and a retrain ticket.]**
 
 **(Voiceover):**
-Drift ka matlab: duniya badal gayi, par brain purani duniya ke hisaab se soch raha hai. Atithi ne last-minute sale chalayi, aur ab `lead_days` zyaadatar das se kam. Brain ke liye ye naya data hai. Drift pakadne ka aasaan tareeka: production ke inputs ka mean training ke mean se kitne standard deviation door hai. `risk.json` mein hamne `train_means` isiliye rakha tha. Server har feature ka chalta hua mean metric mein de, aur ek alert rule bole ki shift ek seema se upar hai. Ek aur cheez: aksar asli jawab, yaani booking cancel hui ya nahi, kuch din baad pata chalta hai. Jab pata chale, to usse brain ki accuracy dobara naapo. Drift alert ka matlab "retrain ke baare mein socho", seedha "retrain karo" nahi. Dekhna hai ki naye data par naya brain gate paar karta hai ya nahi.
+Drift ka matlab: duniya badal gayi, par brain purani duniya ke hisaab se soch raha hai. Atithi ne last-minute sale chalayi, aur ab `lead_days` zyaadatar das se kam. Brain ke liye ye naya data hai. Drift pakadne ka aasaan tareeka: production ke inputs ka mean training ke mean se kitne standard deviation door hai. `risk.json` mein hamne `train_means` aur `train_stds` isiliye rakhe the. Server har feature ka chalta hua mean metric mein de, aur ek alert rule bole ki shift ek seema se upar hai. Ek aur cheez: aksar asli jawab, yaani booking cancel hui ya nahi, kuch din baad pata chalta hai. Jab pata chale, to usse brain ki accuracy dobara naapo. Drift alert ka matlab "retrain ke baare mein socho", seedha "retrain karo" nahi. Dekhna hai ki naye data par naya brain gate paar karta hai ya nahi.
 
 ### [11:50 – 14:25] Scene 6: Lab: Truck banao, Chalao, Drift Dekho
 **[VISUAL: `docker build -t risk-brain:v1 .`, `docker run -p 8000:8000`, `curl -X POST localhost:8000/predict`, then `kind load`, `kubectl apply`, `kubectl get pods`. A load script sends normal bookings, then bookings with small `lead_days`. The drift panel crosses the alert line.]**

@@ -1,0 +1,13 @@
+groups:
+  - name: expert-cost
+    rules:
+      - alert: ExpertTokensTooHigh
+        expr: sum(increase(expert_tokens_total[1h])) > 100000
+        for: 5m
+        labels: {severity: warning}
+        annotations:
+          summary: "Tokens sent to the outside expert in the last hour are above the limit"
+      - alert: ExpertTokensTooHighDemo         # same idea with tiny numbers so the lab can fire it in seconds
+        expr: sum(increase(expert_tokens_total[1m])) > 200
+        for: 5s
+        labels: {severity: warning}

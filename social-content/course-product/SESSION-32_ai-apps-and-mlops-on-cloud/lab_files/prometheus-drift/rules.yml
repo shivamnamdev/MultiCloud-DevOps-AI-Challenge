@@ -1,0 +1,11 @@
+groups:
+  - name: brain-drift
+    rules:
+      - record: risk_feature_shift_std
+        expr: abs(risk_feature_mean - risk_feature_train_mean) / risk_feature_train_std
+      - alert: BrainInputDrift
+        expr: risk_feature_shift_std > 0.5
+        for: 10s
+        labels: {severity: warning}
+        annotations:
+          summary: "Input {{ $labels.feature }} has moved more than half a standard deviation from training. Think about retraining; do not retrain blindly."

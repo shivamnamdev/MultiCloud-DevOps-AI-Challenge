@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata: {name: hatch, namespace: atithi}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata: {name: hatch-read, namespace: atithi}
+rules:
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+  - apiGroups: [""]
+    resources: ["pods/log"]
+    verbs: ["get"]
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata: {name: hatch-read, namespace: atithi}
+subjects: [{kind: ServiceAccount, name: hatch, namespace: atithi}]
+roleRef: {apiGroup: rbac.authorization.k8s.io, kind: Role, name: hatch-read}

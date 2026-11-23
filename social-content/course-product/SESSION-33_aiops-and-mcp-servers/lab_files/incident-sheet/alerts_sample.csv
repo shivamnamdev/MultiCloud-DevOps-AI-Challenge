@@ -1,0 +1,21 @@
+id,time,service,alert,severity
+1,02:41,records-office-db,DiskUsageHigh 82% (firing since 5 days),warning
+2,02:58,records-office-db,ConnectionsHigh 190/200,warning
+3,03:02,records-office-db,QueryLatencyP95High 2.4s,warning
+4,03:03,bookings-service,Http5xxRateHigh 12%,critical
+5,03:03,bookings-service,LatencyP95High 3.1s,warning
+6,03:04,rooms-service,Http5xxRateHigh 4%,warning
+7,03:04,payments-queue,QueueLagHigh 900 msgs,warning
+8,03:05,frontend,JsErrorRateHigh 9%,warning
+9,03:05,frontend,CheckoutFailRateHigh 17%,critical
+10,03:06,bookings-service,PodRestarts 3 in 10m,warning
+11,03:06,rooms-service,LatencyP95High 1.8s,warning
+12,03:07,payments-queue,ConsumerLagGrowing,warning
+13,03:07,other-batch-node,DiskUsageHigh 78% (firing since 9 days),warning
+14,03:08,frontend,PageLoadSlow 4.2s,warning
+15,03:08,bookings-service,ReadinessProbeFailing 2 pods,warning
+16,03:09,records-office-db,CPUHigh 91%,warning
+17,03:09,load-balancer,Target5xxHigh,warning
+18,03:10,rooms-service,PodRestarts 2 in 10m,warning
+19,03:11,frontend,CheckoutFailRateHigh (repeat),critical
+20,03:11,bookings-service,Http5xxRateHigh (repeat),critical

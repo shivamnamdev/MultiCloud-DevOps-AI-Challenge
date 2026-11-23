@@ -118,7 +118,7 @@ def anomalies(values, window=30, z=3.0, need=3):
             hits.append((i, values[i]))
     return hits
 ```
-Prometheus ka URL aur ek query do, jaise `sum(rate(http_requests_total{status=~"5.."}[1m]))`, aur har series par `anomalies` chalao. Local Session 26 ki `rooms-service` par load script se jaan-boojh kar errors bhejo, aur dekho ki detector tab bolta hai. Ab restart helper:
+Prometheus ka URL aur ek query do, jaise `sum(rate(http_requests_total{status=~"5.."}[1m]))`, aur har series par `anomalies` chalao. Local Session 26 ki `rooms-service` par load script se jaan-boojh kar errors bhejo, aur dekho ki detector tab bolta hai. Do seemayein yaad rakho jo hamare test mein dikhin: jo series hamesha sifar rehti hai (koi error nahi) wo achanak badhe to detector chup rehta hai, kyunki standard deviation sifar hai; aur kuch der ke baad window naye, bure level ko hi normal maan leta hai, isliye alarm band ho jaata hai jabki error ab bhi zyada hain. Ab restart helper:
 ```python
 import argparse, subprocess, sys, time, pathlib
 ALLOWED = {("atithi", "rooms-service"), ("atithi", "bookings-service")}
@@ -146,7 +146,7 @@ if not a.approve:
 subprocess.run(cmd, check=True, timeout=30)
 LOG.open("a").write(f"{now},{a.namespace},{a.deployment},done\n")
 ```
-Chalao bina `--approve` ke: sirf plan. Allow-list ke bahar ki service do: mana. Do baar jaldi jaldi `--approve`: doosri baar mana. Ek `KILL` file banao aur dekho ki sab ruk jaata hai.
+Chalao bina `--approve` ke: sirf plan. Do kamiyan hamare test mein dikhin: `LOG` aur `KILL` relative path hain, isliye helper ko kisi aur folder se chalao to cooldown aur kill switch kaam hi nahi karte; aur log mein sirf safal restart aati hai, jabki guardrail kehta hai har koshish. Lab ki `safe_restart_v2.py` dono theek karti hai. Allow-list ke bahar ki service do: mana. Do baar jaldi jaldi `--approve`: doosri baar mana. Ek `KILL` file banao aur dekho ki sab ruk jaata hai.
 
 ### [15:05 – 15:35] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "z-score plus same-hour compare · confirm over several points · ladder: observe, suggest, approve, small auto · allow-list, dry run, rate limit, audit, kill switch, least-privilege role · summaries with evidence".]**
@@ -208,7 +208,7 @@ Soch ke dekho: duty manager chat mein poochta hai "rooms-service baar baar resta
 **[VISUAL: A Python file using the official MCP Python SDK's `FastMCP`. A `kubectl` helper using an argument list and a timeout. A name check by regex. `list_pods` with a namespace allow-list. Notes: "no shell", "errors trimmed", "descriptions short".]**
 
 **(Voiceover):**
-Official Python SDK ke saath hatch chhoti hoti hai. Ek dhyaan ki baat: version 1 mein `from mcp.server.fastmcp import FastMCP` hai, aur version 2 mein naam `MCPServer` ho gaya. Hum version 1 likhte hain, aur lab mein `pip install "mcp[cli]<2"` lagayenge. Version 2 par jaana ho to bas ek import aur ek naam badlo.
+Official Python SDK ke saath hatch chhoti hoti hai. Ek dhyaan ki baat: version 1 mein `from mcp.server.fastmcp import FastMCP` hai, aur version 2 mein naam `MCPServer` ho gaya. Hum version 1 likhte hain, aur lab mein `pip install "mcp[cli]<2"` lagayenge. Version 2 par jaana ho to import aur naam dono badlo: `from mcp.server.mcpserver import MCPServer`.
 ```python
 import json, os, re, subprocess
 from mcp.server.fastmcp import FastMCP
@@ -258,7 +258,7 @@ def get_pod_logs(namespace: str, pod: str, tail: int = 50) -> str:
     text = kubectl("logs", pod, "-n", namespace, f"--tail={tail}")
     return "UNTRUSTED LOG TEXT:\n" + SECRET.sub("[redacted]", text)[:8000]
 ```
-Prometheus tool mein URL environment variable se, tool ke argument se kabhi nahi, taaki koi hatch ko andar ke kisi aur address par na bhej sake. Query ki lambai ki seema, timeout, aur jawab ke pehle kuch hazaar akshar. "UNTRUSTED LOG TEXT" ka prefix isliye ki host ko aur model ko dikhe ki ye data hai, instruction nahi. Ye redaction poora bachaav nahi, bas ek parat hai, isliye logs mein secrets na likhne ki aadat pehle.
+Prometheus tool mein URL environment variable se, tool ke argument se kabhi nahi, taaki koi hatch ko andar ke kisi aur address par na bhej sake. Query ki lambai ki seema, timeout, aur jawab ke pehle kuch hazaar akshar. "UNTRUSTED LOG TEXT" ka prefix isliye ki host ko aur model ko dikhe ki ye data hai, instruction nahi. Ye redaction poora bachaav nahi, bas ek parat hai: hamare test mein `Authorization: Bearer ...`, AWS key ID aur URL ke andar ka password nikal gaye (lab ki `redact.py` inhe pakadti hai), isliye logs mein secrets na likhne ki aadat pehle.
 
 Teesra tool ye raha. Upar ke imports mein `urllib.error`, `urllib.parse` aur `urllib.request` jodo, aur hatch chalate waqt `PROM_URL` environment variable do:
 ```python

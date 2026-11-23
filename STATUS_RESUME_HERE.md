@@ -1,4 +1,4 @@
-# Resume here (updated 2026-11-23, after Sessions 01, 02, 16 and 16B)
+# Resume here (updated 2026-11-23, after Sessions 01, 02, 16, 16B, 32 and 33)
 
 Read this first when you continue. Details of every test are in `progress.md` and in each session's `03_lab_guide.md`.
 
@@ -10,11 +10,11 @@ Read this first when you continue. Details of every test are in `progress.md` an
 - **Azure:** not started on purpose (create the free account only shortly before Session 30).
 
 ## Done (tested on real AWS or GitHub, guides updated, committed and pushed)
-Sessions 1 and 2 (guides + lab files; no hypervisor installed, no AI product tested), 8 to 15 (AWS), 16 and 16B (Git and GitHub: guides + self-check script), 20 (GitHub Actions, OIDC to AWS: guide written), 27 and 28 (Terraform, incl. a tested `envs/dev`). Earlier sessions (3 to 7, 17 to 19, 21 to 26, 29, 31, 31B) were tested in Docker / emulators.
+Sessions 1 and 2 (guides + lab files; no hypervisor installed, no AI product tested), 8 to 15, 32 and 33 (local Docker + kind; NO real LLM call, no EKS; fake provider for SDK retries; MCP hatch tested with the SDK client) (AWS), 16 and 16B (Git and GitHub: guides + self-check script), 20 (GitHub Actions, OIDC to AWS: guide written), 27 and 28 (Terraform, incl. a tested `envs/dev`). Earlier sessions (3 to 7, 17 to 19, 21 to 26, 29, 31, 31B) were tested in Docker / emulators.
 Key corrections found by real runs are recorded inside each guide (for example, GitHub's OIDC `sub` now contains owner and repo IDs; the S20 script was fixed).
 
 ## Next steps, in order
-1. Guides for **30 (Azure)**, **32 and 33 (AI, Claude API via Console with a spend limit)**.
+1. Guide for **30 (Azure)** (create the free account only shortly before). **Optional later:** one real Claude API call for Session 32 Part F (needs the user's Console key with a spend limit; nothing real was called so far).
 2. **GCP / GKE (Session 24)**: re-login to gcloud, cluster created and deleted the same day, and a `_lab_tools/gcp` cleanup pair like the AWS one.
 3. Open idea from the user: a recorded demo using the real console (user drives the console on camera, Claude verifies by CLI in parallel; pilot: the Session 8 launch wizard).
 4. Housekeeping: AD-001 / AD-002 ad scripts still say "33 sessions / 132 episodes".
