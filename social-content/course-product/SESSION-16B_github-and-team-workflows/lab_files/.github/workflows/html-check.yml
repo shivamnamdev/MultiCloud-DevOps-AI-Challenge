@@ -1,0 +1,15 @@
+name: html-check
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  html-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Every page must have an h1
+        run: |
+          for f in *.html; do grep -q "<h1>" "$f" || { echo "missing h1 in $f"; exit 1; }; done
