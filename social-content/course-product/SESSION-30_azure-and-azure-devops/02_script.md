@@ -97,7 +97,7 @@ Session 27 mein humne kaha tha ki har landlord ke liye alag contractor, yaani pr
 Azure mein teen guardrails Atithi ke kaam ke hain. Pehla Azure Policy: ek niyam jo poore subscription par lagta hai, jaise "har resource par `owner` tag ho" ya "storage account public na ho". Niyam todne wala resource ban hi nahi paata, ya report mein laal dikhta hai. Ye wahi policy as code ka idea hai jo Session 28 mein tha. Doosra resource lock: production ke group par delete lock lagao, to galti se bhi group delete nahi hota, jab tak koi pehle lock na hataye. Teesra Cost Management: budget aur alert, aur dekho ki kharcha kis tag par ja raha hai. Ye teen ek baar lagao, aur phir naye logon ko Contributor dena bhi kam darawna lagta hai.
 
 ### [13:50 – 16:25] Scene 7: Lab: Azure CLI se Pehla Resource
-**[VISUAL: `az login`, `az account show`, `az group create --name rg-demo --location centralindia`, `az storage account create ...`, `az group list -o table`, `az role assignment list --assignee ... -o table`, `az group delete --name rg-demo --yes --no-wait`.]**
+**[VISUAL: `az login`, `az account show`, `az group create --name rg-demo --location centralindia`, `az storage account create ...`, `az group list -o table`, `az role assignment list --all --assignee-object-id ... -o table`, `az group delete --name rg-demo --yes --no-wait`.]**
 
 **(Voiceover):**
 Lab: Azure free account ya sandbox lo, aur Azure CLI install karo. Pehle `az login`, phir `az account show`, taaki dekho ki kaun sa subscription chal raha hai. Phir:
@@ -106,9 +106,9 @@ az group create --name rg-demo --location centralindia
 az storage account create --name YOUR_UNIQUE_NAME --resource-group rg-demo \
   --sku Standard_LRS --kind StorageV2 --allow-blob-public-access false
 az group list -o table
-az role assignment list --assignee YOUR_EMAIL -o table
+az role assignment list --all --assignee-object-id $(az ad signed-in-user show --query id -o tsv) -o table
 ```
-Storage account ka naam chhote akshar aur ank mein, poori duniya mein unique. `--allow-blob-public-access false` wahi Block Public Access ka idea hai jo Session 12 mein tha. Role assignments dekho. Aakhir mein `az group delete --name rg-demo --yes --no-wait`, aur portal mein confirm karo ki sab hat gaya. Ek group, ek delete.
+Storage account ka naam chhote akshar aur ank mein, poori duniya mein unique. `--allow-blob-public-access false` wahi Block Public Access ka idea hai jo Session 12 mein tha. Role assignments dekho. Email se `--assignee` personal Microsoft account par aksar fail hota hai, isliye apni object ID se dekho. Naye account par pehli baar storage banate waqt `SubscriptionNotFound` jaisa gumrah karne wala error aa sakta hai; asal wajah ye hoti hai ki `Microsoft.Storage` provider register nahi hai, to `az provider register --namespace Microsoft.Storage` chalao aur register hone do. Aakhir mein `az group delete --name rg-demo --yes --no-wait`, aur portal mein confirm karo ki sab hat gaya. Ek group, ek delete.
 
 ### [16:25 – 16:55] Scene 8: Recap aur Bridge
 **[VISUAL: A card: "tenant → subscription → resource group · naming + tags + budget · RBAC = role + scope + principal · managed identity, no secret · azurerm provider · delete the group".]**
@@ -157,7 +157,7 @@ az aks create --resource-group rg-aks --name aks-atithi --node-count 1 \
   --attach-acr YOUR_ACR_NAME --generate-ssh-keys
 az aks get-credentials --resource-group rg-aks --name aks-atithi
 ```
-Cluster banne mein kuch minute lagte hain. `kubectl get nodes` se dekho ki ek node Ready hai. Session 24 ka Deployment aur LoadBalancer Service YAML lo, image ka naam ACR ke address se badlo, `kubectl apply`, aur `kubectl get svc -w` se EXTERNAL-IP aane do. Browser ya `curl` se `/health`. Wahi YAML, naya landlord. Aakhir mein `az group delete --name rg-aks --yes --no-wait`, kyunki node aur load balancer paisa lete hain. Flags aur size ke naam badalte rehte hain, isliye `az aks create --help` se apna version dekh lo.
+Free account par `az acr build` aksar `TasksOperationsNotAllowed` deta hai, kyunki ACR Tasks band hota hai. Tab laptop par `docker build --platform linux/amd64`, phir `az acr login` aur `docker push` karo; Apple chip par `--platform` zaroori hai kyunki AKS ke node amd64 hote hain. Aur `az aks create` mein `--node-vm-size` do: free account par har size allowed nahi hota, aur error khud allowed sizes ki list dikha deta hai. Cluster banne mein kuch minute lagte hain. `kubectl get nodes` se dekho ki ek node Ready hai. Session 24 ka Deployment aur LoadBalancer Service YAML lo, image ka naam ACR ke address se badlo, `kubectl apply`, aur `kubectl get svc -w` se EXTERNAL-IP aane do. Browser ya `curl` se `/health`. Wahi YAML, naya landlord. Aakhir mein `az group delete --name rg-aks --yes --no-wait`, kyunki node aur load balancer paisa lete hain. Flags aur size ke naam badalte rehte hain, isliye `az aks create --help` se apna version dekh lo.
 
 ### [13:50 – 14:20] Scene 6: Recap aur Bridge
 **[VISUAL: A card: "VM · Scale Sets · App Service · AKS · NSG · Blob · managed databases · Key Vault · Azure Monitor · ACR + AKS = same kubectl".]**
@@ -223,7 +223,7 @@ stages:
               steps:
                 - script: echo "Deploying to dev"
 ```
-Pipeline banao aur chalao. Phir ek `prod` environment banao, uspar approval check lagao, aur ek teesra stage jodo. Dekho ki wo manjoori ka intezaar karta hai. Free tier mein parallel jobs ki seema ho sakti hai, aur nayi organization ko shuru mein request bhejni pad sakti hai, isliye settings dekh lo. Aakhir mein pipeline ko ACR par image push karne wale step se jodne ki koshish karo, jo isi session ke Episode 3 se mil jaata hai.
+Pipeline banao aur chalao. Phir ek `prod` environment banao, uspar approval check lagao, aur ek teesra stage jodo. Dekho ki wo manjoori ka intezaar karta hai. Nayi organization ko shuru mein free hosted minutes nahi milte; pipeline `No hosted parallelism has been purchased or granted` se fail hoti hai, aur request ka purana form band ho chuka hai. Tab ek self-hosted agent apne laptop par chalao, jo free aur unlimited minutes deta hai, aur YAML mein `pool: name: Default` likho. Pehli run par pipeline ko pool aur environment ki permission dene wala Permit button dabana padta hai. `prod` par approval check lagao, aur akele learner ko apna hi approval dene ke liye branch policy mein creator ka vote count hone do. Aakhir mein pipeline ko ACR par image push karne wale step se jodne ki koshish karo, jo isi session ke Episode 3 se mil jaata hai.
 
 ### [12:25 – 14:10] Scene 6: Kab Azure DevOps, Kab Baaki
 **[VISUAL: A decision table. Choose Azure DevOps: the company is on Microsoft tools, wants planning plus code plus pipelines in one place, or needs approvals and audit. Choose GitHub + Actions: open source, community, code already there. Choose Jenkins: special plugins, on-premise. A line: "same concepts".]**

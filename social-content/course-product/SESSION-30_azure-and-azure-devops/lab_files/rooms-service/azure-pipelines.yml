@@ -1,0 +1,40 @@
+# Session 30: a three-stage conveyor. Build and test, deploy to dev, deploy to prod (waits for approval).
+trigger: [ main ]
+
+pool:
+  name: Default            # self-hosted agent. With free hosted minutes, use:  vmImage: ubuntu-latest
+
+stages:
+  - stage: Build
+    jobs:
+      - job: build
+        steps:
+          - script: |
+              python3 -m venv .venv
+              .venv/bin/pip install -q -r requirements.txt
+              .venv/bin/python -m pytest -q -p no:cacheprovider
+            displayName: Test
+          - publish: $(System.DefaultWorkingDirectory)/app.py
+            artifact: app
+
+  - stage: DeployDev
+    dependsOn: Build
+    jobs:
+      - deployment: dev
+        environment: dev
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: echo "Deploying to dev"
+
+  - stage: DeployProd
+    dependsOn: DeployDev
+    jobs:
+      - deployment: prod
+        environment: prod          # an approval check on this environment makes the stage wait
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: echo "Deploying to prod"

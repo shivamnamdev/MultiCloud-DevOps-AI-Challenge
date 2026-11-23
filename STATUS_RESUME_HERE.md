@@ -1,4 +1,4 @@
-# Resume here (updated 2026-11-23, after Sessions 01, 02, 16, 16B, 32 and 33)
+# Resume here (updated 2026-11-23, after Sessions 01, 02, 16, 16B, 30, 32 and 33)
 
 Read this first when you continue. Details of every test are in `progress.md` and in each session's `03_lab_guide.md`.
 
@@ -7,14 +7,14 @@ Read this first when you continue. Details of every test are in `progress.md` an
 - **GitHub: TWO PUBLIC practice repos (atithi-booking also got a PR template, k8s/rooms.yaml and html-check from S02) are still up: https://github.com/shivamnamdev/atithi-actions-lab (S20) and https://github.com/shivamnamdev/atithi-booking (S16B, branch protection + required check `html-check`).** (Do NOT delete `shivamnamdev/Spoon-Knife`: it is the user's own old fork from 2017.)  (branch protection on `main`, secret `DEMO_TOKEN`, environment `production`). It has no real secrets and no account number in any log (we deleted the one run that exposed it). The user now has the `delete_repo` scope; ask before deleting (`gh repo delete shivamnamdev/atithi-actions-lab --yes`, same for atithi-booking).
 - **Docker Desktop was NOT running after the restart** (start it before any Docker-based lab).
 - **GCP:** project `project-bdf7ba6f-0ee2-447a-966`, trial credit ends **2027-01-20**, budget `atithi-lab-budget` (INR 1000), nothing created. Homebrew `gcloud` has no login yet: run `/opt/homebrew/bin/gcloud auth login` in the user's own Terminal.
-- **Azure:** not started on purpose (create the free account only shortly before Session 30).
+- **Azure:** account created and Session 30 tested; nothing billable is running (only the DevOps-created `VisualStudioOnline-*` group and free `NetworkWatcherRG`). **No Azure budget exists yet** (user to create one). Azure DevOps org `shivam-atithi-lab-org`, private project `atithi-booking` (repo, pipeline `rooms-service`, envs dev/prod, branch policy) are kept. The user must revoke the 7-day PAT in the portal.
 
 ## Done (tested on real AWS or GitHub, guides updated, committed and pushed)
 Sessions 1 and 2 (guides + lab files; no hypervisor installed, no AI product tested), 8 to 15, 32 and 33 (local Docker + kind; NO real LLM call, no EKS; fake provider for SDK retries; MCP hatch tested with the SDK client) (AWS), 16 and 16B (Git and GitHub: guides + self-check script), 20 (GitHub Actions, OIDC to AWS: guide written), 27 and 28 (Terraform, incl. a tested `envs/dev`). Earlier sessions (3 to 7, 17 to 19, 21 to 26, 29, 31, 31B) were tested in Docker / emulators.
 Key corrections found by real runs are recorded inside each guide (for example, GitHub's OIDC `sub` now contains owner and repo IDs; the S20 script was fixed).
 
 ## Next steps, in order
-1. Guide for **30 (Azure)** (create the free account only shortly before). **Optional later:** one real Claude API call for Session 32 Part F (needs the user's Console key with a spend limit; nothing real was called so far).
+1. **Optional later:** one real Claude API call for Session 32 Part F (needs the user's Console key with a spend limit; nothing real was called so far).
 2. **GCP / GKE (Session 24)**: re-login to gcloud, cluster created and deleted the same day, and a `_lab_tools/gcp` cleanup pair like the AWS one.
 3. Open idea from the user: a recorded demo using the real console (user drives the console on camera, Claude verifies by CLI in parallel; pilot: the Session 8 launch wizard).
 4. Housekeeping: AD-001 / AD-002 ad scripts still say "33 sessions / 132 episodes".
