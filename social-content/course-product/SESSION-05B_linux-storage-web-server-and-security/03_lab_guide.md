@@ -2,7 +2,7 @@
 
 Companion to `02_script.md`. The script teaches the ideas; this guide is the hands-on sheet you keep open next to your terminal. Every command here was run for real unless a box says otherwise, and the outputs shown are what we saw. Yours will differ in device names, UUIDs, dates and sizes.
 
-> **The most important thing to know first: SELinux was NOT tested in this guide.** The practice machine we used (a Rocky Linux container on Docker Desktop) runs on a kernel without SELinux, so `getenforce` says `Disabled` and `semanage` refuses to work. Every SELinux step in Episode 4 comes from the script and from the command sheet, not from our test. Run those steps yourself on a real Rocky or AlmaLinux VM. Part D says exactly what we could and could not check.
+> **Tested twice (2026-11-24).** First in a Rocky Linux 9 container on Docker (no SELinux there), then on a **real Rocky Linux 9.9 VM on AWS** (`t3.micro`, SELinux **Enforcing**, two extra 2 GB EBS disks, deleted the same day). The real VM covered SELinux in full, real disks, a real reboot with `/etc/fstab`, swap, LVM, firewalld and the SELinux boolean/port tools. Not covered: NAT between two machines, MBR with `gdisk`, the system disk on LVM. See "Real VM results" at the end of Part D.
 
 | | |
 |---|---|
@@ -42,7 +42,7 @@ sudo blkid
 df -h
 ```
 
-On a real VM: `sda` with the system, and `sdb`, `sdc` empty. In our container `lsblk` listed `loop0` (5G) and `loop1` (10G) among a few unrelated devices of the Docker VM. Read the names before you type any destructive command.
+On a real VM: the system disk with its partitions, and the two practice disks empty. **On AWS (Nitro instances) the disks are `nvme0n1` (system), `nvme1n1`, `nvme2n1`, not `sda`/`sdb`/`sdc`, and the order is not guaranteed: confirm by size and empty `FSTYPE` before you format.** In our container `lsblk` listed `loop0` (5G) and `loop1` (10G) among a few unrelated devices of the Docker VM. Read the names before you type any destructive command.
 
 ### A2. Partition, format, mount
 
@@ -319,9 +319,9 @@ We saw `Syntax OK` (the config is valid, just wrong), `HTTP/1.1 403 Forbidden`, 
 
 ---
 
-## Part D: SELinux (not tested) and NAT (Episode 4)
+## Part D: SELinux and NAT (Episode 4)
 
-### D1. SELinux: what we could check
+### D1. SELinux: container result, then the real VM below
 
 ```bash
 getenforce
@@ -333,6 +333,33 @@ semanage fcontext -l
 What we saw in the container: `Disabled`; `ls: cannot access '/sys/fs/selinux'`; `semanage` and `restorecon` and `getenforce` were installed, but `ausearch` was **not** (it belongs to the `audit` package, which is on a normal Rocky install but not in our minimal image); and `semanage fcontext -l` failed with `ValueError: SELinux policy is not managed or store cannot be accessed.` So **we ran none of**: `ls -Z`, `ps -eZ`, `setenforce`, the `ausearch -m AVC` denial, `semanage fcontext -a`, or `restorecon -Rv`.
 
 For you, on a real Rocky or AlmaLinux VM, the script's lab is the one to do: make `/web` and see the 403 with `Syntax OK`; read the denial with `sudo ausearch -m AVC -ts recent`; **prove** the cause with `sudo setenforce 0` (200), then `sudo setenforce 1` straight away; then fix the label (`sudo semanage fcontext -a -t httpd_sys_content_t "/web(/.*)?"`, then `sudo restorecon -Rv /web`), check with `ls -ldZ /web`, and confirm `200` with SELinux **enforcing**. Never "fix" it by setting `SELINUX=disabled`. If `semanage` is missing: `sudo dnf install -y policycoreutils-python-utils`.
+
+### D1b. Real VM results (Rocky 9.9, SELinux Enforcing; everything below was run)
+
+| Step | What we saw |
+|---|---|
+| `getenforce`, `sestatus` | `Enforcing`; `Loaded policy name: targeted` |
+| `ls -Zd /var/www/html`, `ps -eZ \| grep httpd` | `httpd_sys_content_t`; processes in `httpd_t` |
+| New `/web` + `index.html`, DocumentRoot and `<Directory>` changed | `apachectl configtest`: `Syntax OK`, then **`HTTP/1.1 403 Forbidden`**. The files are `default_t` (`ls -ldZ /web`). |
+| Apache `error_log` | **`(13)Permission denied ... because search permissions are missing on a component of the path`**. Not "denied by server configuration" (that wording means the Apache config, see C4). Plain permissions were fine (`drwxr-xr-x`), which is the clue that SELinux is the cause. |
+| `sudo ausearch -m AVC -ts recent` | `avc: denied { getattr } ... comm="httpd" path="/web/index.html" scontext=...httpd_t tcontext=...default_t tclass=file permissive=0` |
+| `sudo setenforce 0`, curl, `sudo setenforce 1` | `Permissive`, **200**; back to `Enforcing`, **403** again. This proves SELinux is the cause. |
+| `sudo semanage fcontext -a -t httpd_sys_content_t "/web(/.*)?"` then `sudo restorecon -Rv /web` | `Relabeled /web from ...default_t to ...httpd_sys_content_t` (and the file); then **200** with SELinux still `Enforcing` |
+| After a real reboot | still `Enforcing`, `/web` still `httpd_sys_content_t`, `semanage fcontext -l -C` lists the rule, site answers |
+| `semanage port -l \| grep ^http_port_t` | `tcp 80, 81, 443, 488, 8008, 8009, 8443, 9000` |
+| `sudo setsebool -P httpd_can_network_connect on`, `getsebool` | `--> on` (we turned it off again) |
+
+**Trap: `ausearch` reads standard input when it is not a terminal.** In a script piped through `ssh ... bash -s` it swallowed the rest of the script, and its first run printed `<no matches>` although the denial was there. Run scripts from a file and add `</dev/null` to `ausearch`; the same command then showed the denial.
+
+### D1c. Real VM results: storage, swap, LVM, reboot, firewalld
+
+- **GPT partition on a real disk:** `parted -s /dev/nvme1n1 mklabel gpt mkpart data xfs 1MiB 100%`, `mkfs.xfs`, mount, `fstab` line by **UUID** with `nofail`, `umount` then `mount -a` OK.
+- **Swap file:** 256 MB with `dd`, `chmod 600`, `mkswap`, `swapon`, fstab line. `free -m` showed `Swap: 255`.
+- **LVM:** `pvcreate`, `vgcreate`, `lvcreate -L 500M`, XFS. `lvextend -r -L +500M` grew the volume and the XFS file system together (`df` 436M to 936M). `lvreduce -r` on **ext4** shrank it (we asked 150M, it rounded to **152M**, the extent size). `lvreduce -L 400M` on **XFS** refused: `File system reduce is required and not supported (xfs)`.
+- **Real reboot** (`systemctl reboot`): `/data`, `/lvweb`, the swap file and the SELinux label all came back. Trap: SSH answers a few seconds **before** the mounts finish; check again after a moment before you think a mount failed.
+- **firewalld:** `running`, default zone `public`, services `cockpit dhcpv6-client ssh`. `--permanent --add-service=http` plus `--reload` listed `http`; removed again. `block` against `drop` **could not be shown** with `--add-source=127.0.0.1`: firewalld always lets loopback traffic through, so both answered 200. Use a second machine to see "rejected" against "silent".
+- Fresh image: `policycoreutils-python-utils`, `audit` and `xfsprogs` were already installed; `httpd`, `firewalld` and `lvm2` were **not** (install with `sudo dnf install -y httpd firewalld lvm2`).
+- Cost: one `t3.micro` for about 10 minutes plus two 2 GB gp3 disks. Everything was terminated and the leftover check was clean.
 
 ### D2. NAT: masquerade and port forwarding
 
@@ -399,8 +426,8 @@ Check afterwards that nothing is left in the Docker VM: `docker run --rm --privi
 
 ## What we did not test
 
-- **SELinux, all of it:** modes, labels, `ausearch`, `semanage fcontext`, `restorecon`, and the 403 caused by it.
-- **A real Rocky or AlmaLinux VM:** real disks (`/dev/sdb`), a real reboot with `/etc/fstab`, the system disk on LVM (`rl-root`), MBR against GPT with `gdisk`, `dnf install` of the packages on a fresh machine (our image installed them at build time), and NetworkManager.
-- **NAT between machines:** masquerade for a second machine, and forwarding with `toaddr`.
-- **A cloud disk:** attaching and extending an EBS volume (Session 10).
-- **Hot-adding a disk,** and growing a partition itself.
+- **NAT between machines:** masquerade for a second machine, and forwarding with `toaddr`; the `block` and `drop` zones against a real remote client.
+- **The system disk on LVM** (`rl-root`; the AWS image uses a plain XFS partition), **MBR against GPT with `gdisk`**, and **NetworkManager** (`nmcli`/`nmtui`).
+- **A deliberately wrong `/etc/fstab` line and the boot that follows** (we did not risk an unreachable instance).
+- **AlmaLinux** and **Rocky 10** (we used Rocky 9.9).
+- **Attaching and extending an EBS volume** while running (Session 10), **hot-adding a disk**, and growing a partition itself.

@@ -514,3 +514,10 @@
 
 ## 2026-11-24: Ad scripts brought in line with the 2026-11-18 counts
 - AD-001 (script, teleprompter, editing brief, metadata, gate report, findings, README): 33 / 132 / ~15 h became 35 sessions + one optional bonus (31B) / 140 episodes / ~35 h; module tour re-split 2+4+2+8+6+5+4+4 = 35 (adds 5B to Linux, 16B to Git) plus a bonus line for GitOps. Hours: scene timestamps sum to about 36.8 h for all 37 scripts. AD-002 has no counts. Still plan numbers: verify against final recordings.
+
+## 2026-11-24: Session 05B tested on a real Rocky Linux 9.9 VM (AWS t3.micro, SELinux Enforcing)
+- Launched with two extra 2 GB gp3 disks, SSH open to the user's IP only, tag Project=atithi-lab; terminated the same session (about 10 minutes); leftover check clean.
+- SELinux full lab confirmed: 403 with Syntax OK, error_log says "search permissions are missing on a component of the path" (not "denied by server configuration"), `ausearch` shows `denied { getattr }` (script said `read`, fixed), `setenforce 0` gives 200, `semanage fcontext` + `restorecon` fix with Enforcing, label survives reboot. Booleans and `semanage port` work.
+- Storage: GPT with parted, XFS, UUID fstab, swap file, LVM extend with `-r`, ext4 shrink (150M became 152M), XFS shrink refused; real reboot kept every mount. AWS disks are `nvme1n1`/`nvme2n1`, not `sdb`.
+- Traps: `ausearch` swallows stdin in piped scripts; SSH is up before mounts finish; firewalld `block`/`drop` cannot be shown on loopback.
+- Not tested: NAT between two machines, block vs drop from a remote client, MBR/gdisk, system disk on LVM, bad-fstab boot, AlmaLinux, Rocky 10.

@@ -14,6 +14,7 @@ Sessions 1 and 2 (guides + lab files; no hypervisor installed, no AI product tes
 Key corrections found by real runs are recorded inside each guide (for example, GitHub's OIDC `sub` now contains owner and repo IDs; the S20 script was fixed).
 
 ## Next steps, in order
+0. Docker-only audit (2026-11-24): done so far = Session 05B on a real Rocky VM. Remaining plan: (2) one GKE run for Sessions 23, 25, 26; (3) GitHub + AWS pass for 17, 18, 19, 22, 31; (4) recorded console demo. Groups 1 also still has Ubuntu-VM-only bits of Sessions 3, 4, 5, 6 (real boot, netplan, swap pressure, logrotate, passphrase key).
 1. **Skipped by the user's choice (2026-11-24); do it only if a demo video needs it:** one real Claude API call for Session 32 Part F (needs the user's Console key with a spend limit; nothing real was called so far).
 2. ~~GCP / GKE (Session 24)~~ done 2026-11-24 (with `_lab_tools/gcp` pair). Remaining ideas: other sessions that touch GCP, and the open recorded-demo idea below.
 3. Open idea from the user: a recorded demo using the real console (user drives the console on camera, Claude verifies by CLI in parallel; pilot: the Session 8 launch wizard).
