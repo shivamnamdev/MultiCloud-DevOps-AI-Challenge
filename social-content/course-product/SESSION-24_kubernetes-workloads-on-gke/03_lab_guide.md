@@ -360,12 +360,14 @@ gcloud auth configure-docker REGION-docker.pkg.dev
 
 Side effect to know: `configure-docker` edits `~/.docker/config.json` (adds a `credHelpers` line). Remove that line after the lab if you do not want it.
 
+**Second run (November 2026, region `asia-south1`, Mumbai, a new project):** we used a short-lived token instead, which leaves your Docker config alone: `gcloud auth print-access-token | docker login -u oauth2accesstoken --password-stdin https://asia-south1-docker.pkg.dev`, and `docker logout asia-south1-docker.pkg.dev` at the end. **That token lasts one hour.** When we came back to the lab hours later, `docker push` said `error from registry: authentication failed`: log in again first.
+
 ### D2. Push your image
 
-On an Apple Silicon Mac, build for the cloud's CPU type, as in Session 22:
+On an Apple Silicon Mac, build for the cloud's CPU type, as in Session 22. (Session 22's `lab_files/rooms-service/` has only `Dockerfile.*` variants and no plain `Dockerfile`: add `-f Dockerfile.full`, or use the file you built in that session.)
 
 ```bash
-docker build --platform linux/amd64 -t REGION-docker.pkg.dev/PROJECT_ID/atithi/rooms-service:1.0.0 .
+docker build --platform linux/amd64 -f Dockerfile.full -t REGION-docker.pkg.dev/PROJECT_ID/atithi/rooms-service:1.0.0 .
 docker push REGION-docker.pkg.dev/PROJECT_ID/atithi/rooms-service:1.0.0
 ```
 
@@ -377,7 +379,9 @@ gcloud container clusters get-credentials atithi-lab --region=REGION
 kubectl config current-context
 ```
 
-It takes about 7 to 8 minutes. A new Autopilot cluster starts with 0 nodes, and `create-auto` writes your kubeconfig entry itself. The context should be `gke_PROJECT_ID_REGION_atithi-lab`. If it is not, stop and fix that before applying anything.
+It took about 7 to 8 minutes the first time, and **4 minutes 34 seconds** in `asia-south1` the second time. A new Autopilot cluster starts with 0 nodes, and `create-auto` writes your kubeconfig entry itself. The context should be `gke_PROJECT_ID_REGION_atithi-lab`. If it is not, stop and fix that before applying anything.
+
+**Homebrew `gcloud` trap (tested):** `kubectl` needs `gke-gcloud-auth-plugin`. On a Homebrew install it was missing; `gcloud components install gke-gcloud-auth-plugin` worked, but the plugin landed in `/opt/homebrew/share/google-cloud-sdk/bin`, which is **not on your PATH**, so `kubectl` would still say the plugin is not found. Add that folder to your PATH (`export PATH=/opt/homebrew/share/google-cloud-sdk/bin:$PATH`, and put it in `~/.zshrc`).
 
 ### D4. Deploy
 
@@ -421,11 +425,11 @@ kubectl get pods
 kubectl get svc -w
 ```
 
-What we measured: pods stay `Pending` for about 2.5 minutes (Autopilot is opening a node), and `EXTERNAL-IP` appears about 3.5 minutes after the apply. Press Ctrl+C when the IP shows, then open `http://EXTERNAL-IP/` in a browser.
+What we measured the first time (`us-central1`): pods stay `Pending` for about 2.5 minutes (Autopilot is opening a node), and `EXTERNAL-IP` appears about 3.5 minutes after the apply. Press Ctrl+C when the IP shows, then open `http://EXTERNAL-IP/` in a browser. In the second run `curl http://EXTERNAL-IP/` returned `Atithi rooms-service` and `/health` returned `ok`, both with status 200.
 
 ### Deliberate break you should expect: `ImagePullBackOff` with `403 Forbidden`
 
-In a new project the nodes' default service account has no roles, so the first image pull can fail:
+In a new project the nodes' default service account has no roles, so the first image pull can fail. In our second run both pods sat in `ImagePullBackOff` until we applied the fix below (we came back to them hours later, so the exact `403` text had already left the event list; the first run recorded it):
 
 ```bash
 kubectl get pods
@@ -441,9 +445,13 @@ gcloud artifacts repositories add-iam-policy-binding atithi --location=REGION \
 kubectl rollout restart deploy/rooms
 ```
 
+Both pods were `Running` about 45 seconds after the grant and restart. (`PROJECT_NUMBER` is `gcloud projects describe PROJECT_ID --format="value(projectNumber)"`.)
+
 ### D5. Roll out, roll back, then scale
 
 Rolling update and rollback work exactly as in Part B (build and push a `1.0.1` tag, then `kubectl set image deploy/rooms rooms=REGION-docker.pkg.dev/PROJECT_ID/atithi/rooms-service:1.0.1`, then `kubectl rollout undo deploy/rooms`).
+
+**A real bad release (second run, by accident):** our push of `1.0.1` failed (the token had expired), but we ran `kubectl set image` anyway. The rollout stalled with `1 out of 2 new replicas have been updated`, the old pod kept serving, and `kubectl rollout status --timeout=240s` ended with `error: timed out waiting for the condition`. `kubectl rollout undo deploy/rooms` fixed it, and the Deployment's image was back to `1.0.0`. This is exactly the Part B lesson on a real cluster.
 
 Now autoscale. Metrics server is already installed on Autopilot, so `kubectl top pods` works with no setup:
 
@@ -475,7 +483,7 @@ kubectl apply -f loadgen.yaml
 kubectl get hpa -w
 ```
 
-What we saw: CPU at 121 percent, then replicas went from 2 to 5 in about 40 seconds. After stopping the load (`kubectl delete pod loadgen`), the replicas came back down slowly: 5 to 3 after about 9 minutes and 3 to 2 after about 13. Scale-down is slow on purpose, so a brief dip in traffic does not make Kubernetes throw capacity away. You do not need to wait for it. Go straight to the cleanup.
+What we saw the first time: CPU at 121 percent, then replicas went from 2 to 5 in about 40 seconds. **How hard you push decides the numbers.** In the second run one load pod gave only `cpu: 31%/50%` and the replicas stayed at 2. With three load pods the HPA showed `57%/50%` and the Event `SuccessfulRescale ... New size: 3; reason: cpu resource utilization (percentage of request) above target`. If your HPA does not move, add more load pods (`loadgen2`, `loadgen3`). After stopping the load (`kubectl delete pod loadgen`), the replicas came back down slowly: 5 to 3 after about 9 minutes and 3 to 2 after about 13. Scale-down is slow on purpose, so a brief dip in traffic does not make Kubernetes throw capacity away. You do not need to wait for it. Go straight to the cleanup.
 
 ### Cleanup (do not skip)
 
@@ -485,7 +493,7 @@ gcloud container clusters delete atithi-lab --region=REGION
 gcloud artifacts repositories delete atithi --location=REGION
 ```
 
-Deleting the cluster takes about 5 to 6 minutes. Then check that nothing is left that could bill you:
+Deleting the cluster took about 5 to 6 minutes (6 minutes 16 seconds in the second run). Then check that nothing is left that could bill you:
 
 ```bash
 gcloud compute forwarding-rules list
@@ -497,7 +505,9 @@ gcloud compute instances list
 gcloud artifacts repositories list
 ```
 
-Every list should be empty (or contain only things that were there before the lab). Also remove local copies of the image if you want the space back (`docker image rm ...`).
+Every list should be empty (or contain only things that were there before the lab). **Tooling:** `_lab_tools/gcp/gcp_leftovers.sh` runs all of these checks (read-only), and `_lab_tools/gcp/gcp_cleanup_atithi.sh` plans, and with `--yes` deletes, clusters, Artifact Registry repos, Cloud Run services and buckets whose names start with `atithi`.
+
+**Do not leave the cluster over lunch.** In our second run the session paused after the deploy and the cluster and load balancer stayed up for about 10 hours before we deleted them. The cost was small, but it is billed all the time. Also remove local copies of the image if you want the space back (`docker image rm ...`).
 
 ### Check yourself
 
@@ -525,9 +535,10 @@ Every list should be empty (or contain only things that were there before the la
 | `logs --previous` says `unable to retrieve container logs` | kind quirk | Use plain `kubectl logs` |
 | Pod stays `Pending` on GKE for a few minutes | Autopilot is creating a node | Wait up to about 3 minutes, then `kubectl describe pod` |
 | `ImagePullBackOff` and `403` on GKE | Nodes cannot read Artifact Registry | The `add-iam-policy-binding` command in D4 |
-| `gke-gcloud-auth-plugin` not found | Auth plugin missing | `gcloud components install gke-gcloud-auth-plugin` |
+| `gke-gcloud-auth-plugin` not found | Auth plugin missing | `gcloud components install gke-gcloud-auth-plugin` | (on Homebrew also add `/opt/homebrew/share/google-cloud-sdk/bin` to PATH) |
+| `docker push` says `authentication failed` hours after login | the access token lasts 1 hour | log in to the registry again |
 | Service has `<none>` endpoints | Selector does not match labels | Compare `kubectl get svc -o yaml` with `kubectl get pods --show-labels` |
 
 ## What we did not test
 
-This guide was run on kind 0.34 (Kubernetes 1.37) with kubectl 1.36 for Parts A to C, and on a live GKE Autopilot cluster (region `us-central1`) for Part D. GKE Standard mode, other regions and the real bill amount were not tested. Check the billing page in your own project for the true cost.
+Parts A to C were run on kind 0.34 (Kubernetes 1.37) with kubectl 1.36. Part D was run twice on live GKE Autopilot: first in `us-central1`, then in November 2026 in `asia-south1` on a new project (GKE 1.36.4). **Not re-measured in the second run:** the time the pods stay `Pending`, the time to the external IP, the exact `403` text, and the HPA scale-down delay (those numbers come from the first run). Not tested: GKE Standard mode, other regions, and the real bill amount; check the billing page in your own project for the true cost.
