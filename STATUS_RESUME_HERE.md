@@ -17,7 +17,7 @@ Key corrections found by real runs are recorded inside each guide (for example, 
 1. **Skipped by the user's choice (2026-11-24); do it only if a demo video needs it:** one real Claude API call for Session 32 Part F (needs the user's Console key with a spend limit; nothing real was called so far).
 2. ~~GCP / GKE (Session 24)~~ done 2026-11-24 (with `_lab_tools/gcp` pair). Remaining ideas: other sessions that touch GCP, and the open recorded-demo idea below.
 3. Open idea from the user: a recorded demo using the real console (user drives the console on camera, Claude verifies by CLI in parallel; pilot: the Session 8 launch wizard).
-4. Housekeeping: AD-001 / AD-002 ad scripts still say "33 sessions / 132 episodes".
+4. ~~Housekeeping: ad scripts~~ done 2026-11-24: AD-001 now says 35 sessions + 1 optional bonus / 140 episodes / ~35 h (still planned figures, verify against final recordings); AD-002 has no counts.
 
 ## Rules that still apply
 Confirm before creating anything that bills; delete the same day; never print secrets; only `atithi-*` names and tag `Project=atithi-lab`; IAM names starting `atithi-lab` are protected by the cleanup script (the user's own permissions); the user's four existing S3 buckets and CloudFront distribution E2RXVOTPHG2SRH must never be touched.

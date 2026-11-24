@@ -77,7 +77,7 @@ AI autopilot है। Autopilot बहुत कुछ उड़ा लेत�
 पहले नींव। Cloud और virtualization असल में क्या हैं, DevOps सच में क्या है, और AI को co-programmer की तरह कैसे इस्तेमाल करना है: उसकी हर बात पर आँख बंद करके नहीं, जाँचकर।
 
 
-**BLOCK 2: Linux, Sessions 3–5**
+**BLOCK 2: Linux, Sessions 3–5 and 5B**
 
 क्योंकि production का हर server Linux पर बैठता है। Filesystem और shell से शुरू, फिर users, permissions और SSH keys, फिर storage, web server और security, और फिर वो सेशन जहाँ server बीमार पड़ता है और तुम उसे ठीक करना सीखते हो: services, networking, health-check script।
 
