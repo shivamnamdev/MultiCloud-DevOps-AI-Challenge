@@ -535,7 +535,7 @@ Every list should be empty (or contain only things that were there before the la
 | `logs --previous` says `unable to retrieve container logs` | kind quirk | Use plain `kubectl logs` |
 | Pod stays `Pending` on GKE for a few minutes | Autopilot is creating a node | Wait up to about 3 minutes, then `kubectl describe pod` |
 | `ImagePullBackOff` and `403` on GKE | Nodes cannot read Artifact Registry | The `add-iam-policy-binding` command in D4 |
-| `gke-gcloud-auth-plugin` not found | Auth plugin missing | `gcloud components install gke-gcloud-auth-plugin` | (on Homebrew also add `/opt/homebrew/share/google-cloud-sdk/bin` to PATH) |
+| `gke-gcloud-auth-plugin` not found | Auth plugin missing | `gcloud components install gke-gcloud-auth-plugin`; on Homebrew also add `/opt/homebrew/share/google-cloud-sdk/bin` to PATH |
 | `docker push` says `authentication failed` hours after login | the access token lasts 1 hour | log in to the registry again |
 | Service has `<none>` endpoints | Selector does not match labels | Compare `kubectl get svc -o yaml` with `kubectl get pods --show-labels` |
 
