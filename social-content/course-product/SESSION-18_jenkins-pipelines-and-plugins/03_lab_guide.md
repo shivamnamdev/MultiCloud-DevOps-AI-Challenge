@@ -164,7 +164,7 @@ Expected within seconds: a new build of `bell`, and the first line of its log sa
 
 ### B3. The real webhook (GitHub)
 
-To do the GitHub version (untested here): install the **GitHub** plugin, tick **GitHub hook trigger for GITScm polling** in the job, and in the GitHub repository add a webhook with payload URL `http://YOUR_JENKINS:8080/github-webhook/`, content type `application/json`, event "Just the push event". Then a push starts a build whose log begins `Started by GitHub push by ...`. If it does not fire, check in this order (Session 14): the webhook's **Recent Deliveries** response code in GitHub, then your security group or firewall (GitHub publishes the address ranges it uses; do not simply open the port to the whole world), then the trailing slash in the URL, then the plugin. When you finish, delete the webhook and close the firewall rule.
+**Tested for real on 2026-11-24** (results right below this paragraph). To do the GitHub version: install the **GitHub** plugin (it is **not** in this session's `plugins.txt`; add `github` to it, we used `github 1.47.0`), tick **GitHub hook trigger for GITScm polling** in the job, and in the GitHub repository add a webhook with payload URL `http://YOUR_JENKINS:8080/github-webhook/`, content type `application/json`, event "Just the push event". Then a push starts a build whose log begins `Started by GitHub push by ...`. If it does not fire, check in this order (Session 14): the webhook's **Recent Deliveries** response code in GitHub, then your security group or firewall (GitHub publishes the address ranges it uses; do not simply open the port to the whole world), then the trailing slash in the URL, then the plugin. When you finish, delete the webhook and close the firewall rule.
 
 ### Check yourself
 
@@ -220,7 +220,7 @@ FIXED alerts #7 http://localhost:8080/job/alerts/7/
 
 ### Deliberate break: no permission
 
-On real AWS, give the Jenkins server a duty badge (a role) that allows only `sns:Publish` on the one topic, and try publishing to a different topic. Expected: an `AuthorizationError` / `AccessDenied` in the build log. That is least privilege (Session 9). We did not run this on real AWS.
+On real AWS, give the Jenkins server a duty badge (a role) that allows only `sns:Publish` on the one topic, and try publishing to a different topic. Expected: an `AuthorizationError` / `AccessDenied` in the build log. That is least privilege (Session 9). **Tested on real AWS (2026-11-24):** with a role that allowed `sns:Publish` on one topic, publishing there returned a MessageId; publishing to another topic gave `AuthorizationError ... is not authorized to perform: SNS:Publish on resource ... because no identity-based policy allows the SNS:Publish action`; `sns:CreateTopic` gave the same error. (S3 says `AccessDenied` instead; SNS says `AuthorizationError`.)
 
 ### Optional: SonarQube and the plugin habit
 
@@ -329,6 +329,17 @@ Set it back to a real tag.
 | `No version vX found for library` | The tag does not exist | `git tag` in the library repo; push the tag |
 | `Library ci-lib is not defined` | Library not configured in Jenkins | Add it in Manage Jenkins, System, Global Pipeline Libraries |
 
+## Real webhook results (GitHub to a Jenkins on your laptop, 2026-11-24)
+
+Setup we used, and a safe way to do it. A temporary **public** repository, the practice Jenkins with the **GitHub** plugin added, a freestyle job with **GitHub hook trigger for GITScm polling** (`com.cloudbees.jenkins.GitHubPushTrigger`) cloning the repository over HTTPS, and a free **Cloudflare quick tunnel** for the public address.
+
+- **Do not put the whole Jenkins on the tunnel.** Anyone who can reach the login page can try passwords. We put a tiny nginx in front that forwards only `POST /github-webhook/` and answers `404` to everything else (`GET /` and `/login` gave `404`, `POST /script` gave `404`, a `GET` of the webhook path gave `403`), kept Jenkins itself on `127.0.0.1`, and used a random admin password. The tunnel and the repository were removed afterwards (the public address then answered `530`).
+- **The ping:** adding the webhook sent a `ping`; GitHub's Recent Deliveries showed `200`.
+- **A push starts a build by itself:** from the `git push` to build #1 starting took **about 11 seconds**. The build page said `Started by GitHub push by <your login>` (cause class `GitHubPushCause`), the log began with `Cloning the remote Git repository` and checked out the pushed commit. A second push, and the merge of a pull request later, rang the bell again: **six push deliveries, all `200`, three builds.**
+- **Trap:** without the **GitHub** plugin the path `/github-webhook/` does not exist (Session 17's plugin list only has Git). The `Git` plugin's own bell is `/git/notifyCommit` (Part B2).
+- A Jenkins API call that creates a job needs the **crumb from the same session cookie** (`curl -c cookiejar` then `-b cookiejar`), or you get `403`.
+- **Not run:** Jenkins sending the build status back to GitHub (needs the `github-branch-source` style credentials and `githubNotify`), a webhook **secret**, a private repository.
+
 ## What we did not test
 
-Everything ran on Jenkins 2.580.2 LTS in Docker with a local AWS emulator. The jobs were created through the Jenkins command line with the settings the browser forms would save; we did not click through the web pages, and the approval was done with the same URL the button uses. We did not run: a GitHub webhook and the GitHub plugin, the `notifyCommit` access-token configuration page, real AWS and its permissions (including an `AccessDenied` case), SonarQube and `waitForQualityGate`, Slack or email plugins, and the Stage View colours.
+Everything ran on Jenkins 2.580.2 LTS in Docker with a local AWS emulator. The jobs were created through the Jenkins command line with the settings the browser forms would save; we did not click through the web pages, and the approval was done with the same URL the button uses. We did not run: the `notifyCommit` access-token configuration page, real AWS apart from SNS publishing with a role (tested), SonarQube and `waitForQualityGate`, Slack or email plugins, and the Stage View colours.

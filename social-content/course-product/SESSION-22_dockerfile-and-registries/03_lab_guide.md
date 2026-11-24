@@ -444,17 +444,24 @@ By the same documentation, a push of the Git tag `v1.0.0` should give the image 
 
 Things to check on the real run: the package appears under the repository's **Packages**; it may be private at first; the `GITHUB_TOKEN` needs `packages: write` (already in the file); and the same design appears under both labels.
 
-### D5. Not tested: ECR, lifecycle rules, scan on push
 
-The script also covers AWS ECR (login with a role, tag immutability, a lifecycle rule such as "keep the last 20 tagged editions, delete untagged after 7 days") and registry-side scanning. We did **not** run any of it, because it needs a real AWS account. The ECR login command in the script (`aws ecr get-login-password | docker login --username AWS --password-stdin ...`) is the standard documented one, unrun by us. When you try it, check the lifecycle rule in a test repository first, and never let a rule delete the edition that is running in production.
+### D5. ECR: immutable tags, lifecycle rule, scan on push (tested on real AWS, 2026-11-24)
 
-**Check yourself:**
+Run with the CLI login (not a role). The repository was created, used and deleted the same day; cost: cents.
 
-- [ ] You pushed one design under two labels and saw the same digest.
-- [ ] You saw a tag move and an old digest stay put.
-- [ ] You can explain why the workflow sets `tags:` and `flavor: latest=false`.
+```bash
+aws ecr create-repository --repository-name atithi-rooms --image-tag-mutability IMMUTABLE \
+  --image-scanning-configuration scanOnPush=true --tags Key=Project,Value=atithi-lab
+aws ecr put-lifecycle-policy --repository-name atithi-rooms --lifecycle-policy-text file://lifecycle.json
+aws ecr get-login-password | docker login --username AWS --password-stdin ACCOUNT.dkr.ecr.REGION.amazonaws.com
+docker buildx build --provenance=false --sbom=false -t ACCOUNT.dkr.ecr.REGION.amazonaws.com/atithi-rooms:1.0.0 --push .
+```
 
----
+- **Immutability works.** Pushing **different content** under the same tag was refused: `error from registry: The image tag '1.0.0' already exists in the 'atithi-rooms' repository and cannot be overwritten because the tag is immutable.` A new tag (`1.0.1`) went in. This is the safe answer to the "same tag, new content" problem of Part D4.
+- **Lifecycle rule accepted** (rule 1: `untagged`, `sinceImagePushed`, 7 days, expire; rule 2: `tagged`, `tagPrefixList`, `imageCountMoreThan` 20, expire). `start-lifecycle-policy-preview` finished `COMPLETE` with `expiringImageTotalCount: 0` (nothing was old enough). The policy takes effect over days; we did not wait.
+- **Trap: scan on push did nothing with Docker's default build.** Docker 29 (BuildKit) pushes an **OCI index** that carries provenance attestations. `describe-image-scan-findings` said `ScanNotFoundException`, and `start-image-scan` said `UnsupportedImageTypeException: ... application/vnd.oci.image.index.v1+json cannot be scanned`. Each push also left **two untagged child manifests** in the repository (`imageTags: None`), which is what the "untagged older than 7 days" rule exists to clean up. **Fix:** build with `--provenance=false --sbom=false` so the tag points to a plain image manifest. Then the scan ran by itself: `COMPLETE`, **12 HIGH, 15 MEDIUM, 3 LOW** for our `python` based image.
+- Login: `Login Succeeded`; the token lasts 12 hours. Log out and delete the repository when you are done: `aws ecr delete-repository --repository-name atithi-rooms --force`.
+- Still **not run:** login with an IAM role (instead of the user), image signing, and a deploy gate. **GHCR** was not run either: it needs a token with the `write:packages` scope, and our `gh` login did not have it.
 
 ## Clean up
 

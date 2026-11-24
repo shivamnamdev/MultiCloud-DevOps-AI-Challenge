@@ -211,7 +211,7 @@ Error response from daemon: login attempt to http://registry:5000/v2/ failed wit
 
 Fix the credential and **Build Now**: Push succeeds and the depot lists a second tag, the new commit id. Note a small oddity in the log: Jenkins masks the username too, so `registry:5000/atithi/rooms-service` appears as `registry:5000/****/rooms-service`. Anything that equals a credential value is hidden, including common words used as usernames.
 
-### The bell and the required check (GitHub only, not tested)
+### The bell and the required check (GitHub; tested on a temporary public repository, 2026-11-24)
 
 Add the webhook (`/github-webhook/`, Session 18), and then in branch protection mark the Jenkins check as **required**. A pull request now needs the review and a green conveyor. Keep the fork trust setting at the strict choice (Session 19).
 
@@ -380,6 +380,17 @@ The script describes staging first, a smoke test, an `input` approval with a tim
 | The site is down after a deploy | No previous truck to roll back to (first deploy) | Fix and redeploy; keep the previous tag available |
 | Jenkins hides part of a log line as `****` | The text equals a credential value | Expected; use a unique username |
 
+## Real GitHub results (temporary public repository, deleted afterwards)
+
+- **The bell:** `/github-webhook/` works once the GitHub plugin is installed; a push started the build in about 11 seconds (details in the Session 18 guide, "Real webhook results").
+- **CODEOWNERS + branch protection** (`require_code_owner_reviews: true`, 1 approving review, required status check `jenkins/hook-build`, `strict: true`, `enforce_admins: false`): a pull request showed `mergeStateStatus BLOCKED`, `reviewDecision REVIEW_REQUIRED`.
+  - **Approving your own pull request is refused:** `Review Can not approve your own pull request`. A one-person team therefore cannot get past a required review; use a second account, or the admin override.
+  - `gh pr merge` without override: `the base branch policy prohibits the merge`.
+  - A passing status named exactly like the required check (we posted it through the API as stand-in for Jenkins) turned the check green, but the PR stayed `BLOCKED` until the review rule was met. Both rules apply at once.
+  - **Admin override:** `gh pr merge --admin` merged it (the owner is allowed because `enforce_admins` was `false`). With the same setting, an owner can even **push straight to `main`**; GitHub only prints `Required status check ... is expected` and lets it through. Turn on **Do not allow bypassing** (`enforce_admins: true`) for a real protection.
+- The check name must match **exactly** what Jenkins reports (`jenkins/hook-build` here). A wrong name leaves the PR waiting forever.
+- **Not run:** Jenkins posting the real status back, fork pull requests and fork trust, GHCR (the `gh` token lacked `write:packages`).
+
 ## What we did not test
 
-Part B and the whole conveyor ran in the Docker practice stack (Jenkins 2.580.2 LTS, a private registry with a password instead of GHCR, a Docker-in-Docker build machine and app building). The jobs and credentials were created through the Jenkins command line with the settings the browser forms would save; we did not click through the web pages. We did not run: GitHub itself (branch protection, `CODEOWNERS`, pull-request reviews, the `/github-webhook/` bell, required checks, fork trust), GHCR and its tokens, real cloud buildings and security groups, the staging, smoke test and approval stages, Prometheus and Grafana on the deployed app, rolling or blue-green deploys, or HTTPS. The practice app building runs its Docker engine inside a container, which is not how a real server works.
+Part B and the whole conveyor ran in the Docker practice stack (Jenkins 2.580.2 LTS, a private registry with a password instead of GHCR, a Docker-in-Docker build machine and app building). The jobs and credentials were created through the Jenkins command line with the settings the browser forms would save; we did not click through the web pages. We did not run: GitHub's fork trust and Jenkins posting the real status (branch protection, `CODEOWNERS`, reviews, the bell and a required check were tested on a temporary repo), GHCR and its tokens, real cloud buildings and security groups, the staging, smoke test and approval stages, Prometheus and Grafana on the deployed app, rolling or blue-green deploys, or HTTPS. The practice app building runs its Docker engine inside a container, which is not how a real server works.
