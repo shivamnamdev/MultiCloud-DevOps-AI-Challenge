@@ -283,13 +283,13 @@ kubectl apply -f kubernetes-manifests.yaml
 - **On-call rotation** for production incidents
 - Document runbooks for L1 support team
 
-**Resume framing:** Internal e-commerce / corporate gifting portal at your company, 7–10 microservices (user mgmt, product catalog, cart, order mgmt, payment, recommendation, notification), running on Kubernetes, managed as DevOps engineer.
+**Resume framing (honest version):** Present this as what it is: a **hands-on GKE microservices project from this course** (Google's Online Boutique, deployed by you on your own GKE cluster, with your own notes and a GitHub fork). If you have done similar work at your own company, describe **only that real work**, in your own words. Do not attach this project to a company, client or product you did not work on, and do not claim production support or on-call duty you did not have.
 
-**Sample resume bullets:**
-- Deployed and managed 10+ polyglot microservices (Go, Java, Python, Node.js, C#) on GKE using declarative Kubernetes manifests with gRPC-based inter-service communication.
-- Improved availability by configuring multi-replica Deployments, readiness/liveness probes and resource requests/limits, reducing single-pod-failure downtime to near zero.
-- Automated application deployment via Jenkins pipeline (`kubectl apply`) with full audit trail; provisioned GKE infrastructure using Terraform.
-- Troubleshot production issues (CrashLoopBackOff, ImagePullBackOff, Pending pods, service endpoint failures) using kubectl logs/describe/events and Cloud Logging.
+**Sample resume bullets (keep only the ones that are true for what you did):**
+- Deployed Google's Online Boutique (11 microservices in Go, Java, Python, Node.js and C#, gRPC between services) on a GKE cluster using a single declarative Kubernetes manifest.
+- Explored self-healing and fault isolation: deleted pods and Deployments, observed ReplicaSet recovery, scaled replicas, and verified Service endpoints.
+- Practised troubleshooting with `kubectl describe`, `logs --previous`, events and `get endpoints` for CrashLoopBackOff, ImagePullBackOff, Pending pods and Service/selector mismatches.
+- *(Only if you really built it)* Automated the deploy step with a Jenkins pipeline (`kubectl apply`, `rollout status`), and provisioned the cluster with Terraform.
 
 ---
 
@@ -348,7 +348,7 @@ pipeline {
 ## Action Items
 
 - **All students**: Practice full flow — clone, `cd release/`, `kubectl apply -f kubernetes-manifests.yaml`, verify pods & services.
-- **All students**: Add project to resume with company framing; prepare talking points.
+- **All students**: Add the project to your resume honestly, as a hands-on training project with the link to your own GitHub fork and notes; prepare talking points about what *you* did.
 - **All students**: Increase replicas for frontend & observe zero-downtime behavior.
 - **Vikas**: Share practical example of label/selector integration visually.
 - **Vikas**: Add special notes doc for this project in course notes / GitHub challenge repo.
@@ -504,39 +504,27 @@ kubectl get events --sort-by=.lastTimestamp
 
 # 🎤 How to Speak About This Project in an Interview
 
-This project works well in a DevOps/Kubernetes interview because it covers the full application delivery lifecycle:
+This project works well in a DevOps/Kubernetes interview because it covers microservices, containers and day-to-day Kubernetes operations:
 
-**Microservices → Git → Jenkins → Docker → Kubernetes → Deployment → Production Support**
+**Microservices → Docker → Kubernetes → Deployment → Troubleshooting** (Git and Jenkins CI/CD join in Project 3)
 
 > 💡 **Golden rule:** Don't just read out the responsibilities from your resume. Explain the project as a **real-world problem that you solved**.
 
-Below is an interview-ready explanation that a DevOps Engineer with 3–5+ years of experience can use.
-
----
+Below is an interview-ready explanation for a **training / personal project**. If you have real work experience on a similar system, use *that* instead and describe only what you actually did.
 
 ## 1. How to Introduce the Project
 
-**Interviewer:** *"Explain your JioMart project and your roles and responsibilities."*
+**Interviewer:** *"Tell me about a Kubernetes project you have worked on."*
 
-### ✅ Interview-ready answer
+### ✅ Interview-ready answer (training project)
 
-> "In my previous project, I worked on an E-Commerce online shopping application for JioMart. Our main job was to build and deploy a microservices-based application on Kubernetes.
+> "During my DevOps training I built a hands-on project on Google Kubernetes Engine. I deployed Google's open-source Online Boutique application, an e-commerce demo made of 11 microservices written in Go, Java, Python, Node.js and C#, which talk to each other over gRPC.
 >
-> The application supported online grocery shopping. Functions like user management, product catalog, shopping cart, order management and payment processing were built as independent microservices.
+> I created a GKE cluster, deployed everything from one Kubernetes manifest, and exposed only the frontend through a LoadBalancer while all other services stayed on ClusterIP. I then tested how it behaves when things fail: I deleted the payment pod and watched the ReplicaSet recreate it, deleted the whole Deployment and saw that the Service stayed but had no endpoints, and then restored it with `kubectl apply`.
 >
-> My role was mainly DevOps Engineer and Kubernetes Administrator.
->
-> I set up the CI/CD pipeline using Jenkins, containerized the application services using Docker, and deployed those services on Kubernetes.
->
-> We used Git for source code management, and developers pushed their code changes there. Jenkins was integrated with the Git repository to automate the build and deployment process.
->
-> During CI, Jenkins pulled the latest source code, built the application, created Docker images using Dockerfiles and pushed those images to a container registry.
->
-> For CD, we used Kubernetes Deployment and Service manifests to deploy the microservices into the Kubernetes cluster.
->
-> I also configured Jenkins jobs, managed Kubernetes deployments, troubleshot deployment issues, maintained documentation and gave knowledge transfer to the QA team.
->
-> Apart from that, I was part of production support and on-call rotations, troubleshooting production incidents to keep the application available."
+> From that I learned why a single replica causes downtime, how labels and selectors connect Services to pods, how to read `describe`, `logs --previous` and events when a pod fails, and why I would use Helm or Kustomize, GitOps and HPA in a real environment. I deleted the cluster afterwards to avoid cost. My notes and manifests are in my GitHub repository."
+
+> **If you have real experience on a similar system,** replace the story above with your own: the real company type, your real role, the real tools, and one real incident. Never borrow another company's name or someone else's project.
 
 ---
 
@@ -573,6 +561,8 @@ This is probably the **most important part**. If you explain the architecture pr
 ---
 
 ## 3. Explain Your CI/CD Pipeline Practically
+
+> ⚠️ In this course the Online Boutique lab uses `kubectl apply` by hand; the Jenkins pipeline comes in Project 3. Describe a CI/CD pipeline as *yours* only if you actually built one. Otherwise say what you understand and what you practised.
 
 **Interviewer:** *"Can you explain how you implemented CI/CD using Jenkins?"*
 
@@ -705,7 +695,7 @@ kubectl rollout undo deployment/product-service
 
 ## 7. Jenkins Pipeline Example You Should Understand
 
-Use this simplified example to explain your CI/CD implementation:
+Use this simplified example to explain how a CI/CD pipeline works (describe it as your own implementation only if you really built it):
 
 ```groovy
 pipeline {
