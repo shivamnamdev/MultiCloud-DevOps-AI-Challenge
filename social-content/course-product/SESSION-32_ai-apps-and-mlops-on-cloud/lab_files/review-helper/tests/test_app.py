@@ -59,3 +59,12 @@ def test_rate_limit_in_memory(monkeypatch):
     monkeypatch.setattr(appmod, "LIMIT", 3)
     codes = [client.post("/summarize", json={"reviews": ["x"]}, headers={"x-client-id": "rl-test"}).status_code for _ in range(5)]
     assert codes == [200, 200, 200, 429, 429]
+
+
+def test_expert_failure_gives_clean_503_and_counts_it(monkeypatch):
+    class Broken:
+        def summarize(self, prompt):
+            raise appmod.ExpertUnavailable("BadRequestError")
+    monkeypatch.setattr(appmod, "get_expert", lambda: Broken())
+    r = client.post("/summarize", json={"reviews": ["nice"]})
+    assert r.status_code == 503 and "not available" in r.json()["detail"]

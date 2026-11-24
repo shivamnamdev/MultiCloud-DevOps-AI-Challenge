@@ -293,6 +293,12 @@ Do these **before** the first real request:
 5. Now run a small **golden set** of 10 reviews, including two injection attempts, and check each reply still has three bullets. That is the test the fake cannot do.
 6. When done, **revoke the key** in the console.
 
+**What a real first call taught us (November 2026, tested):**
+- **A Claude.ai or Claude Code subscription is not API credit.** We signed in with `ant auth login` (the SDK reads that profile by itself, no key needed), and the very first request came back `400 invalid_request_error: Your credit balance is too low to access the Anthropic API`. API usage needs prepaid credit in the Console under Plans and Billing. Rejected requests are not billed.
+- **That error exposed a real bug in the first version of the service:** only the timeout was caught, so any other provider error (400 credit, 401 key, 403, 429 after the SDK's retries, 5xx) crashed the request with a stack trace. The code now turns every provider failure into `ExpertUnavailable`, which the service answers with a clean `503` and counts as `outcome="unavailable"`. The log line has only the error type, status and request ID, never a key. `tests/test_app.py` now has 9 tests.
+- **The login profile is a secret.** `~/.config/anthropic/credentials/default.json` holds live tokens. Never `cat` it into a chat or a screenshot; if you do, log out (`ant auth logout`) and log in again.
+- **Spend limits cannot be set by the SDK login.** The monthly limit is a Console setting for an organization administrator; the lab's own safety is `max_tokens=200`, the smallest model, and `golden_set.py`'s `TOKEN_CAP` (default 20000 tokens).
+
 ---
 
 ## If something goes wrong
@@ -303,6 +309,7 @@ Do these **before** the first real request:
 | `ImagePullBackOff` on `kind` | image not loaded into the cluster | `kind load docker-image NAME:TAG --name CLUSTER` |
 | 307 on `/metrics` | mount path redirect | scrape `/metrics/` |
 | Every guest request gives 500 after many 429s | `RateLimitError` not mapped | map it to 503 |
+| `400 ... credit balance is too low` on the first real call | no prepaid API credit (a subscription does not count) | add credit in the Console, Plans and Billing; the service answers 503 meanwhile |
 | Rate limit lets more through than set | in-memory limit with several copies | shared counter (Redis or gateway) |
 | `InconsistentVersionWarning` | sklearn version differs from training | pin the same version |
 | `AssertionError: brain below the quality gate` | the gate works | look at the data and the change that caused it |

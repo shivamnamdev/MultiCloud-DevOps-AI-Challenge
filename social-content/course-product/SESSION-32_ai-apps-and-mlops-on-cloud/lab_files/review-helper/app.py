@@ -16,6 +16,10 @@ class Req(BaseModel):
     reviews: list[str] = Field(min_length=1, max_length=50)
 
 
+class ExpertUnavailable(Exception):
+    """The outside expert refused or failed (billing, auth, rate limit, outage). Guests get a clean 503."""
+
+
 @dataclass
 class Reply:
     text: str
@@ -85,6 +89,9 @@ def summarize(req: Req, request: Request):
     except TimeoutError:
         REQS.labels("timeout").inc()
         raise HTTPException(504, "expert did not answer in time")
+    except ExpertUnavailable:
+        REQS.labels("unavailable").inc()
+        raise HTTPException(503, "the expert is not available right now")
     finally:
         LAT.observe(time.time() - t0)
     TOKENS.labels("input").inc(reply.input_tokens)

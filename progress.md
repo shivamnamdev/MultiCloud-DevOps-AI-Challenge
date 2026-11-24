@@ -502,3 +502,10 @@
 - New tools: `_lab_tools/gcp/gcp_leftovers.sh` (read only) and `gcp_cleanup_atithi.sh` (plan first, `--yes`; only `atithi*` names). Fixed: gcloud list calls must have stdin closed, and repository names need the JSON format to keep the full path. Delete path tested with a real `atithi-cleanup-test` repo; a decoy repo was ignored. Cluster delete path not exercised through the script (done by hand).
 - Found, not ours: a 10 GB snapshot (about 1 GiB stored) from 2026-11-02 named `vm-securehost-us-east1-c-...` from the default snapshot schedule `default-schedule-1` on a deleted VM. Left in place; user to decide.
 - Not re-measured: Pending time, time to external IP, the exact 403 text, HPA scale-down delay, real bill.
+
+## 2026-11-24: Session 32 Part F, first real call attempted (not completed: no API credit)
+- Login via `ant auth login` works with the SDK (no key needed); Models API call for `claude-haiku-5-5` OK (1M context, 128K max output).
+- First real `/summarize` call: `400 invalid_request_error: credit balance is too low` (a subscription is not API credit). Nothing billed.
+- Bug found and fixed: provider errors other than timeout crashed the request. Added `ExpertUnavailable` (app.py), mapping in `real_expert.py` (400/401/403/429/5xx/connection), a 503 response and `outcome="unavailable"` metric, plus a test (9 passed). Verified against the live API: clean 503, log line has type/status/request id only.
+- New: `lab_files/review-helper/golden_set.py` (10 cases, 2 injection canary checks, `TOKEN_CAP` stop). User chose own caps instead of a Console spend limit (the SDK login cannot set one). Pending: add API credit, then run the golden set and compare tokens with the estimate; expect Haiku 5.5's default thinking to interact with `max_tokens=200`.
+- Security: the user pasted `~/.config/anthropic/credentials/default.json` (live OAuth tokens) into chat; advised `ant auth logout` / revoke at the end.

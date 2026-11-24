@@ -1,6 +1,6 @@
 import os
 import anthropic
-from app import Reply
+from app import ExpertUnavailable, Reply
 
 
 class RealExpert:
@@ -23,5 +23,10 @@ class RealExpert:
             )
         except anthropic.APITimeoutError as e:
             raise TimeoutError(str(e)) from e
+        except (anthropic.APIStatusError, anthropic.APIConnectionError) as e:
+            # 400 (for example: credit balance too low), 401, 403, 429 after retries, 5xx after retries, no network.
+            # Log the SDK's request id, never the key; show guests nothing about the cause.
+            print(f"expert error: {type(e).__name__} status={getattr(e, 'status_code', None)} request_id={getattr(e, 'request_id', None)}")
+            raise ExpertUnavailable(type(e).__name__) from e
         text = "".join(b.text for b in msg.content if b.type == "text")
         return Reply(text, msg.usage.input_tokens, msg.usage.output_tokens)
