@@ -364,11 +364,18 @@ Expected from the delete: `Deleted nodes: [...]` with the three node names. Your
 | `kubectl apply` warns about `last-applied-configuration` | Object was made with `create` | Harmless, it patches the annotation |
 | Port `8080` in use for the forward | Another program on that port | Use another local port, `kubectl port-forward pod/rooms 8081:5000` |
 
+## Real GKE Autopilot results (2026-11-24, asia-south1, cluster deleted the same day)
+
+- Cluster ready in **4m33s**. `kubectl get nodes` was empty at first: **Autopilot starts with 0 nodes and creates them when a pod needs one.** A new pod sat `Pending` for about a minute (`FailedScheduling: no nodes available`), then two nodes appeared (Container-Optimized OS, containerd 2.2.7, 8 vCPU, about 31 GB; allocatable cpu `7910m`).
+- **The control plane is hidden.** `kubectl get pods -n kube-system` shows no `etcd`, `kube-apiserver`, scheduler or controller-manager pods (only add-ons such as `kube-dns`). `kubectl get componentstatuses` lists only `scheduler` and `controller-manager`, no `etcd`. So B1's "look at the control plane pods" works on kind, not on a managed cluster, and you cannot back up `etcd` there (the provider does it).
+- **D1 on a real cluster:** `image: rooms:slim` gave `ImagePullBackOff` / `ErrImagePull` (`docker.io/library/rooms:slim: not found`). A local image never reaches a managed cluster; push it to a registry (we used Artifact Registry) and give the nodes' service account `roles/artifactregistry.reader`.
+- Autopilot adds default CPU requests to pods that do not set any (a harmless warning).
+
+
 ## What we did not test
 
-- **A real managed cluster** (GKE, EKS, AKS). Everything here ran on kind.
+- **EKS and AKS** (GKE Autopilot was tested; see above). **Backing up `etcd`:** not possible on a managed cluster, and not tried on kind.
 - **`minikube` and Docker Desktop's built-in Kubernetes.** The script mentions them as alternatives. We only used kind.
 - **Changing the five-minute node tolerance,** and **what happens to pods if a node comes back before the five minutes.**
 - **A pod deleted while the control plane is down.** Not possible to type, so not run.
-- **Backing up `etcd`,** as the script says to. We did not touch it.
 - **A cluster with three control-plane nodes.** Ours had one.

@@ -375,10 +375,32 @@ Deleting the cluster in a few seconds is the easy cleanup here.
 | `kubectl port-forward` stops | The pod restarted | Run it again |
 | Port 9090 or 3000 in use | Another container still running | `docker ps`, then remove it |
 
+## Real GKE Autopilot results (2026-11-24; cluster deleted the same day)
+
+Image pushed to Artifact Registry; Helm 4.3.2.
+
+- **The stack does not install on Autopilot as it is.** The first `helm install` failed: `cannot patch resource "services" in API group "" in the namespace "kube-system"` (the chart's etcd, scheduler, controller-manager, kube-proxy and coredns Services) and `GKE Warden rejected the request ... hostPID / hostNetwork / hostPath volume proc` (the **node-exporter** DaemonSet). Autopilot hides those parts and forbids host access. Fix: run `helm uninstall monitoring -n monitoring`, then install again with an extra values file:
+  ```yaml
+  kubeEtcd: {enabled: false}
+  kubeScheduler: {enabled: false}
+  kubeControllerManager: {enabled: false}
+  kubeProxy: {enabled: false}
+  coreDns: {enabled: false}
+  kubeDns: {enabled: false}
+  nodeExporter: {enabled: false}
+  ```
+  (`-f lab_files/stack-values.yaml -f autopilot-values.yaml`). The second install was ready in **1m36s**.
+- Targets (all `up`): `rooms` x2, `kube-state-metrics`, Grafana, the operator, Alertmanager, Prometheus, and the `apiserver`. No node-exporter or kubelet targets. Grafana 13.3.1 showed **19** built-in dashboards (29 on kind, because the hidden parts have no data).
+- Panel query `sum by (status)(rate(http_requests_total{namespace="atithi"}[1m]))`: `200` about **9.2**, `404` about **4.4** per second. `up{job="rooms"}` was `1` for both.
+- **Alert timing (load pod running, `BREAK=1` rolled out):** `pending` after **50 s**, `firing` after **161 s** (kind: 181 s and 302 s). The timing depends on how much traffic is already in the 5 minute window, so plan for two to five minutes.
+- Alertmanager held the alert with labels `alertname`, `prometheus`, `severity` and annotations `runbook_url`, `summary`. A silence made through the API (`POST /api/v2/silences`) turned it `suppressed`. `kubectl rollout undo deployment/rooms -n atithi` brought back healthy pods.
+- Prometheus data still sits on an `emptyDir` with this values file (no PVC); a real long-term setup needs `storageSpec` (see `stack-values-storage.yaml`), not run here.
+
+
 ## What we did not test
 
+- **Real long-term storage** (`stack-values-storage.yaml` on a cloud disk), and **node-exporter and kubelet metrics on a managed cluster** (Autopilot blocks them; a Standard GKE or EKS cluster was not tried).
 - **Clicking through Grafana.** We used its API (data source, built-in dashboard list, one query, a dashboard from a ConfigMap) and did not use the screens.
 - **Blackbox probes, burn-rate alerts, Alertmanager routing to a receiver, grouping, inhibition, recording rules, Thanos, Mimir or Loki.**
-- **A managed cluster** and **real long-term storage**. Prometheus here kept 2 days on a laptop disk (or in an `emptyDir`).
 - **Multi-process counters** (the library's multiprocess mode).
 - **Any other Grafana version.** We used 13.3.1.

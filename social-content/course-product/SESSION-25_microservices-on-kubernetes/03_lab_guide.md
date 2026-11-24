@@ -477,13 +477,35 @@ Expected from the delete: `Deleted nodes: [...]` with three names. Deleting the 
 | 404 from the app behind an Ingress path | The prefix is passed on unchanged | Strip it (D2) or serve the prefix |
 | `pg_isready` passes but `psql` is refused on a new volume | Postgres' temporary start-up server | `-h 127.0.0.1` (Session 21 guide) |
 
+## Real GKE Autopilot results (2026-11-24, asia-south1, cluster and disks deleted the same day)
+
+Same manifests, with the image pushed to Artifact Registry (`docker buildx build --platform linux/amd64 ... --push`) and `roles/artifactregistry.reader` granted to the nodes' service account. **Apply `60-rbac.yaml` before `11-bookings.yaml`:** the bookings Deployment needs the `bookings-sa` ServiceAccount, and without it no pod is created (`error looking up service account`, 0 pods, no obvious error in `kubectl get pods`).
+
+| Topic | Result on GKE |
+|---|---|
+| Default class | `standard-rwo (default)`, provisioner `pd.csi.storage.gke.io`, `WaitForFirstConsumer`, **expansion allowed** |
+| Dynamic provisioning | `postgres-data` (1Gi) bound and Postgres ready in about **26 s**; a real `pd-balanced` Persistent Disk appeared in `gcloud compute disks list` |
+| Data survives a pod delete | `2` rows before and after |
+| **PVC resize (works here)** | patched `1Gi` to `3Gi`: the cloud disk became 3 GB at once, the PVC showed `FileSystemResizePending` ("waiting for user to (re-)start a pod"); after the pod restarted, `df` showed `3.0G` and the rows were intact |
+| Shrink | refused: `field can not be less than status.capacity` |
+| StatefulSet (`pg`, 2 replicas, `volumeClaimTemplates`) | `pg-0` then `pg-1`, each with its own disk `data-pg-N`; deleting `pg-0` brought back `pg-0` with its own data; **scaling to 1 left `data-pg-1` in place** (clean it up by hand) |
+| CPU limit `250m` | `cpu.max 25000 100000`; the busy loop used `251m`; about half of all periods were throttled (`nr_throttled 407 of 806`). Throttling slows the pod, it does not kill it (unlike the memory limit). |
+| `securityContext` (`runAsNonRoot`, `readOnlyRootFilesystem`, drop `ALL`, `allowPrivilegeEscalation: false`) | `uid=10001`; writing `/x` gave `Read-only file system`; writing to the `emptyDir` at `/tmp` worked |
+| Deleting the namespace | removed the PVs and all four Persistent Disks; no disks or load-balancer parts were left |
+
+**GKE built-in Ingress (the "concierge" on a managed cluster).**
+
+- **Do not write `ingressClassName: gce`.** GKE has no IngressClass object (`kubectl get ingressclass` is empty), so the Ingress is silently ignored (no address, no events). Use the annotation `kubernetes.io/ingress.class: gce` (or leave the class out).
+- Services need no change (Autopilot uses container-native load balancing; the Service gets a `cloud.google.com/neg` annotation by itself).
+- It took about **2.5 minutes** from `Address` appearing to the first 200 (`000`, then Google's 404 page, then 200).
+- **Health-check trap (real):** the load balancer's health check path is taken from a pod's **readiness probe at the time the Ingress is created**. Our `bookings` pod did not exist yet (missing ServiceAccount), so the check fell back to `/`, which returns 404, and `/api/bookings/` answered **502** while `/` and `/api/rooms/` were 200. Fix with a `BackendConfig` (`healthCheck: {type: HTTP, requestPath: /health, port: 5000}`) and the Service annotation `cloud.google.com/backend-config: '{"default":"bookings-hc"}'`; it took about 2 minutes to turn healthy. Check with `gcloud compute backend-services get-health NAME --global`.
+- Deleting the Ingress took longer than two minutes because the controller removes the load balancer first.
+
+
 ## What we did not test
 
-- **A managed cluster** (GKE) and its built-in ingress controller, TLS on the Ingress, and Gateway API.
+- **TLS on the Ingress** (managed certificates), **Gateway API**, and **egress** NetworkPolicies (the GKE run covered the Ingress, disks, resize, StatefulSet, `securityContext` and CPU throttling).
+- **EKS** and its disks.
 - **`ingress-nginx`.** We followed the script and used Traefik. We did not check the retirement date given in the script.
-- **A successful PVC resize.** kind's default class does not allow it.
-- **A StatefulSet** (`pg-0`, `pg-1`) and a real cloud disk (EBS, Persistent Disk).
-- **Pod `securityContext` hardening,** and **egress** policies.
 - **Metrics-based scaling (HPA),** which belongs to a later session.
-- **CPU throttling** from a CPU limit. We tested the memory limit only.
 - **Helm 3.** Everything used Helm 4.3.2.

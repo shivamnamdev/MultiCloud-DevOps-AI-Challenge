@@ -521,3 +521,10 @@
 - Storage: GPT with parted, XFS, UUID fstab, swap file, LVM extend with `-r`, ext4 shrink (150M became 152M), XFS shrink refused; real reboot kept every mount. AWS disks are `nvme1n1`/`nvme2n1`, not `sdb`.
 - Traps: `ausearch` swallows stdin in piped scripts; SSH is up before mounts finish; firewalld `block`/`drop` cannot be shown on loopback.
 - Not tested: NAT between two machines, block vs drop from a remote client, MBR/gdisk, system disk on LVM, bad-fstab boot, AlmaLinux, Rocky 10.
+
+## 2026-11-24: GKE Autopilot run for Sessions 23, 25, 26 (asia-south1, about 48 minutes, deleted)
+- Artifact Registry repo + two amd64 images; cluster ready in 4m33s; cleanup via `_lab_tools/gcp/gcp_cleanup_atithi.sh --yes` (cluster + repo), leftover check clean. Helm 4.3.2 was not installed: downloaded to scratch with a verified checksum.
+- S23: Autopilot starts with 0 nodes; control plane hidden (no etcd, componentstatuses shows no etcd); local image gives ImagePullBackOff.
+- S25: Persistent Disk dynamic provisioning (26 s), resize 1Gi to 3Gi works (needs pod restart for the file system), shrink forbidden, StatefulSet with per-pod disks (scale-down keeps the PVC), CPU throttling measured, securityContext works, namespace delete removed the disks. GKE Ingress: `ingressClassName: gce` is ignored (no IngressClass exists), 2.5 min to 200, health check taken from the readiness probe at creation time gave a 502 until a BackendConfig set `/health`. `60-rbac.yaml` must come before the bookings Deployment.
+- S26: kube-prometheus-stack fails on Autopilot (kube-system Services, node-exporter hostPath/hostPID); works with seven components disabled (1m36s). Alert pending 50 s, firing 161 s; silence and rollback worked.
+- Not tested: TLS/managed certificate, Gateway API, egress NetworkPolicy, EKS/AKS, long-term Prometheus storage, Standard GKE node-exporter.
