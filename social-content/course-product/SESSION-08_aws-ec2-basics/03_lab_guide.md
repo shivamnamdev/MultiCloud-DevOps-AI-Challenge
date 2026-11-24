@@ -16,7 +16,17 @@ Companion to `02_script.md`. The script teaches the ideas; this guide is the han
 > - **Stop/start:** the public IP is gone while stopped and **a new one is assigned on start**.
 > - **Elastic IP:** it stayed the same through stop/start; after release the instance got a new ordinary public IP. Unattached Elastic IPs and public IPv4 addresses bill, so release it.
 > - Cleanup with `_lab_tools/aws/aws_cleanup_atithi.sh --yes` then `aws_leftovers.sh` printed "NOTHING LEFT". The whole lab cost a few cents of the credits.
-> Still not tested: root user and MFA, budgets, console screens, CloudShell.
+> Still not tested: root user and MFA, budgets, CloudShell.
+
+> **Update 2: the console launch wizard, tested for real (24 November 2026, ap-south-1, one t3.micro, deleted the same evening).** A person clicked through the wizard while the AWS CLI checked every result. The run sheet is `DEMO_RUNSHEET.md`; the read-only checker is `_lab_tools/aws/demo_s8_verify.sh`. What the console showed, which the script does not say:
+> - **The preselected image is Amazon Linux 2023, not Ubuntu.** If you want Ubuntu, pick it. Then the login user is `ubuntu`, not `ec2-user`. We used Ubuntu 26.04 (amd64), which suits `t3.micro` (see the architecture trap in C3).
+> - **The key pair is created at once, in its dialog, and the private key downloads once.** Clicking Launch before the dialog is done is the usual mistake. Create the key pair first, in the Key pair section. Default type is RSA with `.pem`; ED25519 is offered. `chmod 400` the file.
+> - **The SSH source defaults to "Anywhere" (`0.0.0.0/0`).** Change it to **My IP**. The security group we got had SSH from our own `/32` and HTTP from anywhere, exactly like the CLI version in C2.
+> - **Console launches differ from the CLI in two defaults:** the instance metadata hop limit is **2** (the CLI default is 1), and the root volume is **not encrypted**. In Advanced details set the metadata version to **V2 only** (this is `HttpTokens=required`). Verified: no token gives `401`, a token works.
+> - **User data runs only on first boot.** Ours was saved with the last line wrong (it printed text instead of writing the page), so nginx showed its **default welcome page**. Editing the user data afterwards would not have re-run it. We fixed it on the server over SSH with `echo ... | sudo tee /var/www/html/index.html`, and the Atithi page appeared. Lesson: after launch, read the saved user data back (`describe-instance-attribute --attribute userData`) before you blame nginx.
+> - **Stop and start:** the public IP changed (`3.109.208.236` to `13.201.189.152`), while the private IP, the disk and our hand-written page stayed.
+> - **Cleanup:** terminating the instance deleted the 8 GiB volume with it (`DeleteOnTermination` true). The security group and key pair are separate and must be deleted by hand. `aws_leftovers.sh` then printed "NOTHING LEFT".
+> - **Not recorded:** EC2 Instance Connect from the console (its result was not reported back).
 
 | | |
 |---|---|
@@ -221,7 +231,7 @@ On real AWS, also check EC2's **Volumes** and **Elastic IPs** pages, and **Snaps
 
 ## What we did not test
 
-- **Everything in the AWS console:** root and MFA, the budget alert, Cost Explorer, tags for cost allocation, the launch wizard, CloudShell.
+- **Most of the AWS console:** root and MFA, the budget alert, Cost Explorer, tags for cost allocation, CloudShell, and EC2 Instance Connect. (The launch wizard was tested, see Update 2.)
 - **A real instance:** SSH into it, the page served by nginx from user data, `cloud-init-output.log`, the metadata service (IMDSv2) and its two-step call, a public IPv4 address, and what happens to it on stop and start.
 - **Real AWS's** region and zone counts, instance types, prices, free tier, and "My IP".
 - **Spot and Savings Plans** (reading only).

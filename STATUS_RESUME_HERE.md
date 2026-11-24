@@ -17,7 +17,7 @@ Key corrections found by real runs are recorded inside each guide (for example, 
 0. Docker-only audit (2026-11-24): done so far = Session 05B on a real Rocky VM. GKE run for Sessions 23, 25, 26 also done 2026-11-24 (cluster and registry deleted). Remaining plan: (3) GitHub + AWS pass for 17, 18, 19, 22, 31: DONE 2026-11-24 (GHCR still open, needs `gh auth refresh -s write:packages` by the user); (4) recorded console demo. Groups 1 also still has Ubuntu-VM-only bits of Sessions 3, 4, 5, 6 (real boot, netplan, swap pressure, logrotate, passphrase key).
 1. **Skipped by the user's choice (2026-11-24); do it only if a demo video needs it:** one real Claude API call for Session 32 Part F (needs the user's Console key with a spend limit; nothing real was called so far).
 2. ~~GCP / GKE (Session 24)~~ done 2026-11-24 (with `_lab_tools/gcp` pair). Remaining ideas: other sessions that touch GCP, and the open recorded-demo idea below.
-3. Open idea from the user: a recorded demo using the real console (user drives the console on camera, Claude verifies by CLI in parallel; pilot: the Session 8 launch wizard).
+3. Console demo pilot DONE for Session 8 (see progress.md 2026-11-24). Same method can be reused for other console sessions.
 4. ~~Housekeeping: ad scripts~~ done 2026-11-24: AD-001 now says 35 sessions + 1 optional bonus / 140 episodes / ~35 h (still planned figures, verify against final recordings); AD-002 has no counts.
 
 ## Rules that still apply

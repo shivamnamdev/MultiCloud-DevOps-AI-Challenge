@@ -545,3 +545,9 @@
 - Docker Day-4 (Session 32): multi-stage example replaced by the tested `--prefix=/install` version with the reason; MAINTAINER, dangling image and `docker system prune` wording corrected (the Q&A part of the file already had the right definitions).
 - K8s Day-2 (Session 34): kube-proxy and container runtime (containerd, not Docker) rewritten; node-pool size wording.
 - Resume session (Session 45): "Handling Tool Gaps" no longer says to write a tool you have not used.
+
+## 2026-11-24: Session 8 console demo (real AWS console, user clicked, CLI verified)
+- One t3.micro, Ubuntu 26.04 amd64, ap-south-1, about 1 hour, terminated; security group, key pair and .pem deleted; `aws_leftovers.sh` printed "NOTHING LEFT"; credits about 99.67 USD left.
+- Found: console default AMI is Amazon Linux 2023; SSH source defaults to Anywhere; hop limit 2 and unencrypted volume on console launches; key pair is created at once; user data was saved with a wrong last line (default nginx page), runs only on first boot, fixed over SSH; stop/start changed the public IP, kept the disk and the page; terminate deleted the volume.
+- Added: `SESSION-08_aws-ec2-basics/DEMO_RUNSHEET.md`, `_lab_tools/aws/demo_s8_verify.sh`, "Update 2" in the S8 guide.
+- Not recorded: EC2 Instance Connect from the console.
