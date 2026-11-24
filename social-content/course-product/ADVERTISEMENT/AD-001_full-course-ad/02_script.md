@@ -1,6 +1,6 @@
 # 🎯 02: COURSE AD SCRIPT: "DevOps with AI: Build, Ship, Fix" (Recorded Course)
 *Skills: `course-ad-script-architect`, `course-ad-module-pitch-writer`, `course-ad-offer-closer`, `anthropic-skills:course-launch-script-writer`. Gate: `Content-Creation/checklists/09_COURSE_AD_SCRIPT_CHECKLIST.md`.*
-*v1 (draft, 2026-11-13). Product = RECORDED course, one price. Syllabus: `SYLLABUS_BLUEPRINT.md` (33 sessions / 132 episodes). Source notes were a topic map only: no wording, analogies, branding, success stories or salary/income claims are used here.*
+*v1 (draft, 2026-11-13). Product = RECORDED course, one price. Syllabus: `SYLLABUS_BLUEPRINT.md` (35 sessions plus one optional bonus / 140 episodes, per the 2026-11-18 count). Source notes were a topic map only: no wording, analogies, branding, success stories or salary/income claims are used here.*
 
 **Runtime:** ~8-9 min | **Language:** Hindi (Devanagari) + English terms | **Address:** "तुम"
 **Title (working):** *AI 10 सेकंड में Dockerfile लिखता है. रात 2 बजे Production गिरे तो Fix कौन करेगा?*
@@ -8,7 +8,7 @@
 
 > `{{...}}` = creator must fill. `[VERIFY]` = confirm before recording. Nothing in `{{}}` may be improvised on camera.
 
-**Facts used (source):** Course name (creator, 2026-11-13) · recorded, one price (creator) · 33 sessions · 132 episodes · ~15 h = **planned figures from the syllabus, [VERIFY] against the finished recordings** · credibility = "7+ years in tech, enterprise test automation and Python engineering, 50+ students mentored" (creator, same as AD-001; no DevOps-specific claim is made) · price/plan, access duration, refund policy, CTA, launch date = **not yet supplied**.
+**Facts used (source):** Course name (creator, 2026-11-13) · recorded, one price (creator) · 35 sessions · 140 episodes · ~35 h = **planned figures from the syllabus, [VERIFY] against the finished recordings** · credibility = "7+ years in tech, enterprise test automation and Python engineering, 50+ students mentored" (creator, same as AD-001; no DevOps-specific claim is made) · price/plan, access duration, refund policy, CTA, launch date = **not yet supplied**.
 
 ---
 
@@ -50,19 +50,19 @@
 [VO] मुझे पता है कि सीखने वाला कहाँ अटकता है, और इस course का हर session उसी अटकने की जगह से शुरू होता है।
 
 ## BEAT 8: Reveal + reframe  [03:50–04:20]
-[VISUAL] Course title card: `DevOps with AI: Build, Ship, Fix`. Three chips animate in: BUILD / SHIP / FIX. Counter: `33 · 132 · ~15 h`.
-[VO] इस course का नाम है: DevOps with AI, Build, Ship, Fix। 33 सेशन्स, 132 एपिसोड्स, करीब 15 घंटे, अपनी रफ़्तार से देखो। *[VERIFY against final recordings]*
+[VISUAL] Course title card: `DevOps with AI: Build, Ship, Fix`. Three chips animate in: BUILD / SHIP / FIX. Counter: `35 · 140 · ~35 h`.
+[VO] इस course का नाम है: DevOps with AI, Build, Ship, Fix। 35 सेशन्स और एक optional bonus, 140 एपिसोड्स, करीब 35 घंटे, अपनी रफ़्तार से देखो। *[VERIFY against final recordings]*
 [VO] AI autopilot है। Autopilot बहुत कुछ उड़ा लेता है। पर जब इंजन में आग लगती है, तो हाथ pilot का चलता है। AI तुम्हारा assistant रहेगा, pilot तुम बनोगे।
 
-## BEAT 9: MODULE TOUR  [04:20–07:00]  (~2:40, 8 blocks, 33 sessions = 2+3+2+8+5+5+4+4)
+## BEAT 9: MODULE TOUR  [04:20–07:00]  (~2:40, 8 blocks, 35 sessions = 2+4+2+8+6+5+4+4)
 
 ### BLOCK 1: Foundation + AI, Sessions 1–2  (~15s)
 [VISUAL] Server rack → cloud → chat window with a "verify" stamp.
 [VO] पहले नींव। Cloud और virtualization असल में क्या हैं, DevOps सच में क्या है, और AI को co-programmer की तरह कैसे इस्तेमाल करना है: उसकी हर बात पर आँख बंद करके नहीं, जाँचकर।
 
-### BLOCK 2: Linux, Sessions 3–5  (~20s)
+### BLOCK 2: Linux, Sessions 3–5 and 5B  (~20s)
 [VISUAL] Terminal, file tree, a lock icon, a service restarting.
-[VO] क्योंकि production का हर server Linux पर बैठता है। Filesystem और shell से शुरू, फिर users, permissions और SSH keys, और फिर वो सेशन जहाँ server बीमार पड़ता है और तुम उसे ठीक करना सीखते हो: services, networking, health-check script।
+[VO] क्योंकि production का हर server Linux पर बैठता है। Filesystem और shell से शुरू, फिर users, permissions और SSH keys, फिर storage, web server और security, और फिर वो सेशन जहाँ server बीमार पड़ता है और तुम उसे ठीक करना सीखते हो: services, networking, health-check script।
 
 ### BLOCK 3: Scripting, Sessions 6–7  (~10s)
 [VISUAL] Bash script loop → Python boto3 call.
@@ -72,9 +72,9 @@
 [VISUAL] EC2 launch → IAM policy JSON → load balancer splitting traffic → S3 bucket → database failover → VPC diagram → alarm → Lambda trigger.
 [VO] फिर Cloud, AWS पर। Server launch करना, IAM से सही इंसान को सही permission देना, storage और scaling, load balancer जो traffic बाँटता है, S3, RDS database जो मर जाए तो खुद उठ खड़ा हो। और VPC: वो networking जिससे ज़्यादातर लोग डरते हैं, यहाँ तुम खुद बनाओगे। आख़िर में CloudWatch से निगरानी और Lambda से serverless automation।
 
-### BLOCK 5: Git + CI/CD, Sessions 16–20  (~25s)
+### BLOCK 5: Git + CI/CD, Sessions 16, 16B and 17–20  (~25s)
 [VISUAL] Branch graph → Jenkins pipeline stages → GitHub Actions workflow → security scan badge.
-[VO] अब वो हिस्सा जहाँ code production की तरफ़ चलना शुरू करता है। Git और GitHub की असली समझ, Jenkins से पूरी pipeline, plugins और distributed builds, फिर GitHub Actions, और DevSecOps: pipeline में ही security scan, ताकि कमज़ोर image आगे जाए ही नहीं।
+[VO] अब वो हिस्सा जहाँ code production की तरफ़ चलना शुरू करता है। Git और GitHub की असली समझ और team workflows, Jenkins से पूरी pipeline, plugins और distributed builds, फिर GitHub Actions, और DevSecOps: pipeline में ही security scan, ताकि कमज़ोर image आगे जाए ही नहीं।
 
 ### BLOCK 6: Containers + Kubernetes, Sessions 21–25  (~25s)
 [VISUAL] Container boxes → Dockerfile layers → Kubernetes cluster with pods multiplying → microservices map.
@@ -87,9 +87,9 @@
 ### BLOCK 8: Azure + Capstone + AI, Sessions 30–33  (~25s)
 [VISUAL] Azure pipeline → end-to-end pipeline running green → AI model served behind an API → anomaly alert → an AI agent calling a tool.
 [VO] Azure और Azure DevOps, ताकि तुम सिर्फ़ एक cloud के भरोसे न रहो। फिर capstone: code से production तक एक पूरी pipeline। और आख़िर में AI के साथ: cloud पर AI app और model serving, anomaly पकड़ने वाला AIOps, और अपना MCP server बनाना।
-[VO] *(Kicker)* ये सब एक ही कहानी है: Build, Ship, Fix। एक tool नहीं, पूरा रास्ता।
+[VO] *(Kicker)* और एक optional bonus भी है: GitOps, जहाँ एक supervisor campus पर रहकर सब कुछ ठीक रखता है। ये सब एक ही कहानी है: Build, Ship, Fix। एक tool नहीं, पूरा रास्ता।
 
-**Count check:** 2 + 3 + 2 + 8 + 5 + 5 + 4 + 4 = **33 sessions** ✔ (`SYLLABUS_BLUEPRINT.md`).
+**Count check:** 2 + 4 + 2 + 8 + 6 + 5 + 4 + 4 = **35 sessions** ✔ (plus the optional bonus 31B, GitOps, mentioned in the kicker) (`SYLLABUS_BLUEPRINT.md`).
 
 ## BEAT 10: Why recorded  [07:00–07:30]
 [VISUAL] Pause/rewind on a lab; a split screen of the learner's terminal next to the lesson.
@@ -99,7 +99,7 @@
 ## BEAT 11: Price reveal  [07:30–08:30]
 [VISUAL] Price card (one plan). Inclusions as a checklist, then the disclosure line.
 [VO] अब सवाल: इसकी कीमत क्या है? मैं यहाँ कोई ऐसा course बेचने नहीं आया जो बस playlist का नया नाम हो।
-[VO] **{{PLAN_NAME}}**: {{LAUNCH_PRICE}} रुपये *[VO: {{PRICE_IN_HINDI_WORDS}}]*, {{GST_NOTE}}। इसमें मिलता है: 33 सेशन्स, 132 एपिसोड्स, हर एपिसोड में hands-on lab, {{ACCESS_DURATION}} की access। *{{OTHER_INCLUSIONS}}*
+[VO] **{{PLAN_NAME}}**: {{LAUNCH_PRICE}} रुपये *[VO: {{PRICE_IN_HINDI_WORDS}}]*, {{GST_NOTE}}। इसमें मिलता है: 35 सेशन्स और एक optional bonus, 140 एपिसोड्स, हर एपिसोड में hands-on lab, {{ACCESS_DURATION}} की access। *{{OTHER_INCLUSIONS}}*
 [VO] एक बात साफ़ बता दूँ: Cloud का account तुम्हारा अपना होगा, और free-tier से ऊपर चलाओगे तो उसका बिल भी तुम्हारा। *[VERIFY: cost note matches the labs]*
 [VO] {{REFUND_POLICY_SENTENCE}}  *(slow, flat; a promise, not a joke)*
 
@@ -120,7 +120,7 @@
 ## [VERIFY] list
 1. Beat 1: record the live demo; the on-screen timer must really read under 10 s.
 2. Beat 7: credibility figures match your website.
-3. Beat 8: 33 / 132 / ~15 h match the **finished** recordings (these are plan numbers today).
+3. Beat 8: 35 / 140 / ~35 h match the **finished** recordings (these are plan numbers today).
 4. Beat 11: cloud-cost disclosure matches the labs.
 5. Every `{{...}}`: price, plan name, GST note, access, inclusions, refund, CTA, launch date.
 

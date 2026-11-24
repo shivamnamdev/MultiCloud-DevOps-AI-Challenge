@@ -1,5 +1,5 @@
 # 💡 01: IDEA & PACKAGING: AD-001 (Course Ad)
-**Category:** Hero (conversion asset) | **Product:** DevOps with AI: Build, Ship, Fix (recorded, 33 sessions / 132 episodes / ~15 h, planned)
+**Category:** Hero (conversion asset) | **Product:** DevOps with AI: Build, Ship, Fix (recorded, 35 sessions + 1 optional bonus / 140 episodes / ~35 h, planned)
 **Avatar:** fresher / manual tester / career switcher / support engineer who has watched Docker-K8s-Terraform tutorials, can follow along, but freezes when a pipeline turns red and pastes errors into ChatGPT. *Secret insecurity: "I'm collecting tools, not becoming an engineer."*
 **Core premise:** AI writes configs in seconds; the scarce skill is owning the whole path from code to production **and** fixing it when it breaks (Build → Ship → Fix).
 **Primary chemical:** fear (cortisol: "I can't fix it at 2 AM") → epiphany (dopamine: "the whole path can be learned in order").

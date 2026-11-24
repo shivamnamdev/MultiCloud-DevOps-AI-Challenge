@@ -64,7 +64,7 @@ Tools कभी प्रॉब्लम थे ही नहीं। प्र
 
 ## BEAT 8: Reveal + reframe
 
-इस course का नाम है: DevOps with AI, Build, Ship, Fix। 33 सेशन्स, 132 एपिसोड्स, करीब 15 घंटे, अपनी रफ़्तार से देखो।
+इस course का नाम है: DevOps with AI, Build, Ship, Fix। 35 सेशन्स और एक optional bonus, 140 एपिसोड्स, करीब 35 घंटे, अपनी रफ़्तार से देखो।
 
 AI autopilot है। Autopilot बहुत कुछ उड़ा लेता है। पर जब इंजन में आग लगती है, तो हाथ pilot का चलता है। AI तुम्हारा assistant रहेगा, pilot तुम बनोगे।
 
@@ -79,7 +79,7 @@ AI autopilot है। Autopilot बहुत कुछ उड़ा लेत�
 
 **BLOCK 2: Linux, Sessions 3–5**
 
-क्योंकि production का हर server Linux पर बैठता है। Filesystem और shell से शुरू, फिर users, permissions और SSH keys, और फिर वो सेशन जहाँ server बीमार पड़ता है और तुम उसे ठीक करना सीखते हो: services, networking, health-check script।
+क्योंकि production का हर server Linux पर बैठता है। Filesystem और shell से शुरू, फिर users, permissions और SSH keys, फिर storage, web server और security, और फिर वो सेशन जहाँ server बीमार पड़ता है और तुम उसे ठीक करना सीखते हो: services, networking, health-check script।
 
 
 **BLOCK 3: Scripting, Sessions 6–7**
@@ -92,9 +92,9 @@ Bash और Python: वो दो औज़ार जिनसे बार-ब�
 फिर Cloud, AWS पर। Server launch करना, IAM से सही इंसान को सही permission देना, storage और scaling, load balancer जो traffic बाँटता है, S3, RDS database जो मर जाए तो खुद उठ खड़ा हो। और VPC: वो networking जिससे ज़्यादातर लोग डरते हैं, यहाँ तुम खुद बनाओगे। आख़िर में CloudWatch से निगरानी और Lambda से serverless automation।
 
 
-**BLOCK 5: Git + CI/CD, Sessions 16–20**
+**BLOCK 5: Git + CI/CD, Sessions 16, 16B and 17–20**
 
-अब वो हिस्सा जहाँ code production की तरफ़ चलना शुरू करता है। Git और GitHub की असली समझ, Jenkins से पूरी pipeline, plugins और distributed builds, फिर GitHub Actions, और DevSecOps: pipeline में ही security scan, ताकि कमज़ोर image आगे जाए ही नहीं।
+अब वो हिस्सा जहाँ code production की तरफ़ चलना शुरू करता है। Git और GitHub की असली समझ और team workflows, Jenkins से पूरी pipeline, plugins और distributed builds, फिर GitHub Actions, और DevSecOps: pipeline में ही security scan, ताकि कमज़ोर image आगे जाए ही नहीं।
 
 
 **BLOCK 6: Containers + Kubernetes, Sessions 21–25**
@@ -111,7 +111,7 @@ Docker: container VM से अलग क्यों है, image कैसे
 
 Azure और Azure DevOps, ताकि तुम सिर्फ़ एक cloud के भरोसे न रहो। फिर capstone: code से production तक एक पूरी pipeline। और आख़िर में AI के साथ: cloud पर AI app और model serving, anomaly पकड़ने वाला AIOps, और अपना MCP server बनाना।
 
-ये सब एक ही कहानी है: Build, Ship, Fix। एक tool नहीं, पूरा रास्ता।
+और एक optional bonus भी है: GitOps, जहाँ एक supervisor campus पर रहकर सब कुछ ठीक रखता है। ये सब एक ही कहानी है: Build, Ship, Fix। एक tool नहीं, पूरा रास्ता।
 
 
 ## BEAT 10: Why recorded
@@ -125,7 +125,7 @@ Azure और Azure DevOps, ताकि तुम सिर्फ़ एक clou
 
 अब सवाल: इसकी कीमत क्या है? मैं यहाँ कोई ऐसा course बेचने नहीं आया जो बस playlist का नया नाम हो।
 
-{{PLAN_NAME}}: {{LAUNCH_PRICE}} रुपये [VO: {{PRICE_IN_HINDI_WORDS}}], {{GST_NOTE}}। इसमें मिलता है: 33 सेशन्स, 132 एपिसोड्स, हर एपिसोड में hands-on lab, {{ACCESS_DURATION}} की access। {{OTHER_INCLUSIONS}}
+{{PLAN_NAME}}: {{LAUNCH_PRICE}} रुपये [VO: {{PRICE_IN_HINDI_WORDS}}], {{GST_NOTE}}। इसमें मिलता है: 35 सेशन्स और एक optional bonus, 140 एपिसोड्स, हर एपिसोड में hands-on lab, {{ACCESS_DURATION}} की access। {{OTHER_INCLUSIONS}}
 
 एक बात साफ़ बता दूँ: Cloud का account तुम्हारा अपना होगा, और free-tier से ऊपर चलाओगे तो उसका बिल भी तुम्हारा।
 

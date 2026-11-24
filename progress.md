@@ -511,3 +511,6 @@
 - Security: the user pasted `~/.config/anthropic/credentials/default.json` (live OAuth tokens) into chat; advised `ant auth logout` / revoke at the end.
 
 - Decision 2026-11-24: user chose to skip the real Claude call (no API credit added). Part F stays marked not tested; revisit only if a demonstration video needs it. Reminder: `ant auth logout` because tokens were pasted in chat.
+
+## 2026-11-24: Ad scripts brought in line with the 2026-11-18 counts
+- AD-001 (script, teleprompter, editing brief, metadata, gate report, findings, README): 33 / 132 / ~15 h became 35 sessions + one optional bonus (31B) / 140 episodes / ~35 h; module tour re-split 2+4+2+8+6+5+4+4 = 35 (adds 5B to Linux, 16B to Git) plus a bonus line for GitOps. Hours: scene timestamps sum to about 36.8 h for all 37 scripts. AD-002 has no counts. Still plan numbers: verify against final recordings.

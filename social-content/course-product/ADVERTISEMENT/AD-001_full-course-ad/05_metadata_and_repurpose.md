@@ -1,5 +1,5 @@
 # 📣 05: METADATA & REPURPOSE: AD-001
-**Description first 2 lines:** DevOps tutorials देखकर भी pipeline red क्यों होती है? DevOps with AI: Build, Ship, Fix, 33 सेशन्स, 132 एपिसोड्स, Linux से Cloud, CI/CD, Docker, Kubernetes, Terraform और AI तक. {{CTA_LINK}}
+**Description first 2 lines:** DevOps tutorials देखकर भी pipeline red क्यों होती है? DevOps with AI: Build, Ship, Fix, 35 सेशन्स और एक optional bonus, 140 एपिसोड्स, Linux से Cloud, CI/CD, Docker, Kubernetes, Terraform और AI तक. {{CTA_LINK}}
 **Pinned comment:** {{PLAN/PRICE LINE}} + CTA. **Tags:** devops course hindi, devops for beginners, learn devops hindi, docker kubernetes hindi, aws devops, terraform hindi, devops with ai.
 **No guaranteed outcomes** (no salary, placement, income) in title/description/thumbnail.
 

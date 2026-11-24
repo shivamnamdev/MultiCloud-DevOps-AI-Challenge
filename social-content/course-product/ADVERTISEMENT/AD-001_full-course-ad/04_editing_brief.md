@@ -15,10 +15,10 @@ Gate: `Content-Creation/checklists/05_EDITING_CHEATSHEET_PRINTABLE_CHECKLIST.md`
 | 5 Hope vs System | S5 split (failed vs green) | music lift |
 | 6 Thesis | Face only, punch-in; keyword `BUILD → SHIP → FIX` | brief music drop |
 | 7 Credibility | Lower third (hold 6 s): "7+ years in tech · enterprise test automation · Python engineering · 50+ students mentored" | warm music |
-| 8 Reveal | Title card + BUILD/SHIP/FIX chips + counter `33 · 132 · ~15 h` | title sting; autopilot/pilot line clean |
+| 8 Reveal | Title card + BUILD/SHIP/FIX chips + counter `35 · 140 · ~35 h` | title sting; autopilot/pilot line clean |
 | 9 Module tour | 8 block cards: title + session range + 3-5 s S6 clip; **chapter text ≤ 4 words** | tempo up, one SFX per block |
 | 10 Why recorded | Pause/rewind lab, split-screen terminal | soft |
 | 11 Price | Price card, inclusion checklist ticks, disclosure line as small on-screen text | no music for refund line |
 | 12 Ultimatum | Two-futures split; last card = CTA, hold **8 s** | music swell then cut to silence for 2 s |
 ## Checks
-Captions (Devanagari + Latin), safe zones, count on screen = 33 · 132 · ~15 h **only if the final recordings match**; price numbers on-screen = spoken numbers; CTA on-screen = description.
+Captions (Devanagari + Latin), safe zones, count on screen = 35 · 140 · ~35 h **only if the final recordings match**; price numbers on-screen = spoken numbers; CTA on-screen = description.
