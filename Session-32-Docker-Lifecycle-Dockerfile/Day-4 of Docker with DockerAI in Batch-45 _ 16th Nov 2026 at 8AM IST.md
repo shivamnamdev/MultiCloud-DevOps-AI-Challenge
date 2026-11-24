@@ -8,7 +8,7 @@ Day 4 of the Docker training series covered Dockerfile syntax and optimization, 
 
 - **Dockerfile keyword order matters** for optimization; sequence must follow logical dependency flow (e.g., base OS → update → install → copy → expose → run) 
 - **`COPY`** **is preferred over** **`ADD`** in interviews and real-world usage: `COPY` is faster, more predictable, and avoids URL-related security/availability failures 
-- **`MAINTAINER`** **is deprecated** as of 2025 and should not be included in production Dockerfiles; fingerprinting replaces it 
+- **`MAINTAINER`** **has been deprecated for years** (use `LABEL org.opencontainers.image.authors=...` if you want the information) and should not be included in new Dockerfiles 
 - **Multi-stage builds** are the recommended approach for image optimization — confirmed as interview-critical knowledge 
 - **`Docker system prune`** requires manager/client approval before execution in production environments 
 - **`COPY`** **vs** **`ADD`** interview answer: always lead with `COPY` as the better option, then explain `ADD` limitations 
@@ -38,7 +38,7 @@ Day 4 of the Docker training series covered Dockerfile syntax and optimization, 
 ### Optimization Insights
 
 - **Combining** **`RUN`** **commands** with `&&` reduces image layers (e.g., merging `apt-get update` and `apt-get install` into one `RUN` statement) 
-- **Removing** **`MAINTAINER`** reduces unnecessary layers 
+- **Removing** **`MAINTAINER`** removes a deprecated instruction (it only adds metadata, not size) 
 - **Using slim/Alpine base images** dramatically reduces image size 
 - **`CMD`** **is optional** when the container is not executing a persistent process 
 - **`.dockerignore`** excludes sensitive files (e.g., local passwords, secrets) from being copied into the image; functions identically to `.gitignore` 
@@ -118,8 +118,8 @@ The following represents the real-world DevOps container workflow discussed as i
 
 - **`docker rm`** — Remove containers one by one (day-to-day use) 
 - **`docker rmi`** — Remove images one by one 
-- **`docker image prune`** — Remove dangling (incomplete/failed build) images 
-- **`docker system prune`** — Removes all unused containers, networks, images, and build caches; prompts confirmation 
+- **`docker image prune`** — Remove dangling images (untagged images, usually the old image left behind when you rebuild the same tag) 
+- **`docker system prune`** — Removes stopped containers, unused networks, **dangling** images and build cache (add `-a` to remove all unused images, `--volumes` to include volumes); prompts confirmation 
 
 ### Dangling Images
 
@@ -151,7 +151,7 @@ The following represents the real-world DevOps container workflow discussed as i
 - **`COPY`** **vs** **`ADD`** → `COPY` is preferred; `ADD` has URL support but introduces security/reliability risks 
 - **`CMD`** **vs** **`ENTRYPOINT`** → `ENTRYPOINT` is the first command on container start; `CMD` is the default runtime command 
 - **How to optimize a Dockerfile?** → Combine `RUN` commands, remove deprecated keywords, use slim/Alpine images, apply multi-stage builds 
-- **What are dangling images?** → Incomplete images from failed builds; removed via `docker image prune` 
+- **What are dangling images?** → Untagged images, usually the previous image of a tag you rebuilt; removed via `docker image prune` 
 - **Container-to-image conversion** → `docker commit <container-id> <image-name>` 
 - **How to save images cheaply?** → `docker save` to `.tar`, store in S3 
 - **Housekeeping activities?** → `docker system prune` monthly, with approval 
@@ -172,13 +172,16 @@ The following represents the real-world DevOps container workflow discussed as i
 FROM python:slim AS builder
 WORKDIR /app
 COPY requirements.txt .
-RUN pip install -r requirements.txt
+RUN pip install --no-cache-dir --prefix=/install -r requirements.txt
 
 FROM python:slim
 WORKDIR /app
-COPY --from=builder /app .
+COPY --from=builder /install /usr/local
+COPY app.py .
 CMD ["python3", "app.py"]
 ```
+
+**Why it is written this way (tested, 2026-11-24):** `pip install` puts packages in `site-packages`, **not** in `/app`, so copying only `/app` from the builder gives an image without Flask (`ModuleNotFoundError`) and without `app.py`. Installing into a prefix (`--prefix=/install`) and copying that folder to `/usr/local` in the final stage works (`flask 3.1.3` printed). The size gain is real when the builder stage has compilers or build tools (for example a full `python` image or `build-essential`) that the slim final stage does not; with `slim` in both stages and pure-Python packages the saving is small.
 
 **Benefits**:
 

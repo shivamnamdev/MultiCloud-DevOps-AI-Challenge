@@ -4,6 +4,8 @@
 
 In this hands-on lab, you will create three Ubuntu containers, configure one as the **Ansible control node**, configure the other two as **managed nodes**, establish password-based SSH access initially, exchange SSH keys, and use an Ansible playbook to install Nginx on both target containers.
 
+> **Tested (2026-11-24):** run end to end in Docker on `ubuntu:latest` (Ubuntu 26.04.1), Ansible from the PPA (`ansible 14.5.0`, ansible-core 2.21.5). With the playbook below both targets finish with `failed=0`, a second run shows `changed=0`, and `ansible targets -m uri -a url=http://localhost` returns 200. `ssh-keygen` on this release creates `id_ed25519` (older releases: `id_rsa`); `ssh-copy-id` finds either.
+
 ### Lab architecture
 
 | Container | Role | Purpose |
@@ -29,7 +31,7 @@ You will use this node as the Docker host. All three Ubuntu containers will run 
 Run these commands on the Docker Playground node:
 
 ```bash
-sudo apt-get update && apt-get install docker.io -y
+sudo apt-get update && sudo apt-get install -y docker.io
 ```
 
 Check that Docker is available:
@@ -415,8 +417,8 @@ When prompted:
 This creates a private key and a public key, usually:
 
 ```text
-/root/.ssh/id_rsa
-/root/.ssh/id_rsa.pub
+/root/.ssh/id_ed25519
+/root/.ssh/id_ed25519.pub
 ```
 
 The private key must remain on the control node. Do not share it.
@@ -497,7 +499,6 @@ Add the following playbook:
 ---
 - name: Install and start Nginx on all managed nodes
   hosts: targets
-  become: true
 
   tasks:
     - name: Update the apt package cache
@@ -514,6 +515,7 @@ Add the following playbook:
         name: nginx
         state: started
         enabled: true
+        use: service
 ```
 
 Save and exit.
@@ -523,7 +525,7 @@ What the playbook does:
 - `---`: marks the beginning of a YAML document.
 - `name`: gives the play or task a readable description.
 - `hosts: targets`: runs the play against every host in the `targets` inventory group.
-- `become: true`: uses privilege escalation. In this lab, the SSH user is root, so no additional privilege escalation is normally required; it is included to make the playbook suitable for a common non-root Ansible setup too.
+- There is **no `become: true`** here on purpose. `become: true` makes Ansible run the module through `sudo`, even when you connect as root, and the minimal `ubuntu` container has no `sudo`; the play then fails with `sudo: not found` / `Module result deserialization failed`. If you connect as a normal user (real servers), add `become: true` there, and make sure `sudo` is installed.
 - `ansible.builtin.apt`: uses Ansible's built-in apt module to manage Ubuntu packages.
 - `update_cache: true`: refreshes the apt package index.
 - `name: nginx`: identifies the package to install.
@@ -531,6 +533,7 @@ What the playbook does:
 - `ansible.builtin.service`: manages the Nginx service.
 - `state: started`: ensures the service is running.
 - `enabled: true`: enables the service to start automatically when the container/host boots.
+- `use: service`: tells Ansible to manage the service with the classic `service` command. These containers have no systemd, and without this line the task fails with `Service is in unknown state`. On a normal VM with systemd you can leave this line out.
 
 ### Step 28: Check the playbook syntax
 
@@ -701,6 +704,14 @@ For more details, inspect:
 ```bash
 journalctl -u nginx --no-pager
 ```
+
+### 9. `sudo: not found` or `Module result deserialization failed: No start of json char found`
+
+You used `become: true` on a container that has no `sudo`. Remove `become: true` (you connect as root), or install it on the targets with `apt install -y sudo`.
+
+### 10. `Service is in unknown state`
+
+The target has no systemd (typical for a plain Docker container). Add `use: service` to the `ansible.builtin.service` task, or start Nginx with `service nginx start`.
 
 ---
 

@@ -539,3 +539,9 @@
 - Read: Session-51 Day-3 (Online Boutique on GKE), Session-45 resume session, Session-42 Ansible Docker/Nginx lab (run for real in Docker on Ubuntu 26.04), Session-32 Docker Day-4 (multi-stage example built and run), Session-34 K8s Day-2. Only keyword-scanned: Session-34 Day-1 Q&A, Session-33 Day-5, Session-32 Day-3 Q&A (no red flags).
 - Fixed in Session-51 Day-3: removed the scripted "my previous project at JioMart ... on-call" answer, the "company framing" resume advice and the sample bullets that claimed production work; replaced with an honest training-project answer and a note to use only real experience.
 - Found, NOT yet fixed (trainer files): Ansible lab `become: true` fails (no sudo in the container; fix: remove it or install sudo) and the `service` task needs `use: service` (no systemd); ssh-keygen default is now id_ed25519, Step 2 lacks sudo on the second apt-get; Docker Day-4 multi-stage example does not work (pip installs outside /app) and dangling/prune definitions are loose; K8s Day-2 says container runtime is Docker and that kube-proxy exposes pods to the internet; Resume notes "Handling Tool Gaps" contradicts Q21/Q22.
+
+## 2026-11-24: Technical fixes applied to the upstream Batch-45 notes
+- Ansible lab (Session 42): removed `become: true`, added `use: service`, `id_ed25519`, `sudo` in Step 2, two troubleshooting entries, tested note (playbook text in the file equals the one that passed `failed=0`, rerun `changed=0`, HTTP 200).
+- Docker Day-4 (Session 32): multi-stage example replaced by the tested `--prefix=/install` version with the reason; MAINTAINER, dangling image and `docker system prune` wording corrected (the Q&A part of the file already had the right definitions).
+- K8s Day-2 (Session 34): kube-proxy and container runtime (containerd, not Docker) rewritten; node-pool size wording.
+- Resume session (Session 45): "Handling Tool Gaps" no longer says to write a tool you have not used.

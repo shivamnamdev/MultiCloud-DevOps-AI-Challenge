@@ -82,7 +82,7 @@ This session focused on teaching participants how to build an effective, ATS-opt
 
 ### Handling Tool Gaps
 
-- If a JD requires a tool you haven't used (e.g., Datadog) but you know a similar one (e.g., Prometheus/Grafana): write the required tool in the resume and be prepared to explain your adjacent expertise in the interview. 
+- If a JD requires a tool you haven't used (e.g., Datadog) but you know a similar one (e.g., Prometheus/Grafana): **do not list the tool as something you have used.** Write the tool you really used (Prometheus/Grafana), use the JD's wording only where it truly describes your work (for example "monitoring and alerting"), and be ready to explain how your experience transfers. 
 - You must be able to justify every metric and keyword you write — interviewers will cross-question every number. 
 
 ---

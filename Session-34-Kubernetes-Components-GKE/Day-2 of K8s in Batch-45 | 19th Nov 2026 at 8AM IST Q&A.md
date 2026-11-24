@@ -35,8 +35,8 @@ Each worker node runs three components.
 
 - **Kubelet:** An agent running on every worker node. Passes information between the worker and the master (API server). Responsible for pulling images and creating containers/pods as instructed. Distinct from `kubectl` — kubelet is the agent; kubectl is the CLI utility. 
     - Kubelet continuously retries failed operations (e.g., image pulls) and generates events on each attempt, which is how troubleshooting visibility is provided. 
-- **Kube-proxy:** Handles networking and exposes pods to the internet or internal cluster traffic. Manifests as a **Service** object in Kubernetes. 
-- **Container Runtime:** Runs the actual application containers inside the worker node (Docker/dockerized environment). Everything inside Kubernetes ultimately runs within a Docker-compatible runtime. 
+- **Kube-proxy:** Runs on every node and programs the network rules (iptables/IPVS) that make a **Service** IP reach the right pods. It does not expose anything to the internet by itself: external access comes from a NodePort/LoadBalancer Service or an Ingress (on GKE, the cloud load balancer). Some clusters (for example GKE Dataplane V2) replace kube-proxy with another component. 
+- **Container Runtime:** Runs the actual application containers inside the worker node. Kubernetes talks to it through the CRI; today that is **containerd** (or CRI-O), not Docker Engine (Docker support, "dockershim", was removed in Kubernetes 1.24). Images built with Docker still run unchanged. GKE nodes use containerd. 
 
 ---
 
@@ -58,7 +58,7 @@ Each worker node runs three components.
 3. Set cluster name (e.g., `day-two`), select region/zone, confirm Kubernetes version (1.36).
 4. Key configuration options reviewed:
     - **Nodes per zone:** Setting 3 nodes × 3 zones = **9 total worker nodes**. 
-    - **Node size:** CPU/RAM based on application load (e.g., 8-core, 16-core, 32-core); all nodes in a cluster are the same size. 
+    - **Node size:** CPU/RAM based on application load (e.g., 8-core, 16-core, 32-core); nodes in one **node pool** share a size, but a cluster can have several node pools with different machine types. 
     - **Auto-scaling:** Scales at the **node level** (not pod/container level) — nodes are added/removed based on traffic. 
     - **Backup plan:** Configurable retention (e.g., daily backup, 7-day retention = RPO of 1 day). 
     - **Surge upgrade / Blue-Green deployment:** Node upgrade strategy; blue-green means running two environments simultaneously, routing traffic gradually (10% → 20% → 100%), then retiring the old version — doubles infrastructure cost. 
@@ -513,7 +513,7 @@ Choose node size based on application workload and its CPU/RAM needs. The sessio
 ### Scenario 28: You need to explain the role of kube-proxy during an architecture interview. What is a clear answer?
 
 **Answer:**
-Kube-proxy handles networking for Kubernetes Services and helps route traffic to workloads inside the cluster. The session connected this role with exposing pods to internal cluster traffic or external access through the appropriate Service configuration.
+Kube-proxy handles networking for Kubernetes Services and helps route traffic to workloads inside the cluster. Kube-proxy programs the rules behind Service IPs on each node; external access comes from the Service type (NodePort, LoadBalancer) or an Ingress, not from kube-proxy itself.
 
 ### Scenario 29: A pod keeps failing to pull its image. Which worker-node component should you mention, and how can you observe its retry activity?
 
