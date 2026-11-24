@@ -318,4 +318,4 @@ Do these **before** the first real request:
 
 ## What we did not test
 
-A real LLM call (model quality, injection resistance, real tokens and prices), the provider console budget screens, EKS and ECR, AWS Secrets Manager and the sync to a Kubernetes Secret, Grafana panels and Alertmanager notifications, canary and shadow traffic splitting, a GPU node group, DVC or MLflow, a time-ordered split on real data, and the circuit breaker and cache (described in the script, not coded).
+A real LLM call (we tried once and the account had no API credit; by choice we did not top up, so `golden_set.py` is written and the error path is tested, but model quality, injection resistance, real tokens and prices), the provider console budget screens, EKS and ECR, AWS Secrets Manager and the sync to a Kubernetes Secret, Grafana panels and Alertmanager notifications, canary and shadow traffic splitting, a GPU node group, DVC or MLflow, a time-ordered split on real data, and the circuit breaker and cache (described in the script, not coded).

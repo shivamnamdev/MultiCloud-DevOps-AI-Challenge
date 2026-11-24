@@ -14,7 +14,7 @@ Sessions 1 and 2 (guides + lab files; no hypervisor installed, no AI product tes
 Key corrections found by real runs are recorded inside each guide (for example, GitHub's OIDC `sub` now contains owner and repo IDs; the S20 script was fixed).
 
 ## Next steps, in order
-1. **Optional later:** one real Claude API call for Session 32 Part F (needs the user's Console key with a spend limit; nothing real was called so far).
+1. **Skipped by the user's choice (2026-11-24); do it only if a demo video needs it:** one real Claude API call for Session 32 Part F (needs the user's Console key with a spend limit; nothing real was called so far).
 2. ~~GCP / GKE (Session 24)~~ done 2026-11-24 (with `_lab_tools/gcp` pair). Remaining ideas: other sessions that touch GCP, and the open recorded-demo idea below.
 3. Open idea from the user: a recorded demo using the real console (user drives the console on camera, Claude verifies by CLI in parallel; pilot: the Session 8 launch wizard).
 4. Housekeeping: AD-001 / AD-002 ad scripts still say "33 sessions / 132 episodes".

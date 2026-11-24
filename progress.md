@@ -509,3 +509,5 @@
 - Bug found and fixed: provider errors other than timeout crashed the request. Added `ExpertUnavailable` (app.py), mapping in `real_expert.py` (400/401/403/429/5xx/connection), a 503 response and `outcome="unavailable"` metric, plus a test (9 passed). Verified against the live API: clean 503, log line has type/status/request id only.
 - New: `lab_files/review-helper/golden_set.py` (10 cases, 2 injection canary checks, `TOKEN_CAP` stop). User chose own caps instead of a Console spend limit (the SDK login cannot set one). Pending: add API credit, then run the golden set and compare tokens with the estimate; expect Haiku 5.5's default thinking to interact with `max_tokens=200`.
 - Security: the user pasted `~/.config/anthropic/credentials/default.json` (live OAuth tokens) into chat; advised `ant auth logout` / revoke at the end.
+
+- Decision 2026-11-24: user chose to skip the real Claude call (no API credit added). Part F stays marked not tested; revisit only if a demonstration video needs it. Reminder: `ant auth logout` because tokens were pasted in chat.
