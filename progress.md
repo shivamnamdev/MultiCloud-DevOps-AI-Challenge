@@ -575,3 +575,9 @@
 - Results: contexts `continuous-integration/jenkins/branch` and `.../pr-merge`; pass = pending then success; failing test = pending then `error` ("This commit cannot be built"); PR merge state UNSTABLE then CLEAN after a fix. Token needs Pull requests: read for scanning (default branch strategy lists PRs); "all branches" avoids it.
 - My mistakes: first PR-discovery config 403 (permission), an amend on a pushed commit was rejected (reset and a clean fix commit); both harmless.
 - Not tested: `githubNotify` step, GitHub Checks plugin, required-check rule with these names (private free repo has no branch protection), fork PRs and fork trust.
+
+## 2026-11-25: Fork trust test (Sessions 16B, 31)
+- Temporary PUBLIC repo `atithi-fork-trust-lab` (user approved the public repo explicitly after a classifier block), second account `atithi-outsider-lab` (created by the user) forked it and opened PR #1 whose Jenkinsfile prints a dummy secret reversed. Throwaway Jenkins on the laptop with `github-branch-source` and a dummy credential.
+- Contributors (default) trust: scan said "not from a trusted source"; build log: loads Jenkinsfile from base branch ("modified in an untrusted revision"); evil stage did NOT run. Everyone trust: fork Jenkinsfile ran, printed `0000-terces-laer-a-ton`. PR code/tests are still checked out under Contributors (only the Jenkinsfile is protected).
+- Cleanup: Jenkins container/volume/image removed, token file deleted, base repo deleted. The outsider's fork `atithi-outsider-lab/atithi-fork-trust-lab` still exists (public, now independent): the user must delete it, revoke the PAT `atithi-fork-trust-lab`, and may delete the second account.
+- Not tested: Nobody/Collaborators policies, a malicious conftest.py running on the agent, gh pr create as the second account.

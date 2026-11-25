@@ -4,7 +4,7 @@ Companion to `02_script.md`. The script teaches the ideas; this guide is the han
 
 > **What was tested, and what was not.**
 > Everything below ran for real on GitHub (a free personal account, a **public** repo, SSH, `gh` CLI, Git 2.54 on macOS). The messages are copied from those runs. Where the browser has a button, we used the `gh` command or API call that does the same thing, so the **screens** themselves were not tested.
-> **Not tested:** a second human account. Requiring **approvals** (a reviewer other than you), a real **fork to a different owner's repo and a pull request from it** (GitHub does not let you fork your own repo, see Part E), and `git rebase`.
+> **Not tested:** a second human account. Requiring **approvals** (a reviewer other than you), (the real fork to a different owner and a pull request from it **was** tested later with a second account, see Part E), and `git rebase`.
 
 | | |
 |---|---|
@@ -331,7 +331,9 @@ git merge upstream/main                        # use the name you saw ("Already 
 gh repo sync YOU/REPO                          # one-line alternative that syncs the fork on GitHub
 ```
 
-Then branch, push to **your fork**, and open the PR to the upstream owner. We did **not** open a PR into someone else's repo, so that last step is untested.
+Then branch, push to **your fork**, and open the PR to the upstream owner.
+
+**Tested with a real second account (25 November 2026):** the second account forked a public repo, edited a file on the web and opened a PR into the original. `gh pr list --json isCrossRepository` said `true`, and the API labelled the author `FIRST_TIME_CONTRIBUTOR` (a person with no earlier merged work and no write access). The PR page and the Jenkins side of it are in the Session 31 guide (fork trust). Two details: deleting the original repo does **not** delete the fork (it stays, as an ordinary independent repo), and a private repo cannot be forked by an outsider, so the base had to be public. `gh pr create` from the command line as the second account, and syncing the fork afterwards, were not tested.
 
 ---
 
