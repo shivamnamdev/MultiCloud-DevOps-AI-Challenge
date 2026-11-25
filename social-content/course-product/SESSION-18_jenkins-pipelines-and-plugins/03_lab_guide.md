@@ -338,7 +338,7 @@ Setup we used, and a safe way to do it. A temporary **public** repository, the p
 - **A push starts a build by itself:** from the `git push` to build #1 starting took **about 11 seconds**. The build page said `Started by GitHub push by <your login>` (cause class `GitHubPushCause`), the log began with `Cloning the remote Git repository` and checked out the pushed commit. A second push, and the merge of a pull request later, rang the bell again: **six push deliveries, all `200`, three builds.**
 - **Trap:** without the **GitHub** plugin the path `/github-webhook/` does not exist (Session 17's plugin list only has Git). The `Git` plugin's own bell is `/git/notifyCommit` (Part B2).
 - A Jenkins API call that creates a job needs the **crumb from the same session cookie** (`curl -c cookiejar` then `-b cookiejar`), or you get `403`.
-- **Not run:** Jenkins sending the build status back to GitHub (needs the `github-branch-source` style credentials and `githubNotify`), a webhook **secret**, a private repository.
+- **Not run:** the `githubNotify` step (Jenkins sending the build status back to GitHub through the `github-branch-source` plugin **was** tested for real, see the Session 31 guide), a webhook **secret**, a private repository.
 
 ## What we did not test
 

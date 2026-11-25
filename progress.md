@@ -569,3 +569,9 @@
 - Push to main: tags `main`, `sha-<7>`; git tag `v1.0.0`: tags `1.0.0`, `sha-<7>` (as the guide predicted). Package auto-linked to the repo, private. Without `packages: write`: login OK, push `403 Forbidden`.
 - Deleting the repo did NOT delete the package (it stays, repository none). Two private packages left for the user to delete in the web page: `atithi-ghcr-test`, `atithi-ghcr-lab` (`delete:packages` scope not granted).
 - Not tested: making a package public, read-only pull token on a server, signing.
+
+## 2026-11-25: Jenkins posting build status to GitHub (Sessions 18, 31)
+- Practice Jenkins (LTS, plugin `github-branch-source`, multibranch job) on the laptop + temporary PRIVATE repo + fine-grained token (single repo; user created it, saved to a 600 file, never pasted in chat). All deleted afterwards (container, volume, image, token file, repo). User still to revoke the token at github.com/settings/personal-access-tokens.
+- Results: contexts `continuous-integration/jenkins/branch` and `.../pr-merge`; pass = pending then success; failing test = pending then `error` ("This commit cannot be built"); PR merge state UNSTABLE then CLEAN after a fix. Token needs Pull requests: read for scanning (default branch strategy lists PRs); "all branches" avoids it.
+- My mistakes: first PR-discovery config 403 (permission), an amend on a pushed commit was rejected (reset and a clean fix commit); both harmless.
+- Not tested: `githubNotify` step, GitHub Checks plugin, required-check rule with these names (private free repo has no branch protection), fork PRs and fork trust.
