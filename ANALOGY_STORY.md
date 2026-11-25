@@ -31,10 +31,11 @@ Every topic in the course lives at exactly one level. This is what stops the ana
 
 Roads connect all three: the internet.
 
-## Two rules that keep it consistent
+## Three rules that keep it consistent
 
 1. **Staff are not guests.** Linux users and cloud IAM users are *staff*. End users of the website are *guests*. Guests never get a staff ID card. They only arrive by road, get served and leave.
 2. **In this world, buildings can be photocopied.** A furnished building can be cloned in minutes and demolished at no cost. This is the one "magic" rule, and it is the reason cloud, containers and infrastructure-as-code exist.
+3. **The client is neither staff nor guest (added 2026-11-25).** Mrs. Mehta, the owner of Atithi Hotels, is the *client*: she states what the business needs and receives the handover. She appears only in the client brief (Session 00) and in the one-line "Client asks" of a ticket. Tickets, "Done when" checks and handover notes are written in plain technical English with no story words. Details: `CLIENT_BRIEF_DRAFT.md`.
 
 ## The map, module by module
 

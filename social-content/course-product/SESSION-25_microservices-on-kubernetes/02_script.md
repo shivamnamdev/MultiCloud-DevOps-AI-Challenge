@@ -50,13 +50,13 @@ Is session ka project: Atithi ka truck park, `atithi` wing mein. `web`, lobby ki
 **(Voiceover):**
 Trucks Kubernetes par achhi tarah tab chalti hain jab teen niyam pakke hon, jinhe 12-factor soch kehte hain. Ek: config environment se aaye, design ke andar nahi. Do: logs stdout par jaayein, kisi file mein nahi, taaki `kubectl logs` aur logging tools unhe utha sakein. Teen: process stateless ho, yaani koi bhi truck mar kar dobara ban sake bina kuch khoye.  Ab Kubernetes unka poora faayda uthata hai: ek pod hatao, dusra aa jaata hai, aur guest ko pata bhi nahi chalta.
 
-### [13:20 – 15:00] Scene 6: Lab: Services ko Pehchano
+### [13:20 – 15:25] Scene 6: Lab: Services ko Pehchano
 **[VISUAL: A worksheet with five rows (web, rooms, bookings, payments, notifications) and four columns: port, depends on, stateful, what breaks if it is down. A check against each of the three 12-factor rules.]**
 
 **(Voiceover):**
-Lab (design ka exercise). Paanch services ke liye ek table banao: naam, port, kis par nirbhar, stateful ya nahi, aur ye gir jaaye to kya tootega. Jaise bookings-service ko Postgres chahiye aur wo stateful hai. Payments gire to bookings ko "baad mein payment" ka rasta chahiye. Phir har service par 12-factor ke teen niyam check karo.
+Is session ka ticket, ATITHI-025. Mrs. Mehta kehti hain: "Sale wale din bhi site chalni chahiye, aur koi booking gum nahi honi chahiye." Done when: web, rooms aur bookings ek saath chalein aur naam se ek doosre ko dhundhein, database ka data pod delete ke baad bhi rahe, ek galat service poore cluster ko na khaye, aur sirf bookings hi database tak pahunche. Lab (design ka exercise). Paanch services ke liye ek table banao: naam, port, kis par nirbhar, stateful ya nahi, aur ye gir jaaye to kya tootega. Jaise bookings-service ko Postgres chahiye aur wo stateful hai. Payments gire to bookings ko "baad mein payment" ka rasta chahiye. Phir har service par 12-factor ke teen niyam check karo.
 
-### [15:00 – 15:30] Scene 7: Recap aur Bridge
+### [15:25 – 15:55] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "split by business, not by layer · each service owns its data · cost = distributed complexity · config in env, logs to stdout, stateless".]**
 
 **(Voiceover):**
@@ -218,13 +218,13 @@ Teen services ke liye teen YAML theek hain. Par das services aur teen wings ke l
 **(Voiceover):**
 Ab ek table jo apne paas rakho. Pod Pending: `kubectl describe pod` ke Events: jagah, quota ya storage. CrashLoopBackOff: `kubectl logs --previous`, aur exit code. ImagePullBackOff: image ka naam ya registry ki ijaazat. Service ke endpoints khaali: label aur selector ka mismatch. Ingress se 502 ya 404: backend pod Ready nahi, port galat, ya path galat. PVC Pending: koi matching PV ya StorageClass nahi. Aur sabka pehla kadam wahi: `kubectl get events --sort-by=.lastTimestamp` aur `describe`. Session 5 ka seedha sawaal: pehle jaano kya toota, phir badlo.
 
-### [12:15 – 15:55] Scene 7: Lab: Concierge aur Taale
+### [12:15 – 16:11] Scene 7: Lab: Concierge aur Taale
 **[VISUAL: An Ingress with three paths applied; `curl` through the entrance reaches web, rooms and bookings. A default-deny NetworkPolicy; the `web` pod can no longer reach postgres; an allow policy for `bookings-service` restores only that path. `kubectl auth can-i` checks.]**
 
 **(Voiceover):**
-Lab. Ek Ingress YAML likho: `/` web ko, `/api/rooms` rooms-service ko, `/api/bookings` bookings-service ko. Local cluster mein Helm se Traefik jaisa maintained controller lagao, jaise `helm install traefik traefik/traefik -n traefik --create-namespace`, aur GKE mein built-in. Ek jaal: Ingress path ko jyon ka tyon service tak bhejta hai. `/api/rooms` rooms-service ko jaaye to wo `/api/rooms/health` dekhega aur 404 dega. Isliye service ko wahi prefix do, ya controller ka strip-prefix rule lagao. Apply karke teeno raaste `curl` se test karo. Phir `atithi` wing mein ek default-deny NetworkPolicy lagao: pods aapas mein baat nahi kar paate. Ab sirf zaroori allow policies jodo: web se rooms aur bookings, bookings se rooms aur postgres, aur concierge ke wing se web, rooms aur bookings. Concierge wali policy bhoolne par default-deny ke baad Ingress bhi pods tak nahi pahunchta. Test pod se web se postgres tak koshish karo: nahi pahunchta. Ek ServiceAccount banao aur `kubectl auth can-i` se check karo. Aakhir mein `helm template` chalao. Safai: wing hatao, PVC hatao.
+Lab. Ek Ingress YAML likho: `/` web ko, `/api/rooms` rooms-service ko, `/api/bookings` bookings-service ko. Local cluster mein Helm se Traefik jaisa maintained controller lagao, jaise `helm install traefik traefik/traefik -n traefik --create-namespace`, aur GKE mein built-in. Ek jaal: Ingress path ko jyon ka tyon service tak bhejta hai. `/api/rooms` rooms-service ko jaaye to wo `/api/rooms/health` dekhega aur 404 dega. Isliye service ko wahi prefix do, ya controller ka strip-prefix rule lagao. Apply karke teeno raaste `curl` se test karo. Phir `atithi` wing mein ek default-deny NetworkPolicy lagao: pods aapas mein baat nahi kar paate. Ab sirf zaroori allow policies jodo: web se rooms aur bookings, bookings se rooms aur postgres, aur concierge ke wing se web, rooms aur bookings. Concierge wali policy bhoolne par default-deny ke baad Ingress bhi pods tak nahi pahunchta. Test pod se web se postgres tak koshish karo: nahi pahunchta. Ek ServiceAccount banao aur `kubectl auth can-i` se check karo. Aakhir mein `helm template` chalao. Safai: wing hatao, PVC hatao. Ab handover note likho: kaun si services chal rahi hain, kaise pahunchenge, data kahan rehta hai, kitna kharcha, undo kaise, aur known gaps. Yahan gaps ye hain: database ek hi hai bina replica aur backup ke, aur abhi koi TLS nahi.
 
-### [15:55 – 16:45] Scene 8: Recap aur Bridge
+### [16:11 – 17:01] Scene 8: Recap aur Bridge
 **[VISUAL: A card: "Ingress rules + controller · TLS in a Secret · default-deny + allow lists · RBAC least privilege · securityContext · Helm for repeatable deploys · describe → logs → events". Then a control room with live meters fades in.]**
 
 **(Voiceover):**

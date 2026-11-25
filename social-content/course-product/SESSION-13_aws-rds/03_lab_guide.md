@@ -26,6 +26,28 @@ Companion to `02_script.md`. The script teaches the ideas; this guide is the han
 | **Cost** | Free here. A real RDS instance bills by the hour while it exists, and snapshots bill without an instance. |
 | **Skill check before you start** | Session 8 (the emulator setup), Session 11 (security groups), Session 7 (Python and `venv`). Docker installed. |
 
+## Ticket ATITHI-013: bookings that survive a mistake
+
+**Client asks (Mrs. Mehta):** "Koi booking kabhi gum nahi honi chahiye, galti se bhi nahi."
+
+**Constraints:** PostgreSQL on `db.t4g.micro`, region `ap-south-1`, in the private wings of the Session 14 campus (not public); the password lives in Secrets Manager; tag `Project=atithi-lab`; everything deleted at the end (an instance and its snapshots both bill).
+
+**Deliver:** a managed PostgreSQL database that is private, backed up, protected from deletion, and a **proven restore** from a snapshot.
+
+**Done when** (what we saw on real AWS):
+
+| Check | How | Expected |
+|---|---|---|
+| Not public | `aws rds describe-db-instances --query 'DBInstances[0].PubliclyAccessible'` | `false` |
+| Backups on | `... BackupRetentionPeriod` | `7` |
+| Delete is blocked | `aws rds delete-db-instance ...` | `Cannot delete protected DB Instance` |
+| Restore holds the older data | add a row after the snapshot, restore the snapshot as a new instance, count rows on both | the restored copy has the older count (we saw **3** against the original **4**) |
+| Wrong port behaves as expected | `psql` to port 5433 | `timeout expired` (the door guard drops it), not "refused" |
+
+**Timing to plan for (real):** create about 10 minutes; manual snapshot about 3; restore as a new instance about 8; point-in-time restore about 10.
+
+The handover note you write at the end is at the bottom of Part D.
+
 ## Before you start
 
 For the SQL labs you need Docker. For the SQLite lab we used the Ubuntu practice container from Sessions 5 and 6. Files are in `lab_files/`.
@@ -203,6 +225,19 @@ On real AWS: delete the database (decide on the final snapshot), `atithi-restore
 - [ ] Your throwaway Postgres container is gone.
 
 ---
+
+### Handover note for ATITHI-013 (write it before you delete anything)
+
+```
+Ticket:        ATITHI-013 Bookings that survive a mistake
+Built:         1 x PostgreSQL db.t4g.micro (private, deletion protection on, 7 days of backups); 1 manual snapshot; 1 restored copy
+Reach it:      endpoint on port 5432 from the booking server only (security group reference); password from Secrets Manager (role may read only that secret)
+Restore proof: restored copy held the older data (3 rows against 4 in the original); a restore creates a NEW instance with a NEW endpoint
+Cost running:  hourly price of db.t4g.micro + storage + snapshots (snapshots bill even with no instance); read the current prices on the pricing page and check your Billing page after the lab
+Undo:          switch deletion protection off, delete the restored copy, delete the original (take a final snapshot only if you want one), delete the lab snapshots, check the Snapshots page
+Known gaps:    no Multi-AZ standby (we could not see a failover), no read replica (refused with a managed password), storage was NOT encrypted when created from the CLI with defaults
+Next ticket:   ATITHI-014 the network those wings live in (Session 14)
+```
 
 ## If something goes wrong
 

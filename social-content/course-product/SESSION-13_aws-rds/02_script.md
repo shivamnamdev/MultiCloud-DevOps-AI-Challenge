@@ -148,13 +148,13 @@ Ab building girne ka sawaal. Multi-AZ matlab: records office ki ek exact copy do
 **(Voiceover):**
 Read replica alag cheez hai. Wo ledger ki ek photocopy hai, jo kuch second peeche rehti hai, kyunki copy asynchronous hoti hai. Isse reports, analytics aur manager ki dashboard padhne ka kaam copy par chala jaata hai, aur primary par booking likhne ka bojh kam rehta hai. Ye availability ka vaada nahi karti. Zaroorat padne par ek replica ko promote karke apna alag primary banaya ja sakta hai, par ye haath se hota hai. Kuch engines mein replica doosre region mein bhi rakh sakte ho. Seedha rule: building girne ka darr hai to Multi-AZ. Padhne ka bojh bahut hai to read replica. Dono ek hi cheez nahi, aur bahut jagah dono saath chalte hain.
 
-### [12:30 – 14:55] Scene 6: Lab: Snapshot, Restore aur Tulna
+### [12:30 – 15:15] Scene 6: Lab: Snapshot, Restore aur Tulna
 **[VISUAL: Terminal and console. `psql` inserts three rows, then console: Actions → Take snapshot `atithi-lab-snap`. Restore snapshot as `atithi-restored`. Both endpoints queried with `SELECT COUNT(*) FROM bookings;`. Then Modify with Multi-AZ box visible but not applied.]**
 
 **(Voiceover):**
-Lab. Database mein tab tak kuch bookings daalo. Phir Actions mein jaakar ek manual snapshot lo, `atithi-lab-snap`. Us snapshot se ek naya instance restore karo, naam `atithi-restored`. Dono endpoints par `SELECT COUNT(*) FROM bookings;` chalao, aur dekho ki dono mein wahi ginti hai, par endpoint alag hain. Ab Modify screen par jaao aur dekho ki Multi-AZ aur read replica kahan se on hote hain. Mehnge options hain, isliye sirf padho, apply mat karo. Aakhir mein safai: `atithi-restored` ko hata do, original ko final snapshot ke saath hata do, aur snapshots ko bhi, kyunki wo bina instance ke bhi paisa lete hain.
+Is lab ka ticket, ATITHI-013. Mrs. Mehta kehti hain: "Koi booking kabhi gum nahi honi chahiye, galti se bhi nahi." Done when: database private ho aur public se na khule, saat din ka backup ho, deletion protection delete ko roke, aur snapshot se restore karne par purana data wapas mile. Lab. Database mein tab tak kuch bookings daalo. Phir Actions mein jaakar ek manual snapshot lo, `atithi-lab-snap`. Us snapshot se ek naya instance restore karo, naam `atithi-restored`. Dono endpoints par `SELECT COUNT(*) FROM bookings;` chalao, aur dekho ki dono mein wahi ginti hai, par endpoint alag hain. Ab Modify screen par jaao aur dekho ki Multi-AZ aur read replica kahan se on hote hain. Mehnge options hain, isliye sirf padho, apply mat karo. Aakhir mein safai: `atithi-restored` ko hata do, original ko final snapshot ke saath hata do, aur snapshots ko bhi, kyunki wo bina instance ke bhi paisa lete hain.
 
-### [14:55 – 15:35] Scene 7: Recap aur Bridge
+### [15:15 – 15:55] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "backup + log = PITR · restore = new instance · Multi-AZ = standby, failover · read replica = photocopy for reads · test your restore".]**
 
 **(Voiceover):**
@@ -194,13 +194,13 @@ Ek database ek saath sirf kuch hi connections sambhal sakta hai, aur ye seema in
 **(Voiceover):**
 Jab connection nahi bana, to Session 5 ka troubleshooting method yaad karo: error ka shabd padho. Timeout ka matlab aksar raaste mein door guard ya route hai: `nc -vz ENDPOINT 5432` chalao, aur check karo ki database ke security group mein booking building ka group hai ya nahi. Connection refused matlab ya to galat port ya database abhi tayyar nahi. "Password authentication failed" matlab user ya password galat, ya Secrets Manager ka naya password abhi application tak nahi pahunchaya. "Database does not exist" matlab database ka naam galat likha, jo instance ke naam se alag hota hai. Har ek ka ilaaj alag hai, isliye pehle shabd padho, phir kuch badlo.
 
-### [11:35 – 14:20] Scene 6: Lab: Building se Ledger tak
+### [11:35 – 14:37] Scene 6: Lab: Building se Ledger tak
 **[VISUAL: SSH to the booking building. `sudo apt install -y postgresql-client`. A secret fetched with `aws secretsmanager get-secret-value`. `psql -h ENDPOINT -U atithi_admin -d postgres`. A Python snippet with `psycopg2`, `os.environ["DB_PASSWORD"]`, and a parameterised `INSERT`.]**
 
 **(Voiceover):**
-Lab. Session 11 ki booking building mein SSH karo. `sudo apt install -y postgresql-client`. Phir `psql -h YOUR-RDS-ENDPOINT -U atithi_admin -d postgres`. Password Secrets Manager se `aws secretsmanager get-secret-value --secret-id YOUR-SECRET --query SecretString --output text` se lo, aur check karo ki building ke role ko ye padhne ki ijaazat hai. Connect hone par Episode 1 ke teen tables banao, par Postgres mein `id INTEGER PRIMARY KEY` apne aap number nahi deta: `id SERIAL PRIMARY KEY` likho, warna insert `null value in column "id"` ka error deta hai. Phir ek `SELECT`. Ab Python mein `psycopg2` se wahi query chalao: password `os.environ["DB_PASSWORD"]` se aaye, aur insert mein `%s` parameter ho, text jodna nahi. Agar timeout aaye to pichhle scene ka nuskha chalao. Aakhir mein safai: database aur lab ke snapshots delete.
+Lab. Session 11 ki booking building mein SSH karo. `sudo apt install -y postgresql-client`. Phir `psql -h YOUR-RDS-ENDPOINT -U atithi_admin -d postgres`. Password Secrets Manager se `aws secretsmanager get-secret-value --secret-id YOUR-SECRET --query SecretString --output text` se lo, aur check karo ki building ke role ko ye padhne ki ijaazat hai. Connect hone par Episode 1 ke teen tables banao, par Postgres mein `id INTEGER PRIMARY KEY` apne aap number nahi deta: `id SERIAL PRIMARY KEY` likho, warna insert `null value in column "id"` ka error deta hai. Phir ek `SELECT`. Ab Python mein `psycopg2` se wahi query chalao: password `os.environ["DB_PASSWORD"]` se aaye, aur insert mein `%s` parameter ho, text jodna nahi. Agar timeout aaye to pichhle scene ka nuskha chalao. Ab handover note likho: kya banaya, endpoint aur password kahan se milta hai, kitna kharcha, kaise undo karte hain, aur known gaps. Yahan gaps ye hain: Multi-AZ aur read replica nahi lagaye, aur CLI se bana database default mein encrypted nahi tha. Aakhir mein safai: database aur lab ke snapshots delete.
 
-### [14:20 – 15:25] Scene 7: Recap aur Bridge
+### [14:37 – 15:42] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "private wing · SG chain from booking-sg · encrypt at rest and in transit · Secrets Manager + role · pool · parameters, not text join". Then the campus map appears with a thick line around two wings.]**
 
 **(Voiceover):**

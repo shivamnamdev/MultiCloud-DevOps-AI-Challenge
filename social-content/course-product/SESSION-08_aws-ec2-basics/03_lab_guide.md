@@ -34,6 +34,28 @@ Companion to `02_script.md`. The script teaches the ideas; this guide is the han
 | **Cost** | Free on the emulator. On real AWS everything you launch bills while it exists: use the cleanup list at the end. |
 | **Skill check before you start** | Sessions 3 to 7: Linux, SSH keys, the shell. Docker installed. |
 
+## Ticket ATITHI-008: first server for the booking site
+
+**Client asks (Mrs. Mehta):** "Pehla server aaj hi live ho jaye. Bas ek simple page dikhna chahiye, aur sirf meri team andar ja sake."
+
+**Constraints:** region `ap-south-1`; type `t3.micro` (x86 image, see C3); SSH only from your own IP (`/32`), never `0.0.0.0/0`; web (port 80) open to everyone; IMDSv2 required; tag `Project=atithi-lab` and a `Name`; everything deleted at the end.
+
+**Deliver:** a running Ubuntu server with nginx installed through user data (`lab_files/userdata.sh`), and the page `Atithi Hotels: Book Now` in a browser at `http://PUBLIC_IP`.
+
+**Done when** (run each check; "expected" is what we saw on real AWS):
+
+| Check | How | Expected |
+|---|---|---|
+| Page is live | `curl -s http://PUBLIC_IP` | `<h1>Atithi Hotels: Book Now</h1>...` |
+| SSH works from your IP | `ssh -i key.pem ubuntu@PUBLIC_IP` | you are logged in |
+| SSH is not open to the world | `aws ec2 describe-security-groups --group-ids SG` | port 22 source is your `/32` only |
+| IMDSv2 enforced | metadata address without a token | `401`; with a token it answers |
+| Tags present | `aws ec2 describe-instances --instance-ids ID` | `Name` and `Project` tags |
+
+**Trap we hit on a real run:** the saved user data had a wrong last line, so nginx showed its **default welcome page**. User data runs **only on first boot**, so editing it later does not rerun it. Read it back with `aws ec2 describe-instance-attribute --instance-id ID --attribute userData` before blaming nginx.
+
+The handover note you write at the end is at the bottom of Part D.
+
 ## Before you start
 
 You need Docker. The AWS command line runs inside a Docker image, so you do not install it. Files are in `lab_files/`.
@@ -217,6 +239,21 @@ On real AWS, also check EC2's **Volumes** and **Elastic IPs** pages, and **Snaps
 - [ ] Your emulator and your key file are gone.
 
 ---
+
+### Handover note for ATITHI-008 (write it before you delete anything)
+
+```
+Ticket:        ATITHI-008 First server
+Built:         1 x t3.micro (Ubuntu), nginx via user data, security group with 22 from my /32 and 80 from anywhere
+Reach it:      http://<public-ip> (web); ssh -i key.pem ubuntu@<public-ip> from my IP only
+On stop/start: the public IP changes (we saw 3.109.208.236 become 13.201.189.152); private IP and disk stay
+Cost running:  <hourly price of t3.micro from the pricing page> + 8 GiB gp3 disk; our whole lab ran about one hour: cents
+Undo:          terminate the instance (its volume goes with it), delete the security group and the key pair, delete the .pem
+Known gaps:    one server only (no failover), HTTP only (no TLS), set up by hand (Terraform, Session 27)
+Next ticket:   ATITHI-009 staff access with IAM (Session 9)
+```
+
+The **Known gaps** line is the thread to the next session: it names what a later session fixes.
 
 ## If something goes wrong
 

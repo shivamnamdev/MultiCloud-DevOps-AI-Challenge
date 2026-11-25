@@ -8,6 +8,7 @@
 - **Journey source:** Follows the flow of `LESSON-00_program-kickoff` (hook, promise, the picture, course architecture, multi-cloud and AI, setup, commitment tasks, bridge to Session 01), rewritten for this 33-session course. Its salary figures, batch details, live-cohort claims and third-party names are not carried over.
 - **Story position:** All three zoom levels. Ye session poori kahaani ek baar shuru se ant tak sunata hai.
 - **Story words previewed:** guest, staff, building, landlord, campus, head office, design, vault, foreman, conveyor, truck, depot, operations command, control room, master plan, setup crew, assistant
+- **Client layer (added 2026-11-25):** Mrs. Mehta (client) ke chhe needs aur ticket + handover note ka tareeka. Draft aur reasoning: `../../../CLIENT_BRIEF_DRAFT.md`. Story words sirf client ki awaaz mein; tickets aur handover notes seedhi technical bhasha mein.
 - **Note:** Yahan koi tool nahi sikhaya jaata. Har story word ka asli technical naam saath mein bola jaata hai, aur detail apne session mein aati hai.
 - **Episodes:**
   - Episode 1: Tutorial Trap aur Ek Guest ki Yatra
@@ -25,25 +26,30 @@
 **(Voiceover):**
 Aapne mahino se DevOps ke tutorials dekhe hain. EC2 banana aata hai, Docker ka command yaad hai. Phir interview mein ek sawaal aata hai: "Production mein traffic sau guna badh gaya aur website slow hai. Aap sabse pehle kahan dekhoge?" Aur dimaag khaali. Problem aap mein nahi hai. Problem seekhne ke tareeke mein hai: aapne tools alag alag seekhe, par kisi ne ye nahi dikhaya ki wo sab ek saath kaise chalte hain. Ye session wahi poori tasveer dikhata hai, aur batata hai ki agle 33 sessions mein hum kahan se kahan jaayenge.
 
-### [01:45 – 04:10] Scene 2: Bees Tools ya Ek Kahaani?
+### [01:45 – 04:55] Scene 2: Bees Tools ya Ek Kahaani?
 **[VISUAL: A messy pile of tool logos: Linux, AWS, Git, Jenkins, Docker, Kubernetes, Terraform, Ansible, Prometheus. The pile rearranges itself into one picture: a hotel company with buildings, a campus and a head office. Title: "Atithi Hotels".]**
 
 **(Voiceover):**
 DevOps seekhne mein sabse badi dikkat ye hai ki sab kuch alag alag tools ka dher lagta hai. Linux alag, AWS alag, Docker alag, Kubernetes alag. Yaad to ho jaate hain, par judte nahi. Isliye is course mein ek hi kahaani chalegi. Aap ek hotel company chala rahe ho: Atithi Hotels. Atithi Devo Bhava, yaani guest sabse pehle. Is kahaani mein do tarah ke log hain, aur inka fark hamesha yaad rakhna. Guest, yaani website ya app ka end user, jo bas aata hai, service leta hai aur chala jaata hai. Aur staff, yaani aap aur aapki team, jo servers aur cloud par kaam karte ho. Guest ko kabhi staff ka ID card nahi milta. Har tool is company ka ek hissa hai, aur har hissa ek dard ko door karta hai.
 
-### [04:10 – 08:25] Scene 3: Yatra ke Aath Padaav
+**[VISUAL: A phone screen: a WhatsApp message from "Mrs. Mehta, Owner, Atithi Hotels". The six lines of her message appear one by one, each with a small tool icon fading in next to it.]**
+
+**(Voiceover):**
+Aur is kahaani mein ek client bhi hai: Mrs. Mehta, Atithi Hotels ki owner. Wo techie nahi hain. Unka message aaya hai: "Hamari booking website ek purane computer par chalti hai. Sale wale din site baith jaati hai aur guests phone kaat dete hain. Mujhe bas ye chahiye. Sale wale din bhi site chalni chahiye. Koi booking kabhi gum na ho. Bill mere haath se bahar na jaye. Sirf meri team andar aaye, aur guest ka data safe rahe. Naya feature jaldi aaye, par site tootay nahi. Aur guest ko problem dikhne se pehle mujhe pata chal jaye." Ye chhe maangein, aur poora course inhi chhe ko poora karne ki yatra hai. Aap woh engineer ho jise Mrs. Mehta ne hire kiya hai.
+
+### [04:55 – 09:10] Scene 3: Yatra ke Aath Padaav
 **[VISUAL: A thumb taps "Book Now"; a two-second timer stretches into a road map with eight numbered stops, each lighting up in turn: 1 Directory, 2 Roads and junctions, 3 Campus main gate, 4 Marshal, 5 Door guard, 6 Truck, 7 Records office and warehouse, 8 Control room. The real term appears under each stop.]**
 
 **(Voiceover):**
 Ek guest phone par "Book Now" dabata hai, aur do second mein "Booking Confirmed" aa jaata hai. Wahi do second, dheere dheere. Ek: guest directory mein "Atithi Hotels" dhoondhta hai aur use pata milta hai. Ye DNS hai. Do: wo public sadkon aur chauraahon se guzarta hai. Ye internet hai, aur chauraahe routers hain. Teen: wo hamare campus ke main gate par pahunchta hai, yaani internet gateway. Chaar: gate par khada marshal use us building ki taraf bhejta hai jo khuli hai aur khaali hai. Ye load balancer hai. Paanch: building ke darwaze ka guard apni list dekhta hai aur use darwaza number 443 se andar aane deta hai. Guard security group hai, aur darwaze ka number port. Chhah: andar ek service truck use serve karta hai. Ye hamari application hai, ek container ke andar. Saat: truck private wing ke records office se uski booking nikalta hai, yaani database, aur warehouse se photos laata hai, yaani object storage. Aath: control room mein baithi team ye poori visit apni screens par dekhti hai. Ye monitoring hai. Ab wahi interview ka sawaal dobara suno: traffic sau guna, website slow, kahan dekhoge? Is naksha ke saath jawab aasaan hai: control room ki screens se shuru karo, phir marshal, phir buildings, phir trucks, phir records office. Aapko pata hai guest kahan kahan se guzarta hai, to aapko pata hai kahan dhoondhna hai.
 
-### [08:25 – 10:50] Scene 4: Vaada aur Shart
+### [09:10 – 11:35] Scene 4: Vaada aur Shart
 **[VISUAL: A card: "35 sessions + 1 optional bonus · 4 episodes each · a lab in every episode · one capstone". Under it two columns: "Course ka vaada" and "Aapki shart". A stamp at the bottom: "Proof of work, not just watching".]**
 
 **(Voiceover):**
 Ab saaf baat, pehle hi din. Is course ka vaada: 35 sessions aur ek optional bonus, GitOps, har session mein chaar episodes, aur har episode mein ek lab jo aap apne haath se karoge. Linux se shuru karke cloud, CI/CD, containers, Kubernetes, infrastructure as code aur AI tak. Aur ant mein ek capstone, jahan aap ye poori yatra khud banate ho. Aur aapki shart: sirf dekhna nahi. Hotel chalana kitaab padh kar nahi aata, hotel chala kar aata hai. Har lab karo, jo toote use theek karo, aur apna kaam GitHub par rakho, taaki aapke paas dikhane ke liye saboot ho, sirf certificate nahi. Main kisi package ya naukri ka vaada nahi karunga. Vaada sirf itna hai: jo ye sab karega, wo us interview ke sawaal par blank nahi hoga.
 
-### [10:50 – 13:00] Scene 5: Activity, Recap aur Bridge
+### [11:35 – 13:45] Scene 5: Activity, Recap aur Bridge
 **[VISUAL: A blank sheet of paper. Eight boxes are drawn in a row and numbered, a story word in each, with empty space below labelled "real name: fill later". Then three zoom rings appear over the Atithi Hotels picture: "1 Inside one building", "2 The rented campus", "3 Head office".]**
 
 **(Voiceover):**
@@ -133,19 +139,24 @@ Atithi Hotels ek naye sheher mein khulna chahta hai. Purane tareeke se: console 
 **(Voiceover):**
 Is course ki do khaas baatein. Pehli: ek se zyada landlord. Session 30 mein Atithi ek doosre landlord ke saath bhi kaam shuru karta hai, Azure, aur labs mein Google Cloud bhi aata hai. Buildings wahi hain, bas naam alag, aur ek translation table se kaam chal jaata hai. Isiliye ise multi-cloud kehte hain: aap kisi ek landlord ko nahi, hotel chalana seekhte ho. Doosri: poore course mein aapke saath ek assistant baitha hai, AI. Wo bahut padha-likha aur bahut tez hai, par uska har kaam aap jaanchte ho. Session 2 mein aap use saaf brief dena seekhte ho. Session 32 mein ek truck har guest ke sawaal par ek baahar ke expert ko phone karta hai. Session 33 mein assistant control room mein raat ki duty leta hai, aur aap deewar mein ek service hatch lagate ho jisse wo hotel ke auzaar safely use kar sake. Wo hatch MCP server hai. Aur session 31 grand opening hai: ek designer design badalta hai, vault ki ghanti bajti hai, foreman banata aur jaanchta hai, ek naya truck depot se nikal kar bay mein lagta hai, aur ek guest serve hota hai. Uske baad ek optional bonus, 31B, jahan ek supervisor campus par rehkar sab theek rakhta hai: GitOps. Wahi aath padaav, par is baar sab kuch aapne banaya hai.
 
-### [06:20 – 08:10] Scene 3: Ye Course Kaise Chalega
+### [06:20 – 08:45] Scene 3: Ye Course Kaise Chalega
 **[VISUAL: A study card: "Every session: 4 episodes · a lab in each · two opening questions". Then a notebook page with two columns: "Story word" and "Real name".]**
 
 **(Voiceover):**
 Course ka tareeka seedha hai. Har session mein chaar episodes, aur har episode mein ek lab, kyunki DevOps dekh kar nahi, kar ke aata hai. Har session do sawaalon se shuru hoga: hum kis zoom level par hain, aur ye tool kis dard ko door karta hai. Aur ek imaandar baat: kahaani sirf ye batati hai ki tool kyun hai aur kahan baithta hai. Commands, YAML aur numbers hum seedhe asli roop mein seekhenge. Ek notebook rakho, pehle page par do column banao, "story word" aur "asli naam", aur aaj ke shabd likh daalo: guest, staff, building, landlord, campus, truck, conveyor, control room. Ye page har session ke saath badhega.
 
-### [08:10 – 10:25] Scene 4: Task-002: Day 0 ka Setup
+**[VISUAL: A ticket card slides in: "TICKET ATITHI-008: First server. Client asks · Constraints · Deliver · Done when". Below it a "Handover note" card with lines: Built, Reach it, Cost, Undo, Known gaps.]**
+
+**(Voiceover):**
+Aur ek cheez jo asli engineer ki tarah kaam karwayegi. Mrs. Mehta ki chhe maangein aapke saamne tickets ban kar aayengi. Har ticket mein pehle client ki maang, phir shartein, phir aapko kya deliver karna hai, aur ant mein "Done when": kuch checks, jo commands se pass hone chahiye. Aur har ticket ke baad ek handover note: aapne kya banaya, kaise pahunchenge, kitna kharcha, kaise undo karenge, aur abhi kya kami hai. Ye note hi aapko tutorial dekhne wale se kaam deliver karne wala engineer banata hai. Ek zaroori baat: ticket aur handover note mein story ke shabd nahi hote. Wahan seedhi technical bhasha hoti hai, kyunki client ko wahi chahiye.
+
+### [08:45 – 11:00] Scene 4: Task-002: Day 0 ka Setup
 **[VISUAL: A checklist ticking item by item. Cloud: "Google Cloud free trial", "AWS free tier", "Billing alert ON". Accounts: "GitHub", "Docker Hub". Laptop: "VS Code", "Git", "SSH client", "AI assistant in VS Code". A meter icon with an alarm bell beside the billing line.]**
 
 **(Voiceover):**
 Session 1 se pehle aapka saaman tayaar hona chahiye. Ye Task-002 hai. Pehle landlords ke saath account kholo: Google Cloud ka free trial, jo naye account ko 90 din ke liye 300 dollar ka credit deta hai, aur AWS ka free tier. Free offers ke rules badalte rehte hain, isliye account banate waqt official page zaroor padh lo. Aur pehle hi din billing alert lagao, kyunki kiraye ki building khaali padi ho tab bhi meter chalta rehta hai. Phir vault aur depot ke account: GitHub, jahan aapka code rahega, aur Docker Hub, jahan aapke truck designs rahenge. Aur apne laptop par: VS Code, Git, ek SSH client, yaani Windows par MobaXterm ya built-in terminal, aur VS Code mein ek AI assistant. Abhi kuch launch nahi karna hai. Sirf account aur tools tayaar rakhne hain.
 
-### [10:25 – 12:50] Scene 5: Task-001, Recap aur Bridge
+### [11:00 – 13:25] Scene 5: Task-001, Recap aur Bridge
 **[VISUAL: A LinkedIn post being typed: "Day 0: I'm starting…". Then the Atithi Hotels picture with its three zoom rings and the road running through it. Text: "Build · Ship · Fix". The picture fades to an empty plot of land with a "For sale" board and a skyline in the distance.]**
 
 **(Voiceover):**
@@ -193,3 +204,29 @@ I'll post each lab I finish as proof of work. My goal: [your own goal] by [month
 **Paper**
 - [ ] Journey sheet with the eight stops (episode 1)
 - [ ] Notebook page with two columns: story word, real name (episode 4)
+- [ ] Client sheet: Mrs. Mehta's six needs (below); write the session number next to each as you deliver it
+
+## Client sheet: Mrs. Mehta's six needs
+Copy this into your notebook. Next to each need, write the session number when you have delivered it.
+
+| # | What Mrs. Mehta says | The real term | Delivered in session |
+|---|---|---|---|
+| 1 | The site must work on sale day too. | Scaling, load balancing, high availability | |
+| 2 | No booking may ever be lost. | Database backups, snapshots, persistent storage | |
+| 3 | The bill must not get out of hand. | Budgets, tagging, cleanup, right-sizing | |
+| 4 | Only my team gets in; guest data stays safe. | IAM, SSH keys, security groups, secrets | |
+| 5 | New features fast, without breaking the site. | Git, CI/CD, containers, GitOps | |
+| 6 | I must hear about a problem before the guest sees it. | Monitoring, alerts, logs | |
+
+## Ticket and handover note (used from Session 8 on)
+Every ticket has: **Client asks, Constraints, Deliver, Done when** (checks you run with commands). After the lab you write a **handover note**:
+
+```
+Ticket:
+Built:
+Reach it:
+Cost while running:
+Undo:
+Known gaps:
+Next ticket:
+```

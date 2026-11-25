@@ -17,6 +17,26 @@ lab_files/
   docker/         a practice stack: compose.yml, Dockerfile.jenkins, Dockerfile.app, app-start.sh, plugins.txt, jenkins.yaml
 ```
 
+## Ticket ATITHI-031: change reaches production safely, and a bad one rolls back
+
+**Client asks (Mrs. Mehta):** "Naya feature jaldi aaye, par site tootay nahi."
+
+**Constraints:** the practice stack in `lab_files/docker` (or your own Jenkins and app server); `main` is protected; credentials only inside the Push stage; nothing secret in the repository; tear everything down at the end.
+
+**Deliver:** a pipeline where a pull request is built and tested, merging to `main` builds, scans, pushes and deploys the new version, and a deliberately broken release is rolled back by itself.
+
+**Done when:**
+
+| Check | How | Expected |
+|---|---|---|
+| Review rule holds | open a pull request on the protected `main` | merge is blocked until the review and the required check are met (we saw `BLOCKED` / `REVIEW_REQUIRED`) |
+| Status shows on the PR | Jenkins with the GitHub Branch Source plugin | checks `continuous-integration/jenkins/pr-merge` (PR) and `.../branch`; a failing test shows `error`, a fixed one turns the PR `CLEAN` |
+| Change reaches the app | change `/rooms`, PR, review, merge | `curl http://APP_IP:8081/rooms` shows the new data |
+| Wrong credential stops the push | break the registry credential | Test, Build and Scan pass, **Push fails** (`401`) |
+| Bad release rolls back | a release that crashes at start | health loop fails, the old version answers again, the stage is red |
+
+The handover note is at the end of Part D, before the final checklist.
+
 ## Before you start
 
 **Option 1: Docker (free, self-contained).** The practice stack has four containers, none of which touch your own Docker: **jenkins** (the foreman, with Docker CLI, Trivy and Python), **builder** (a separate Docker engine where images are built and scanned), **registry** (the depot, protected by a user and password, standing in for GHCR), and **app** (the app building: its own Docker engine and an SSH door).
@@ -357,6 +377,19 @@ The script describes staging first, a smoke test, an `input` approval with a tim
 - [ ] Everything is cleaned up.
 
 ---
+
+### Handover note for ATITHI-031
+
+```
+Ticket:        ATITHI-031 Safe delivery pipeline
+Built:         repo with branch protection and CODEOWNERS; Jenkins pipeline Test, Build image, Scan, Push, Deploy; health check and automatic rollback
+How it runs:   PR is built and tested; merge to main builds, scans (Trivy), pushes and deploys over SSH
+Where to look: PR checks (continuous-integration/jenkins/pr-merge), Jenkins build log, app at http://APP_IP:8081
+Cost running:  two small servers and a registry; stop or delete them after the lab (our practice stack on a laptop: free)
+Undo:          stop or destroy both servers, revoke the registry token, remove the SSH key from the key store, delete test images, check volumes, public IPs, security groups
+Known gaps:    practice registry instead of GHCR (a manual push and a GitHub Actions publish to GHCR were tested separately, a Jenkins push to GHCR was not), one app server, no signed images, PR builds from forks must not get secrets (default trust setting protects the Jenkinsfile, not the tests)
+Next ticket:   ATITHI-032 and later: the AI and monitoring tickets
+```
 
 ## Final checklist for Session 31
 

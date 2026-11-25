@@ -60,11 +60,11 @@ CMD aur ENTRYPOINT ka farq ek misaal se. `CMD ["python","app.py"]` default hai: 
 **(Voiceover):**
 Truck chal rahi hai, par kya wo jawab de rahi hai? Process zinda ho aur app atki ho, ye ho sakta hai. Isliye `HEALTHCHECK`: ek chhoti command jo Docker har kuch second par chalata hai. App par ek `/health` route rakho jo sirf 200 de, aur Dockerfile mein `HEALTHCHECK --interval=30s --timeout=3s CMD python -c "..." || exit 1`. `docker ps` mein status healthy ya unhealthy dikhta hai. Ye Session 11 ke marshal ke health check ka truck ke andar ka roop hai, jaise housekeeping ka "room ready" status. Yahi baat aage Kubernetes mein probes ban jaati hai. Dhyaan: health check halka ho, database tak na jaaye, nahi to database ki dikkat par saari trucks unhealthy dikhengi.
 
-### [12:00 – 15:00] Scene 6: Lab: Apni Service ko Truck Karo
+### [12:00 – 15:18] Scene 6: Lab: Apni Service ko Truck Karo
 **[VISUAL: `app.py` with `/` and `/health` routes. `requirements.txt` with `flask` and `gunicorn`. Build, run, `curl localhost:5000/health`. Then the same with `127.0.0.1` binding failing from outside.]**
 
 **(Voiceover):**
-Lab. `app.py`:
+Is session ka ticket, ATITHI-022. Mrs. Mehta kehti hain: "Naya feature jaldi aaye, par site tootay nahi." Done when: rooms service ek container image ban jaye jo `/health` par jawab de, non-root user se chale, chhota ho, aur version ke tag ke saath registry mein jaye. Lab. `app.py`:
 ```python
 from flask import Flask
 app = Flask(__name__)
@@ -82,7 +82,7 @@ if __name__ == "__main__":
 ```
 `requirements.txt` mein `flask` aur `gunicorn`. Dockerfile mein CMD gunicorn wala rakho, aur build karo. `docker run -d -p 5000:5000 --name rooms rooms:1.0`, phir `curl localhost:5000/health`. Mac par port 5000 aksar AirPlay ke paas hota hai, to `-p 5050:5000` aur `curl localhost:5050/health` chalao. Ab gunicorn ka bind `127.0.0.1:5000` kar do, dobara build karo, aur dekho ki bahar se jawab nahi aata. `docker ps` mein health status dekho: wo phir bhi healthy dikhega, kyunki jaanch truck ke andar se hoti hai, bahar ke raaste ko nahi dekhti. Ye bahut aam galti hai, aur ise samajhna networking ka ek zaroori sabak hai.
 
-### [15:00 – 15:30] Scene 7: Recap aur Bridge
+### [15:18 – 15:48] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "FROM · WORKDIR · COPY · RUN · ENV/ARG · USER · HEALTHCHECK · CMD / ENTRYPOINT in exec form · bind 0.0.0.0 · gunicorn, not the dev server".]**
 
 **(Voiceover):**
@@ -225,7 +225,7 @@ Har push ek naya edition rakhta hai, aur depot mein purane designs ka dher lag j
 **(Voiceover):**
 Depot mein design jaane se pehle teen cheezein sochne ki hain. Ek, X-ray: Trivy ki report, aur gate ki wahi niyam jo Session 20 mein tay hue, yaani fixable HIGH aur CRITICAL par fail. Do, SBOM: design ke andar ke har package ki ek soochi, yaani parts list. Kal koi nayi kamzori aaye, to aap seedhe dekh sakte ho ki kaun si trucks mein wo package hai. Teen, mohar: signing tool, jaise cosign, se design par ek digital hastakshar, taaki deploy karne wala check kar sake ki ye design sach mein hamari conveyor se aaya hai, kisi aur ne depot mein chupke se badla nahi. Ye teeno aaj ek lab nahi, par ek achhi aadat ki disha hain, aur bade teams mein ye zaroori hote hain.
 
-### [10:45 – 14:05] Scene 6: Lab: Actions se Build aur Push
+### [10:45 – 14:24] Scene 6: Lab: Actions se Build aur Push
 **[VISUAL: A workflow using `docker/login-action`, `docker/metadata-action`, `docker/build-push-action` that pushes to GHCR on a Git tag `v*` and on `main`. The repository's Packages tab shows the image with its tags. A Trivy step runs before push.]**
 
 **(Voiceover):**
@@ -256,9 +256,9 @@ jobs:
       - uses: docker/build-push-action@v7
         with: { push: true, tags: "${{ steps.meta.outputs.tags }}", labels: "${{ steps.meta.outputs.labels }}" }
 ```
-Push karo, aur Packages mein image dikhegi. Ek Git tag `v1.0.0` lagao aur dekho ki wahi design `1.0.0` aur `sha-` wale label ke saath aata hai. Dhyaan: bina `tags` ke metadata action `v1.0.0` aur `latest` deta hai, isliye humne tags aur flavor khud likhe. Action versions ke liye docs dekh lena, aur Session 20 ki tarah unhe pin karo. Aakhir mein koi bhi doosri building `docker pull` karke wahi truck chala sakti hai.
+Push karo, aur Packages mein image dikhegi. Ek Git tag `v1.0.0` lagao aur dekho ki wahi design `1.0.0` aur `sha-` wale label ke saath aata hai. Dhyaan: bina `tags` ke metadata action `v1.0.0` aur `latest` deta hai, isliye humne tags aur flavor khud likhe. Action versions ke liye docs dekh lena, aur Session 20 ki tarah unhe pin karo. Aakhir mein koi bhi doosri building `docker pull` karke wahi truck chala sakti hai. Ab handover note likho: kaunsa image aur kaunsa tag, kahan se pull hoga, size kitna hai aur kaunsa user chalata hai, undo kaise karte hain, aur known gaps. Yahan gaps ye hain: image signed nahi hai, aur koi gate nahi jo bina scan ke release ko roke.
 
-### [14:05 – 15:30] Scene 7: Recap aur Bridge
+### [14:24 – 15:49] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "version + SHA labels · Git tag → image tag · digest · depot with scan + lifecycle · push from CI with a role or token · never deploy latest". Then a courtyard full of trucks and a thick operations book fade in.]**
 
 **(Voiceover):**

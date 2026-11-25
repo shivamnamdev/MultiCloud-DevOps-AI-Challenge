@@ -8,6 +8,27 @@ Companion to `02_script.md`. The script teaches the ideas; this guide is the han
 | **Cost** | Parts A to D run on your laptop and cost nothing. The GitHub Actions part uses GitHub's free allowance for a small repository. Do not push anything with a secret in it to any registry. |
 | **Skill check before you start** | You did Session 21 (`docker run`, images, layers, volumes) and can read a Python file. |
 
+## Ticket ATITHI-022: ship the rooms service as a safe, small, versioned image
+
+**Client asks (Mrs. Mehta):** "Naya feature jaldi aaye, par site tootay nahi."
+
+**Constraints:** Python service with `/` and `/health`; no secret in any layer; run as a non-root user; tag by version and commit, never only `latest`; practice registry first, GitHub's registry (GHCR) through a workflow after.
+
+**Deliver:** a container image of the rooms service that answers `/health`, runs as a non-root user, is small, and is pushed to a registry with a version tag.
+
+**Done when** (what we saw):
+
+| Check | How | Expected |
+|---|---|---|
+| Health answers | `curl localhost:5000/health` | the health JSON, status `200` |
+| Not root | `docker run --rm rooms:slim id` | `uid=10001(app) ...` |
+| Cannot write system files | `docker run --rm rooms:slim touch /etc/x` | `Permission denied` |
+| Small base | `docker images` | `rooms:slim` about 228 MB against about 1.63 GB for the full base |
+| No secret in layers | `docker history` and a scan | secret not found (B3) |
+| Version tags | push the Git tag `v1.0.0` | image tags `1.0.0` and `sha-<7 chars>` (no `v`) |
+
+The handover note you write at the end is in Part D, before "Clean up".
+
 ## Before you start
 
 You need Docker (Engine or Desktop) with BuildKit, which is the default builder in current Docker. Check:
@@ -465,6 +486,18 @@ docker buildx build --provenance=false --sbom=false -t ACCOUNT.dkr.ecr.REGION.am
 - **Trap: scan on push did nothing with Docker's default build.** Docker 29 (BuildKit) pushes an **OCI index** that carries provenance attestations. `describe-image-scan-findings` said `ScanNotFoundException`, and `start-image-scan` said `UnsupportedImageTypeException: ... application/vnd.oci.image.index.v1+json cannot be scanned`. Each push also left **two untagged child manifests** in the repository (`imageTags: None`), which is what the "untagged older than 7 days" rule exists to clean up. **Fix:** build with `--provenance=false --sbom=false` so the tag points to a plain image manifest. Then the scan ran by itself: `COMPLETE`, **12 HIGH, 15 MEDIUM, 3 LOW** for our `python` based image.
 - Login: `Login Succeeded`; the token lasts 12 hours. Log out and delete the repository when you are done: `aws ecr delete-repository --repository-name atithi-rooms --force`.
 - Still **not run:** login with an IAM role (instead of the user), image signing, and a deploy gate. **GHCR was run for real on 25 November 2026** (a tiny `atithi-ghcr-test:1.0` image pushed from a laptop; the workflow route is in D4): the `gh` login needed `gh auth refresh -s write:packages` (approved in the browser with a one-time code); `gh auth token | docker login ghcr.io -u USER --password-stdin` worked and the push succeeded. A new package is **private by default** (an anonymous pull gives `401`/`403`, a logged-in pull works). Unlike ECR with immutable tags, **GHCR lets you push the same tag again**: the old image stays as an untagged version. Deleting a package by API needs `delete:packages` and `read:packages` as well (we had only `write:packages`, so the package was deleted in the web page instead). Run `docker logout ghcr.io` when done. Not tested: making a package public.
+
+### Handover note for ATITHI-022
+
+```
+Ticket:        ATITHI-022 Rooms service as a container image
+Built:         rooms image (multi-stage, slim base, non-root uid 10001), tags 1.0.0 and sha-<7>, pushed from a GitHub Actions workflow to GHCR
+Pull it:       ghcr.io/<owner>/<repo>:1.0.0 (private at first; the package links itself to the repository)
+Size and user: about 228 MB; runs as app (uid 10001); /app is not writable
+Undo:          delete the package versions in the package settings (deleting the repository does NOT delete its packages)
+Known gaps:    image is not signed, no deploy gate that refuses an unscanned image, GHCR lets a tag be pushed again (ECR can forbid it with immutable tags), and nothing runs the image yet (Session 23 onwards)
+Next ticket:   ATITHI-023 run it on a cluster (Session 23)
+```
 
 ## Clean up
 

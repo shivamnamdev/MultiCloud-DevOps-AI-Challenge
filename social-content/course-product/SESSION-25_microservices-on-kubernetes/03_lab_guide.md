@@ -8,6 +8,28 @@ Companion to `02_script.md`. The script teaches the ideas; this guide is the han
 | **Cost** | Free. A local `kind` cluster plus a few small containers. Delete the cluster at the end. |
 | **Skill check before you start** | Sessions 21 to 24: images, pods, Deployments, Services, namespaces, `kubectl apply`. |
 
+## Ticket ATITHI-025: the Atithi services running together on Kubernetes
+
+**Client asks (Mrs. Mehta):** "Sale wale din bhi site chalni chahiye, aur koi booking gum nahi honi chahiye."
+
+**Constraints:** namespace for the app; images built from `lab_files/app`; Postgres with a persistent volume; resource requests and limits; only `bookings` may reach the database; delete everything at the end (on a cloud cluster the disks and the load balancer bill).
+
+**Deliver:** `web`, `rooms` and `bookings` services plus Postgres, reachable by service name and through one Ingress, with data that survives a pod restart.
+
+**Done when** (what we saw; the last column is the real GKE Autopilot result where we ran it):
+
+| Check | How | Expected |
+|---|---|---|
+| Data survives | insert rows, `kubectl delete pod` the Postgres pod, count again | same rows (we saw `2` before and after) |
+| A disk is created | `kubectl get pvc` | `Bound` (about 26 s on GKE) |
+| Disk can grow, not shrink | patch the PVC from `1Gi` to `3Gi`, restart the pod | `df` shows `3.0G`; shrinking is refused |
+| A limit holds | a busy loop in a pod with a `250m` CPU limit | CPU stays near `250m` and the pod is throttled, not killed |
+| Pod is locked down | `securityContext` | `uid=10001`, writing `/x` gives `Read-only file system` |
+| Only bookings reaches Postgres | default-deny plus one allow policy, test from `web` | `web` cannot connect; `bookings` can |
+| Three paths work | `curl` through the Ingress to `/`, `/api/rooms/`, `/api/bookings/` | `200` on each (on GKE use the annotation, not `ingressClassName: gce`) |
+
+The handover note is in Part D, before "Clean up".
+
 ## Before you start
 
 You need Docker, `kubectl`, `kind` and `helm`. We tested with Docker `29.8.2` (Docker Desktop, Mac, arm64), `kubectl` `v1.36.1`, `kind` `v0.33.0` (Kubernetes `v1.37.0` nodes) and Helm `v4.3.2`. Check: `kind version`, `helm version --short`.
@@ -451,6 +473,19 @@ We exercised most rows of the script's table during this guide: `Pending` (quota
 - [ ] You rolled back a Helm release and saw the revision number go up.
 
 ---
+
+### Handover note for ATITHI-025
+
+```
+Ticket:        ATITHI-025 Atithi services on Kubernetes
+Built:         namespace with web, rooms, bookings, Postgres (PVC), limits and quota, Ingress with three paths, default-deny network policy + allow list, least-privilege ServiceAccount
+Reach it:      one Ingress address (path /, /api/rooms, /api/bookings); services talk by name inside the cluster
+Data:          Postgres on a persistent disk (survives a pod delete); the disk can grow (restart the pod after), not shrink
+Cost running:  on a cloud cluster: nodes + disks + load balancer; read the current prices; local kind is free
+Undo:          delete the namespace (this removes the claims and, on GKE, the disks), delete the Ingress first so the load balancer goes, then check Disks and Load balancing pages
+Known gaps:    one Postgres, no replica, no backup (Session 13 covers managed databases); no TLS yet; no monitoring yet (Session 26)
+Next ticket:   ATITHI-026 tell me before the guest notices (Session 26)
+```
 
 ## Clean up
 

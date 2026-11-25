@@ -28,3 +28,6 @@
 *.7z
 *.rar
 .hyperframes/
+
+# Generated teleprompter build output (rebuild with tools/teleprompter/build.py; only 02a_teleprompter.md is committed)
+social-content/course-product/SESSION-*/teleprompter/

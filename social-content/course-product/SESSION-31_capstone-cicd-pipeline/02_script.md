@@ -50,13 +50,13 @@ Ab faisle likh lo, kyunki jo likha nahi, wo beech mein badalta hai. Depot: GHCR 
 **(Voiceover):**
 Infra ke do raaste hain. Seedha raasta: do chhote Ubuntu buildings, `jenkins` aur `app`, haath se. Bonus raasta: Session 27 aur 28 ka master plan buildings aur door guards banaye, aur Session 29 ki setup crew dono mein Docker lagaye, aur ek mein Java aur Jenkins. Jo bhi raasta lo, niyam wahi. Jenkins ka port 8080 sirf aapke IP se. App building par staff entrance, yaani port 22, sirf Jenkins building ke security group se. Aur guest ka door, jaise 8081, aapke IP se aaj ke test ke liye. Jenkins building se app building par bina password ke SSH key chalaao, aur wo private key Jenkins ke key cabinet mein SSH credential ke type se rakho, kisi file mein nahi. Session 17 ka `jenkins` user aur Session 4 ka key permission `600` yaad rakho.
 
-### [12:55 – 15:10] Scene 6: Lab: Repo, Rules aur Pehla Check
+### [12:55 – 15:31] Scene 6: Lab: Repo, Rules aur Pehla Check
 **[VISUAL: A new repo `atithi-rooms`. Branch protection on `main`: require pull request, require one review, require status checks, block force push. A `.gitignore` for Python. A `CODEOWNERS` file. A first pull request that only adds a README.]**
 
 **(Voiceover):**
-Lab: GitHub par `atithi-rooms` repo banao. Branch protection on karo: pull request zaroori, ek review, status checks zaroori, aur force push band. `.gitignore` mein `__pycache__/`, `.venv/` aur `.env`. `CODEOWNERS` mein `Jenkinsfile` aur `deploy/` ka maalik likho. Phir ek chhota test: ek branch banao, README mein ek line jodo, push karo, pull request kholo, aur dekho ki merge button tab tak band hai jab tak review aur check na ho. Abhi check koi nahi hai, to ye agle episodes mein aayega. Bas dekh lo ki master par seedha push sach mein rukta hai. Agar kisi ek account ko bypass milta hai, to uski wajah likho aur band karo.
+Is capstone ka ticket, ATITHI-031. Mrs. Mehta kehti hain: "Naya feature jaldi aaye, par site tootay nahi." Done when: review aur check ke bina kuch main mein merge na ho, merge hote hi tests chalein aur naya version app tak pahunche, aur ek jaan-boojh kar toota hua release apne aap wapas ho jaye. Lab: GitHub par `atithi-rooms` repo banao. Branch protection on karo: pull request zaroori, ek review, status checks zaroori, aur force push band. `.gitignore` mein `__pycache__/`, `.venv/` aur `.env`. `CODEOWNERS` mein `Jenkinsfile` aur `deploy/` ka maalik likho. Phir ek chhota test: ek branch banao, README mein ek line jodo, push karo, pull request kholo, aur dekho ki merge button tab tak band hai jab tak review aur check na ho. Abhi check koi nahi hai, to ye agle episodes mein aayega. Bas dekh lo ki master par seedha push sach mein rukta hai. Agar kisi ek account ko bypass milta hai, to uski wajah likho aur band karo.
 
-### [15:10 – 15:40] Scene 7: Recap aur Bridge
+### [15:31 – 16:01] Scene 7: Recap aur Bridge
 **[VISUAL: A card: "journey in eight steps · team flow first: branch, PR, review, required check, merge, then the bell · decisions written · Definition of Done · infra by hand or by Terraform + Ansible".]**
 
 **(Voiceover):**
@@ -288,13 +288,13 @@ Rollback ke teen star hain. Pehla: jaise purana menu wapas, script khud purani t
 **(Voiceover):**
 Lab: Jenkinsfile mein Deploy station jodo, jisme `sshagent(['app-server-key'])` ho. Pehle ek chhota badlaav: `/rooms` mein ek naya room type jodo, pull request, review, merge. Kuch minute mein `curl http://APP_IP:8081/rooms` mein naya data. Ab ek toota hua release: app ke shuru mein jaan-boojh kar ek exception daalo, jisse wo start par crash ho. Pull request par test shayad pass ho jaaye, aur isiliye pehle ye bhi dekho ki kaun sa check is hadse ko nahi pakadta: ek test jodo jo app ko import karke dekhe. Phir bhi, agar release chhoot gaya, to Deploy station health check par laal hoga, script purani truck wapas laayegi, site chalti rahegi, aur `/var/log/atithi-deploys.log` mein FAILED aur rollback ka record rahega. Wahi Fix wala hissa.
 
-### [13:30 – 15:15] Scene 7: Safai aur Post-Incident Review
+### [13:30 – 15:34] Scene 7: Safai aur Post-Incident Review
 **[VISUAL: A cleanup checklist: stop or destroy the two buildings, revoke the depot token, remove the SSH key from the key cabinet, delete test images, check for leftover volumes, public IPs and security groups, budget alert on. Beside it: a short blameless review template: what happened, what the check caught, what it missed, one change.]**
 
 **(Voiceover):**
-Safai ka checklist: dono buildings band ya delete, depot token revoke, SSH key key cabinet se hatao, test images delete, aur console mein dekho ki koi volume, public IP ya security group baaki to nahi. Aur ek chhota post-incident review likho, bina kisi par ilzaam ke: kya hua, kis check ne pakda, kis ne nahi pakda, aur ek badlaav jo agli baar rokega. Ye likhna asli teams ki aadat hai, aur interview mein bhi kaam aati hai. Aur ab pichhe mudo: master lock, bell, foreman, truck, depot, health check, rollback, control room. Atithi ka pehla grand opening poora.
+Pehle handover note likho: kya banaya, kaise chalta hai, status kahan dikhta hai, kitna kharcha, undo kaise karte hain, aur known gaps. Yahan gaps ye hain: practice depot ki jagah asli registry ka push alag se jaanchna hai, aur deploy ek hi app server par hota hai. Safai ka checklist: dono buildings band ya delete, depot token revoke, SSH key key cabinet se hatao, test images delete, aur console mein dekho ki koi volume, public IP ya security group baaki to nahi. Aur ek chhota post-incident review likho, bina kisi par ilzaam ke: kya hua, kis check ne pakda, kis ne nahi pakda, aur ek badlaav jo agli baar rokega. Ye likhna asli teams ki aadat hai, aur interview mein bhi kaam aati hai. Aur ab pichhe mudo: master lock, bell, foreman, truck, depot, health check, rollback, control room. Atithi ka pehla grand opening poora.
 
-### [15:15 – 16:40] Scene 8: Recap aur Bridge
+### [15:34 – 16:59] Scene 8: Recap aur Bridge
 **[VISUAL: A card: "branch → PR → review → required check → merge → bell → test → truck design → scan → depot → deploy → health → rollback → control room". Then a new figure appears at the head office: a well-read assistant sitting beside a designer.]**
 
 **(Voiceover):**
