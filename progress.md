@@ -557,3 +557,8 @@
 - New package is private; anonymous token/manifest request refused (401/403).
 - Deleting via API failed (needs `delete:packages` + `read:packages`). `docker logout ghcr.io` done.
 - Not tested: workflow publish with GITHUB_TOKEN, linking to a repo, making public, Jenkins push to GHCR.
+
+## 2026-11-25: EKS free handshake (nothing billable created)
+- Prices (Pricing API, ap-south-1, USD/h): EKS control plane 0.10 (extended support 0.60), t3.medium 0.0448, public IPv4 0.005, ALB 0.0239, NAT gateway 0.056. K8s 1.37 is default and in standard support until 2027-12-01 (1.33 and older are in extended support). Estimated EKS run about 0.7 USD for 2.5 h; 24 h forgotten about 5.7 USD.
+- Blocked by IAM: `atithi-lab-user` can create an empty role (`iam:CreateRole` worked) but `iam:AttachRolePolicy`, `iam:PutRolePolicy`, `iam:SimulatePrincipalPolicy` and `iam:PassRole` are denied (explicit deny in policy `atithi-lab-iam-users` for some actions). `eks:CreateCluster` with fake inputs fails on `iam:PassRole`. Two test roles were created and deleted; leftover check of roles clean.
+- Needed from the user to continue: two roles (`atithi-lab-eks-cluster`, `atithi-lab-eks-node`) made in the console with the AWS managed policies, plus `iam:PassRole` on those two roles for the lab user (or the user widens the policy). Not done yet.
