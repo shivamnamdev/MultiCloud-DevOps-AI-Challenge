@@ -20,5 +20,7 @@ Key corrections found by real runs are recorded inside each guide (for example, 
 3. Console demo pilot DONE for Session 8 (see progress.md 2026-11-24). Same method can be reused for other console sessions.
 4. ~~Housekeeping: ad scripts~~ done 2026-11-24: AD-001 now says 35 sessions + 1 optional bonus / 140 episodes / ~35 h (still planned figures, verify against final recordings); AD-002 has no counts.
 
+5. **EKS run: skipped by the user's choice (2026-11-25); do it at screen-recording time.** Plan and prices are in progress.md (2026-11-25). Blocked until the user makes roles `atithi-lab-eks-cluster` and `atithi-lab-eks-node` in the console and allows `iam:PassRole` on them. Estimated cost about 0.7 USD for 2.5 h.
+
 ## Rules that still apply
 Confirm before creating anything that bills; delete the same day; never print secrets; only `atithi-*` names and tag `Project=atithi-lab`; IAM names starting `atithi-lab` are protected by the cleanup script (the user's own permissions); the user's four existing S3 buckets and CloudFront distribution E2RXVOTPHG2SRH must never be touched.
