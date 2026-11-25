@@ -389,7 +389,7 @@ The script describes staging first, a smoke test, an `input` approval with a tim
   - A passing status named exactly like the required check (we posted it through the API as stand-in for Jenkins) turned the check green, but the PR stayed `BLOCKED` until the review rule was met. Both rules apply at once.
   - **Admin override:** `gh pr merge --admin` merged it (the owner is allowed because `enforce_admins` was `false`). With the same setting, an owner can even **push straight to `main`**; GitHub only prints `Required status check ... is expected` and lets it through. Turn on **Do not allow bypassing** (`enforce_admins: true`) for a real protection.
 - The check name must match **exactly** what Jenkins reports (`jenkins/hook-build` here). A wrong name leaves the PR waiting forever.
-- **Not run:** Jenkins posting the real status back, fork pull requests and fork trust, GHCR (the `gh` token lacked `write:packages`).
+- **Not run:** Jenkins posting the real status back, fork pull requests and fork trust, a Jenkins push to GHCR (a manual `docker push` to GHCR was tested on 25 November 2026, see Session 22; the Jenkins credential path was not).
 
 ## What we did not test
 

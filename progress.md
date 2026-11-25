@@ -551,3 +551,9 @@
 - Found: console default AMI is Amazon Linux 2023; SSH source defaults to Anywhere; hop limit 2 and unencrypted volume on console launches; key pair is created at once; user data was saved with a wrong last line (default nginx page), runs only on first boot, fixed over SSH; stop/start changed the public IP, kept the disk and the page; terminate deleted the volume.
 - Added: `SESSION-08_aws-ec2-basics/DEMO_RUNSHEET.md`, `_lab_tools/aws/demo_s8_verify.sh`, "Update 2" in the S8 guide.
 - Not recorded: EC2 Instance Connect from the console.
+
+## 2026-11-25: GHCR test (Session 22 / 31)
+- `gh auth refresh -s write:packages` approved by the user in the browser (token now also has `write:packages`; read/delete not granted). Pushed `ghcr.io/shivamnamdev/atithi-ghcr-test:1.0` (alpine, tiny), pulled back, pushed the same tag again (allowed, old digest becomes untagged).
+- New package is private; anonymous token/manifest request refused (401/403).
+- Deleting via API failed (needs `delete:packages` + `read:packages`). `docker logout ghcr.io` done.
+- Not tested: workflow publish with GITHUB_TOKEN, linking to a repo, making public, Jenkins push to GHCR.
