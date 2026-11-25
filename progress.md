@@ -563,3 +563,9 @@
 - Blocked by IAM: `atithi-lab-user` can create an empty role (`iam:CreateRole` worked) but `iam:AttachRolePolicy`, `iam:PutRolePolicy`, `iam:SimulatePrincipalPolicy` and `iam:PassRole` are denied (explicit deny in policy `atithi-lab-iam-users` for some actions). `eks:CreateCluster` with fake inputs fails on `iam:PassRole`. Two test roles were created and deleted; leftover check of roles clean.
 - Needed from the user to continue: two roles (`atithi-lab-eks-cluster`, `atithi-lab-eks-node`) made in the console with the AWS managed policies, plus `iam:PassRole` on those two roles for the lab user (or the user widens the policy). Not done yet.
 - Decision (user, 2026-11-25): EKS is SKIPPED for now; do it at screen-recording time (needs the two roles and `iam:PassRole` first).
+
+## 2026-11-25: GHCR workflow publish (Session 22 D4)
+- Temporary PRIVATE repo `atithi-ghcr-lab` with the guide's `image.yml`; deleted afterwards. First run failed: no file named `Dockerfile` in the lab folder (only variants) -> added `file: Dockerfile.slim` to the build step in the lab file.
+- Push to main: tags `main`, `sha-<7>`; git tag `v1.0.0`: tags `1.0.0`, `sha-<7>` (as the guide predicted). Package auto-linked to the repo, private. Without `packages: write`: login OK, push `403 Forbidden`.
+- Deleting the repo did NOT delete the package (it stays, repository none). Two private packages left for the user to delete in the web page: `atithi-ghcr-test`, `atithi-ghcr-lab` (`delete:packages` scope not granted).
+- Not tested: making a package public, read-only pull token on a server, signing.
