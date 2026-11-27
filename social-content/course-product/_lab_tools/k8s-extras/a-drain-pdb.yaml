@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: web}
+spec:
+  replicas: 4
+  selector: {matchLabels: {app: web}}
+  template:
+    metadata: {labels: {app: web}}
+    spec:
+      containers:
+      - {name: nginx, image: nginx:alpine, readinessProbe: {httpGet: {path: /, port: 80}, periodSeconds: 2}}
+---
+apiVersion: policy/v1
+kind: PodDisruptionBudget
+metadata: {name: web-pdb}
+spec:
+  minAvailable: 3
+  selector: {matchLabels: {app: web}}
+---
+apiVersion: v1
+kind: Pod
+metadata: {name: lonely, labels: {app: lonely}}
+spec:
+  containers: [{name: c, image: nginx:alpine}]
+---
+apiVersion: v1
+kind: Pod
+metadata: {name: scratchy}
+spec:
+  containers:
+  - {name: c, image: nginx:alpine, volumeMounts: [{name: tmp, mountPath: /tmp/x}]}
+  volumes: [{name: tmp, emptyDir: {}}]

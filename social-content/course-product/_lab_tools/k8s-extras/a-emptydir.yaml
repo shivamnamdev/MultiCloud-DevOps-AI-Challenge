@@ -1,0 +1,12 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata: {name: cache}
+spec:
+  replicas: 1
+  selector: {matchLabels: {app: cache}}
+  template:
+    metadata: {labels: {app: cache}}
+    spec:
+      containers:
+      - {name: c, image: nginx:alpine, volumeMounts: [{name: tmp, mountPath: /tmp/x}]}
+      volumes: [{name: tmp, emptyDir: {}}]

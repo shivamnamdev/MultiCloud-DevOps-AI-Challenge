@@ -602,3 +602,7 @@
 ## 2026-11-27: Upstream pull reviewed (merge 15cfafb)
 - 4 new Batch-45 Kubernetes note files (Session-34 Day-3; Session-35 Day-3.1 duplicate, Day-5, Day-6). Gap list and accuracy flags are in findings.md (2026-11-27). Nothing in our scripts or lab guides was changed. Suggested follow-up is item 6 in STATUS_RESUME_HERE.md and needs the author's decision.
 
+## 2026-11-27: Kind tests for the upstream Kubernetes topics (a to e)
+- Drain/PDB/uncordon, taints/tolerations/nodeSelector, HPA scale-up and stabilization window, blue-green and canary by replica ratio, classic vs native sidecar (including in a Job) all run for real on kind v1.37. Details in findings.md. Fixtures: `social-content/course-product/_lab_tools/k8s-extras/`. Cluster, containers and kubeconfig removed; no kind binary installed system-wide (kept in the scratch area).
+- Still to do for this item: decide where each topic goes (S24, S25, teleprompter scripts), then write SOP/guide text first. Items f (upgrades) and g (production Secrets) need GKE and a cost confirmation.
+
