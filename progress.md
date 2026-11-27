@@ -590,3 +590,8 @@
 ## 2026-11-26: malicious conftest.py (Session 31)
 - pytest in python:3.12-slim with a PR-added conftest.py: it runs before tests, tests still pass; with a dummy GHCR_TOKEN in the environment it leaked the token reversed to a file; without it, nothing. pytest swallows conftest prints, so the demo wrote a file. The lab Jenkinsfile keeps credentials in the Push stage only. No Jenkins, no GitHub objects, nothing to clean up on GitHub.
 - Still untested Jenkins items: githubNotify, GitHub Checks plugin, push to GHCR from Jenkins (needs a classic token with write:packages only), Nobody/Collaborators trust (needs a second fork PR).
+
+## 2026-11-27: githubNotify step (Sessions 18, 31)
+- Throwaway Jenkins (LTS, github-branch-source) on the laptop, temporary PUBLIC repo `atithi-jenkins-lab2`, fine-grained token on that repo only (user-made, 600 file). Finding: `githubNotify` needs the separate plugin `pipeline-githubnotify-step`; without it "No such DSL method". With it: custom context `atithi/rooms-tests` pending->success on a good branch, pending->failure on a broken-test branch, next to Jenkins' own contexts.
+- Incident: `git add -A` in the lab repo folder staged the token file; GitHub push protection blocked the push (nothing leaked). Commit redone with `token` and `docker/` in `.gitignore`, token verified absent from the commit. Lesson: keep secret files outside a repo's working folder.
+- Still running for the trust-policy test: container atithi-jlab2 (port 8098), volume jlab2_home. Cleanup when done: container, volume, image, token file, repo atithi-jenkins-lab2, user to revoke the PAT and delete the old fork atithi-outsider-lab/atithi-fork-trust-lab.
