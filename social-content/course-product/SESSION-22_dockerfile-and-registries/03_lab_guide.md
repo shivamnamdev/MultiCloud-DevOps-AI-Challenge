@@ -467,7 +467,10 @@ By the same documentation, a push of the Git tag `v1.0.0` should give the image 
 > - **The package linked itself to the repository** and was **private** (the repository was private; the package inherits that at first). No token was created by hand.
 > - **Without `packages: write`** the login still succeeds, but the push fails: `failed to push ghcr.io/...: unexpected status from HEAD request ... 403 Forbidden`. If you see a 403 on a GHCR push from a workflow, check `permissions:` first.
 > - **Deleting the repository does not delete its package.** The package stayed, with no repository attached. Delete packages yourself (the package's settings page, or the API with `delete:packages`).
-> - Not tested: making the package public, pulling it from a server with a read-only token, and the signing step.
+> - **Making a package public (tested, 27 November 2026):** there is **no API** for it. It is a click in the package's settings (Danger Zone, Change visibility, Public, type the name to confirm). Before the click, an anonymous request for the manifest gave `403`; after it, `200`, and anyone can pull with no login.
+> - **A read-only token (tested, same day):** a classic token with only `read:packages` (`x-oauth-scopes: read:packages`) **pulled** a private package's tag list and the public image, and a **push was refused**: `error from registry: permission_denied: The token provided does not match expected scopes.` The tags in the package did not change. The same private package gave an anonymous caller `403`. Use a token like this, and nothing wider, on servers that only pull.
+> - **Warning for Docker Desktop users:** a plain `docker pull` of a **private** image can still succeed after you remove your login from the config, because Docker Desktop supplies stored credentials. To prove an image is private, ask the registry directly with `curl` (token request and manifest request without credentials), not with `docker pull`.
+> - Not tested: the signing step.
 
 ### D5. ECR: immutable tags, lifecycle rule, scan on push (tested on real AWS, 2026-11-24)
 
