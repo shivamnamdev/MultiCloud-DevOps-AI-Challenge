@@ -1,4 +1,4 @@
-# Resume here (updated 2026-11-24, after Sessions 01, 02, 16, 16B, 24, 30, 32 and 33)
+# Resume here (updated 2026-11-27; item 6 added after the upstream pull)
 
 Read this first when you continue. Details of every test are in `progress.md` and in each session's `03_lab_guide.md`.
 
@@ -21,6 +21,8 @@ Key corrections found by real runs are recorded inside each guide (for example, 
 4. ~~Housekeeping: ad scripts~~ done 2026-11-24: AD-001 now says 35 sessions + 1 optional bonus / 140 episodes / ~35 h (still planned figures, verify against final recordings); AD-002 has no counts.
 
 5. **EKS run: skipped by the user's choice (2026-11-25); do it at screen-recording time.** Plan and prices are in progress.md (2026-11-25). Blocked until the user makes roles `atithi-lab-eks-cluster` and `atithi-lab-eks-node` in the console and allows `iam:PassRole` on them. Estimated cost about 0.7 USD for 2.5 h.
+
+6. **New upstream Kubernetes notes (pulled 2026-11-27): topics we do not cover yet** (details and accuracy flags in `findings.md`, 2026-11-27). Decision for the author: which to fold into Sessions 24 and 25 (and the teleprompter scripts), which to leave as extra reading. Proposed, in this order: (a) node maintenance: `cordon`, `drain --ignore-daemonsets --delete-emptydir-data`, `uncordon`, PodDisruptionBudget; (b) taints and tolerations plus `nodeSelector`, with the `Pending` pod it causes; (c) HPA scale-down stabilization window and flapping; (d) blue-green and canary as real labs (replica ratio on a plain Service, weights on a Gateway); (e) sidecar log shipper; (f) cluster upgrades (control plane first, nodes one by one, GKE release channels); (g) production Secrets (KMS encryption at rest, External Secrets Operator); (h) Jenkins on Kubernetes, with a volume. (a) to (e) can be tested for free on a local kind cluster before any script change; (f) and (g) need GKE. Follow Protocol 0: SOP and guide first, scripts after.
 
 ## Rules that still apply
 Confirm before creating anything that bills; delete the same day; never print secrets; only `atithi-*` names and tag `Project=atithi-lab`; IAM names starting `atithi-lab` are protected by the cleanup script (the user's own permissions); the user's four existing S3 buckets and CloudFront distribution E2RXVOTPHG2SRH must never be touched.

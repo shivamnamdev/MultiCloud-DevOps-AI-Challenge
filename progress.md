@@ -598,3 +598,7 @@
 
 ## 2026-11-27: fork trust policies Nobody and Collaborators (Session 31)
 - Same Jenkins, four multibranch jobs on public repo atithi-jenkins-lab2, one per trust policy; PR #1 from atithi-outsider-lab (author_association NONE) changed the Jenkinsfile to print a dummy secret reversed. Contributors, Nobody, Collaborators: all "not from a trusted source", base-branch Jenkinsfile used, Evil stage did not run, PR tests ran. Everyone: fork Jenkinsfile ran, printed 0000-terces-laer-a-ton. Nobody does not skip PR builds. Not tested: a real collaborator's fork.
+
+## 2026-11-27: Upstream pull reviewed (merge 15cfafb)
+- 4 new Batch-45 Kubernetes note files (Session-34 Day-3; Session-35 Day-3.1 duplicate, Day-5, Day-6). Gap list and accuracy flags are in findings.md (2026-11-27). Nothing in our scripts or lab guides was changed. Suggested follow-up is item 6 in STATUS_RESUME_HERE.md and needs the author's decision.
+
